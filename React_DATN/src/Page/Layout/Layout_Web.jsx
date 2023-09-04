@@ -42,7 +42,7 @@ const Layout_Web = () => {
                     <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                       aria-expanded="false">Pages</a>
                     <ul className="dropdown-menu">
-                      <li className="nav-item"><a className="nav-link" href="login.html">Login</a></li>
+                      <li className="nav-item"><a className="nav-link" href="login">Login</a></li>
                       <li className="nav-item"><a className="nav-link" href="tracking.html">Tracking</a></li>
                       <li className="nav-item"><a className="nav-link" href="elements.html">Elements</a></li>
                     </ul>
