@@ -6,61 +6,13 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vite + React</title>
-  <link rel="stylesheet" href="css/linearicons.css">
-  <link rel="stylesheet" href="css/font-awesome.min.css">
-  <link rel="stylesheet" href="css/themify-icons.css">
-  <link rel="stylesheet" href="css/bootstrap.css">
-  <link rel="stylesheet" href="css/owl.carousel.css">
-  <link rel="stylesheet" href="css/nice-select.css">
-  <link rel="stylesheet" href="css/nouislider.min.css">
-  <link rel="stylesheet" href="css/ion.rangeSlider.css" />
-  <link rel="stylesheet" href="css/ion.rangeSlider.skinFlat.css" />
-  <link rel="stylesheet" href="css/magnific-popup.css">
-  <link rel="stylesheet" href="css/main.css">
-  <script nonce="9faa0ff7-2cba-4413-9122-7b4a990c046d">(function (w, d) { !function (U, V, W, X) { U[W] = U[W] || {}; U[W].executed = []; U.zaraz = { deferred: [], listeners: [] }; U.zaraz.q = []; U.zaraz._f = function (Y) { return async function () { var Z = Array.prototype.slice.call(arguments); U.zaraz.q.push({ m: Y, a: Z }) } }; for (const $ of ["track", "set", "debug"]) U.zaraz[$] = U.zaraz._f($); U.zaraz.init = () => { var ba = V.getElementsByTagName(X)[0], bb = V.createElement(X), bc = V.getElementsByTagName("title")[0]; bc && (U[W].t = V.getElementsByTagName("title")[0].text); U[W].x = Math.random(); U[W].w = U.screen.width; U[W].h = U.screen.height; U[W].j = U.innerHeight; U[W].e = U.innerWidth; U[W].l = U.location.href; U[W].r = V.referrer; U[W].k = U.screen.colorDepth; U[W].n = V.characterSet; U[W].o = (new Date).getTimezoneOffset(); if (U.dataLayer) for (const bg of Object.entries(Object.entries(dataLayer).reduce(((bh, bi) => ({ ...bh[1], ...bi[1] })), {}))) zaraz.set(bg[0], bg[1], { scope: "page" }); U[W].q = []; for (; U.zaraz.q.length;) { const bj = U.zaraz.q.shift(); U[W].q.push(bj) } bb.defer = !0; for (const bk of [localStorage, sessionStorage]) Object.keys(bk || {}).filter((bm => bm.startsWith("_zaraz_"))).forEach((bl => { try { U[W]["z_" + bl.slice(7)] = JSON.parse(bk.getItem(bl)) } catch { U[W]["z_" + bl.slice(7)] = bk.getItem(bl) } })); bb.referrerPolicy = "origin"; bb.src = "../../cdn-cgi/zaraz/sd0d9.js?z=" + btoa(encodeURIComponent(JSON.stringify(U[W]))); ba.parentNode.insertBefore(bb, ba) };["complete", "interactive"].includes(V.readyState) ? zaraz.init() : U.addEventListener("DOMContentLoaded", zaraz.init) }(w, d, "zarazData", "script"); })(window, document);
-  </script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="./src/main.jsx"></script>
-  <!-- <script type="text/javascript" charset="UTF-8"
-    src="https://maps.googleapis.com/maps-api-v3/api/js/54/3/intl/vi_ALL/common.js"
-    nonce="2bda8f18-2cd4-4d13-b029-a95428d8d9a7"></script>
-  <script type="text/javascript" charset="UTF-8"
-    src="https://maps.googleapis.com/maps-api-v3/api/js/54/3/intl/vi_ALL/util.js"
-    nonce="2bda8f18-2cd4-4d13-b029-a95428d8d9a7"></script>
-  <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"
-    nonce="2bda8f18-2cd4-4d13-b029-a95428d8d9a7"></script>
-  <script defer="" referrerpolicy="origin"
-    src="../../cdn-cgi/zaraz/sd0d9.js?z=JTdCJTIyZXhlY3V0ZWQlMjIlM0ElNUIlNUQlMkMlMjJ0JTIyJTNBJTIyS2FybWElMjBTaG9wJTIyJTJDJTIyeCUyMiUzQTAuNjcyNjIxODU0MzY1NjU4MSUyQyUyMnclMjIlM0ExNTM2JTJDJTIyaCUyMiUzQTg2NCUyQyUyMmolMjIlM0EzOTYlMkMlMjJlJTIyJTNBMTUzNiUyQyUyMmwlMjIlM0ElMjJodHRwJTNBJTJGJTJGMTI3LjAuMC4xJTNBNTUwMCUyRnRlbXBsYXRlLTEtb3JhbmdlKHdlYiklMkZpbmRleC5odG1sJTIyJTJDJTIyciUyMiUzQSUyMmh0dHAlM0ElMkYlMkYxMjcuMC4wLjElM0E1NTAwJTJGdGVtcGxhdGUtMS1vcmFuZ2Uod2ViKSUyRmluZGV4Lmh0bWwlMjIlMkMlMjJrJTIyJTNBMjQlMkMlMjJuJTIyJTNBJTIyVVRGLTglMjIlMkMlMjJvJTIyJTNBLTQyMCUyQyUyMnElMjIlM0ElNUIlN0IlMjJtJTIyJTNBJTIyc2V0JTIyJTJDJTIyYSUyMiUzQSU1QiUyMjAlMjIlMkMlMjJVJTIyJTJDJTdCJTIyc2NvcGUlMjIlM0ElMjJwYWdlJTIyJTdEJTVEJTdEJTJDJTdCJTIybSUyMiUzQSUyMnNldCUyMiUyQyUyMmElMjIlM0ElNUIlMjIxJTIyJTJDJTIyQSUyMiUyQyU3QiUyMnNjb3BlJTIyJTNBJTIycGFnZSUyMiU3RCU1RCU3RCUyQyU3QiUyMm0lMjIlM0ElMjJzZXQlMjIlMkMlMjJhJTIyJTNBJTVCJTIyMiUyMiUyQyUyMi0lMjIlMkMlN0IlMjJzY29wZSUyMiUzQSUyMnBhZ2UlMjIlN0QlNUQlN0QlMkMlN0IlMjJtJTIyJTNBJTIyc2V0JTIyJTJDJTIyYSUyMiUzQSU1QiUyMjMlMjIlMkMlMjIyJTIyJTJDJTdCJTIyc2NvcGUlMjIlM0ElMjJwYWdlJTIyJTdEJTVEJTdEJTJDJTdCJTIybSUyMiUzQSUyMnNldCUyMiUyQyUyMmElMjIlM0ElNUIlMjI0JTIyJTJDJTIyMyUyMiUyQyU3QiUyMnNjb3BlJTIyJTNBJTIycGFnZSUyMiU3RCU1RCU3RCUyQyU3QiUyMm0lMjIlM0ElMjJzZXQlMjIlMkMlMjJhJTIyJTNBJTVCJTIyNSUyMiUyQyUyMjUlMjIlMkMlN0IlMjJzY29wZSUyMiUzQSUyMnBhZ2UlMjIlN0QlNUQlN0QlMkMlN0IlMjJtJTIyJTNBJTIyc2V0JTIyJTJDJTIyYSUyMiUzQSU1QiUyMjYlMjIlMkMlMjI4JTIyJTJDJTdCJTIyc2NvcGUlMjIlM0ElMjJwYWdlJTIyJTdEJTVEJTdEJTJDJTdCJTIybSUyMiUzQSUyMnNldCUyMiUyQyUyMmElMjIlM0ElNUIlMjI3JTIyJTJDJTIyMSUyMiUyQyU3QiUyMnNjb3BlJTIyJTNBJTIycGFnZSUyMiU3RCU1RCU3RCUyQyU3QiUyMm0lMjIlM0ElMjJzZXQlMjIlMkMlMjJhJTIyJTNBJTVCJTIyOCUyMiUyQyUyMjUlMjIlMkMlN0IlMjJzY29wZSUyMiUzQSUyMnBhZ2UlMjIlN0QlNUQlN0QlMkMlN0IlMjJtJTIyJTNBJTIyc2V0JTIyJTJDJTIyYSUyMiUzQSU1QiUyMjklMjIlMkMlMjI2JTIyJTJDJTdCJTIyc2NvcGUlMjIlM0ElMjJwYWdlJTIyJTdEJTVEJTdEJTJDJTdCJTIybSUyMiUzQSUyMnNldCUyMiUyQyUyMmElMjIlM0ElNUIlMjIxMCUyMiUyQyUyMjglMjIlMkMlN0IlMjJzY29wZSUyMiUzQSUyMnBhZ2UlMjIlN0QlNUQlN0QlMkMlN0IlMjJtJTIyJTNBJTIyc2V0JTIyJTJDJTIyYSUyMiUzQSU1QiUyMjExJTIyJTJDJTIyLSUyMiUyQyU3QiUyMnNjb3BlJTIyJTNBJTIycGFnZSUyMiU3RCU1RCU3RCUyQyU3QiUyMm0lMjIlM0ElMjJzZXQlMjIlMkMlMjJhJTIyJTNBJTVCJTIyMTIlMjIlMkMlMjIxJTIyJTJDJTdCJTIyc2NvcGUlMjIlM0ElMjJwYWdlJTIyJTdEJTVEJTdEJTJDJTdCJTIybSUyMiUzQSUyMnNldCUyMiUyQyUyMmElMjIlM0ElNUIlMjIxMyUyMiUyQyUyMjMlMjIlMkMlN0IlMjJzY29wZSUyMiUzQSUyMnBhZ2UlMjIlN0QlNUQlN0QlNUQlN0Q="></script>
-  <script src="js/vendor/jquery-2.2.4.min.js"></script>
-  <script src="../../../cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
-    integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-    crossorigin="anonymous"></script> -->
-  <script src="js/vendor/bootstrap.min.js"></script>
-  <script src="js/jquery.ajaxchimp.min.js"></script>
-  <script src="js/jquery.nice-select.min.js"></script>
-  <script src="js/jquery.sticky.js"></script>
-  <script src="js/nouislider.min.js"></script>
-  <script src="js/countdown.js"></script>
-  <script src="js/jquery.magnific-popup.min.js"></script>
-  <script src="js/owl.carousel.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
-  <script src="js/gmaps.min.js"></script>
-  <script src="js/main.js"></script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'UA-23581568-13');
-  </script>
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8b253dfea2ab4077af8c6f58422dfbfd1689876627854"
-    integrity="sha512-bjgnUKX4azu3dLTVtie9u6TKqgx29RBwfj3QXYt5EKfWM/9hPSAI/4qcV5NACjwAo8UtTeWefx6Zq5PHcMm7Tg=="
-    data-cf-beacon='{"rayId":"7fc544b4ce044ab3","version":"2023.8.0","b":1,"token":"cd0b4b3a733644fc843ef0b185f98241","si":100}'
-    crossorigin="anonymous"></script>
+
 </body>
 
 </html>
