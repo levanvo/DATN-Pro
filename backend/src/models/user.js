@@ -20,6 +20,18 @@ const useSchema = new mongoose.Schema({
         type: String,
         minLength: 6
     },
+    phone: {
+        type: String,
+    },
+    address: {
+        type: String
+    },
+    imgUrl: {
+        type: String
+    },
+    // code: {
+    //     type: String
+    // },
     role: {
         type: String,
         default: 'member'
