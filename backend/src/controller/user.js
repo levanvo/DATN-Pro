@@ -72,7 +72,7 @@ export const signin = async (req,res) => {
         message: "Mật khẩu không chính xác"
       })
     }
-    const token = jwt.sign({_id : checkUser.id}, "shoes_shop", {expiresIn: "2h"})
+    const token = jwt.sign({_id : checkUser.id}, "sneakers", {expiresIn: "2h"})
     checkUser.password = undefined
     return res.status(200).json({
       message: "Đăng nhập thành công",
@@ -111,7 +111,7 @@ const transporter = nodemailer.createTransport({
 // Lấy mã xác minh bằng email
 
 const confirmationCodes = {};   // confirmationCodes lưu mã xác thực tạm thời
-export const verifyConfirmationCode = async (req,res) => {
+export const forgotPassword = async (req,res) => {
 
   try {
     const {email} = req.body;
@@ -155,7 +155,7 @@ export const verifyConfirmationCode = async (req,res) => {
 
 
 // lấy mật khẩu bằng email
-export const forgotPassword = async (req, res) => {
+export const verifyConfirmationCode = async (req, res) => {
   try {
     const { email, code } = req.body;
     const storedCode = confirmationCodes[email];
@@ -207,4 +207,38 @@ export const forgotPassword = async (req, res) => {
     });
   }
 };
+
+
+// Đổi mật khẩu
+export const changePassword = async (req,res) => {
+  try {
+
+    const {email, password, newPassword } = req.body;
+    const user = await User.findOne({email})
+
+    if(!user){
+      return res.status(400).json({
+        message: "Tài khoản không tồn tại"
+      })
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Mật khẩu hiện tại không chính xác' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password in the database
+    user.password = hashedPassword;
+    await user.save();
+    return res.status(200).json({ message: 'Đổi mật khẩu thành công' });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+}
+
 
