@@ -1,5 +1,5 @@
 import express  from "express";
-import {changePassword, forgotPassword, logout, signin, signup, verifyConfirmationCode} from "../controller/user.js"
+import {changePassword, forgotPassword, signin, signup, verifyConfirmationCode} from "../controller/user.js"
 const router = express.Router();
 
 router.post("/signup", signup);
@@ -8,7 +8,7 @@ router.post("/verification-codes", verifyConfirmationCode); // api lấy mã xá
 router.post("/forgot-password", forgotPassword); // api lấy lại mật khẩu
 router.post("/change-password", changePassword); 
 
-router.post("/logout",logout)
+// router.post("/logout",logout)
 
 
 

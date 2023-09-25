@@ -1,7 +1,9 @@
 import product from "../models/product.js"
 import Category from "../models/category.js"
+import { productSchema } from "../schema/product.js"
 import Size from "../models/size.js"
 import Color from "../models/color.js"
+
 export const getProduct = async (req, res) => {
   try {
     const data = await product.find()
@@ -29,6 +31,12 @@ export const readProduct = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
+    const { error } = productSchema.validate(req.body)
+    if (error) {
+      return res.status(400).json({
+        message: error.details[0].message,
+      })
+    }
     const newProduct = await new product(req.body).save()
     if (!newProduct) {
       return res.json({
