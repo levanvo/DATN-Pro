@@ -1,4 +1,5 @@
 import Color from '../models/color.js';
+import mongoose from 'mongoose';
 
 export const getAll = async (req, res) => {
   try {
@@ -21,6 +22,12 @@ export const getAll = async (req, res) => {
 
 export const get = async (req, res) => {
   try {
+    const {id} = req.params
+    if(!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(400).json({
+        message: "Không tìm thấy color trong database"
+      })
+    }
 
     const colors = await Color.findById(req.params.id);
 
@@ -63,6 +70,13 @@ export const create = async (req, res) => {
 
 export const remove = async (req, res) => {
   try {
+    const {id} = req.params
+    if(!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(400).json({
+        message: "Không tìm thấy color trong database"
+      })
+    }
+
     const colors = await Color.findByIdAndDelete({ _id: req.params.id });
     if (!colors) {
       return res.json({
@@ -83,6 +97,13 @@ export const remove = async (req, res) => {
 
 export const update = async (req, res) => {
   try {
+    const {id} = req.params
+    if(!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(400).json({
+        message: "Không tìm thấy color trong database"
+      })
+    }
+    
     const colors = await Color.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
     if (!colors) {
       return res.status(404).json({

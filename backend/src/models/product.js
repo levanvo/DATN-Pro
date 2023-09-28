@@ -43,6 +43,6 @@ const productSchema = new mongoose.Schema({
   poinId: {
     type: String,
   },
-})
+},{timestamps: true, versionKey: false})
 
-export default mongoose.model("product", productSchema)
+export default mongoose.model("Product", productSchema)

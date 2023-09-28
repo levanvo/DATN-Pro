@@ -2,6 +2,8 @@ import product from "../models/product.js"
 import Category from "../models/category.js"
 import Size from "../models/size.js"
 import Color from "../models/color.js"
+import mongoose from "mongoose"
+
 export const getProduct = async (req, res) => {
   try {
     const data = await product.find()
@@ -19,6 +21,13 @@ export const readProduct = async (req, res) => {
       .findById({ _id: req.params.id })
       .populate(["categoryId", "size_id", "color_id"])
       .exec()
+      
+    if(!data){
+      return res.status(400).json({
+        message: "Không có sản phẩm nào"
+      })
+    }
+
     return res.status(200).json(data)
   } catch (error) {
     return res.status(404).json({
@@ -53,30 +62,59 @@ export const createProduct = async (req, res) => {
 
 export const removeProduct = async (req, res) => {
   try {
+    const {id} = req.params
+    if(!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(400).json({
+        message: "Không tìm thấy sản phẩm cần xóa"
+      })
+    }
+
     const data = await product.findByIdAndRemove({ _id: req.params.id }).exec()
+    if(!data){
+      return res.status(400).json({
+        message: "Sản phẩm không tồn tại trong database"
+      })
+    }
+
     return res.status(200).json({
       message: "Xoá sản phẩm thành công",
       productRemoved: data,
     })
+
   } catch (error) {
     return res.status(404).json({
-      message: "Không xoá được sản phẩm",
+      message: error.message,
     })
   }
 }
 
 export const updateProduct = async (req, res) => {
   try {
+    const {id} = req.params
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(400).json({
+        message: "Không tìm thấy sản phẩm cần cập nhật"
+      })
+    }
+
     const updateData = await product
       .findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
       .exec()
+
+    if(!updateData){
+      return res.status(400).json({
+        message: "Sản phẩm không tồn tại trong database"
+      })
+    }
+
     return res.status(200).json({
       message: "Cập nhật sản phẩm thành công",
       productUpdated: updateData,
     })
   } catch (error) {
     return res.status(404).json({
-      message: "Không cập nhật được sản phẩm",
+      message:error.message,
     })
   }
 }
