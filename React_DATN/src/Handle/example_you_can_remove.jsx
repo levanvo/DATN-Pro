@@ -23,6 +23,6 @@ const example_you_can_remove = (state = Initial, action) => {
                 return state;
         };
     });
-};;
+};
 
 export default example_you_can_remove

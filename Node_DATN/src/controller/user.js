@@ -30,6 +30,7 @@ export const signup = async (req, res) => {
         email,
         username,
         password: hashedPassword,
+        imgUrl:"https://picsum.photos/300"
       });
       if (!newUser) {
         return res.status(400).json({
@@ -242,3 +243,28 @@ export const changePassword = async (req,res) => {
 }
 
 
+// lấy tất cả user
+export const getAllUser=async(req,res)=>{
+  try{
+    const data=await User.find();
+    if(data.length<1) return res.status(400).json({message:"không có user nào !"});
+    return res.status(200).json({message:"Tất cả user: ",data});
+  }catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+ }
+
+//  lấy 1 user
+export const getOneUser=async(req,res)=>{
+  try{
+    const data=await User.findById(req.params.id);
+    if({data}.data==null) return res.status(400).json({message:"không thấy user muốn tìm !"});
+    return res.status(200).json({message:"1 user:",data});
+  }catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+}

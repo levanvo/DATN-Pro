@@ -269,7 +269,7 @@ body {
 .account-menu,
 .cart-menu {
     display: inline-block;
-    margin: 0 -2px;
+    margin: -6px 2px;
 }
 
 .account-menu ul li {
@@ -2183,7 +2183,7 @@ ul.address li span {
 /*----------------------------------------*/
 
 .mainmenu-area.product-items {
-    background-color: #cfcfcf;
+    background-color: #ebebeb;
 }
 
 /*----------------------------------------*/
@@ -2538,9 +2538,6 @@ ul.address li span {
     width: 235px !important;
 }
 
-.product-page-slider {
-    margin-top: 50px;
-}
 
 .product-page-slider .owl-buttons {
     bottom: 0;
@@ -2674,7 +2671,7 @@ ul.address li span {
 }
 
 .price-box span {
-    display: block;
+    /* display: block; */
     font-size: 20px;
     font-weight: 700;
     margin: 10px 0 20px;
@@ -2706,7 +2703,6 @@ ul.address li span {
     border: 1px solid #eee;
     font-weight: 700;
     height: 35px;
-    left: 60px;
     margin: 5px;
     position: relative;
     text-align: center;
