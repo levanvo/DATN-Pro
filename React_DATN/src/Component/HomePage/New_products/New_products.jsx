@@ -10,7 +10,7 @@ const New_products = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="section-heading">
-                                <h2>NEW PRODUCTS</h2>
+                                <h2>Sản Phẩm Mới</h2>
                             </div>
                         </div>
                     </div>
