@@ -1,7 +1,6 @@
 import React from 'react'
 
 
-
 const Banner = () => {
     return (
         <div className='w-[90vw] mx-auto'>

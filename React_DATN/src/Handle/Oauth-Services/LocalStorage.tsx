@@ -1,8 +1,8 @@
-export function setLocalStorage(key,content){
+export function setLocalStorage(key:any,content:any){
     localStorage.setItem(key,JSON.stringify(content));
 };
 
-export function getLocalStorage(key){
+export function getLocalStorage(key:any){
     const data = localStorage.getItem('shoes.dataUser');
     if (data !== null) {
         try {

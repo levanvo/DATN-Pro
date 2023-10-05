@@ -11,23 +11,23 @@ const Header = () => {
     const toggleSearch = () => {
         setSearchVisible(!isSearchVisible);
     };
-    window.addEventListener('scroll', function () {
-        let headerScroll = document.querySelector('.scroll_header');
-        let header_shell = document.querySelector('.mainmenu-area');
-        let imageBanner = document.querySelector('.image-banner');
-        if (window.scrollY >= 200) {
-            headerScroll.style.marginTop = '-5px';
-            imageBanner.style.height = '123px';
-            imageBanner.style.marginTop = '12px';
-            header_shell.style.marginTop = "-10px"
-        } else {
-            headerScroll.style.marginTop = '0px';
-            imageBanner.style.height = '134px';
-            imageBanner.style.marginTop = '2px';
-            header_shell.style.height = "81px"
-            header_shell.style.marginTop = "0px"
-        }
-    });
+    // window.addEventListener('scroll', function () {
+    //     let headerScroll:any = document.querySelector('.scroll_header');
+    //     let header_shell:any = document.querySelector('.mainmenu-area');
+    //     let imageBanner:any = document.querySelector('.image-banner');
+    //     if (window.scrollY >= 200) {
+    //         headerScroll.style.marginTop = '-5px';
+    //         imageBanner.style.height = '123px';
+    //         imageBanner.style.marginTop = '12px';
+    //         header_shell.style.marginTop = "-10px"
+    //     } else {
+    //         headerScroll.style.marginTop = '0px';
+    //         imageBanner.style.height = '134px';
+    //         imageBanner.style.marginTop = '2px';
+    //         header_shell.style.height = "81px"
+    //         header_shell.style.marginTop = "0px"
+    //     }
+    // });
     useEffect(() => {
         const dataUser = getLocalStorage("shoes.dataUser");
         if (dataUser != undefined) {

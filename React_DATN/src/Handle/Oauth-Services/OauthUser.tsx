@@ -1,7 +1,7 @@
 import { GetAllUser, Signin, Signup } from "../../Api/Api_User";
 
 
-export const OauthServiceSignin = async (info) => {
+export const OauthServiceSignin = async (info:any) => {
     const { data } = await Signin(info);
     const { message, accessToken, user } = data;
     // const checkEmail = info.email.includes("@gmail.com");
@@ -13,7 +13,7 @@ export const OauthServiceSignin = async (info) => {
     return { role: "member", accessTokenUser: accessToken, dataUser: user,message };
 };
 
-export const OauthServiceSignup = async (info) => {
+export const OauthServiceSignup = async (info:any) => {
     const { data } = await Signup(info);
     return data;
 }
