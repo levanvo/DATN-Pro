@@ -12,34 +12,22 @@ const Product = () => {
                             <div className="col-lg-3">
                                 <div className="product-menu">
                                     <div className="menu-title">
-                                        <h2>Best seller <strong>Products</strong></h2>
+                                        <h2>Best seller <strong>Các Mẫu Giày</strong></h2>
                                     </div>
                                     <div className="side-menu">
                                         {/* Nav tabs */}
                                         <ul className="nav tab-navigation" role="tablist">
                                             <li role="presentation">
-                                                <a className="active" href="#tab1" aria-controls="tab1" role="tab" data-bs-toggle="tab">Women</a>
+                                                <a href="#tab5" aria-controls="tab5" role="tab" data-bs-toggle="tab">NIKE</a>
                                             </li>
                                             <li role="presentation">
-                                                <a href="#tab2" aria-controls="tab2" role="tab" data-bs-toggle="tab">men</a>
+                                                <a href="#tab6" aria-controls="tab6" role="tab" data-bs-toggle="tab">MLB</a>
                                             </li>
                                             <li role="presentation">
-                                                <a href="#tab3" aria-controls="tab3" role="tab" data-bs-toggle="tab">Footwear</a>
+                                                <a href="#tab7" aria-controls="tab7" role="tab" data-bs-toggle="tab">ADIDAS</a>
                                             </li>
                                             <li role="presentation">
-                                                <a href="#tab4" aria-controls="tab4" role="tab" data-bs-toggle="tab">Jewelry</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab5" aria-controls="tab5" role="tab" data-bs-toggle="tab">Accessories</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab6" aria-controls="tab6" role="tab" data-bs-toggle="tab">Dresses</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab7" aria-controls="tab7" role="tab" data-bs-toggle="tab">shoes</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab8" aria-controls="tab8" role="tab" data-bs-toggle="tab">Handbags</a>
+                                                <a href="#tab8" aria-controls="tab8" role="tab" data-bs-toggle="tab">VANS</a>
                                             </li>
                                             <li><img src="img/banner/banner-5.jpg" /></li>
                                         </ul>
