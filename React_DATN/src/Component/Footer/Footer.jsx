@@ -8,12 +8,12 @@ const Footer = () => {
                     <div className="row">
                         <div className="col-lg-3 col-md-6">
                             <div className="footer-contact">
-                                <img src="img/logo-white.png" />
-                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt.</p>
+                                <img src="img/Logo DATN.png" className='w-[200px]' />
+                                <p>Hệ thống giày sneaker tại Hà Nội</p>
                                 <ul className="address">
                                     <li>
-                                        <span className="fa fa-fax" />
-                                        (800) 123 456 789
+                                        <span className="fa fa-home" />
+                                        Xuân Phương, Nam Từ Liêm, Hà Nội
                                     </li>
                                     <li>
                                         <span className="fa fa-phone" />
@@ -27,54 +27,34 @@ const Footer = () => {
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">
-                            <div className="footer-tweets">
-                                <div className="footer-title">
-                                    <h3>Latest tweets</h3>
+                            <div className="">
+                                <p className="font-semibold text-lg mb-4 text-center ">Phương thức thanh toán</p>
+                                <div className="grid grid-cols-5 gap-2 ">
+                                    <img className="border border-black rounded-lg" src="img/logo-techcombank-inkythuatso-10-15-17-50.jpg" alt="" />
+                                    <img className="border  rounded-lg" src="/img/images.png" alt="" />
+                                    <img className="border  rounded-lg" src="/img/images (1).jpg" alt="" />
+                                    <img className="border  rounded-lg" src="/img/images.jpg" alt="" />
+                                    <img className="border  rounded-lg" src="/img/tải xuống.png" alt="" />
+                                    <img className="border  rounded-lg" src="/img/unnamed.png" alt="" />
                                 </div>
-                                <div className="twitter-feed">
-                                    <div className="twitter-article">
-                                        <div className="twitter-img">
-                                            <a href="#">
-                                                <img src="img/twitter/twitter-1.png" />
-                                            </a>
-                                        </div>
-                                        <div className="twitter-text">
-                                            <p>Raboda Fashion #Magento #Theme comes up with pure white and grey, which great show your products. Check it: </p>
-                                            <a href="#">https://t.co/iu0OYBwti8</a>
-                                            <div className="twitter-time">
-                                                <a href="#">16h</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="twitter-article">
-                                        <div className="twitter-img">
-                                            <a href="#">
-                                                <img src="img/twitter/twitter-1.png" />
-                                            </a>
-                                        </div>
-                                        <div className="twitter-text">
-                                            <p>Raboda Fashion #Magento #Theme comes up with pure white and grey, which great show your products. Check it: </p>
-                                            <a href="#">https://t.co/iu0OYBwti8</a>
-                                            <div className="twitter-time">
-                                                <a href="#">16h</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div className="contents">
+                                    <p className="text-bold text-lg mb-3">Dịch vụ giao hàng</p>
+                                    <img className="bg-blue-400 border rounded-lg w-[200px]" src="img/freeship.png" alt="" />
                                 </div>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">
                             <div className="footer-support">
                                 <div className="footer-title">
-                                    <h3>Our support</h3>
+                                    <h3>Hỗ Trợ Khách Hàng</h3>
                                 </div>
                                 <div className="footer-menu">
                                     <ul>
-                                        <li><a href="#">Sitemap</a></li>
-                                        <li><a href="#">Privacy Policy</a></li>
-                                        <li><a href="#">Your Account</a></li>
-                                        <li><a href="#">Advanced Search</a></li>
-                                        <li><a href="contact.html">Contact Us</a></li>
+                                        <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
+                                        <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
+                                        <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
+                                        <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
+                                        
                                     </ul>
                                 </div>
                             </div>
@@ -82,21 +62,22 @@ const Footer = () => {
                         <div className="col-lg-3 col-md-6">
                             <div className="footer-info">
                                 <div className="footer-title">
-                                    <h3>Our information</h3>
+                                    <h3>DỊCH VỤ KHÁC HÀNG</h3>
                                 </div>
                                 <div className="footer-menu">
                                     <ul>
-                                        <li><a href="about-us.html">About Us</a></li>
-                                        <li><a href="#">Customer Service</a></li>
-                                        <li><a href="#">Privacy Policy</a></li>
-                                        <li><a href="#">Orders and Returns</a></li>
-                                        <li><a href="#">Site Map</a></li>
+                                        <li><a href="#">Chính sách đổi trả</a></li>
+                                        <li><a href="#">Chính sách đổi trả</a></li>
+                                        <li><a href="#">Chính sách đổi trả</a></li>
+                                        <li><a href="#">Chính sách đổi trả</a></li>
+                                        <li><a href="#">Chính sách đổi trả</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
             <footer className="footer-area">
                 <div className="container">
@@ -106,11 +87,7 @@ const Footer = () => {
                                 <p>Copyright © 2022 <a href="#"> Bootexperts</a>. All Rights Reserved</p>
                             </div>
                         </div>
-                        <div className="col-md-6">
-                            <div className="payment-icon">
-                                <img src="img/payment.png" />
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
                 <a href="#" id="scrollUp"><i className="fa fa fa-arrow-up" /></a>
