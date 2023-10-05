@@ -6,6 +6,7 @@ import sizeRouter from "./router/size.js"
 import colorRouter from "./router/color.js"
 import categoryRouter from "./router/category.js"
 import productRouter from "./router/product.js"
+import uploadRouter from "./router/upload.js"
 import connectDB from "../configs/database.js"
 dotenv.config()
 const app = express()
@@ -21,6 +22,8 @@ app.use("/api", sizeRouter)
 app.use("/api", colorRouter)
 app.use("/api", categoryRouter)
 app.use("/api", productRouter)
+app.use("/api", uploadRouter)
+
 
 app.listen(PORT, () => {
   console.log("Server running on port", PORT)
