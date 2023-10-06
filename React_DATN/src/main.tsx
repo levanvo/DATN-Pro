@@ -1,15 +1,17 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import { Provider } from 'react-redux'
+import React from "react"
+import ReactDOM from "react-dom/client"
+import App from "./App.tsx"
+import { Provider } from "react-redux"
 import { BrowserRouter } from "react-router-dom"
-import store from './Store/store.tsx'
+import persistor, { store } from "./App/store.tsx"
+import { PersistGate } from "redux-persist/integration/react"
 
-
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <PersistGate loading="null" persistor={persistor}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </PersistGate>
   </Provider>
 )

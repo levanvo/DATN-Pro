@@ -1,4 +1,4 @@
-import { GetAllUser, Signin, Signup } from "../../Api/Api_User";
+import { GetAllUser, Signin, Signup } from "../../Services/Api_User";
 
 
 export const OauthServiceSignin = async (info:any) => {
