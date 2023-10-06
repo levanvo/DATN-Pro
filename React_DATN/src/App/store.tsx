@@ -15,13 +15,16 @@ import {
   REGISTER,
 } from "redux-persist"
 import storage from "redux-persist/lib/storage"
+import { productApi } from "../Services/Products"
 
 const persistConfig = {
   key: "root",
   storage,
   whitelist: ["token,user"],
 }
-const rootReducer = combineReducers({})
+const rootReducer = combineReducers({
+  [productApi.reducerPath]: productApi.reducer,
+})
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
@@ -31,7 +34,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(),
+    }).concat(productApi.middleware),
 })
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof store.getState>
