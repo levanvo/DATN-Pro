@@ -39,12 +39,12 @@ export const readProduct = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    const { error } = productSchema.validate(req.body)
-    if (error) {
-      return res.status(400).json({
-        message: error.details[0].message,
-      })
-    }
+    // const { error } = productSchema.validate(req.body)
+    // if (error) {
+    //   return res.status(400).json({
+    //     message: error.details[0].message,
+    //   })
+    // }
     const newProduct = await new product(req.body).save()
     if (!newProduct) {
       return res.json({
@@ -60,9 +60,9 @@ export const createProduct = async (req, res) => {
       message: "Thêm sản phẩm thành công",
       data: newProduct,
     })
-  } catch {
+  } catch(error) {
     return res.status(404).json({
-      message: "Không tạo được sản phẩm mới",
+      message: error.message,
     })
   }
 }

@@ -12,6 +12,8 @@ import Login from "./Page/Login";
 import Products from "./Page/Products";
 import Blog_details from "./Page/Blog_details";
 import Register from "./Page/Register";
+import AdminLayout from "./Page/Layout/Layout_Admin";
+import AddProduct from "./Page/Admin/AddProduct";
 
 function App() {
   Config();
@@ -30,8 +32,12 @@ function App() {
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
 
-        <Route path="*" element={<NotFound />} />
       </Route>
+
+      <Route path="/admin" element= {<AdminLayout />}>
+          <Route path="product/add" element={<AddProduct />}/>
+      </Route>
+        <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
