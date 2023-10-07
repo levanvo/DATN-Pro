@@ -1255,7 +1255,7 @@ body {
 }
 
 .owl-theme .owl-controls .owl-buttons div {
-    background: rgba(0, 0, 0, 0) url("img/button-slider.png") no-repeat scroll 0 0;
+    background: rgba(0, 0, 0, 0) url("../../../img/button-slider.png") no-repeat scroll 0 0;
     display: inline-block;
     height: 29px;
     text-indent: -999999px;

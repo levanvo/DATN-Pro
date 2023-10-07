@@ -4,10 +4,12 @@ import {
     CalendarOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    UploadOutlined,
     AreaChartOutlined,
-    VideoCameraOutlined,
+    LeftOutlined
 } from '@ant-design/icons';
+import {MdOutlineCategory} from "react-icons/md"
+import {FaRegCommentAlt} from "react-icons/fa"
+import {ImBlogger2} from "react-icons/im"
 import { Layout, Menu, Button, theme } from 'antd';
 import { Link, Outlet } from 'react-router-dom';
 
@@ -23,33 +25,40 @@ const Layout_Admin = (props: Props) => {
 
 
 
-        <Layout className="h-screen mt-[-40px]">
+        <Layout className="h-screen">
             <Sider trigger={null} collapsible collapsed={collapsed}>
-                <div className="demo-logo-vertical" />
+                <div className="demo-logo-vertical mb-1" />
+                <a className='text-white hover:underline m-2' href={`/`}><LeftOutlined className='w-2'/>Back</a>
                 <Menu
+                    className='mt-1'
                     theme="dark"
                     mode="inline"
-                    // defaultSelectedKeys={['1']}
+                    defaultSelectedKeys={['1']}
                     items={[
                         {
                             key: '1',
                             icon: <AreaChartOutlined />,
-                            label: <Link to="/admin">Dashbroad</Link>,
+                            label: <Link to="/admin">Dashboard</Link>,
                         },
                         {
                             key: '2',
                             icon: <CalendarOutlined />,
-                            label: <Link to="/admin/products">Products</Link>,
+                            label: <Link to="/admin">Products</Link>,
                         },
                         {
                             key: '3',
-                            icon: <VideoCameraOutlined />,
-                            label: 'nav 2',
+                            icon: <MdOutlineCategory />,
+                            label: <Link to="/admin">Category</Link>,
                         },
                         {
                             key: '4',
-                            icon: <UploadOutlined />,
-                            label: 'nav 3',
+                            icon: <FaRegCommentAlt />,
+                            label: <Link to="/admin">Comment</Link>,
+                        },
+                        {
+                            key: '5',
+                            icon: <ImBlogger2 />,
+                            label: <Link to="/admin">Blog</Link>,
                         },
                     ]}
                 />

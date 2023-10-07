@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom"
 import "../../App.scss"
 import { CiUser } from "react-icons/Ci";
+import {ImCancelCircle} from "react-icons/im"
 import { getLocalStorage, setLocalStorage } from '../../Handle/Oauth-Services/LocalStorage';
 
 const Header = () => {
     const [getUser, setUser] = useState({});
     const [isSearchVisible, setSearchVisible] = useState(false);
 
-    const toggleSearch = () => {
-        setSearchVisible(!isSearchVisible);
-    };
+    
     // window.addEventListener('scroll', function () {
     //     let headerScroll:any = document.querySelector('.scroll_header');
     //     let header_shell:any = document.querySelector('.mainmenu-area');
@@ -40,7 +39,7 @@ const Header = () => {
     function CheckRoleUser() {
         return (
             <div className="relative ">
-                <img className='user-selector' src={getUser.imgUrl} alt="" />
+                <img className='user-selector cursor-pointer' src={getUser.imgUrl} alt="" />
                 <div className='slelector-user'>
                     <Link to={`/admin`}><p>Quản lí</p></Link>
                     <Link to={`/admin`}><p>Cài đặt</p></Link>
@@ -54,9 +53,6 @@ const Header = () => {
         window.location.reload();
         alert("Bạn đã đăng xuất.");
     };
-    // {checkRoleUser == "user" ? <ul><Link to={`/login`}><li className='cursor-pointer'>User</li></Link></ul> : ""}
-    // {checkRoleUser == "staff" ? <ul><Link to={`/login`}><li className='cursor-pointer'>Staff</li></Link></ul> : ""}
-    // {checkRoleUser == "admin" ? <ul><Link to={`/login`}><li className='cursor-pointer'>Admin</li></Link></ul> : ""}
     return (
         <div className="">
             <div className='_header-web'>
@@ -66,7 +62,7 @@ const Header = () => {
                             <div className="col-lg-3">
                                 <div className=" py-5 logo w-[90px] h-[50px]">
                                     <a href="/">
-                                        <img className=" image-banner" src="img/Logo DATN.png" />
+                                        <img className=" image-banner" src="../../../img/Logo DATN.png" />
                                     </a>
                                 </div>
                             </div>
@@ -84,16 +80,15 @@ const Header = () => {
                                         </nav>
                                     </div>
                                     {/* Thanh tìm kiếm */}
-                                    <div className="account-menu py-4">
-                                        <ul onClick={toggleSearch} id="search-icon">
-                                            <img src="img/search-icon.png" className='w-[45px] h-[30px]' alt="Tìm kiếm" />
-                                        </ul>
-
-                                        {isSearchVisible && (
-                                            <div id="search-box">
-                                                <input className='w-[200px] h-[25px]' type="text" placeholder="Nhập tìm kiếm" />
-                                            </div>
-                                        )}
+                                    <div className="account-menu py-4 relative">
+                                        <input type="checkbox" hidden id='search-webSite'/>
+                                        <label htmlFor="search-webSite"><img className='w-10 mt-2 active:scale-90 cursor-pointer' src="../../../img/search-main-web.png" alt="" /></label>
+                                        <form className='form-webSite' action="">
+                                            <label htmlFor="search-webSite" className=' float-right'><ImCancelCircle className="w-5 h-5 m-1 hover:rotate-90 duration-200 cursor-pointer"/></label>
+                                            <h1 className='text-center text-2xl mt-3 text-gray-500 font-bold'>Tìm Kiếm</h1>
+                                            <input type="text" placeholder=' Bạn đang tìm kiếm gì ?'/>
+                                        </form>
+                                        <label htmlFor="search-webSite" className='display-website-search'></label>
                                     </div>
                                     <div className="col-lg-2 col-md-3 py-3">
                                         <div className="dashboard">

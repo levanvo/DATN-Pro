@@ -1,7 +1,4 @@
-
 import React from 'react'
-
-
 import { Button, Checkbox, Form, Input, Select, Skeleton, message } from 'antd';
 import { useAddProductMutation } from '../../../Api/product';
 import { useNavigate } from "react-router-dom"

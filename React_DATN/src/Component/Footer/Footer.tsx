@@ -30,16 +30,15 @@ const Footer = () => {
                             <div className="">
                                 <p className="font-semibold text-lg mb-4 text-center ">Phương thức thanh toán</p>
                                 <div className="grid grid-cols-5 gap-2 ">
-                                    <img className="border border-black rounded-lg" src="img/logo-techcombank-inkythuatso-10-15-17-50.jpg" alt="" />
-                                    <img className="border  rounded-lg" src="/img/images.png" alt="" />
-                                    <img className="border  rounded-lg" src="/img/images (1).jpg" alt="" />
-                                    <img className="border  rounded-lg" src="/img/images.jpg" alt="" />
-                                    <img className="border  rounded-lg" src="/img/tải xuống.png" alt="" />
-                                    <img className="border  rounded-lg" src="/img/unnamed.png" alt="" />
+                                    <img className="border border-black rounded-lg" src="../../../img/agribank.png" alt="" />
+                                    <img className="border  rounded-lg" src="../../../img/teckcombank.jpg" alt="" />
+                                    <img className="border  rounded-lg" src="../../../img/imagesStar.jpg" alt="" />
+                                    <img className="border  rounded-lg" src="../../../img/momo.png" alt="" />
+                                    <img className="border  rounded-lg" src="../../../img/unnamed.png" alt="" />
                                 </div>
                                 <div className="contents">
                                     <p className="text-bold text-lg mb-3">Dịch vụ giao hàng</p>
-                                    <img className="bg-blue-400 border rounded-lg w-[200px]" src="img/freeship.png" alt="" />
+                                    <img className="bg-blue-400 border rounded-lg w-[200px]" src="../../../img/freeship.png" alt="" />
                                 </div>
                             </div>
                         </div>
