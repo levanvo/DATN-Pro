@@ -12,8 +12,8 @@ import Login from "./Page/Login";
 import Products from "./Page/Products";
 import Blog_details from "./Page/Blog_details";
 import Register from "./Page/Register";
-import AdminLayout from "./Page/Layout/Layout_Admin";
 import AddProduct from "./Page/Admin/AddProduct";
+import Layout_Admin from "./Page/Layout/Layout_Admin";
 
 function App() {
   Config();
@@ -31,10 +31,9 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
-
       </Route>
 
-      <Route path="/admin" element= {<AdminLayout />}>
+      <Route path="/admin" element= {<Layout_Admin />}>
           <Route path="product/add" element={<AddProduct />}/>
       </Route>
         <Route path="*" element={<NotFound />} />
