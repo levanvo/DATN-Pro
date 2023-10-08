@@ -1,16 +1,16 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { IProduct } from "../interfaces/product"
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { IProduct } from "../Models/interfaces";
 
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080/api",
     prepareHeaders(headers, api) {
-      const token = localStorage.getItem("token")
+      const token = localStorage.getItem("token");
       if (token) {
-        headers.set("authorization", token)
+        headers.set("authorization", token);
       }
-      return headers
+      return headers;
     },
   }),
   tagTypes: ["Product"],
@@ -47,7 +47,7 @@ export const productApi = createApi({
       invalidatesTags: ["Product"],
     }),
   }),
-})
+});
 
 export const {
   useGetProductsQuery,
@@ -55,4 +55,4 @@ export const {
   useCreateProductMutation,
   useRemoveProductMutation,
   useUpdateProductMutation,
-} = productApi
+} = productApi;

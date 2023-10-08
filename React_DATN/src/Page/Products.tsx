@@ -1,21 +1,21 @@
-import { useGetProductsQuery } from "../Services/Products"
-import { IProduct } from "../interfaces/product"
+import { useGetProductsQuery } from "../Services/Products";
+import { IProduct } from "../Models/interfaces";
 
 const Products = () => {
   const {
     data = [] as IProduct[],
     isLoading,
     error,
-  } = useGetProductsQuery(undefined)
+  } = useGetProductsQuery(undefined);
 
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
-    }).format(value)
+    }).format(value);
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error</div>
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error</div>;
   return (
     <div className="w-[90vw] mx-auto">
       <div className="product-banner">
@@ -237,7 +237,7 @@ const Products = () => {
                                 </div>
                               </div>
                             </div>
-                          )
+                          );
                         })}
                       </div>
                     </div>
@@ -276,7 +276,7 @@ const Products = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Products
+export default Products;

@@ -4,7 +4,7 @@ export interface IProduct {
   original_price: number
   price: number
   description?: string
-  imgUrl: string[],
+  imgUrl?: string[],
   categoryId?: string
   size_id?: string
   color_id?: string
@@ -13,4 +13,11 @@ export interface IProduct {
   inventory_number?: number
   discount_code_id?: string
   poinId?: string
+}
+
+
+export interface ICategory {
+  _id: number | string,
+  name: string,
+  imgUrl?: string
 }

@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import Layout_Web from './Page/Layout/Layout_Web';
+import Layout_Web from "./Page/Layout/Layout_Web";
 import Contact from "./Page/Contact";
 import Bill from "./Page/Bill";
 import Cart from "./Page/Cart";
@@ -12,14 +12,16 @@ import Login from "./Page/Login";
 import Products from "./Page/Products";
 import Blog_details from "./Page/Blog_details";
 import Register from "./Page/Register";
-import AddProduct from "./Page/Admin/AddProduct";
+import AddProduct from "./Page/Admin/Product/AddProduct";
 import Layout_Admin from "./Page/Layout/Layout_Admin";
+import ProductList from "./Page/Admin/Product/ProductList";
+import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
 
 function App() {
   Config();
   return (
     <Routes>
-      <Route path='/' element={<Layout_Web />}>
+      <Route path="/" element={<Layout_Web />}>
         <Route index element={<HomePage />} />
         <Route path="cart" element={<Cart />} />
         <Route path="products" element={<Products />} />
@@ -33,10 +35,12 @@ function App() {
         <Route path="blog" element={<Blog />} />
       </Route>
 
-      <Route path="/admin" element= {<Layout_Admin />}>
-          <Route path="product/add" element={<AddProduct />}/>
+      <Route path="/admin" element={<Layout_Admin />}>
+        <Route path="product/add" element={<AddProduct />} />
+        <Route path="product/list" element={<ProductList />} />
+        <Route path="product/:id/update" element={<UpdateProduct />} />
       </Route>
-        <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
@@ -45,7 +49,9 @@ function NotFound() {
   return (
     <div className="mt-56 text-center text-xl">
       <h1>Trang không tồn tại</h1>
-      <p>Xin lỗi, trang bạn tìm kiếm không tồn tại.(<a href="/">Quay lại</a>)</p>
+      <p>
+        Xin lỗi, trang bạn tìm kiếm không tồn tại.(<a href="/">Quay lại</a>)
+      </p>
     </div>
   );
 }
