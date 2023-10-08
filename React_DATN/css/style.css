@@ -2710,6 +2710,7 @@ ul.address li span {
 }
 
 .qtybutton {
+    display: none;
     background-color: #ccc;
     color: #000;
     cursor: pointer;
