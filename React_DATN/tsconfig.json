@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "../../example_you_can_remove.tsx"],
+  "include": ["src", "../../example_you_can_remove.tsx", "../App", "../Store"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
