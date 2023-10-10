@@ -1,11 +1,13 @@
-
 import { IProduct } from "../Models/interfaces";
 import { useGetAllProductQuery } from "../Services/Api_Product";
 
 const Products = () => {
-  const {data: productData,isLoading,error} = useGetAllProductQuery();
-  console.log(productData);
-  
+  const {
+    data:producData,
+    isLoading,
+    error,
+  } = useGetAllProductQuery();
+
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -155,7 +157,7 @@ const Products = () => {
                       id="gird"
                     >
                       <div className="row">
-                        {productData?.map((product: IProduct) => {
+                        {producData?.map((product: IProduct) => {
                           return (
                             <div
                               className="col-lg-4 col-md-6"
@@ -170,7 +172,7 @@ const Products = () => {
                                     <img
                                       src={product.imgUrl[0]}
                                       alt=""
-                                      className="primary-img"
+                                      className="primary-img h-[300px] w-[250px]"
                                     />
                                     <img
                                       src="img/product/26.png"
