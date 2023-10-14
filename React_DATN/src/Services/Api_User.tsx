@@ -1,27 +1,27 @@
-import axios from "axios"
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { IProduct, IUser } from "../Models/interfaces";
+import { pause } from "../utils/pause";
 
-const instanceUser=axios.create({
-    baseURL:`http://localhost:8080/api/`
-})
+const userApi = createApi({
+  reducerPath: "user",
+  baseQuery: fetchBaseQuery({
+    baseUrl: `http://localhost:8080`,
+  }),
+  endpoints: (builder) => ({
+    getAllUser: builder.query<IUser[], void>({
+      query: () => `/api/allUser`,
+    }),
 
-export const Signup=(data:any)=>{
-    return instanceUser.post(`signup`,data);
-}
-export const Signin=(data:any)=>{
-    return instanceUser.post(`signin`,data);
-}
-export const VerifyCode=(data:any)=>{
-    return instanceUser.post(`verification-codes`,data);
-}
-export const ForgotPassword=(data:any)=>{
-    return instanceUser.post(`forgot-password`,data);
-}
-export const ChangePassword=(data:any)=>{
-    return instanceUser.post(`change-password`,data);
-}
-export const GetAllUser=()=>{
-    return instanceUser.get(`allUser`);
-}
-export const GetOneUser=(idUser:any)=>{
-    return instanceUser.get(`oneUser/${idUser}`);
-}
+    sigin: builder.mutation<IUser, IUser>({
+      query: (user) => ({
+        url: `/api/signin`,
+        method: "POST",
+        body: user,
+      }),
+
+    })
+  }),
+});
+
+export const { useGetAllUserQuery, useSiginMutation } = userApi;
+export default userApi;
