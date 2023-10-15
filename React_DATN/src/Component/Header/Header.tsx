@@ -1,12 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom"
-
+import jwt_decode from 'jwt-decode'; 
 import {ImCancelCircle} from "react-icons/im"
 import {UserOutlined} from "@ant-design/icons"
-
+import {message} from "antd"
+interface User {
+  username: string;
+  // Các thuộc tính khác của người dùng (nếu có)
+}
 const Header = () => {
+  const [messageApi,contexHolder] = message.useMessage()
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  let user: User | null = null; // Khởi tạo user là null
+  const userString = localStorage.getItem("user");
+
+  if (userString) {
+    user = JSON.parse(userString);
+  }
+
+  const handleLogout = () => {
+    setIsLoggingOut(true); 
+   
+    messageApi.open({
+      type: "success",
+      content: "Đăng xuất tài khoản thành công"
+    })
+    setTimeout(() => {
+       // Xóa token và user khỏi localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setIsLoggingOut(false); // Tắt loading sau khi hoàn thành logout
+    }, 1500);
+  };
+  
     return (
         <header>
+          {contexHolder}
         <div className="top-link">
           <div className="container">
             <div className="row">
@@ -36,9 +65,16 @@ const Header = () => {
               </div>
               <div className="col-lg-2 col-md-3 position-relative">
                 <div className="dashboard">
-                  <div className="account-menu">
+                  {user ? (<div className="account-menu">
+                    <span>{user.username}</span>
+                    <button onClick={handleLogout}>Logout</button>
+                  </div>) : (
+                    <div className="account-menu">
                     <Link to={`/login`}><UserOutlined style={{fontSize:"20px",color: "black"}}/></Link>
                   </div>
+                  )
+                  }
+                  
                   <div className="cart-menu">
                     <ul>
                       <li>

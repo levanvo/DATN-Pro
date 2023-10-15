@@ -41,9 +41,10 @@ export const get = async (req, res) => {
         message: "Không tồn tại danh mục bạn đang tìm"
       })
     }
+    const product = await Product.find({ categoryId: req.params.id })
     return res.status(200).json({
       message: "Lấy Category thành công!",
-      ...categorys.toObject()
+      ...categorys.toObject(),
     });
   } catch (error) {
     return res.status(400).json({
