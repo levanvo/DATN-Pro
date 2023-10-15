@@ -26,19 +26,6 @@ const Header = () => {
                         </li>
                       </ul>
                     </li>
-                    <li className="language">
-                      <a href="#">
-                        English <i className="fa fa-angle-down" />{" "}
-                      </a>
-                      <ul className="sub-site-option">
-                        <li>
-                          <a href="#">English</a>
-                        </li>
-                        <li>
-                          <a href="#">English2</a>
-                        </li>
-                      </ul>
-                    </li>
                   </ul>
                 </div>
                 <div className="call-support">
@@ -50,33 +37,7 @@ const Header = () => {
               <div className="col-lg-2 col-md-3 position-relative">
                 <div className="dashboard">
                   <div className="account-menu">
-                    <ul>
-                      <li>
-                        <a href="#">
-                          <i className="fa fa-bars" />
-                        </a>
-                        <ul>
-                          <li>
-                            <a href="my-account.html">my account</a>
-                          </li>
-                          <li>
-                            <a href="wishlist.html">my wishlist</a>
-                          </li>
-                          <li>
-                            <a href="cart.html">my cart</a>
-                          </li>
-                          <li>
-                            <a href="checkout.html">Checkout</a>
-                          </li>
-                          <li>
-                            <a href="blog.html">Blog</a>
-                          </li>
-                          <li>
-                            <a href="#">Log in</a>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
+                    <Link to={`/login`}><UserOutlined style={{fontSize:"20px",color: "black"}}/></Link>
                   </div>
                   <div className="cart-menu">
                     <ul>
@@ -140,17 +101,15 @@ const Header = () => {
                   <nav>
                     <ul>
                       <li>
-                        <a href="index.html">Home</a>
-                        <div className="sub-menu">
-                          <span>
-                            <a href="index.html">Home version 1</a>
-                          </span>
-                          <span>
-                            <a href="index-2.html">Home version 2</a>
-                          </span>
-                        </div>
+                        <a href="/">Home</a>
+                    
                       </li>
-                      <li className="mega-women">
+
+                      <li>
+                        <a href="/products">Sản phẩm</a>
+                      </li>
+
+                      {/* <li className="mega-women">
                         <a href="shop.html">Women</a>
                         <div className="mega-menu women">
                           <div className="part-1">
@@ -189,8 +148,9 @@ const Header = () => {
                             </a>
                           </div>
                         </div>
-                      </li>
-                      <li className="mega-men">
+                      </li> */}
+
+                      {/* <li className="mega-men">
                         <a href="shop.html">Men</a>
                         <div className="mega-menu men">
                           <span>
@@ -209,27 +169,10 @@ const Header = () => {
                             <a href="#">Furniture</a>
                           </span>
                         </div>
-                      </li>
-                      <li className="mega-footwear">
-                        <a href="shop.html">Footwear</a>
-                        <div className="mega-menu footwear">
-                          <span>
-                            <a href="#">Footwear Man</a>
-                            <a href="#">gifts</a>
-                          </span>
-                          <span>
-                            <a href="#">Footwear Womens</a>
-                            <a href="#">boots</a>
-                          </span>
-                        </div>
-                      </li>
+                      </li> */}
+                 
                       <li className="mega-jewellery">
                         <a href="shop.html">Jewellery</a>
-                        <div className="mega-menu jewellery">
-                          <span>
-                            <a href="#">Rings</a>
-                          </span>
-                        </div>
                       </li>
                       <li>
                         <a href="shop.html">accessories</a>

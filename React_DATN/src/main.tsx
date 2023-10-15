@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { store } from "./store.ts";
 import "../css/style.css";
 import $ from 'jquery';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../css/bootstrap.min.css';
 import "../css/detail.css";
 import "../css/animate.css"
 import "../css/bill.css"
@@ -20,8 +20,12 @@ import "../css/owl.theme.css"
 import "../css/owl.transitions.css"
 import "../css/responsive.css"
 import "./App.scss"
-// import "../lib/js/jquery.nivo.slider.js"
-// import "../js/bootstrap.min.js"
+
+// show banner
+import "../lib/css/nivo-slider.css"
+import "../lib/css/preview.css"
+
+
 
 
 
