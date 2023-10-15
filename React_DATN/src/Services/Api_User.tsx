@@ -4,12 +4,18 @@ import { pause } from "../utils/pause";
 
 const userApi = createApi({
   reducerPath: "user",
+  tagTypes: ["User"],
   baseQuery: fetchBaseQuery({
     baseUrl: `http://localhost:8080`,
+    fetchFn: async (...args) => (
+      await pause(1000),
+      fetch(...args)
+    )
   }),
   endpoints: (builder) => ({
     getAllUser: builder.query<IUser[], void>({
       query: () => `/api/allUser`,
+      providesTags: ["User"]
     }),
 
     sigin: builder.mutation<IUser, IUser>({
@@ -18,7 +24,7 @@ const userApi = createApi({
         method: "POST",
         body: user,
       }),
-
+      invalidatesTags: ["User"]
     })
   }),
 });

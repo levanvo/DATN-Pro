@@ -1,9 +1,10 @@
-import product from "../models/product.js"
+import Product from "../models/product.js"
 import Category from "../models/category.js"
 import { productSchema } from "../schema/product.js"
 import Size from "../models/size.js"
 import Color from "../models/color.js"
 import mongoose from "mongoose"
+
 
 export const getProduct = async (req, res) => {
   try {
@@ -18,7 +19,7 @@ export const getProduct = async (req, res) => {
 
 export const readProduct = async (req, res) => {
   try {
-    const data = await product
+    const data = await Product
       .findById({ _id: req.params.id })
       .populate(["categoryId", "size_id", "color_id"])
       .exec()
@@ -45,7 +46,7 @@ export const createProduct = async (req, res) => {
     //     message: error.details[0].message,
     //   })
     // }
-    const newProduct = await new product(req.body).save()
+    const newProduct = await Product.create(req.body)
     if (!newProduct) {
       return res.json({
         message: "Không thêm sản phẩm",
