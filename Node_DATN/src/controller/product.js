@@ -8,7 +8,7 @@ import mongoose from "mongoose"
 
 export const getProduct = async (req, res) => {
   try {
-    const data = await product.find()
+    const data = await Product.find()
     return res.status(200).json(data)
   } catch (error) {
     return res.status(404).json({
@@ -77,7 +77,7 @@ export const removeProduct = async (req, res) => {
       })
     }
 
-    const data = await product.findByIdAndRemove({ _id: req.params.id }).exec()
+    const data = await Product.findByIdAndRemove({ _id: req.params.id }).exec()
     if(!data){
       return res.status(400).json({
         message: "Sản phẩm không tồn tại trong database"
@@ -106,7 +106,7 @@ export const updateProduct = async (req, res) => {
       })
     }
 
-    const updateData = await product
+    const updateData = await Product
       .findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
       .exec()
 
