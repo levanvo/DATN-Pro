@@ -22,10 +22,10 @@ const Featured_products = () => {
                                         <span>new</span>
                                     </div>
                                     <div className="product-img">
-                                        <a href="single-product.html">
+                                        <div>
                                             <img src="img/product/1.png" className="primary-img" />
                                             <img src="img/product/2.png" className="secondary-img" />
-                                        </a>
+                                        </div>
                                     </div>
                                     <div className="product-name">
                                         <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>
@@ -57,10 +57,10 @@ const Featured_products = () => {
                                         <span>sale</span>
                                     </div>
                                     <div className="product-img">
-                                        <a href="single-product.html">
+                                        <div>
                                             <img src="img/product/7.png" className="primary-img" />
                                             <img src="img/product/8.png" className="secondary-img" />
-                                        </a>
+                                        </div>
                                     </div>
                                     <div className="product-name">
                                         <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>
@@ -92,10 +92,10 @@ const Featured_products = () => {
                                         <span>sale</span>
                                     </div>
                                     <div className="product-img">
-                                        <a href="single-product.html">
+                                        <div>
                                             <img src="img/product/3.png" className="primary-img" />
                                             <img src="img/product/4.png" className="secondary-img" />
-                                        </a>
+                                        </div>
                                     </div>
                                     <div className="product-name">
                                         <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>
@@ -127,10 +127,10 @@ const Featured_products = () => {
                                         <span>sale</span>
                                     </div>
                                     <div className="product-img">
-                                        <a href="single-product.html">
+                                        <div>
                                             <img src="img/product/9.png" className="primary-img" />
                                             <img src="img/product/10.png" className="secondary-img" />
-                                        </a>
+                                        </div>
                                     </div>
                                     <div className="product-name">
                                         <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>
@@ -159,10 +159,10 @@ const Featured_products = () => {
                             <div className="col">
                                 <div className="single-product">
                                     <div className="product-img">
-                                        <a href="single-product.html">
+                                        <div>
                                             <img src="img/product/5.png" className="primary-img" />
                                             <img src="img/product/6.png" className="secondary-img" />
-                                        </a>
+                                        </div>
                                     </div>
                                     <div className="product-name">
                                         <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>
@@ -194,10 +194,10 @@ const Featured_products = () => {
                                         <span>new</span>
                                     </div>
                                     <div className="product-img">
-                                        <a href="single-product.html">
+                                        <div>
                                             <img src="img/product/3.png" className="primary-img" />
                                             <img src="img/product/4.png" className="secondary-img" />
-                                        </a>
+                                        </div>
                                     </div>
                                     <div className="product-name">
                                         <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>
@@ -229,10 +229,10 @@ const Featured_products = () => {
                                         <span>sale</span>
                                     </div>
                                     <div className="product-img">
-                                        <a href="single-product.html">
+                                        <div>
                                             <img src="img/product/19.png" className="primary-img" />
                                             <img src="img/product/20.png" className="secondary-img" />
-                                        </a>
+                                        </div>
                                     </div>
                                     <div className="product-name">
                                         <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>
@@ -261,10 +261,10 @@ const Featured_products = () => {
                             <div className="col">
                                 <div className="single-product">
                                     <div className="product-img">
-                                        <a href="single-product.html">
+                                        <div>
                                             <img src="img/product/13.png" className="primary-img" />
                                             <img src="img/product/14.png" className="secondary-img" />
-                                        </a>
+                                        </div>
                                     </div>
                                     <div className="product-name">
                                         <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>

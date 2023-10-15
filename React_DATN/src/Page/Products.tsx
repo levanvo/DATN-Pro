@@ -7,6 +7,7 @@ const Products = () => {
     isLoading,
     error,
   } = useGetAllProductQuery();
+  
 
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
@@ -159,83 +160,78 @@ const Products = () => {
                       <div className="row">
                         {producData?.map((product: IProduct) => {
                           return (
+                            
                             <div
                               className="col-lg-4 col-md-6"
                               key={product._id}
                             >
-                              <div className="single-product">
-                                <div className="level-pro-new">
-                                  <span>new</span>
-                                </div>
-                                <div className="product-img">
-                                  <a href="single-product.html">
-                                    <img
-                                      src={product.imgUrl[0]}
-                                      alt=""
-                                      className="primary-img h-[300px] w-[250px]"
-                                    />
-                                    <img
-                                      src="img/product/26.png"
-                                      alt=""
-                                      className="secondary-img"
-                                    />
-                                  </a>
-                                </div>
-                                <div className="actions">
-                                  <button
-                                    type="submit"
-                                    className="cart-btn"
-                                    title="Add to cart"
-                                  >
-                                    add to cart
-                                  </button>
-                                  <ul className="add-to-link">
-                                    <li>
-                                      <a
-                                        className="modal-view"
-                                        data-target="#productModal"
-                                        data-bs-toggle="modal"
-                                        href="#"
-                                      >
-                                        {" "}
-                                        <i className="fa fa-search"></i>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="#">
-                                        {" "}
-                                        <i className="fa fa-heart-o"></i>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a href="#">
-                                        {" "}
-                                        <i className="fa fa-refresh"></i>
-                                      </a>
-                                    </li>
-                                  </ul>
-                                </div>
-                                <div className="product-price">
-                                  <div className="product-name">
-                                    <a
-                                      href="single-product.html"
-                                      title="Fusce aliquam"
-                                    >
-                                      {product.name}
-                                    </a>
+                              <a href={`/product/${product._id}`}>
+
+                                <div className="single-product">
+                                  <div className="level-pro-new">
+                                    <span>new</span>
                                   </div>
-                                  <div className="price-rating">
-                                    <span>{numberFormat(product.price)}</span>
-                                    <div className="ratings">
-                                      <i className="fa fa-star"></i>
-                                      <i className="fa fa-star"></i>
-                                      <i className="fa fa-star"></i>
-                                      <i className="fa fa-star"></i>
-                                      <i className="fa fa-star-half-o"></i>
+                                  <div className="product-img">
+                                    <div>
+                                      <img src={product.imgUrl[0]}alt="" className="primary-img h-[300px] w-[250px]" />
+                                      <img
+                                        src={product.imgUrl[1]}
+                                        alt=""
+                                        className="secondary-img"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="actions">
+                                    <button
+                                      type="submit"
+                                      className="cart-btn"
+                                      title="Add to cart"
+                                    >
+                                      add to cart
+                                    </button>
+                                    <ul className="add-to-link">
+                                      <li>
+                                        <a
+                                          className="modal-view"
+                                          data-target="#productModal"
+                                          data-bs-toggle="modal"
+                                          href="#"
+                                        >
+                                          {" "}
+                                          <i className="fa fa-search"></i>
+                                        </a>
+                                      </li>
+                                      <li>
+                                        <a href="#">
+                                          {" "}
+                                          <i className="fa fa-heart-o"></i>
+                                        </a>
+                                      </li>
+                                      <li>
+                                        <a href="#">
+                                          {" "}
+                                          <i className="fa fa-refresh"></i>
+                                        </a>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  <div className="product-price">
+                                    <div className="product-name">
+                                      <h1>{product.name}</h1>
+                                    </div>
+                                    <div className="price-rating">
+                                      <span>{numberFormat(product.price)}</span>
+                                      <div className="ratings">
+                                        <i className="fa fa-star"></i>
+                                        <i className="fa fa-star"></i>
+                                        <i className="fa fa-star"></i>
+                                        <i className="fa fa-star"></i>
+                                        <i className="fa fa-star-half-o"></i>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
+                              </a>
                             </div>
                           );
                         })}

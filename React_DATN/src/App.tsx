@@ -16,8 +16,11 @@ import AddProduct from "./Page/Admin/Product/AddProduct";
 import Layout_Admin from "./Page/Layout/Layout_Admin";
 import ProductList from "./Page/Admin/Product/ProductList";
 import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
+import {useState} from "react"
+import AdminLogin from "./Page/Login/AdminLogin";
 
 function App() {
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   Config();
   return (
     <Routes>
@@ -27,7 +30,7 @@ function App() {
         <Route path="products" element={<Products />} />
         <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
-        <Route path="product-detail" element={<ProductDetail />} />
+        <Route path="product/:id" element={<ProductDetail />} />
         <Route path="checkout" element={<Checkout />} />
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
