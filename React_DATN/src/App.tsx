@@ -1,24 +1,27 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import Layout_Web from "./Page/Layout/Layout_Web";
-import Contact from "./Page/Contact";
-import Bill from "./Page/Bill";
-import Cart from "./Page/Cart";
-import ProductDetail from "./Page/ProductDetail";
-import Checkout from "./Page/Checkout";
-import Config from "./Page/Layout/Config";
-import HomePage from "./Page";
-import Blog from "./Page/Blog";
-import Login from "./Page/Login";
-import Products from "./Page/Products";
-import Blog_details from "./Page/Blog_details";
-import Register from "./Page/Register";
-import AddProduct from "./Page/Admin/Product/AddProduct";
-import Layout_Admin from "./Page/Layout/Layout_Admin";
-import ProductList from "./Page/Admin/Product/ProductList";
-import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
+import { Routes, Route } from "react-router-dom"
+import Layout_Web from "./Page/Layout/Layout_Web"
+import Contact from "./Page/Contact"
+import Bill from "./Page/Bill"
+import Cart from "./Page/Cart"
+import ProductDetail from "./Page/ProductDetail"
+import Checkout from "./Page/Checkout"
+import Config from "./Page/Layout/Config"
+import HomePage from "./Page"
+import Blog from "./Page/Blog"
+import Login from "./Page/Login"
+import Products from "./Page/Products"
+import Blog_details from "./Page/Blog_details"
+import Register from "./Page/Register"
+import AddProduct from "./Page/Admin/Product/AddProduct"
+import Layout_Admin from "./Page/Layout/Layout_Admin"
+import ProductList from "./Page/Admin/Product/ProductList"
+import UpdateProduct from "./Page/Admin/Product/UpdateProduct"
+import ListColor from "./Page/Admin/colorProduct/listColor"
+import CreateColor from "./Page/Admin/colorProduct/createColor"
+import UpdateColor from "./Page/Admin/colorProduct/updateProduct"
 
 function App() {
-  Config();
+  Config()
   return (
     <Routes>
       <Route path="/" element={<Layout_Web />}>
@@ -39,10 +42,13 @@ function App() {
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
+        <Route path="colors" element={<ListColor />} />
+        <Route path="color/create" element={<CreateColor />} />
+        <Route path="color/:id/update" element={<UpdateColor />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
-  );
+  )
 }
 
 function NotFound() {
@@ -53,7 +59,7 @@ function NotFound() {
         Xin lỗi, trang bạn tìm kiếm không tồn tại.(<a href="/">Quay lại</a>)
       </p>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
