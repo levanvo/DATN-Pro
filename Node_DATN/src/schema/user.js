@@ -38,3 +38,22 @@ export const signinSchema = joi.object({
     })
 })
 
+
+export const changePasswordSchema = joi.object({
+    email: joi.string().email().required().messages({
+        "string.empty" : "Email không được để trống",
+        "any.required" : "Trường email là bắt buộc",
+        "string.email" : "Email không đúng định dạng"
+    }),
+    password: joi.string().min(6).required().messages({
+        "string.empty" : "Password không được để trống",
+        "any.required" : "Trường password là bắt buộc",
+        "string.min" : "Password tối thiểu {#limit} ký tự"
+    }),
+    newPassword: joi.string().min(6).required().messages({
+        "string.empty" : "Mật khẩu mới không được để trống",
+        "any.required" : "Trường mật khẩu mới là bắt buộc",
+        "string.min" : "Mật khẩu mới tối thiểu {#limit} ký tự"
+    }),
+})
+

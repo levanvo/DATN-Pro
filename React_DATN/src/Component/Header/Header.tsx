@@ -1,26 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom"
-import jwt_decode from 'jwt-decode'; 
+import { Link, useNavigate } from "react-router-dom"
 import {ImCancelCircle} from "react-icons/im"
 import {UserOutlined} from "@ant-design/icons"
-import {message} from "antd"
+import {message, Modal} from "antd"
 interface User {
   username: string;
-  // Các thuộc tính khác của người dùng (nếu có)
 }
 const Header = () => {
+  const navigate = useNavigate()
   const [messageApi,contexHolder] = message.useMessage()
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [modal,setModal] = useState(false)
   let user: User | null = null; // Khởi tạo user là null
   const userString = localStorage.getItem("user");
 
-  if (userString) {
-    user = JSON.parse(userString);
+
+  const startLogoutTimer = () => {
+    setTimeout(() => {
+      handleLogout(); // Gọi hàm logout tự động sau 30 phút
+    }, 60 * 60 * 1000); // 1h (60 * 60 * 1000 ms)
   }
 
+
+  if (userString) {
+    user = JSON.parse(userString);
+    startLogoutTimer();
+  }
+
+  const showLogoutModal = () => {
+    setModal(true);
+  };
+
   const handleLogout = () => {
-    setIsLoggingOut(true); 
-   
     messageApi.open({
       type: "success",
       content: "Đăng xuất tài khoản thành công"
@@ -29,7 +39,9 @@ const Header = () => {
        // Xóa token và user khỏi localStorage
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      setIsLoggingOut(false); // Tắt loading sau khi hoàn thành logout
+      setModal(false) // Close the Modal
+      window.location.reload();
+      navigate("/")
     }, 1500);
   };
   
@@ -67,7 +79,7 @@ const Header = () => {
                 <div className="dashboard">
                   {user ? (<div className="account-menu">
                     <span>{user.username}</span>
-                    <button onClick={handleLogout}>Logout</button>
+                    <button onClick={showLogoutModal}>Logout</button>
                   </div>) : (
                     <div className="account-menu">
                     <Link to={`/login`}><UserOutlined style={{fontSize:"20px",color: "black"}}/></Link>
@@ -470,6 +482,15 @@ const Header = () => {
             </div>
           </div>
         </div>
+
+        <Modal
+        title="Xác nhận đăng xuất"
+        visible={modal}
+        onOk={handleLogout}
+        onCancel={() => setModal(false)}
+      >
+        Bạn có chắc chắn muốn đăng xuất không?
+      </Modal>
       </header>
       
     )

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IProduct, IUser } from "../Models/interfaces";
+import { IUser } from "../Models/interfaces";
 import { pause } from "../utils/pause";
 
 const userApi = createApi({
@@ -25,9 +25,44 @@ const userApi = createApi({
         body: user,
       }),
       invalidatesTags: ["User"]
+    }),
+
+    signup: builder.mutation<IUser, IUser>({
+      query: (user) => ({
+        url: `/api/signup`,
+        method: "POST",
+        body: user
+      }),
+      invalidatesTags: ["User"]
+    }),
+
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: `/api/forgot-password`,
+        method: "POST",
+        body: data
+      }),
+      invalidatesTags: ["User"]
+    }),
+
+    verificationCodes: builder.mutation({
+      query: (code) => ({
+        url: "/api/verification-codes",
+        method: "POST",
+        body: code
+      }),
+      invalidatesTags: ["User"]
+    }),
+
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: "/api/change-password",
+        method: "POST",
+        body: data
+      })
     })
   }),
 });
 
-export const { useGetAllUserQuery, useSiginMutation } = userApi;
+export const { useGetAllUserQuery, useSiginMutation, useSignupMutation, useForgotPasswordMutation, useVerificationCodesMutation, useChangePasswordMutation } = userApi;
 export default userApi;

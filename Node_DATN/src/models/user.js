@@ -29,9 +29,6 @@ const useSchema = new mongoose.Schema({
     imgUrl: {
         type: String
     },
-    // code: {
-    //     type: String
-    // },
     role: {
         type: String,
         default: 'member'
