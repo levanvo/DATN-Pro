@@ -26,8 +26,8 @@ export interface IUser {
   username: string
   email?: string
   password: string
+  confirmPassword: string
 }
-
 export interface IColor {
   _id: string
   name: string

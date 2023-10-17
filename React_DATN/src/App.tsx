@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import Layout_Web from "./Page/Layout/Layout_Web"
 import Contact from "./Page/Contact"
 import Bill from "./Page/Bill"
@@ -17,10 +17,13 @@ import Layout_Admin from "./Page/Layout/Layout_Admin"
 import ProductList from "./Page/Admin/Product/ProductList"
 import UpdateProduct from "./Page/Admin/Product/UpdateProduct"
 import { useState } from "react"
-import AdminLogin from "./Page/Login/AdminLogin"
 import ListColor from "./Page/Admin/colorProduct/listColor"
 import CreateColor from "./Page/Admin/colorProduct/createColor"
 import UpdateColor from "./Page/Admin/colorProduct/updateColor"
+import AdminLogin from "./Page/Login/AdminLogin"
+import ForgotPassword from "./Page/ForgotPassword"
+import VerificationCodes from "./Page/VerificationCodes"
+import ChangePassword from "./Page/ChangePassword"
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
@@ -37,6 +40,9 @@ function App() {
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="checkout" element={<Checkout />} />
         <Route path="register" element={<Register />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="verification-codes" element={<VerificationCodes />} />
+        <Route path="change-password" element={<ChangePassword />} />
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
