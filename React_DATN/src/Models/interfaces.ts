@@ -28,3 +28,8 @@ export interface IUser {
   email?: string,
   password: string
 }
+
+export interface ISize {
+  _id?: number | string,
+  name: string
+}

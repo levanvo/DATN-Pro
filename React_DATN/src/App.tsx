@@ -18,6 +18,9 @@ import ProductList from "./Page/Admin/Product/ProductList";
 import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
 import {useState} from "react"
 import AdminLogin from "./Page/Login/AdminLogin";
+import SizeList from "./Page/Admin/Size/SizeList";
+import AdminSizeAdd from "./Page/Admin/Size/AddSize";
+import AdminSizeUpdate from "./Page/Admin/Size/UpdateSize";
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -42,6 +45,9 @@ function App() {
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
+        <Route path="size/list" element={<SizeList />} />
+        <Route path="size/add" element={<AdminSizeAdd />} />
+        <Route path="size/:id/update" element={<AdminSizeUpdate />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
