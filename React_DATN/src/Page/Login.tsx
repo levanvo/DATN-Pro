@@ -1,125 +1,102 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
-import { Button, Form, Input, message } from 'antd';
-import { OauthServiceSignin } from '../Handle/Oauth-Services/OauthUser';
-import { setLocalStorage } from '../Handle/Oauth-Services/LocalStorage';
+import React,{useState,useEffect} from 'react';
+import { Button, Checkbox, Form, Input,message } from 'antd';
+import { useSiginMutation } from '../Services/Api_User';
+import { IUser } from '../Models/interfaces';
+import Loading from '../Component/Loading';
+
+
 
 const Login = () => {
-    const [getDataUser, setDataUser] = useState({});
-    const LoginForm = async (values) => {
-        OauthServiceSignin(values)
-            .then((data) => {
-                setDataUser(data);
-                setLocalStorage("shoes.dataUser",data.dataUser);
-                window.location.href = "/";
-                alert("Chào mừng đến với Shop-Sneaker !");
-            })
-            .catch((error) => {
-                const showError = error.response.data.message
-                alert(showError);
-            });
-        const checkDataUser = Object.keys(getDataUser.dataUser).length === 0;
-        console.log(getDataUser.dataUser);
-        // console.log(checkDataUser);
+    const [sigin, {error}] = useSiginMutation()
+    const [isLoadingSeen,setIsLoadingSeen] = useState(false)
+    const [messageApi,contexHolder] = message.useMessage()
+    const onFinish = async (values: any) => {
+        setIsLoadingSeen(true); // Set loading to true initially
+        try {
+            const { data }: any = await sigin(values);
+            localStorage.setItem("token", `"${data.accessToken}"`);
+           localStorage.setItem("user", JSON.stringify(data.user))
+           
+            
+            messageApi.open({
+                type: "success",
+                content: "Đăng nhập thành công"
+            }); 
+        } catch (error) {
+        }       
+        setIsLoadingSeen(false); // Set loading to false after a successful login attempt
     };
-
-    return (
-        <div className='w-[90vw] mx-auto'>
-            <div className="shopping-cart">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="location">
-                                <ul>
-                                    <li><a href="index.html" title="go to homepage">Home<span>/</span></a></li>
-                                    <li><strong>Login page</strong></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    
+      const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
+      };
+      useEffect(() => {
+        if (error) {
+            if("data" in error){
+                const errorData = error.data as { message: string };
+                messageApi.open({
+                    type: "error",
+                    content: errorData?.message
+                })
+            }
+        }
+    }, [error]);
+return (
+   <div>
+    {contexHolder}
+    {isLoadingSeen && <Loading />}
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',}}>
+        <Form
+            name="basic"
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 17 }}
+            style={{ width: "800px", border: '1px solid #ccc', borderRadius: '20px', paddingTop: 20,paddingLeft: -30,background:"#ebebeb"}}
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+        >
+            <Form.Item style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div>
+                    <h1>Login</h1>
             </div>
-            <div className="login-area">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-6 offset-lg-3 text-center">
-                            <div className="login">
-                                <div className="login-form-container">
-                                    <div className="login-text">
-                                        <h2>login</h2>
-                                        <span>Please login using account detail bellow.</span>
-                                    </div>
-                                    <div className="login-form">
-                                        <Form
-                                            name="basic"
-                                            labelCol={{
-                                                span: 6,
-                                            }}
-                                            wrapperCol={{
-                                                span: 16,
-                                            }}
-                                            style={{
-                                                maxWidth: 600,
-                                            }}
-                                            initialValues={{
-                                                remember: true,
-                                            }}
-                                            onFinish={LoginForm}
-                                            autoComplete="off"
-                                        >
-                                            <Form.Item
-                                                label="Email"
-                                                name="email"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message: 'Please input your email!',
-                                                    },
-                                                ]}
-                                            >
-                                                <Input type='email' />
-                                            </Form.Item>
+            </Form.Item>
 
-                                            <Form.Item
-                                                label="Password"
-                                                name="password"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message: 'Please input your password!',
-                                                    },
-                                                ]}
-                                            >
-                                                <Input type='password' />
-                                            </Form.Item>
+                    <h5 style={{marginTop:-30,textAlign:"center",marginBottom:60}}>Please login using account detail bellow.</h5>
 
-                                            <div className="flex justify-between">
-                                                <div className="">
-                                                    <input type="checkbox" id="remember" />
-                                                    <label htmlFor="remember">Remember me</label>
-                                                </div>
-                                                <a href="#">Forgot Password?</a>
-                                            </div>
-                                            <Form.Item
-                                                wrapperCol={{
-                                                    offset: 8,
-                                                    span: 16,
-                                                }}
-                                            >
-                                                <Button htmlType="submit" className='w-36'>Login</Button>
-                                            </Form.Item>
-                                        </Form>
-                                    </div>
-                                    <p className='float-right'>Are you not an account ? <Link className='text-green-600' to={`/register`}>Register</Link> now !</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-    )
-}
+            <Form.Item 
+                label={<span style={{ color: '#2b2b2b' }}>Tên đăng nhập</span>}
+                name="email"
+                style={{ color: 'lightgray' }}
+                rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+                <Input style={{height: 40,width:500}}/>
+            </Form.Item>
 
-export default Login
+            <Form.Item
+                label="Mật khẩu"
+                name="password"
+                
+                rules={[{ required: true, message: 'Please input your password!' }]}
+            >
+                <Input.Password style={{height: 40,width:500}}/>
+            </Form.Item>
+
+            <Form.Item valuePropName="checked" wrapperCol={{ offset: 6, span: 17 }}>
+                <Checkbox>Remember me</Checkbox>
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 6, span: 11 }}>
+                <Button type="primary" htmlType="submit" style={{ width: '30%', display: 'block',border: '1px solid red',background: 'none', color: 'red' }}>
+                    Đăng nhập
+                </Button>
+            </Form.Item>
+        </Form>
+    </div>
+   </div>
+)
+
+};
+
+export default Login;

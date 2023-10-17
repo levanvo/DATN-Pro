@@ -1,27 +1,27 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Form, Input } from 'antd';
-import { OauthServiceSignup } from '../Handle/Oauth-Services/OauthUser';
+// import { OauthServiceSignup } from '../Handle/Oauth-Services/OauthUser';
 import { GetAllUser } from '../Api/Api_User';
 
 const Register = () => {
     const navigate = useNavigate();
     const [getDataUser, setDataUser] = useState({});
-    const LogupForm = async (values) => {
-        OauthServiceSignup(values)
-            .then((data) => {
-                setDataUser(data);
-                navigate(`/login`);
-                alert("Chúc mừng bạn đăng kí thành công, đăng nhập ngay nào !");
-            })
-            .catch((error) => {
-                const showError = error.response.data.message
-                alert(showError);
-            });
-        const checkDataUser = Object.keys(getDataUser.dataUser).length === 0;
-        console.log(getDataUser.dataUser);
-        console.log(checkDataUser);
-    };
+    // const LogupForm = async (values) => {
+    //     OauthServiceSignup(values)
+    //         .then((data) => {
+    //             setDataUser(data);
+    //             navigate(`/login`);
+    //             alert("Chúc mừng bạn đăng kí thành công, đăng nhập ngay nào !");
+    //         })
+    //         .catch((error) => {
+    //             const showError = error.response.data.message
+    //             alert(showError);
+    //         });
+    //     const checkDataUser = Object.keys(getDataUser.dataUser).length === 0;
+    //     console.log(getDataUser.dataUser);
+    //     console.log(checkDataUser);
+    // };
     return (
         <div className='w-[90vw] mx-auto'>
             <div className="shopping-cart">
@@ -65,7 +65,7 @@ const Register = () => {
                                             initialValues={{
                                                 remember: true,
                                             }}
-                                            onFinish={LogupForm}
+                                            // onFinish={LogupForm}
                                             autoComplete="off"
                                         >
                                             <Form.Item

@@ -21,6 +21,13 @@ export interface ICategory {
   imgUrl?: string
 }
 
+export interface IUser {
+  _id?: number | string
+  username: string
+  email?: string
+  password: string
+}
+
 export interface IColor {
   _id: string
   name: string

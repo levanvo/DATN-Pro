@@ -28,4 +28,3 @@ app.use("/api", uploadRouter)
 app.listen(PORT, () => {
   console.log("Server running on port", PORT)
 })
-export const viteNodeApp=app;

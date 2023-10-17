@@ -1,13 +1,14 @@
-import product from "../models/product.js"
+import Product from "../models/product.js"
 import Category from "../models/category.js"
 import { productSchema } from "../schema/product.js"
 import Size from "../models/size.js"
 import Color from "../models/color.js"
 import mongoose from "mongoose"
 
+
 export const getProduct = async (req, res) => {
   try {
-    const data = await product.find()
+    const data = await Product.find()
     return res.status(200).json(data)
   } catch (error) {
     return res.status(404).json({
@@ -18,7 +19,7 @@ export const getProduct = async (req, res) => {
 
 export const readProduct = async (req, res) => {
   try {
-    const data = await product
+    const data = await Product
       .findById({ _id: req.params.id })
       .populate(["categoryId", "size_id", "color_id"])
       .exec()
@@ -45,7 +46,7 @@ export const createProduct = async (req, res) => {
     //     message: error.details[0].message,
     //   })
     // }
-    const newProduct = await new product(req.body).save()
+    const newProduct = await Product.create(req.body)
     if (!newProduct) {
       return res.json({
         message: "Không thêm sản phẩm",
@@ -76,7 +77,7 @@ export const removeProduct = async (req, res) => {
       })
     }
 
-    const data = await product.findByIdAndRemove({ _id: req.params.id }).exec()
+    const data = await Product.findByIdAndRemove({ _id: req.params.id }).exec()
     if(!data){
       return res.status(400).json({
         message: "Sản phẩm không tồn tại trong database"
@@ -105,7 +106,7 @@ export const updateProduct = async (req, res) => {
       })
     }
 
-    const updateData = await product
+    const updateData = await Product
       .findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
       .exec()
 
