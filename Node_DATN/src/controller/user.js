@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs"
 import User from "../models/user.js";
 import jwt  from "jsonwebtoken";
-import { signupSchema, signinSchema } from "../schema/user.js";
+import { signupSchema, signinSchema, changePasswordSchema } from "../schema/user.js";
 import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
@@ -105,7 +105,11 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: `${EMAIL}`,
     pass: `${PASSWORD_EMAIL}`
-  }
+  },
+  //rejectUnauthorized = false để bỏ qua thao tác SSL của gmail
+  tls: {
+    rejectUnauthorized: false,
+  },
 })
 
 
@@ -161,6 +165,11 @@ export const verifyConfirmationCode = async (req, res) => {
     const { email, code } = req.body;
     const storedCode = confirmationCodes[email];
     const user = await User.findOne({email})
+    if(!user){
+      return res.status(400).json({
+        message: "Email không tồn tại"
+      })
+    }
 
   // Chuyển đổi mã xác minh và mã đã lưu thành số để so sánh
   const numericCode = parseInt(code, 10);    // parseInt chuyển từ chuỗi sang số
@@ -213,7 +222,13 @@ export const verifyConfirmationCode = async (req, res) => {
 // Đổi mật khẩu
 export const changePassword = async (req,res) => {
   try {
-
+    const {error} = changePasswordSchema.validate(req.body,{abortEarly: false})
+    if(error){
+      const errDetails = error.details.map((err) =>err.message)
+      return res.status(400).json({
+        message: errDetails
+      })
+    }
     const {email, password, newPassword } = req.body;
     const user = await User.findOne({email})
 

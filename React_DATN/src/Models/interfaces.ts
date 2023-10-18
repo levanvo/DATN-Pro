@@ -26,7 +26,8 @@ export interface IUser {
   _id?: number | string,
   username: string,
   email?: string,
-  password: string
+  password: string,
+  confirmPassword: string
 }
 
 export interface ISize {
