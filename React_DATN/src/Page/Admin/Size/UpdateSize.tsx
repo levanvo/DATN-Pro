@@ -62,7 +62,10 @@ const AdminSizeUpdate = () => {
                 onFinish={onFinish}
                 style={{ maxWidth: 600 }}
             >
-                <Form.Item name="name" label="Size" rules={[{ required: true, message: "Vui lòng nhập size!" }]}>
+                <Form.Item name="name" label="Size" rules={[
+                    { required: true, message: "Vui lòng nhập size!" },
+                    { pattern: /^\d{2}$/, message: "Vui lòng nhập số có 2 chữ số!" },
+                ]}>
                     <Input />
                 </Form.Item>
                 <Form.Item {...tailLayout}>

@@ -1,7 +1,6 @@
-import Product from 'src/models/product';
+import Product from "../models/product.js"
 import Size from '../models/size.js';
 import mongoose from 'mongoose';
-import product from 'src/models/product';
 
 export const getAll = async (req, res) => {
   try {

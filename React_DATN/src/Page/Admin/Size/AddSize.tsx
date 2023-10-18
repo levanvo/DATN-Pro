@@ -55,6 +55,7 @@ const AdminSizeAdd = () => {
                     name="name"
                     rules={[
                         { required: true, message: "Vui lòng nhập size!" },
+                        { pattern: /^\d{2}$/, message: "Vui lòng nhập số có 2 chữ số!" },
                     ]}
                 >
                     <Input />
