@@ -1,5 +1,7 @@
+import Product from 'src/models/product';
 import Size from '../models/size.js';
 import mongoose from 'mongoose';
+import product from 'src/models/product';
 
 export const getAll = async (req, res) => {
   try {
@@ -28,12 +30,13 @@ export const get = async (req, res) => {
         message: "Không tìm thấy size trong database"
       })
     }
-    const sizes = await Size.findById(req.params.id);
+    const sizes = await Size.findById(req.params.id).populate("products");
     if (!sizes) {
       return res.json({
         message: "Không tìm thấy size!",
       });
     }
+    const product = await Product.find({ categoryId: req.params.id })
     return res.status(200).json({
       message: "Lấy size thành công!",
       data: sizes,
@@ -68,6 +71,8 @@ export const create = async (req, res) => {
 
 export const remove = async (req, res) => {
   try {
+    const sizeId = req.params.id;
+
     const {id} = req.params
     if(!mongoose.Types.ObjectId.isValid(id)){
       return res.status(400).json({
@@ -81,6 +86,8 @@ export const remove = async (req, res) => {
         message: "Không tìm thấy size!",
       });
     }
+    await Product.deleteMany({ sizeId });
+
     return res.status(200).json({
       message: "Size đã được xóa!",
       data: sizes,
