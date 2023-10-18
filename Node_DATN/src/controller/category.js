@@ -12,8 +12,7 @@ export const getAll = async (req, res) => {
       });
     }
     return res.status(200).json({
-      message: "Lấy danh sách Category thành công!",
-      data: categorys,
+      data: categorys
     });
   } catch (error) {
     return res.status(400).json({
@@ -24,27 +23,26 @@ export const getAll = async (req, res) => {
 
 export const get = async (req, res) => {
   try {
-    
-    const {id} = req.params
+
+    const { id } = req.params
 
     // Kiểm tra trong mongoose nếu id không phải là một ObjectId thì trả về message
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(401).json({
-            message: "Không tìm thấy ID danh mục"
-        })
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(401).json({
+        message: "Không tìm thấy ID danh mục"
+      })
     }
 
     // const categorys = await Category.findById(req.params.id).populate("products");
     const categorys = await Category.findById(req.params.id).populate("products");
-    if(!categorys){
+    if (!categorys) {
       return res.status(400).json({
         message: "Không tồn tại danh mục bạn đang tìm"
       })
     }
-    const product = await Product.find({ categoryId: req.params.id })
     return res.status(200).json({
       message: "Lấy Category thành công!",
-      ...categorys.toObject(),
+      ...categorys.toObject()
     });
   } catch (error) {
     return res.status(400).json({
@@ -78,24 +76,24 @@ export const remove = async (req, res) => {
   try {
     const categoryId = req.params.id;
 
-    const {id} = req.params
+    const { id } = req.params
 
     // Kiểm tra trong mongoose nếu id không phải là một ObjectId thì trả về message
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(401).json({
-            message: "Không tìm thấy ID danh mục"
-        })
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(401).json({
+        message: "Không tìm thấy ID danh mục"
+      })
     }
 
     const categorys = await Category.findByIdAndDelete({ _id: req.params.id });
-    if(!categorys){
+    if (!categorys) {
       return res.status(400).json({
         message: "Không tồn tại danh mục cần xóa"
       })
     }
 
     await Product.deleteMany({ categoryId });
-    
+
     return res.status(200).json({
       message: "Category đã được xóa!",
       data: categorys,
@@ -110,19 +108,19 @@ export const remove = async (req, res) => {
 
 export const update = async (req, res) => {
   try {
-    
-    const {id} = req.params
+
+    const { id } = req.params
 
     // Kiểm tra trong mongoose nếu id không phải là một ObjectId thì trả về message
-    if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(401).json({
-            message: "Không tìm thấy danh mục cần update"
-        })
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(401).json({
+        message: "Không tìm thấy danh mục cần update"
+      })
     }
 
     const categorys = await Category.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
 
-    if(!categorys){
+    if (!categorys) {
       return res.status(400).json({
         message: "Không tồn tại danh mục cần cập nhật"
       })
@@ -132,6 +130,41 @@ export const update = async (req, res) => {
       message: "Category đã được cập nhật thành công!",
       data: categorys,
     });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+
+export const getProductsByCategory = async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+
+    // Kiểm tra trong mongoose nếu id không phải là một ObjectId thì trả về message
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(401).json({
+        message: "Không tìm thấy ID danh mục"
+      });
+    }
+
+    // Tìm danh mục dựa trên categoryId
+    const category = await Category.findById(categoryId);
+
+    if (!category) {
+      return res.status(400).json({
+        message: "Không tồn tại danh mục bạn đang tìm"
+      });
+    }
+
+    // Lấy sản phẩm dựa trên danh mục
+    const products = await Product.find({ categoryId: categoryId });
+
+    return res.status(200).json({
+      data: products
+    });
+    
   } catch (error) {
     return res.status(500).json({
       message: error.message,

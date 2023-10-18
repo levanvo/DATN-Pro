@@ -1,31 +1,33 @@
-import { ICategory, IProduct } from "../Models/interfaces";
+import React, { useState } from 'react';
+import { useGetAllCategoryQuery, useGetProductsByCategoryQuery } from '../Services/Api_Category';
+import { ICategory, IProduct } from '../Models/interfaces';
+import { useParams } from 'react-router-dom';
 import { Link } from "react-router-dom";
-import { useGetAllProductQuery } from "../Services/Api_Product";
-import { useGetAllCategoryQuery } from "../Services/Api_Category";
 
-const Products = () => {
-  const {
-    data: producData,
-    isLoading,
-    error,
-  } = useGetAllProductQuery();
-
+const ProductsCategory = () => {
+  const { id } = useParams();
+  const { data: ProductsCategoty, isLoading, isError } = useGetProductsByCategoryQuery(id);
+    console.log(ProductsCategoty);
+    
   const {
     data: categoryData,
     isLoading: isLoadingCategory,
     error: errorCategory
   } = useGetAllCategoryQuery();
-
+  
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(value);
 
-  if (isLoadingCategory) return <div>Loading...Category</div>;
-  if (errorCategory) return <div>Error: Category</div>;
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error</div>;
+  if (isLoadingCategory) {
+    return <div>Loading...</div>;
+  }
+  if (errorCategory) {
+    return <div>Error loading products.</div>;
+  }
+
   return (
     <div className="w-[90vw] mx-auto">
       <div className="product-banner">
@@ -62,8 +64,8 @@ const Products = () => {
                   </div>
                   {/*Load dữ liệu Category */}
                   <div className="single-sidebar-content">
-                    {categoryData?.data.map((category: ICategory)=>{
-                      return(
+                    {categoryData?.data.map((category: ICategory) => {
+                      return (
                         <ul>
                           <li key={category._id}>
                             <Link to={`/category/${category._id}/products`}>{category.name}</Link>
@@ -163,80 +165,85 @@ const Products = () => {
                       id="gird"
                     >
                       <div className="row">
-                        {producData?.map((product: IProduct) => {
+                        {ProductsCategoty?.data.map((product: IProduct) => {
                           return (
-
                             <div
                               className="col-lg-4 col-md-6"
                               key={product._id}
                             >
-                              <a href={`/product/${product._id}`}>
-
-                                <div className="single-product">
-                                  <div className="level-pro-new">
-                                    <span>new</span>
-                                  </div>
-                                  <div className="product-img">
-                                    <div>
-                                      <img src={product.imgUrl[0]} alt="" className="primary-img h-[300px] w-[250px]" />
-                                      <img
-                                        src={product.imgUrl[1]}
-                                        alt=""
-                                        className="secondary-img"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="actions">
-                                    <button
-                                      type="submit"
-                                      className="cart-btn"
-                                      title="Add to cart"
+                              <div className="single-product">
+                                <div className="level-pro-new">
+                                  <span>new</span>
+                                </div>
+                                <div className="product-img">
+                                  <a href="single-product.html">
+                                    <img
+                                      src={product.imgUrl[0]}
+                                      alt=""
+                                      className="primary-img h-[300px] w-[250px]"
+                                    />
+                                    <img
+                                      src="img/product/26.png"
+                                      alt=""
+                                      className="secondary-img"
+                                    />
+                                  </a>
+                                </div>
+                                <div className="actions">
+                                  <button
+                                    type="submit"
+                                    className="cart-btn"
+                                    title="Add to cart"
+                                  >
+                                    add to cart
+                                  </button>
+                                  <ul className="add-to-link">
+                                    <li>
+                                      <a
+                                        className="modal-view"
+                                        data-target="#productModal"
+                                        data-bs-toggle="modal"
+                                        href="#"
+                                      >
+                                        {" "}
+                                        <i className="fa fa-search"></i>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="#">
+                                        {" "}
+                                        <i className="fa fa-heart-o"></i>
+                                      </a>
+                                    </li>
+                                    <li>
+                                      <a href="#">
+                                        {" "}
+                                        <i className="fa fa-refresh"></i>
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
+                                <div className="product-price">
+                                  <div className="product-name">
+                                    <a
+                                      href="single-product.html"
+                                      title="Fusce aliquam"
                                     >
-                                      add to cart
-                                    </button>
-                                    <ul className="add-to-link">
-                                      <li>
-                                        <a
-                                          className="modal-view"
-                                          data-target="#productModal"
-                                          data-bs-toggle="modal"
-                                          href="#"
-                                        >
-                                          {" "}
-                                          <i className="fa fa-search"></i>
-                                        </a>
-                                      </li>
-                                      <li>
-                                        <a href="#">
-                                          {" "}
-                                          <i className="fa fa-heart-o"></i>
-                                        </a>
-                                      </li>
-                                      <li>
-                                        <a href="#">
-                                          {" "}
-                                          <i className="fa fa-refresh"></i>
-                                        </a>
-                                      </li>
-                                    </ul>
+                                      {product.name}
+                                    </a>
                                   </div>
-                                  <div className="product-price">
-                                    <div className="product-name">
-                                      <h1>{product.name}</h1>
-                                    </div>
-                                    <div className="price-rating">
-                                      <span>{numberFormat(product.price)}</span>
-                                      <div className="ratings">
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star"></i>
-                                        <i className="fa fa-star-half-o"></i>
-                                      </div>
+                                  <div className="price-rating">
+                                    <span>{numberFormat(product.price)}</span>
+                                    <div className="ratings">
+                                      <i className="fa fa-star"></i>
+                                      <i className="fa fa-star"></i>
+                                      <i className="fa fa-star"></i>
+                                      <i className="fa fa-star"></i>
+                                      <i className="fa fa-star-half-o"></i>
                                     </div>
                                   </div>
                                 </div>
-                              </a>
+                              </div>
                             </div>
                           );
                         })}
@@ -278,6 +285,22 @@ const Products = () => {
       </div>
     </div>
   );
-};
+  // return (
+  //   <div>
+  //     <h2>Products in Category</h2>
+  //     <ul>
+  //       {data?.map((product: IProduct) => {
+  //         console.log(product);
+  //         return (
+  //           <li key={product._id}>
+  //             <h3>{product.name}</h3>
+  //             <p>{product.description}</p>
+  //           </li>
+  //         )
+  //       })}
+  //     </ul>
+  //   </div>
+  // );
+}
 
-export default Products;
+export default ProductsCategory;

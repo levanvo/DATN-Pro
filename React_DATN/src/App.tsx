@@ -21,6 +21,9 @@ import AdminLogin from "./Page/Login/AdminLogin";
 import ForgotPassword from "./Page/ForgotPassword";
 import VerificationCodes from "./Page/VerificationCodes";
 import ChangePassword from "./Page/ChangePassword";
+import ProductsCategory from "./Page/CategoryProducts";
+import CategoryList from "./Page/Admin/Category/CategoryList";
+import AddCategory from "./Page/Admin/Category/CategoryAdd";
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -42,12 +45,15 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="category/:id/products" element={<ProductsCategory />} />
       </Route>
 
       <Route path="/admin" element={<Layout_Admin />}>
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
+        <Route path="category/list" element={<CategoryList />} />
+        <Route path="category/add" element={<AddCategory />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
