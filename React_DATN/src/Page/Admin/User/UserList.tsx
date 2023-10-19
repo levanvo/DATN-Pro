@@ -9,11 +9,6 @@ import { useRemoveUserMutation } from '../../../Services/Api_User';
 
 
 
-const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: any) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    },
-};
 const UserList = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const [getList, setList]: any = useState("");
@@ -183,7 +178,7 @@ const UserList = () => {
                 </div>
             </div>
             <Divider />
-            {isLoading ? <Loading /> : <Table rowSelection={{ ...rowSelection, }} columns={columns} dataSource={dataUsers} />}
+            {isLoading ? <Loading /> : <Table columns={columns} dataSource={dataUsers} />}
         </div>
     )
 }
