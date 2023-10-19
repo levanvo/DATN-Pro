@@ -13,7 +13,7 @@ const AddCategory = () => {
     const navigate = useNavigate();
     const { data: allCategories } = useGetAllCategoryQuery();
     const isCategoryNameExists = (name: string) => {
-        return allCategories?.data.some((category:ICategory) => category.name === name);
+        return allCategories?.some((category:ICategory) => category.name === name);
     };
     const onFinish = (values: any) => {
         const { name } = values;

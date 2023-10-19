@@ -34,29 +34,29 @@ const UpdateCategory = () => {
         })
     }, [categoryData])
     // biến bắt buộc phải nhập chữ cái và số
-    const alphaNumericRegExp = /^[A-Za-z0-9]+$/;
+    const alphaNumericRegExp = /^(?![\s])[\p{L}0-9\s]*[\p{L}0-9](?<![\s])$/u;
     const onFinish = (values: ICategory) => {
+        
+        
         setIsLoadingScreen(true);
         try {
             updateCategory({ ...values, _id: id })
                 .unwrap()
                 .then(() => {
+                    console.log({ ...values, _id: id });
+                    
                     messageApi.open({
                         type: "success",
                         content: "Cập nhật thành công"
                     });
                     setTimeout(() => {
-                        navigate("/admin/category/list");
-                    }, 1000);
+                        window.location.href = 'http://localhost:5173/admin/category/list'
+                      }, 2000);
                 })
-                .catch((error) => {
-                    
-                    setIsLoadingScreen(false);
-                });
         } catch (error) {
             console.error("Lỗi khi cập nhật:", error);
-            setIsLoadingScreen(false);
         }
+        setIsLoadingScreen(false);
 
     };
 

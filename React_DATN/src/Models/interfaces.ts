@@ -4,7 +4,7 @@ export interface IProduct {
   original_price: number
   price: number
   description?: string
-  imgUrl?: string[],
+  imgUrl?: string[]
   categoryId?: string
   size_id?: string
   color_id?: string
@@ -15,7 +15,6 @@ export interface IProduct {
   poinId?: string
 }
 
-
 export interface ICategory {
   _id?: number | string,
   name: string,
@@ -23,9 +22,19 @@ export interface ICategory {
 }
 
 export interface IUser {
-  _id?: number | string,
-  username: string,
-  email?: string,
-  password: string,
+  _id?: number | string
+  username: string
+  email?: string
+  password: string
   confirmPassword: string
+}
+export interface IColor {
+  _id: string
+  name: string
+  products: []
+}
+
+export interface ISize {
+  _id?: number | string,
+  name: string
 }

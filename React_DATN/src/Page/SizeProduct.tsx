@@ -1,36 +1,32 @@
 import React, { useState } from 'react';
-import { useGetAllCategoryQuery, useGetProductsByCategoryQuery } from '../Services/Api_Category';
-import { ICategory, IProduct } from '../Models/interfaces';
+import { IProduct, ISize } from '../Models/interfaces';
 import { useParams } from 'react-router-dom';
 import { Link } from "react-router-dom";
+import { useGetAllSizeQuery, useGetProductsBySizeQuery } from '../Services/Api_Size';
 
-const ProductsCategory = () => {
+const ProductsSize = () => {
   const { id } = useParams();
-  const { data: ProductsCategoty, isLoading, isError } = useGetProductsByCategoryQuery(id);
-    console.log(ProductsCategoty);
-    
-  const {
-    data: categoryData,
-    isLoading: isLoadingCategory,
-    error: errorCategory
-  } = useGetAllCategoryQuery();
   
+  const { data: ProductsSize, isLoading, isError } = useGetProductsBySizeQuery(id);
+    console.log(ProductsSize);
+
+  const {
+    data: sizeData,
+    isLoading: isLoadingSize,
+    error: errorSize
+  } = useGetAllSizeQuery();
+
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(value);
 
-  if (isLoadingCategory) {
+  if (isLoadingSize) {
     return <div>Loading...</div>;
   }
-  if (errorCategory) {
+  if (errorSize) {
     return <div>Error loading products.</div>;
-  }
-
-   // Kiểm tra nếu không có sản phẩm theo category
-   if (!ProductsCategoty || ProductsCategoty.length === 0) {
-    return <div>Không có Sản Phẩm Theo Danh Mục</div>;
   }
 
   return (
@@ -67,17 +63,21 @@ const ProductsCategory = () => {
                   <div className="single-sidebar-title">
                     <h3>Sản Phảm</h3>
                   </div>
-                  {/*Load dữ liệu Category */}
                   <div className="single-sidebar-content">
-                    {categoryData?.map((category: ICategory) => {
-                      return (
-                        <ul>
-                          <li key={category._id}>
-                            <Link to={`/category/${category._id}/products`}>{category.name}</Link>
-                          </li>
-                        </ul>
-                      )
-                    })}
+                    <ul>
+                      <li>
+                        <a href="#">ADIDAS (4)</a>
+                      </li>
+                      <li>
+                        <a href="#">MLB (6)</a>
+                      </li>
+                      <li>
+                        <a href="#">VANS (1)</a>
+                      </li>
+                      <li>
+                        <a href="#">NIKE (3)</a>
+                      </li>
+                    </ul>
                   </div>
                 </div>
                 <div className="single-sidebar">
@@ -99,6 +99,23 @@ const ProductsCategory = () => {
                         <a href="#">Trắng (2)</a>
                       </li>
                     </ul>
+                  </div>
+                </div>
+                <div className="single-sidebar">
+                  <div className="single-sidebar-title">
+                    <h3>Size</h3>
+                  </div>
+                  {/*Load dữ liệu Size */}
+                  <div className="single-sidebar-content">
+                    {sizeData?.data.map((size: ISize) => {
+                      return (
+                        <ul>
+                          <li key={size._id}>
+                            <Link to={`/size/${size._id}/products`}>{size.name}</Link>
+                          </li>
+                        </ul>
+                      )
+                    })}
                   </div>
                 </div>
                 <div className="single-sidebar price">
@@ -160,7 +177,7 @@ const ProductsCategory = () => {
                   per page
                 </div>
               </div>
-              {/* Nhập dữ liệu category */}
+              {/* Nhập dữ liệu Size */}
               <div className="row">
                 <div className="product-content">
                   <div className="tab-content">
@@ -170,7 +187,7 @@ const ProductsCategory = () => {
                       id="gird"
                     >
                       <div className="row">
-                        {ProductsCategoty?.map((product: IProduct) => {
+                        {ProductsSize?.data.map((product: IProduct) => {
                           return (
                             <div
                               className="col-lg-4 col-md-6"
@@ -290,22 +307,6 @@ const ProductsCategory = () => {
       </div>
     </div>
   );
-  // return (
-  //   <div>
-  //     <h2>Products in Category</h2>
-  //     <ul>
-  //       {data?.map((product: IProduct) => {
-  //         console.log(product);
-  //         return (
-  //           <li key={product._id}>
-  //             <h3>{product.name}</h3>
-  //             <p>{product.description}</p>
-  //           </li>
-  //         )
-  //       })}
-  //     </ul>
-  //   </div>
-  // );
 }
 
-export default ProductsCategory;
+export default ProductsSize;

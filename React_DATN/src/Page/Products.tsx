@@ -1,7 +1,8 @@
-import { ICategory, IProduct } from "../Models/interfaces";
+import { ICategory, IProduct, ISize } from "../Models/interfaces";
 import { Link } from "react-router-dom";
 import { useGetAllProductQuery } from "../Services/Api_Product";
 import { useGetAllCategoryQuery } from "../Services/Api_Category";
+import { useGetAllSizeQuery } from "../Services/Api_Size";
 
 const Products = () => {
   const {
@@ -15,6 +16,11 @@ const Products = () => {
     isLoading: isLoadingCategory,
     error: errorCategory
   } = useGetAllCategoryQuery();
+  const{
+    data: sizeData,
+    isLoading: isLoadingSize,
+    error: errorSize
+  } = useGetAllSizeQuery();
 
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
@@ -24,6 +30,10 @@ const Products = () => {
 
   if (isLoadingCategory) return <div>Loading...Category</div>;
   if (errorCategory) return <div>Error: Category</div>;
+
+  if (isLoadingSize) return <div>Loading...Size</div>;
+  if (errorSize) return <div>Error: Size</div>;
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error</div>;
   return (
@@ -62,7 +72,7 @@ const Products = () => {
                   </div>
                   {/*Load dữ liệu Category */}
                   <div className="single-sidebar-content">
-                    {categoryData?.data.map((category: ICategory)=>{
+                    {categoryData?.map((category: ICategory)=>{
                       return(
                         <ul>
                           <li key={category._id}>
@@ -92,6 +102,22 @@ const Products = () => {
                         <a href="#">Trắng (2)</a>
                       </li>
                     </ul>
+                  </div>
+                </div>
+                <div className="single-sidebar">
+                  <div className="single-sidebar-title">
+                    <h3>Size</h3>
+                  </div>
+                  <div className="single-sidebar-content">
+                  {sizeData?.map((size: ISize)=>{
+                      return(
+                        <ul>
+                          <li key={size._id}>
+                            <Link to={`/size/${size._id}/products`}>{size.name}</Link>
+                          </li>
+                        </ul>
+                      )
+                    })}
                   </div>
                 </div>
                 <div className="single-sidebar price">

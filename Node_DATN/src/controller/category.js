@@ -11,9 +11,7 @@ export const getAll = async (req, res) => {
         message: "Không lấy được danh sách Category!",
       });
     }
-    return res.status(200).json({
-      data: categorys
-    });
+    return res.status(200).json(categorys);
   } catch (error) {
     return res.status(400).json({
       message: error,
@@ -161,15 +159,7 @@ export const getProductsByCategory = async (req, res) => {
     // Lấy sản phẩm dựa trên danh mục
     const products = await Product.find({ categoryId: categoryId });
     
-    if (products.length === 0) {
-      return res.status(200).json({
-        message: "Không có sản phẩm theo danh mục"
-      });
-    }
-
-    return res.status(200).json({
-      data: products
-    });
+    return res.status(200).json(products);
     
   } catch (error) {
     return res.status(500).json({

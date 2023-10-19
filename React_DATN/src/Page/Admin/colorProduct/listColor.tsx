@@ -1,19 +1,23 @@
 import React, { useState } from "react"
 import { Button, Table, Popconfirm, message, Input } from "antd"
-import { Link } from "react-router-dom"
-import { ICategory } from "../../../Models/interfaces"
-import Loading from "../../../Component/Loading"
-import { useGetAllCategoryQuery, useRemoveCategoryMutation } from "../../../Services/Api_Category"
 
-const CategoryList = () => {
+import {
+  useRemoveColorMutation,
+  useGetColorsQuery,
+} from "../../../Services/api_Color"
+import { Link } from "react-router-dom"
+import { IColor } from "../../../Models/interfaces"
+import Loading from "../../../Component/Loading"
+
+const ListColor = () => {
   const { Search } = Input
   const [searchQuery, setSearchQuery] = useState<string>("")
 
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<React.Key[]>([])
+  const [selectedColorIds, setSelectedColorIds] = useState<React.Key[]>([])
   const [loading, setLoading] = useState(false)
 
-  const { data, isLoading, error } = useGetAllCategoryQuery(undefined)
-  const [removeCategory] = useRemoveCategoryMutation()
+  const { data, isLoading, error } = useGetColorsQuery(undefined)
+  const [removeColor] = useRemoveColorMutation()
 
   if (isLoading) return <Loading />
   if (error) return <div>Error...</div>
@@ -22,10 +26,11 @@ const CategoryList = () => {
     return <div>No data available.</div>
   }
 
-  const dataSource = data?.map((item: ICategory, index) => ({
+  const dataSource = data?.map((item: IColor, index) => ({
     index: index + 1,
     key: item._id,
     name: item.name,
+    products: item.products,
   }))
 
   const handleSearch = (value: string) => {
@@ -39,11 +44,11 @@ const CategoryList = () => {
 
   const columns = [
     {
-      title: "STT",
+      title: "#",
       dataIndex: "index",
     },
     {
-      title: "category",
+      title: "Màu",
       dataIndex: "name",
       render: (text: string) => (
         <Link to={`/admin/product/list`}>
@@ -51,18 +56,28 @@ const CategoryList = () => {
         </Link>
       ),
     },
-    
+    // {
+    //   title: "Products",
+    //   dataIndex: "products",
+    //   render: (products: []) => (
+    //     <div>
+    //       {products.map((item, index) => (
+    //         <p key={index}>{item}</p>
+    //       ))}
+    //     </div>
+    //   ),
+    // },
     {
       title: "Hành Động",
       key: "action",
-      render: (category: any) => {
+      render: (color: any) => {
         return (
           <>
             <Popconfirm
-              title="Xoá category"
-              description="Bạn có chắc muốn xoá category này không?"
+              title="Xoá màu"
+              description="Bạn có chắc muốn xoá màu này không?"
               onConfirm={() => {
-                removeCategory(category.key)
+                removeColor(color.key)
                 message.error("Remove success")
               }}
               okText={<span style={{ color: "black" }}>Yes</span>}
@@ -70,7 +85,7 @@ const CategoryList = () => {
             >
               <Button danger>Xoá</Button>
             </Popconfirm>
-            <Link to={`/admin/category/${category.key}/update`}>
+            <Link to={`/admin/color/${color.key}/update`}>
               <Button type="dashed" style={{ margin: "0 0 0 8px" }}>
                 Cập Nhật
               </Button>
@@ -80,34 +95,35 @@ const CategoryList = () => {
       },
     },
   ]
- 
+  /**
+   *
+   * *! Initialize the function to delete multiple Colors
+   */
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys)
-    setSelectedCategoryIds(newSelectedRowKeys)
+    setSelectedColorIds(newSelectedRowKeys)
   }
 
   const rowSelection = {
-    selectedRowKeys: selectedCategoryIds,
+    selectedRowKeys: selectedColorIds,
     onChange: onSelectChange,
   }
 
   const handleBatchDelete = () => {
-    if (selectedCategoryIds.length === 0) {
-      message.warning("Vui lòng chọn các category muốn xoá!")
+    if (selectedColorIds.length === 0) {
+      message.warning("Vui lòng chọn các màu muốn xoá!")
       return
     }
 
     setLoading(true)
 
-    Promise.all(selectedCategoryIds.map((categoryId) => removeCategory(categoryId)))
+    Promise.all(selectedColorIds.map((colorId) => removeColor(colorId)))
       .then(() => {
-        message.success("Xóa category thành công")
-        setTimeout(() => {
-          window.location.href = 'http://localhost:5173/admin/category/list'
-        }, 2000);
+        message.success("Colors successfully deleted.")
+        setSelectedColorIds([])
       })
       .catch(() => {
-        message.error("Xóa category thất bại. xin thử lại")
+        message.error("Failed to delete colors. Please try again.")
       })
       .finally(() => {
         setLoading(false)
@@ -123,13 +139,13 @@ const CategoryList = () => {
           loading={loading}
           danger
         >
-          Xoá Nhiều category
+          Xoá Nhiều Màu
         </Button>
-        <Link to={`/admin/category/add`}>
-          <Button style={{ margin: "0 0 0 8px" }}>Tạo category Mới</Button>
+        <Link to={`/admin/color/create`}>
+          <Button style={{ margin: "0 0 0 8px" }}>Tạo Màu Mới</Button>
         </Link>
         <Input
-          placeholder="Tìm kiếm danh mục"
+          placeholder="Search by color name"
           onChange={(e) => handleSearch(e.target.value)} // Use the onChange event to trigger real-time filtering
           style={{ width: 280, marginLeft: 8 }}
         />
@@ -144,4 +160,4 @@ const CategoryList = () => {
   )
 }
 
-export default CategoryList
+export default ListColor

@@ -36,7 +36,8 @@ const categoryApi = createApi({
         updateCategory: builder.mutation<ICategory, ICategory>({
             query: (category) => ({
                 url: `/api/category/${category._id}/update`,
-                method: "PATCH"
+                method: "PUT",
+                body: category
             }),
             invalidatesTags: ["Category"]
         }),
