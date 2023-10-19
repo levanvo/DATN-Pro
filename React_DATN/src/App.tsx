@@ -50,12 +50,14 @@ function App() {
         <Route path="size/:id/products" element={<ProductsSize />} />
       </Route>
 
-      <Route path="/admin" element={isAdminLoggedIn ? <Layout_Admin /> : <AdminLogin />}>
+      <Route path="/admin" element={<Layout_Admin />}>
         <Route index element={<Dashboard />}/>
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
-
+        <Route path="forgot-password" element={<ForgotPassword />}/>
+        <Route path="verification-codes" element= {<VerificationCodes />}/>
+        <Route path="change-password" element={<ChangePassword />}/>
         <Route path="user/list" element={<UserList />} />
         <Route path="user/add" element={<AddUser />} />
         <Route path="user/update/:id" element={<UpdateUser />} />
