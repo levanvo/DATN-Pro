@@ -18,6 +18,9 @@ import ProductList from "./Page/Admin/Product/ProductList";
 import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
 import {useState} from "react"
 import AdminLogin from "./Page/Login/AdminLogin";
+import UserList from "./Page/Admin/User/UserList";
+import AddUser from "./Page/Admin/User/AddUser";
+import UpdateUser from "./Page/Admin/User/UpdateUser";
 import SizeList from "./Page/Admin/Size/SizeList";
 import AdminSizeAdd from "./Page/Admin/Size/AddSize";
 import AdminSizeUpdate from "./Page/Admin/Size/UpdateSize";
@@ -41,20 +44,23 @@ function App() {
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="checkout" element={<Checkout />} />
         <Route path="register" element={<Register />} />
-        <Route path="forgot-password" element={<ForgotPassword />}/>
-        <Route path="verification-codes" element= {<VerificationCodes />}/>
-        <Route path="change-password" element={<ChangePassword />}/>
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
         <Route path="size/:id/products" element={<ProductsSize />} />
       </Route>
 
-      <Route path="/admin" element={isAdminLoggedIn ? <Layout_Admin /> : <AdminLogin />}>
+      <Route path="/admin" element={<Layout_Admin />}>
         <Route index element={<Dashboard />}/>
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
+        <Route path="forgot-password" element={<ForgotPassword />}/>
+        <Route path="verification-codes" element= {<VerificationCodes />}/>
+        <Route path="change-password" element={<ChangePassword />}/>
+        <Route path="user/list" element={<UserList />} />
+        <Route path="user/add" element={<AddUser />} />
+        <Route path="user/update/:id" element={<UpdateUser />} />
         <Route path="size/list" element={<SizeList />} />
         <Route path="size/add" element={<AdminSizeAdd />} />
         <Route path="size/:id/update" element={<AdminSizeUpdate />} />

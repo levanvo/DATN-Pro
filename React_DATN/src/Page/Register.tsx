@@ -1,117 +1,148 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Form, Input,message } from 'antd';
-import { useSignupMutation } from '../Services/Api_User';
-import { IUser } from '../Models/interfaces';
-import Loading from '../Component/Loading';
+import { Button, Form, Input } from 'antd';
+// import { OauthServiceSignup } from '../Handle/Oauth-Services/OauthUser';
+import { GetAllUser } from '../Api/Api_User';
+
 const Register = () => {
-    const navigate = useNavigate()
-    const [addUser,{error}] = useSignupMutation()
-    const [messageApi,contexHolder] = message.useMessage()
-    const [isLoadingSeen,setIsLoadingSeen] = useState(false)
-
-    useEffect(() => {
-        if (error && 'data' in error) {
-          const errorData = error.data as { message: string[] };
-          errorData.message.forEach((errorMsg) => {
-            messageApi.open({
-              type: 'error',
-              content: errorMsg,
-            });
-          });
-        }
-      }, [error]);
-   const onFinish = async (values:IUser) => {
-        setIsLoadingSeen(true)
-    
-        try {
-           await addUser(values)
-            messageApi.open({
-                type: "success",
-                content: "Đăng ký thành công"
-            })
-            setTimeout(() => {
-                navigate("/login")
-                window.location.reload()
-            },1500)
-        } catch (error) {
-           messageApi.open({
-            type: "error",
-            content: "Đã xảy ra lỗi vui lòng thử lại"
-           })
-        }
-        setIsLoadingSeen(false)
-   }
-   const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+    const navigate = useNavigate();
+    const [getDataUser, setDataUser] = useState({});
+    // const LogupForm = async (values) => {
+    //     OauthServiceSignup(values)
+    //         .then((data) => {
+    //             setDataUser(data);
+    //             navigate(`/login`);
+    //             alert("Chúc mừng bạn đăng kí thành công, đăng nhập ngay nào !");
+    //         })
+    //         .catch((error) => {
+    //             const showError = error.response.data.message
+    //             alert(showError);
+    //         });
+    //     const checkDataUser = Object.keys(getDataUser.dataUser).length === 0;
+    //     console.log(getDataUser.dataUser);
+    //     console.log(checkDataUser);
+    // };
     return (
-        <div>
-        {contexHolder}
-        {isLoadingSeen && <Loading />}
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh',}}>
-        <Form
-            name="basic"
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 17 }}
-            style={{ width: "800px", border: '1px solid #ccc', borderRadius: '20px', paddingTop: 20,paddingLeft: -30,background:"#ebebeb"}}
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-        >
-            <Form.Item style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div>
-                    <h1>Register</h1>
+        <div className='w-[90vw] mx-auto'>
+            <div className="shopping-cart">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="location">
+                                <ul>
+                                    <li><a href="index.html" title="go to homepage">Home<span>/</span></a></li>
+                                    <li><strong>Register page</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            </Form.Item>
+            <div className="login-area ptb-120">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-6 offset-md-3 text-center">
+                            <div className="login">
+                                <div className="login-form-container">
+                                <Link to={`/login`} className='underline'><img title='back' className='w-6 h-6 hover:-translate-x-[3px] duration-200' src="../../img/IMAGE_CREATED/previous.png" alt="" /></Link>
+                                    <div className="login-text">
+                                        
+                                        <h2>Register</h2>
+                                        <span>Please Register using account detail bellow.</span>
+                                    </div>
+                                    <div className="logup-form">
+                                        <Form
+                                            name="basic"
+                                            labelCol={{
+                                                span: 6,
+                                            }}
+                                            wrapperCol={{
+                                                span: 16,
+                                            }}
+                                            style={{
+                                                maxWidth: 600,
+                                            }}
+                                            initialValues={{
+                                                remember: true,
+                                            }}
+                                            // onFinish={LogupForm}
+                                            autoComplete="off"
+                                        >
+                                            <Form.Item
+                                                label="Username"
+                                                name="username"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input your user name!',
+                                                    },
+                                                ]}
+                                            >
+                                                <Input maxLength={16} />
+                                            </Form.Item>
 
-                    <h5 style={{marginTop:-30,textAlign:"center",marginBottom:60}}>Please login using account detail bellow.</h5>
+                                            <Form.Item
+                                                label="Email"
+                                                name="email"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input your email!',
+                                                    },
+                                                ]}
+                                            >
+                                                <Input type='email' />
+                                            </Form.Item>
 
-            <Form.Item 
-                label={<span style={{ color: '#2b2b2b' }}>Tên người dùng</span>}
-                name="username"
-                style={{ color: 'lightgray' }}
-                rules={[{ required: true, message: 'Tên người dùng không được để trống!' }]}
-            >
-                <Input style={{height: 40,width:500}} placeholder='nhập tên của bạn'/>
-            </Form.Item>
+                                            <Form.Item
+                                                label="Password"
+                                                name="password"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input your password!',
+                                                    },
+                                                ]}
+                                            >
+                                                <Input type='password' />
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Re-Password"
+                                                name="confirmPassword"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input your re-password!',
+                                                    },
+                                                ]}
+                                            >
+                                                <Input type='password' />
+                                            </Form.Item>
 
-            <Form.Item 
-                label={<span style={{ color: '#2b2b2b' }}>Email</span>}
-                name="email"
-                style={{ color: 'lightgray' }}
-                rules={[{ required: true, message: 'Email không được để trống!' }]}
-            >
-                <Input style={{height: 40,width:500}} placeholder='nhập địa chỉ email'/>
-            </Form.Item>
-
-            <Form.Item
-                label="Mật khẩu"
-                name="password"
-                
-                rules={[{ required: true, message: 'Password không được để trống!' }]}
-            >
-                <Input.Password style={{height: 40,width:500}} placeholder='nhập mật khẩu'/>
-            </Form.Item>
-
-            <Form.Item
-                label="Nhập lại mật khẩu"
-                name="confirmPassword"
-                
-                rules={[{ required: true, message: 'confirm Password không được để trống!' }]}
-            >
-                <Input.Password style={{height: 40,width:500}} placeholder='nhập lại mật khẩu'/>
-            </Form.Item>
-
-            <Form.Item wrapperCol={{ offset: 6, span: 11 }}>
-                <Button type="primary" htmlType="submit" style={{ width: '30%', display: 'block',border: '1px solid red',background: 'none', color: 'red' }}>
-                    Đăng ký
-                </Button>
-            </Form.Item>
-        </Form>
-    </div>
-   </div>
+                                            <div className="flex justify-between">
+                                                <div className="">
+                                                    <input type="checkbox" id="remember" />
+                                                    <label htmlFor="remember">Remember me</label>
+                                                </div>
+                                                <a href="#">Forgot Password?</a>
+                                            </div>
+                                            <Form.Item
+                                                wrapperCol={{
+                                                    offset: 8,
+                                                    span: 16,
+                                                }}
+                                            >
+                                                <Button htmlType="submit" className='w-36'>Logup</Button>
+                                            </Form.Item>
+                                        </Form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
 

@@ -133,7 +133,7 @@ const AddProduct = () => {
             loading={isLoading}
           >
           {getAllCategory ? (
-          getAllCategory.data.map((category:any) => (
+          getAllCategory?.map((category:any) => (
             <Select.Option key={category._id} value={category._id}>
               {category.name}
             </Select.Option>
@@ -151,7 +151,7 @@ const AddProduct = () => {
             loading={isLoadingSize}
           >
           {getAllSize ? (
-          getAllSize.data.map((size:any) => (
+          getAllSize?.map((size:any) => (
             <Select.Option key={size._id} value={size._id}>
               {size.name}
             </Select.Option>
