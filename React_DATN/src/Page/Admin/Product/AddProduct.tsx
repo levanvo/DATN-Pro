@@ -9,6 +9,7 @@ import { useAddProductMutation } from "../../../Services/Api_Product";
 import { useGetAllCategoryQuery } from "../../../Services/Api_Category";
 import Loading from "../../../Component/Loading";
 import {useNavigate} from "react-router-dom"
+import { useGetAllSizeQuery } from "../../../Services/Api_Size";
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -25,7 +26,8 @@ type urlObject = {
 const AddProduct = () => {
   const navigate = useNavigate()
   const [addProduct] = useAddProductMutation();
-  const {data: getAllCategory,isLoading}:any = useGetAllCategoryQuery()
+  const {data: getAllCategory,isLoading} = useGetAllCategoryQuery()
+  const {data: getAllSize,isLoadingSize} = useGetAllSizeQuery()
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -88,7 +90,8 @@ const AddProduct = () => {
           original_price: values.original_price,
           price: values.price,
           imgUrl: imageUrls,
-          categoryId: values.categoryId
+          categoryId: values.categoryId,
+          size_id: values.size_id
         };
 
         addProduct(newProduct).unwrap().then(() => {
@@ -96,6 +99,7 @@ const AddProduct = () => {
             type: "success",
             content: "Thêm sản phẩm thành công"
           })
+          navigate("/admin/product/list")
         });
 
         console.log("dữ liệu", newProduct);
@@ -129,9 +133,27 @@ const AddProduct = () => {
             loading={isLoading}
           >
           {getAllCategory ? (
-          getAllCategory.data.map((category:any) => (
+          getAllCategory?.map((category:any) => (
             <Select.Option key={category._id} value={category._id}>
               {category.name}
+            </Select.Option>
+          ))
+        ) : (
+          <p>Loading...</p>
+  )}
+
+          </Select>
+        </Form.Item>
+
+        <Form.Item label="Size" name="size_id" rules={[{ required: true }]}>
+          <Select
+            style={{ width: 200 }}
+            loading={isLoadingSize}
+          >
+          {getAllSize ? (
+          getAllSize?.map((size:any) => (
+            <Select.Option key={size._id} value={size._id}>
+              {size.name}
             </Select.Option>
           ))
         ) : (
