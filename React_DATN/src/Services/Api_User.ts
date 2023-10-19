@@ -18,6 +18,37 @@ const userApi = createApi({
       providesTags: ["User"]
     }),
 
+    getOneUser: builder.query<IUser[], number | string>({
+      query: (_id) => `/api/oneUser/${_id}`,
+      providesTags: ["User"]
+    }),
+
+    addUser: builder.mutation<IUser, IUser>({
+      query: (user) => ({
+        url: `/api/addUser`,
+        method: "POST",
+        body: user,
+      }),
+      invalidatesTags: ["User"]
+    }),
+
+    updateUser: builder.mutation<IUser, IUser>({
+      query: (user) => ({
+        url: `/api/updateUser/${user._id}`,
+        method: "PUT",
+        body: user,
+      }),
+      invalidatesTags: ["User"]
+    }),
+
+    removeUser: builder.mutation<IUser, number | string>({
+      query: (_id) => ({
+        url: `/api/removeUser/${_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["User"]
+    }),
+
     sigin: builder.mutation<IUser, IUser>({
       query: (user) => ({
         url: `/api/signin`,
@@ -64,5 +95,16 @@ const userApi = createApi({
   }),
 });
 
-export const { useGetAllUserQuery, useSiginMutation, useSignupMutation, useForgotPasswordMutation, useVerificationCodesMutation, useChangePasswordMutation } = userApi;
+export const {
+  useGetAllUserQuery,
+  useSiginMutation,
+  useSignupMutation,
+  useForgotPasswordMutation,
+  useVerificationCodesMutation,
+  useChangePasswordMutation,
+  useAddUserMutation,
+  useUpdateUserMutation,
+  useRemoveUserMutation,
+  useGetOneUserQuery
+} = userApi;
 export default userApi;

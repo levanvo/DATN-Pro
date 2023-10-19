@@ -133,21 +133,21 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item
-          label="Danh mục"
-          name="categoryId"
-          rules={[{ required: true }]}
-        >
-          <Select style={{ width: 200 }} loading={isLoading}>
-            {getAllCategory ? (
-              getAllCategory?.map((category: any) => (
-                <Select.Option key={category._id} value={category._id}>
-                  {category.name}
-                </Select.Option>
-              ))
-            ) : (
-              <p>Loading...</p>
-            )}
+        <Form.Item label="Danh mục" name="categoryId" rules={[{ required: true }]}>
+          <Select
+            style={{ width: 200 }}
+            loading={isLoading}
+          >
+          {getAllCategory ? (
+          getAllCategory?.map((category:any) => (
+            <Select.Option key={category._id} value={category._id}>
+              {category.name}
+            </Select.Option>
+          ))
+        ) : (
+          <p>Loading...</p>
+  )}
+
           </Select>
         </Form.Item>
 
