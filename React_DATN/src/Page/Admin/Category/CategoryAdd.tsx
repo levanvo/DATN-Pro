@@ -1,42 +1,58 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Upload,Modal } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import type { RcFile, UploadProps } from "antd/es/upload";
+import { Form, Input, Button,Modal, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import type { UploadFile } from "antd/es/upload/interface";
-import { useAddCategoryMutation } from "../../../Services/Api_Category";
+import { useAddCategoryMutation, useGetAllCategoryQuery } from "../../../Services/Api_Category";
+import { ICategory } from "../../../Models/interfaces";
 
-const getBase64 = (file: RcFile): Promise<string> =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    });
+
 
 const AddCategory = () => {
-    const [addProduct] = useAddCategoryMutation();
+  const [messageApi,contextHolder] = message.useMessage()
+
+    const [addCategory] = useAddCategoryMutation();
     const navigate = useNavigate();
+    const { data: allCategories } = useGetAllCategoryQuery();
+    const isCategoryNameExists = (name: string) => {
+        return allCategories?.data.some((category:ICategory) => category.name === name);
+    };
     const onFinish = (values: any) => {
-        addProduct(values)
-            .unwrap()
-            .then(() => {
-                alert('Thêm Thành Công')
-                return navigate("/admin/category/list");
+        const { name } = values;
+        if (isCategoryNameExists(name)) {
+            // Nếu tên category đã tồn tại, hiển thị thông báo lỗi
+            message.error({
+                content: 'Tên category đã tồn tại. Vui lòng chọn tên khác.',
             });
+        } else {
+            // Nếu tên category không trùng lặp, thực hiện thêm category
+            addCategory(values)
+                .unwrap()
+                .then(() => {
+                    messageApi.open({
+                      type: "success",
+                      content: "Thêm sản phẩm thành công"
+                    })
+                    setTimeout(() => {
+                        window.location.href = 'http://localhost:5173/admin/category/list'
+                      }, 2000);
+                  });
+        }
             
     };
 
     const onFinishFailed = (errorInfo: any) => {
         console.log("Failed:", errorInfo);
     };
-
+    // biến bắt buộc phải nhập chữ cái và số
+    const alphaNumericRegExp = /^(?![\s])[\p{L}0-9\s]*[\p{L}0-9](?<![\s])$/u;
     type FieldType = {
         name: string;
         price: number;
     };
     return (
         <div className="max-w-4xl mx-auto">
+            <div>
+                {contextHolder}
+            </div>
             <h2 className="font-bold text-2xl mb-4">Thêm Category</h2>
             <Form
                 name="basic"
@@ -54,6 +70,9 @@ const AddCategory = () => {
                     rules={[
                         { required: true, message: "Vui lòng nhập tên Category" },
                         { min: 3, message: "Ít nhất 3 ký tự" },
+                        {pattern: alphaNumericRegExp, 
+                        message: "Không được để khoảng trống ở đầu và phải có chữ cái và số",
+                        }
                     ]}
                 >
                     <Input />

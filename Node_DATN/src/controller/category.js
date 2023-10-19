@@ -160,6 +160,12 @@ export const getProductsByCategory = async (req, res) => {
 
     // Lấy sản phẩm dựa trên danh mục
     const products = await Product.find({ categoryId: categoryId });
+    
+    if (products.length === 0) {
+      return res.status(200).json({
+        message: "Không có sản phẩm theo danh mục"
+      });
+    }
 
     return res.status(200).json({
       data: products

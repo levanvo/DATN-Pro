@@ -24,6 +24,8 @@ import ChangePassword from "./Page/ChangePassword";
 import ProductsCategory from "./Page/CategoryProducts";
 import CategoryList from "./Page/Admin/Category/CategoryList";
 import AddCategory from "./Page/Admin/Category/CategoryAdd";
+import UpdateCategory from "./Page/Admin/Category/CategoryUpdate";
+
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -54,6 +56,7 @@ function App() {
         <Route path="product/:id/update" element={<UpdateProduct />} />
         <Route path="category/list" element={<CategoryList />} />
         <Route path="category/add" element={<AddCategory />} />
+        <Route path="category/:id/update" element={<UpdateCategory />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

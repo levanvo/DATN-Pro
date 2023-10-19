@@ -11,17 +11,20 @@ const categoryApi = createApi({
         getAllCategory: builder.query<ICategory[], void>({
             query: () => `/api/category`
         }),
-        getCategory: builder.query({
-            query: (id) => `api/category/${id}`,
+
+        getOneCategory: builder.query<ICategory, number | string>({
+            query: (id) => `/api/category/${id}`,
+            providesTags: ["Category"]
         }),
+
         addCategory: builder.mutation<ICategory, ICategory>({
             query: (Category) => ({
-              url: `/api/category`,
-              method: "POST",
-              body: Category,
+                url: `/api/category`,
+                method: "POST",
+                body: Category,
             }),
             invalidatesTags: ["Category"]
-          }),
+        }),
         removeCategory: builder.mutation({
             query: (id) => ({
                 url: `api/category/${id}`,
@@ -29,18 +32,18 @@ const categoryApi = createApi({
             }),
             invalidatesTags: ["Category"],
         }),
-        
-        updateCategory: builder.mutation<ICategory,ICategory>({
+
+        updateCategory: builder.mutation<ICategory, ICategory>({
             query: (category) => ({
-              url: `/api/category/${category._id}/update`,
-              method: "PATCH",
-              body: category
+                url: `/api/category/${category._id}/update`,
+                method: "PATCH"
             }),
             invalidatesTags: ["Category"]
-          }),
+        }),
+
         //Lấy sản phẩm theo danh mục
         getProductsByCategory: builder.query({
-            query: (categoryId) => `/api/category/${categoryId}/products`, 
+            query: (categoryId) => `/api/category/${categoryId}/products`,
         }),
     })
 })
@@ -49,7 +52,7 @@ export const { useGetAllCategoryQuery,
     useAddCategoryMutation,
     useRemoveCategoryMutation,
     useUpdateCategoryMutation,
-    useGetCategoryQuery,
+    useGetOneCategoryQuery,
     useGetProductsByCategoryQuery } = categoryApi
 
 export default categoryApi
