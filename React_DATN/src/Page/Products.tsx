@@ -1,10 +1,17 @@
-import { IProduct } from "../Models/interfaces";
+import { Link } from "react-router-dom";
+import { IProduct, ISize } from "../Models/interfaces";
 import { useGetAllProductQuery } from "../Services/Api_Product";
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useGetAllSizeQuery } from "../Services/Api_Size";
 
 const Products = ({ searchKeyword }: { searchKeyword: string }) => {
   const { data: producData, isLoading, error } = useGetAllProductQuery();
+  const {
+    data: sizeData,
+    isLoading: isLoadingSize,
+    error: errorSize,
+  } = useGetAllSizeQuery();
   console.log(producData);
 
   const [isApplyClicked, setIsApplyClicked] = useState(false);
@@ -68,20 +75,27 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [productsPerPage, setProductsPerPage] = useState(5);
 
-  const handleProductsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleProductsPerPageChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const selectedValue = parseInt(event.target.value);
     setProductsPerPage(selectedValue);
     setCurrentPage(0); // Đặt lại về trang đầu tiên khi thay đổi số lượng sản phẩm trên mỗi trang
   };
 
-  const pageCount = Math.ceil((filteredProducts?.length || 0) / productsPerPage);
+  const pageCount = Math.ceil(
+    (filteredProducts?.length || 0) / productsPerPage
+  );
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
 
   const offset = currentPage * productsPerPage;
-  const currentProducts = filteredProducts?.slice(offset, offset + productsPerPage);
+  const currentProducts = filteredProducts?.slice(
+    offset,
+    offset + productsPerPage
+  );
 
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
@@ -89,6 +103,8 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
       currency: "VND",
     }).format(value);
 
+  if (isLoadingSize) return <div>Loading...Size</div>;
+  if (errorSize) return <div>Error: Size</div>;
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error</div>;
   return (
@@ -163,6 +179,24 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                     </ul>
                   </div>
                 </div>
+                <div className="single-sidebar">
+                  <div className="single-sidebar-title">
+                    <h3>Size</h3>
+                  </div>
+                  <div className="single-sidebar-content">
+                    {sizeData?.map((size: ISize) => {
+                      return (
+                        <ul key={size._id}>
+                          <li>
+                            <Link to={`/size/${size._id}/products`}>
+                              {size.name}
+                            </Link>
+                          </li>
+                        </ul>
+                      );
+                    })}
+                  </div>
+                </div>
                 <div className="single-sidebar price">
                   <div className="single-sidebar-title">
                     <h3>Khoảng giá</h3>
@@ -170,17 +204,23 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                   <div className="single-sidebar-content">
                     <div className="price-range">
                       <div className="price-filter d-flex align-items-center">
-                        <input type="text" name="priceFrom"
-                          placeholder="₫ TỪ" value={priceRange.min}
+                        <input
+                          type="text"
+                          name="priceFrom"
+                          placeholder="₫ TỪ"
+                          value={priceRange.min}
                           onChange={handleMinPriceChange}
-                          maxLength={13} />
+                          maxLength={13}
+                        />
                         <div className="price-filter_line"></div>
-                        <input type="text" name="priceTo"
-                          placeholder="₫ Đến" value={priceRange.max}
+                        <input
+                          type="text"
+                          name="priceTo"
+                          placeholder="₫ Đến"
+                          value={priceRange.max}
                           onChange={handleMaxPriceChange}
-                          maxLength={13} />
-
-
+                          maxLength={13}
+                        />
                       </div>
                       <button type="submit" onClick={handleApplyClick}>
                         <span>Áp dụng</span>
@@ -199,14 +239,24 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
               <div className="product-bar">
                 <div className="sort-by">
                   <label>Sort By Price: </label>
-                  <select name="sort" onChange={handleSortChange} value={sortOption}>
-                    <option value="ascending" selected>Ascending</option>
+                  <select
+                    name="sort"
+                    onChange={handleSortChange}
+                    value={sortOption}
+                  >
+                    <option value="ascending" selected>
+                      Ascending
+                    </option>
                     <option value="decrease">Decrease</option>
                   </select>
                 </div>
                 <div className="limit-product">
                   <label>Show</label>
-                  <select name="show" onChange={handleProductsPerPageChange} value={productsPerPage}>
+                  <select
+                    name="show"
+                    onChange={handleProductsPerPageChange}
+                    value={productsPerPage}
+                  >
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
@@ -233,14 +283,17 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                                 key={product._id}
                               >
                                 <a href={`/product/${product._id}`}>
-
                                   <div className="single-product">
                                     <div className="level-pro-new">
                                       <span>new</span>
                                     </div>
                                     <div className="product-img">
                                       <div>
-                                        <img src={product.imgUrl?.[0]} alt="" className="primary-img h-[300px] w-[250px]" />
+                                        <img
+                                          src={product.imgUrl?.[0]}
+                                          alt=""
+                                          className="primary-img h-[300px] w-[250px]"
+                                        />
                                         <img
                                           src={product.imgUrl?.[1]}
                                           alt=""
@@ -287,7 +340,9 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                                         <h1>{product.name}</h1>
                                       </div>
                                       <div className="price-rating">
-                                        <span>{numberFormat(product.price)}</span>
+                                        <span>
+                                          {numberFormat(product.price)}
+                                        </span>
                                         <div className="ratings">
                                           <i className="fa fa-star"></i>
                                           <i className="fa fa-star"></i>

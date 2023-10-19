@@ -1,36 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
+import jwt_decode from 'jwt-decode';
 import { ImCancelCircle } from "react-icons/im"
 import { UserOutlined } from "@ant-design/icons"
-import { message, Modal } from "antd"
+import { message } from "antd"
 interface User {
   username: string;
+  // Các thuộc tính khác của người dùng (nếu có)
 }
 const Header = ({ onSearch }) => {
-  const navigate = useNavigate()
   const [messageApi, contexHolder] = message.useMessage()
-  const [modal, setModal] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   let user: User | null = null; // Khởi tạo user là null
   const userString = localStorage.getItem("user");
 
-
-  const startLogoutTimer = () => {
-    setTimeout(() => {
-      handleLogout(); // Gọi hàm logout tự động sau 30 phút
-    }, 60 * 60 * 1000); // 1h (60 * 60 * 1000 ms)
-  }
-
-
   if (userString) {
     user = JSON.parse(userString);
-    startLogoutTimer();
   }
 
-  const showLogoutModal = () => {
-    setModal(true);
-  };
-
   const handleLogout = () => {
+    setIsLoggingOut(true);
+
     messageApi.open({
       type: "success",
       content: "Đăng xuất tài khoản thành công"
@@ -39,12 +29,9 @@ const Header = ({ onSearch }) => {
       // Xóa token và user khỏi localStorage
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      setModal(false) // Close the Modal
-      window.location.reload();
-      navigate("/")
+      setIsLoggingOut(false); // Tắt loading sau khi hoàn thành logout
     }, 1500);
   };
-
   const [searchKeyword, setSearchKeyword] = useState('');
 
   const handleSearch = (e) => {
@@ -83,22 +70,22 @@ const Header = ({ onSearch }) => {
               </div>
             </div>
             <div className="col-lg-2 col-md-3 position-relative">
-              {/* Thanh tìm kiếm */}
-              <div className="account-menu py-4 relative">
-                <input type="checkbox" hidden id='search-webSite' />
-                <label htmlFor="search-webSite"><img className='w-10 mt-2 active:scale-90 cursor-pointer' src="../../../img/search-main-web.png" alt="" /></label>
-                <form className='form-webSite' action="" onSubmit={handleSearch}>
-                  <label htmlFor="search-webSite" className=' float-right'><ImCancelCircle className="w-5 h-5 m-1 hover:rotate-90 duration-200 cursor-pointer" /></label>
-                  <h1 className='text-center text-2xl mt-3 text-gray-500 font-bold'>Tìm Kiếm</h1>
-                  <input type="text" placeholder=' Bạn đang tìm kiếm gì ?' value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)} />
-                </form>
-                <label htmlFor="search-webSite" className='display-website-search'></label>
-              </div>
               <div className="dashboard">
+                {/* Thanh tìm kiếm */}
+                <div className="account-menu py-4 relative">
+                  <input type="checkbox" hidden id='search-webSite' />
+                  <label htmlFor="search-webSite"><img className='w-10 mt-2 active:scale-90 cursor-pointer' src="../../../img/search-main-web.png" alt="" /></label>
+                  <form className='form-webSite' action="" onSubmit={handleSearch}>
+                    <label htmlFor="search-webSite" className=' float-right'><ImCancelCircle className="w-5 h-5 m-1 hover:rotate-90 duration-200 cursor-pointer" /></label>
+                    <h1 className='text-center text-2xl mt-3 text-gray-500 font-bold'>Tìm Kiếm</h1>
+                    <input type="text" placeholder=' Bạn đang tìm kiếm gì ?' value={searchKeyword}
+                      onChange={(e) => setSearchKeyword(e.target.value)} />
+                  </form>
+                  <label htmlFor="search-webSite" className='display-website-search'></label>
+                </div>
                 {user ? (<div className="account-menu">
                   <span>{user.username}</span>
-                  <button onClick={showLogoutModal}>Logout</button>
+                  <button onClick={handleLogout}>Logout</button>
                 </div>) : (
                   <div className="account-menu">
                     <Link to={`/login`}><UserOutlined style={{ fontSize: "20px", color: "black" }} /></Link>
@@ -501,15 +488,6 @@ const Header = ({ onSearch }) => {
           </div>
         </div>
       </div>
-
-      <Modal
-        title="Xác nhận đăng xuất"
-        visible={modal}
-        onOk={handleLogout}
-        onCancel={() => setModal(false)}
-      >
-        Bạn có chắc chắn muốn đăng xuất không?
-      </Modal>
     </header>
 
   )
