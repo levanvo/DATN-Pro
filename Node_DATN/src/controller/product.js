@@ -3,7 +3,6 @@ import Category from "../models/category.js"
 import { productSchema } from "../schema/product.js"
 import mongoose from "mongoose"
 
-
 export const getProduct = async (req, res) => {
   try {
     const data = await Product.find()
@@ -22,20 +21,13 @@ export const getProduct = async (req, res) => {
 
 export const readProduct = async (req, res) => {
   try {
-    const {id} = req.params
-    if(!mongoose.Types.ObjectId.isValid(id)){
-      return res.status(400).json({
-        message: "Không tìm thấy sản phẩm"
-      })
-    }
-    const data = await Product
-      .findById({ _id: req.params.id })
+    const data = await Product.findById({ _id: req.params.id })
       .populate(["categoryId", "size_id", "color_id"])
       .exec()
-      
-    if(!data){
+
+    if (!data) {
       return res.status(400).json({
-        message: "Không có sản phẩm nào"
+        message: "Không có sản phẩm nào",
       })
     }
 
@@ -66,11 +58,21 @@ export const createProduct = async (req, res) => {
         products: newProduct._id,
       },
     })
+    await Color.findByIdAndUpdate(newProduct.color_id, {
+      $addToSet: {
+        products: newProduct._id,
+      },
+    })
+    await Size.findByIdAndUpdate(newProduct.size_id, {
+      $addToSet: {
+        products: newProduct._id,
+      },
+    })
     return res.json({
       message: "Thêm sản phẩm thành công",
       data: newProduct,
     })
-  } catch(error) {
+  } catch (error) {
     return res.status(404).json({
       message: error.message,
     })
@@ -79,17 +81,17 @@ export const createProduct = async (req, res) => {
 
 export const removeProduct = async (req, res) => {
   try {
-    const {id} = req.params
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    const { id } = req.params
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
-        message: "Không tìm thấy sản phẩm cần xóa"
+        message: "Không tìm thấy sản phẩm cần xóa",
       })
     }
 
     const data = await Product.findByIdAndRemove({ _id: req.params.id }).exec()
-    if(!data){
+    if (!data) {
       return res.status(400).json({
-        message: "Sản phẩm không tồn tại trong database"
+        message: "Sản phẩm không tồn tại trong database",
       })
     }
 
@@ -97,7 +99,6 @@ export const removeProduct = async (req, res) => {
       message: "Xoá sản phẩm thành công",
       productRemoved: data,
     })
-
   } catch (error) {
     return res.status(404).json({
       message: error.message,
@@ -131,21 +132,23 @@ export const deleteSelectedProducts = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
-    const {id} = req.params
+    const { id } = req.params
 
-    if(!mongoose.Types.ObjectId.isValid(id)){
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
-        message: "Không tìm thấy sản phẩm cần cập nhật"
+        message: "Không tìm thấy sản phẩm cần cập nhật",
       })
     }
 
-    const updateData = await Product
-      .findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
-      .exec()
+    const updateData = await Product.findByIdAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true }
+    ).exec()
 
-    if(!updateData){
+    if (!updateData) {
       return res.status(400).json({
-        message: "Sản phẩm không tồn tại trong database"
+        message: "Sản phẩm không tồn tại trong database",
       })
     }
 
@@ -155,7 +158,7 @@ export const updateProduct = async (req, res) => {
     })
   } catch (error) {
     return res.status(404).json({
-      message:error.message,
+      message: error.message,
     })
   }
 }

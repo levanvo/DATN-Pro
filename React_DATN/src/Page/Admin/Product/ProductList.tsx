@@ -44,7 +44,7 @@ const ProductList = () => {
     })
   }
 
-  const columns = [
+  const columns:any[] = [
     {
       title: 'Tên sản phẩm',
       dataIndex: 'name',
