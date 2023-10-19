@@ -4,17 +4,13 @@ import mongoose from 'mongoose';
 
 export const getAll = async (req, res) => {
   try {
-    //   const categorys = await Category.find().populate("products");
     const categorys = await Category.find();
     if (categorys.length === 0) {
       return res.json({
         message: "Không lấy được danh sách Category!",
       });
     }
-    return res.status(200).json({
-      message: "Lấy danh sách Category thành công!",
-      data: categorys,
-    });
+    return res.status(200).json(categorys);
   } catch (error) {
     return res.status(400).json({
       message: error,
@@ -34,18 +30,16 @@ export const get = async (req, res) => {
         })
     }
 
-    // const categorys = await Category.findById(req.params.id).populate("products");
     const categorys = await Category.findById(req.params.id).populate("products");
     if(!categorys){
       return res.status(400).json({
         message: "Không tồn tại danh mục bạn đang tìm"
       })
     }
-    const product = await Product.find({ categoryId: req.params.id })
     return res.status(200).json({
-      message: "Lấy Category thành công!",
-      ...categorys.toObject(),
-    });
+      ...categorys.toObject()
+    }
+    );
   } catch (error) {
     return res.status(400).json({
       message: error.message,

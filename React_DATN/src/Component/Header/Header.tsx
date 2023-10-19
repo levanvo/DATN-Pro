@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
-import {ImCancelCircle} from "react-icons/im"
 import {UserOutlined} from "@ant-design/icons"
 import {message, Modal} from "antd"
 interface User {

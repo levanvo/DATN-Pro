@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Button, Form, Input, Upload, Modal,Select,message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -9,6 +9,10 @@ import { useAddProductMutation } from "../../../Services/Api_Product";
 import { useGetAllCategoryQuery } from "../../../Services/Api_Category";
 import Loading from "../../../Component/Loading";
 import {useNavigate} from "react-router-dom"
+
+
+const { TextArea } = Input;
+
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -24,7 +28,7 @@ type urlObject = {
 
 const AddProduct = () => {
   const navigate = useNavigate()
-  const [addProduct] = useAddProductMutation();
+  const [addProduct, {error}] = useAddProductMutation();
   const {data: getAllCategory,isLoading} = useGetAllCategoryQuery()
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -58,9 +62,21 @@ const AddProduct = () => {
     </div>
   );
 
-  const beforeUpload = (file: RcFile): boolean => {
+  const beforeUpload = () => {
     return false;
   };
+
+  useEffect(() => {
+    if(error && "data" in error){
+      const errDetails = error.data as {message: string[]}
+      errDetails.message.forEach((err) => {
+        messageApi.open({
+          type: "error",
+          content: err
+        })
+      });
+    }
+  },[error])
 
   const onFinish = async (values: IProduct) => {
     try {
@@ -73,7 +89,7 @@ const AddProduct = () => {
       });
 
       const response = await axios.post(
-        "http://localhost:8080/api/images/upload", // Your Cloudinary upload endpoint
+        "http://localhost:8080/api/images/upload", 
         formData
       );
 
@@ -88,7 +104,10 @@ const AddProduct = () => {
           original_price: values.original_price,
           price: values.price,
           imgUrl: imageUrls,
-          categoryId: values.categoryId
+          categoryId: values.categoryId,
+          description: values.description,
+          color_id: values.color_id,
+          size_id: values.size_id
         };
 
         addProduct(newProduct).unwrap().then(() => {
@@ -106,6 +125,8 @@ const AddProduct = () => {
       setIsLoadingScreen(false);
     }
   };
+
+
 
   return (
     <div>
@@ -129,15 +150,32 @@ const AddProduct = () => {
             loading={isLoading}
           >
           {getAllCategory ? (
-          getAllCategory.data.map((category:any) => (
+          getAllCategory.map((category:any) => (
             <Select.Option key={category._id} value={category._id}>
               {category.name}
             </Select.Option>
           ))
         ) : (
           <p>Loading...</p>
-  )}
+         )}
 
+          </Select>
+        </Form.Item>
+
+        <Form.Item label="Codor" name="color_id" rules={[{ required: true }]}>
+          <Select
+            style={{ width: 200 }}
+            loading={isLoading}
+          >
+          {getAllCategory ? (
+          getAllCategory.map((category:any) => (
+            <Select.Option key={category._id} value={category._id}>
+              {category.name}
+            </Select.Option>
+          ))
+        ) : (
+          <p>Loading...</p>
+         )}
           </Select>
         </Form.Item>
 
@@ -153,8 +191,11 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item name="description" label="Mô tả sản phẩm" rules={[{ required: true }]}>
+         <TextArea rows={4} />
+        </Form.Item>
 
+        <Form.Item label="Tải lên">
           <Upload
             listType="picture-card"
             name="images"
@@ -177,8 +218,8 @@ const AddProduct = () => {
           <img alt="example" style={{ width: "100%" }} src={previewImage} />
         </Modal>
 
-        <Form.Item>
-          <Button type="primary" danger htmlType="submit">
+        <Form.Item wrapperCol={{ offset: 4, span: 11 }}>
+          <Button type="primary" danger htmlType="submit" style={{marginRight: 20}}>
             Thêm mới
           </Button>
           <Button htmlType="button" onClick={() => navigate("/admin/product/list")}>Quay lại</Button>

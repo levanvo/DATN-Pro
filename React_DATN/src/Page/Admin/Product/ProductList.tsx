@@ -6,8 +6,11 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import Loading from '../../../Component/Loading';
 import {DeleteFilled,EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
+
 
 const { Search } = Input;
+
 
 // rowSelection object indicates the need for row selection
 const rowSelection = {
@@ -18,18 +21,19 @@ const rowSelection = {
 
 
 const ProductList = () => {
-  const {data: getAllProduct,isLoading} = useGetAllProductQuery()
+  const {data: getAllProduct,isLoading, error} = useGetAllProductQuery()
   const [removeProduct] = useDeleteProductMutation()
   const [messageApi,contextHolder] = message.useMessage() 
-
-  const dataSource = getAllProduct?.map(({_id,name,original_price,price,imgUrl}:IProduct) => ({
+  const {data: categories} = useGetAllCategoryQuery()
+  const dataSource = getAllProduct?.map(({_id,name,original_price,price,imgUrl,categoryId}:IProduct) => ({
     key: _id,
     name,
     original_price,
     price,
-    imgUrl
+    imgUrl,
+    categoryId
   }))
-
+  
   const confirm = (id: number | string) => {
     
     removeProduct(id).unwrap().then(() => {
@@ -51,13 +55,26 @@ const ProductList = () => {
       title: 'Hình ảnh',
       dataIndex: "imgUrl",
       key: "imgUrl",
-      render: (imgUrls:string) => (
+      render: (imgUrls:string[]) => (
         imgUrls && imgUrls.length > 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <img src={imgUrls[0]} style={{ width: 100 }} />
           </div>
         ) : null
       ),
+      align: 'center',
+    },
+    {
+      title: 'Danh mục',
+      dataIndex: 'categoryId',
+      key: "categoryId",
+      render: (categoryId: string) => {
+        if(categories){
+          console.log(categories);
+          const categoryName = categories.find((c) => c._id === categoryId)
+          return categoryName ? categoryName.name : "không xác định"
+        }
+      },
       align: 'center',
     },
     {
