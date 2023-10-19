@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Button, Table, Popconfirm, message } from "antd"
+import { Button, Table, Popconfirm, message, Input } from "antd"
+
 import {
   useRemoveColorMutation,
   useGetColorsQuery,
@@ -9,6 +10,9 @@ import { IColor } from "../../../Models/interfaces"
 import Loading from "../../../Component/Loading"
 
 const ListColor = () => {
+  const { Search } = Input
+  const [searchQuery, setSearchQuery] = useState<string>("")
+
   const [selectedColorIds, setSelectedColorIds] = useState<React.Key[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -26,7 +30,17 @@ const ListColor = () => {
     index: index + 1,
     key: item._id,
     name: item.name,
+    products: item.products,
   }))
+
+  const handleSearch = (value: string) => {
+    // Update the search query state when the user types in the search bar
+    setSearchQuery(value)
+  }
+
+  const filteredData = dataSource.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const columns = [
     {
@@ -36,8 +50,23 @@ const ListColor = () => {
     {
       title: "Màu",
       dataIndex: "name",
-      render: (text: string) => <p>{text}</p>,
+      render: (text: string) => (
+        <Link to={`/admin/product/list`}>
+          <p style={{}}>{text}</p>
+        </Link>
+      ),
     },
+    // {
+    //   title: "Products",
+    //   dataIndex: "products",
+    //   render: (products: []) => (
+    //     <div>
+    //       {products.map((item, index) => (
+    //         <p key={index}>{item}</p>
+    //       ))}
+    //     </div>
+    //   ),
+    // },
     {
       title: "Hành Động",
       key: "action",
@@ -51,7 +80,7 @@ const ListColor = () => {
                 removeColor(color.key)
                 message.error("Remove success")
               }}
-              okText="Yes"
+              okText={<span style={{ color: "black" }}>Yes</span>}
               cancelText="No"
             >
               <Button danger>Xoá</Button>
@@ -115,11 +144,17 @@ const ListColor = () => {
         <Link to={`/admin/color/create`}>
           <Button style={{ margin: "0 0 0 8px" }}>Tạo Màu Mới</Button>
         </Link>
+        <Input
+          placeholder="Search by color name"
+          onChange={(e) => handleSearch(e.target.value)} // Use the onChange event to trigger real-time filtering
+          style={{ width: 280, marginLeft: 8 }}
+        />
       </div>
       <Table
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={dataSource}
+        dataSource={filteredData}
+        tableLayout="fixed"
       />
     </div>
   )

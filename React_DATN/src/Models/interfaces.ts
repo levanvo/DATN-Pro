@@ -31,4 +31,5 @@ export interface IUser {
 export interface IColor {
   _id: string
   name: string
+  products: []
 }
