@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react"
 import {
   DesktopOutlined,
   FileOutlined,
@@ -10,9 +10,9 @@ import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { Outlet, Link } from 'react-router-dom';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Footer, Sider } = Layout
 
-type MenuItem = Required<MenuProps>['items'][number];
+type MenuItem = Required<MenuProps>["items"][number]
 
 function getItem(
   label: React.ReactNode,
@@ -46,10 +46,10 @@ const items: MenuItem[] = [
 ];
 
 const Layout_Admin: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false)
   const {
     token: { colorBgContainer },
-  } = theme.useToken();
+  } = theme.useToken()
 
   return (
     <div className="nav-left">
@@ -76,4 +76,4 @@ const Layout_Admin: React.FC = () => {
   );
 };
 
-export default Layout_Admin;
+export default Layout_Admin

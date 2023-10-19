@@ -28,11 +28,15 @@ import ForgotPassword from "./Page/ForgotPassword";
 import VerificationCodes from "./Page/VerificationCodes";
 import ChangePassword from "./Page/ChangePassword";
 import ProductsSize from "./Page/SizeProduct";
+import ListColor from "./Page/Admin/colorProduct/listColor"
+import CreateColor from "./Page/Admin/colorProduct/createColor"
+import UpdateColor from "./Page/Admin/colorProduct/updateColor"
 import Dashboard from "./Page/Admin/Dashboard";
 
 function App() {
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
-  Config();
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
+  Config()
+
   return (
     <Routes>
       <Route path="/" element={<Layout_Web />}>
@@ -55,6 +59,9 @@ function App() {
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
+        <Route path="colors" element={<ListColor />} />
+        <Route path="color/create" element={<CreateColor />} />
+        <Route path="color/:id/update" element={<UpdateColor />} />
         <Route path="forgot-password" element={<ForgotPassword />}/>
         <Route path="verification-codes" element= {<VerificationCodes />}/>
         <Route path="change-password" element={<ChangePassword />}/>
@@ -67,7 +74,7 @@ function App() {
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
-  );
+  )
 }
 
 function NotFound() {
@@ -78,7 +85,7 @@ function NotFound() {
         Xin lỗi, trang bạn tìm kiếm không tồn tại.(<a href="/">Quay lại</a>)
       </p>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
