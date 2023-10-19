@@ -59,7 +59,27 @@ const ProductsSize = () => {
                 <div className="sidebar-title">
                   <h2>Danh mục sản phẩm</h2>
                 </div>
-                
+                <div className="single-sidebar">
+                  <div className="single-sidebar-title">
+                    <h3>Sản Phảm</h3>
+                  </div>
+                  <div className="single-sidebar-content">
+                    <ul>
+                      <li>
+                        <a href="#">ADIDAS (4)</a>
+                      </li>
+                      <li>
+                        <a href="#">MLB (6)</a>
+                      </li>
+                      <li>
+                        <a href="#">VANS (1)</a>
+                      </li>
+                      <li>
+                        <a href="#">NIKE (3)</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
                 <div className="single-sidebar">
                   <div className="single-sidebar-title">
                     <h3>Màu Sắc</h3>
