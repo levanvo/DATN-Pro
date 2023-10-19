@@ -25,6 +25,7 @@ import ForgotPassword from "./Page/ForgotPassword";
 import VerificationCodes from "./Page/VerificationCodes";
 import ChangePassword from "./Page/ChangePassword";
 import ProductsSize from "./Page/SizeProduct";
+import Dashboard from "./Page/Admin/Dashboard";
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -49,7 +50,8 @@ function App() {
         <Route path="size/:id/products" element={<ProductsSize />} />
       </Route>
 
-      <Route path="/admin" element={<Layout_Admin />}>
+      <Route path="/admin" element={isAdminLoggedIn ? <Layout_Admin /> : <AdminLogin />}>
+        <Route index element={<Dashboard />}/>
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
