@@ -25,7 +25,7 @@ type urlObject = {
 const AddProduct = () => {
   const navigate = useNavigate()
   const [addProduct] = useAddProductMutation();
-  const {data: getAllCategory,isLoading} = useGetAllCategoryQuery()
+  const {data: getAllCategory,isLoading}:any = useGetAllCategoryQuery()
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");

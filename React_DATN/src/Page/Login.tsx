@@ -1,57 +1,46 @@
 import React,{useState,useEffect} from 'react';
 import { Button, Checkbox, Form, Input,message } from 'antd';
 import { useSiginMutation } from '../Services/Api_User';
+import { IUser } from '../Models/interfaces';
 import Loading from '../Component/Loading';
-import { useNavigate } from 'react-router-dom';
 
 
 
 const Login = () => {
-    const navigate = useNavigate()
     const [sigin, {error}] = useSiginMutation()
     const [isLoadingSeen,setIsLoadingSeen] = useState(false)
     const [messageApi,contexHolder] = message.useMessage()
-
-    // Lỗi server trả về
-    useEffect(() => {
-        if (error) {
-            if("data" in error){
-                const errorData = error.data as { message: string[] };
-                errorData.message.forEach(err => {
-                    messageApi.open({
-                        type: "error",
-                        content: err
-                    })
-                });
-            }
-        }
-    }, [error]);
-
     const onFinish = async (values: any) => {
-        setIsLoadingSeen(true); 
+        setIsLoadingSeen(true); // Set loading to true initially
         try {
             const { data }: any = await sigin(values);
             localStorage.setItem("token", `"${data.accessToken}"`);
            localStorage.setItem("user", JSON.stringify(data.user))
- 
+           
+            
             messageApi.open({
                 type: "success",
                 content: "Đăng nhập thành công"
-            })
-            setTimeout(() => {
-                navigate("/")
-                window.location.reload()
-            },1500)
+            }); 
         } catch (error) {
-            console.log("Đã có lỗi xảy ra vui lòng thử lại sau");
         }       
-        setIsLoadingSeen(false);
+        setIsLoadingSeen(false); // Set loading to false after a successful login attempt
     };
     
       const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
       };
-     
+      useEffect(() => {
+        if (error) {
+            if("data" in error){
+                const errorData = error.data as { message: string };
+                messageApi.open({
+                    type: "error",
+                    content: errorData?.message
+                })
+            }
+        }
+    }, [error]);
 return (
    <div>
     {contexHolder}
@@ -69,28 +58,29 @@ return (
         >
             <Form.Item style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div>
-                    <h1>Login</h1>
+                    <h1>Đăng nhập</h1>
             </div>
             </Form.Item>
 
-                    <h5 style={{marginTop:-30,textAlign:"center",marginBottom:60}}>Please login using account detail bellow.</h5>
+                    <h5 style={{marginTop:-30,textAlign:"center",marginBottom:60}}>Vui lòng điền thông tin đăng nhập bên dưới.</h5>
+
 
             <Form.Item 
-                label={<span style={{ color: '#2b2b2b' }}>Tên đăng nhập</span>}
+                label={<span style={{ color: '#2b2b2b' }}>Email</span>}
                 name="email"
                 style={{ color: 'lightgray' }}
-                rules={[{ required: true, message: 'Tên đăng nhập không được để trống!' }]}
+                rules={[{ required: true, message: 'Please input your username!' }]}
             >
-                <Input style={{height: 40,width:500}} placeholder='nhập địa chỉ email'/>
+                <Input style={{height: 40,width:500}}/>
             </Form.Item>
 
             <Form.Item
                 label="Mật khẩu"
                 name="password"
                 
-                rules={[{ required: true, message: 'Password không được để trống!' }]}
+                rules={[{ required: true, message: 'Please input your password!' }]}
             >
-                <Input.Password style={{height: 40,width:500}} placeholder='nhập mật khẩu'/>
+                <Input.Password style={{height: 40,width:500}}/>
             </Form.Item>
 
             <Form.Item valuePropName="checked" wrapperCol={{ offset: 6, span: 17 }}>

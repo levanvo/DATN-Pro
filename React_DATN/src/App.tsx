@@ -18,9 +18,9 @@ import ProductList from "./Page/Admin/Product/ProductList";
 import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
 import {useState} from "react"
 import AdminLogin from "./Page/Login/AdminLogin";
-import ForgotPassword from "./Page/ForgotPassword";
-import VerificationCodes from "./Page/VerificationCodes";
-import ChangePassword from "./Page/ChangePassword";
+import UserList from "./Page/Admin/User/UserList";
+import AddUser from "./Page/Admin/User/AddUser";
+import UpdateUser from "./Page/Admin/User/UpdateUser";
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -36,9 +36,6 @@ function App() {
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="checkout" element={<Checkout />} />
         <Route path="register" element={<Register />} />
-        <Route path="forgot-password" element={<ForgotPassword />}/>
-        <Route path="verification-codes" element= {<VerificationCodes />}/>
-        <Route path="change-password" element={<ChangePassword />}/>
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
@@ -48,6 +45,10 @@ function App() {
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
+
+        <Route path="user/list" element={<UserList />} />
+        <Route path="user/add" element={<AddUser />} />
+        <Route path="user/update/:id" element={<UpdateUser />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
