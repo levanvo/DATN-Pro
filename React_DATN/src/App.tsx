@@ -1,29 +1,33 @@
-import { Routes, Route, Navigate } from "react-router-dom"
-import Layout_Web from "./Page/Layout/Layout_Web"
-import Contact from "./Page/Contact"
-import Bill from "./Page/Bill"
-import Cart from "./Page/Cart"
-import ProductDetail from "./Page/ProductDetail"
-import Checkout from "./Page/Checkout"
-import Config from "./Page/Layout/Config"
-import HomePage from "./Page"
-import Blog from "./Page/Blog"
-import Login from "./Page/Login"
-import Products from "./Page/Products"
-import Blog_details from "./Page/Blog_details"
-import Register from "./Page/Register"
-import AddProduct from "./Page/Admin/Product/AddProduct"
-import Layout_Admin from "./Page/Layout/Layout_Admin"
-import ProductList from "./Page/Admin/Product/ProductList"
-import UpdateProduct from "./Page/Admin/Product/UpdateProduct"
-import { useState } from "react"
+import { Routes, Route, Navigate } from "react-router-dom";
+import Layout_Web from "./Page/Layout/Layout_Web";
+import Contact from "./Page/Contact";
+import Bill from "./Page/Bill";
+import Cart from "./Page/Cart";
+import ProductDetail from "./Page/ProductDetail";
+import Checkout from "./Page/Checkout";
+import Config from "./Page/Layout/Config";
+import HomePage from "./Page";
+import Blog from "./Page/Blog";
+import Login from "./Page/Login";
+import Products from "./Page/Products";
+import Blog_details from "./Page/Blog_details";
+import Register from "./Page/Register";
+import AddProduct from "./Page/Admin/Product/AddProduct";
+import Layout_Admin from "./Page/Layout/Layout_Admin";
+import ProductList from "./Page/Admin/Product/ProductList";
+import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
+import {useState} from "react"
+import AdminLogin from "./Page/Login/AdminLogin";
+import SizeList from "./Page/Admin/Size/SizeList";
+import AdminSizeAdd from "./Page/Admin/Size/AddSize";
+import AdminSizeUpdate from "./Page/Admin/Size/UpdateSize";
+import ForgotPassword from "./Page/ForgotPassword";
+import VerificationCodes from "./Page/VerificationCodes";
+import ChangePassword from "./Page/ChangePassword";
+import ProductsSize from "./Page/SizeProduct";
 import ListColor from "./Page/Admin/colorProduct/listColor"
 import CreateColor from "./Page/Admin/colorProduct/createColor"
 import UpdateColor from "./Page/Admin/colorProduct/updateColor"
-import AdminLogin from "./Page/Login/AdminLogin"
-import ForgotPassword from "./Page/ForgotPassword"
-import VerificationCodes from "./Page/VerificationCodes"
-import ChangePassword from "./Page/ChangePassword"
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
@@ -46,6 +50,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="size/:id/products" element={<ProductsSize />} />
       </Route>
 
       <Route path="/admin" element={<Layout_Admin />}>
@@ -55,6 +60,9 @@ function App() {
         <Route path="colors" element={<ListColor />} />
         <Route path="color/create" element={<CreateColor />} />
         <Route path="color/:id/update" element={<UpdateColor />} />
+        <Route path="size/list" element={<SizeList />} />
+        <Route path="size/add" element={<AdminSizeAdd />} />
+        <Route path="size/:id/update" element={<AdminSizeUpdate />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

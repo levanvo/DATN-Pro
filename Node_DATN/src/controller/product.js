@@ -55,7 +55,11 @@ export const createProduct = async (req, res) => {
         products: newProduct._id,
       },
     })
+<<<<<<< HEAD
     await Color.findByIdAndUpdate(newProduct.color_id, {
+=======
+    await Size.findByIdAndUpdate(newProduct.size_id, {
+>>>>>>> 12a40bf0b6c01f58e647ea243ad33e41917b579d
       $addToSet: {
         products: newProduct._id,
       },

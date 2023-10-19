@@ -33,3 +33,8 @@ export interface IColor {
   name: string
   products: []
 }
+
+export interface ISize {
+  _id?: number | string,
+  name: string
+}
