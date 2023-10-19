@@ -1,39 +1,53 @@
-
 import { Form, Button, Input, message } from "antd";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { useAddSizeMutation } from "../../../Services/Api_Size";
+import { useAddSizeMutation, useGetAllSizeQuery } from "../../../Services/Api_Size";
 import { ISize } from "../../../Models/interfaces";
 import Loading from "../../../Component/Loading";
 import { useState } from "react";
+
 type FieldType = {
     name: string;
 };
+
 const AdminSizeAdd = () => {
     const [addSize, { isLoading }] = useAddSizeMutation();
-    const [messageApi, contextHolder] = message.useMessage()
+    const [messageApi, contextHolder] = message.useMessage();
     const [isLoadingScreen, setIsLoadingScreen] = useState(false);
     const navigate = useNavigate();
-    const onFinish = (values: ISize) => {
+    const getAllSizeQuery = useGetAllSizeQuery();
+
+    const onFinish = async (values: ISize) => {
         try {
-            setIsLoadingScreen(true)
-            addSize(values)
+            setIsLoadingScreen(true);
+
+            // Check for duplicate size
+            const existingSize = getAllSizeQuery.data?.find((size) => size.name === values.name);
+            if (existingSize) {
+                messageApi.error("Size đã tồn tại trong cơ sở dữ liệu!");
+                setIsLoadingScreen(false);
+                return;
+            }
+
+            await addSize(values)
                 .unwrap()
                 .then(() => {
                     messageApi.open({
                         type: "success",
                         content: "Thêm thành công"
-                    })
+                    });
                     setTimeout(() => {
-                        navigate("/admin/size/list")
-                    }, 2000)
+                        navigate("/admin/size/list");
+                    }, 2000);
                 });
-            setIsLoadingScreen(false)
+
+            setIsLoadingScreen(false);
         } catch (error) {
             console.log("Lỗi khi thêm");
-            setIsLoadingScreen(false)
+            setIsLoadingScreen(false);
         }
     };
+
     return (
         <div>
             <header className="mb-4">
@@ -42,42 +56,46 @@ const AdminSizeAdd = () => {
 
             {contextHolder}
             {isLoadingScreen && <Loading />}
-            {isLoading ? <Loading /> : <Form
-                name="basic"
-                labelCol={{ span: 8 }}
-                wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 600 }}
-                onFinish={onFinish}
-                autoComplete="off"
-            >
-                <Form.Item<FieldType>
-                    label="Tên size"
-                    name="name"
-                    rules={[
-                        { required: true, message: "Vui lòng nhập size!" },
-                        { pattern: /^\d{2}$/, message: "Vui lòng nhập số có 2 chữ số!" },
-                    ]}
+            {isLoading ? (
+                <Loading />
+            ) : (
+                <Form
+                    name="basic"
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    style={{ maxWidth: 600 }}
+                    onFinish={onFinish}
+                    autoComplete="off"
                 >
-                    <Input />
-                </Form.Item>
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                    <Button type="primary" danger htmlType="submit">
-                        {isLoading ? (
-                            <AiOutlineLoading3Quarters className="animate-spin" />
-                        ) : (
-                            "Thêm"
-                        )}
-                    </Button>
-                    <Button
-                        type="primary"
-                        danger
-                        className="ml-2"
-                        onClick={() => navigate("/admin/size/list")}
+                    <Form.Item<FieldType>
+                        label="Tên size"
+                        name="name"
+                        rules={[
+                            { required: true, message: "Vui lòng nhập size!" },
+                            { pattern: /^\d{2}$/, message: "Vui lòng nhập số có 2 chữ số!" },
+                        ]}
                     >
-                        Quay lại
-                    </Button>
-                </Form.Item>
-            </Form>}
+                        <Input />
+                    </Form.Item>
+                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Button type="primary" danger htmlType="submit">
+                            {isLoading ? (
+                                <AiOutlineLoading3Quarters className="animate-spin" />
+                            ) : (
+                                "Thêm"
+                            )}
+                        </Button>
+                        <Button
+                            type="primary"
+                            danger
+                            className="ml-2"
+                            onClick={() => navigate("/admin/size/list")}
+                        >
+                            Quay lại
+                        </Button>
+                    </Form.Item>
+                </Form>
+            )}
         </div>
     );
 };

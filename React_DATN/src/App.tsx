@@ -24,6 +24,7 @@ import AdminSizeUpdate from "./Page/Admin/Size/UpdateSize";
 import ForgotPassword from "./Page/ForgotPassword";
 import VerificationCodes from "./Page/VerificationCodes";
 import ChangePassword from "./Page/ChangePassword";
+import ProductsSize from "./Page/SizeProduct";
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -45,6 +46,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="size/:id/products" element={<ProductsSize />} />
       </Route>
 
       <Route path="/admin" element={<Layout_Admin />}>

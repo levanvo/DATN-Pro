@@ -8,8 +8,8 @@ const sizeApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `http://localhost:8080`,
     fetchFn: async (...args) => (
-        await pause(1000),
-        fetch(...args)
+      await pause(1000),
+      fetch(...args)
     )
   }),
   endpoints: (builder) => ({
@@ -32,24 +32,28 @@ const sizeApi = createApi({
       invalidatesTags: ["Size"]
     }),
 
-    deleteSize: builder.mutation<void,number | string>({
-        query: (id) => ({
-            url: `/api/size/${id}`,
-            method: "DELETE",
-        }),
+    deleteSize: builder.mutation<void, number | string>({
+      query: (id) => ({
+        url: `/api/size/${id}`,
+        method: "DELETE",
+      }),
       invalidatesTags: ["Size"]
     }),
 
-    updateSize: builder.mutation<ISize,ISize>({
+    updateSize: builder.mutation<ISize, ISize>({
       query: (size: ISize) => ({
         url: `/api/size/${size._id}`,
         method: "PATCH",
         body: size,
       }),
       invalidatesTags: ["Size"]
-    })
+    }),
+    //Lấy sản phẩm theo danh mục
+    getProductsBySize: builder.query({
+      query: (sizeId) => `/api/size/${sizeId}/products`,
+    }),
   }),
 });
 
-export const { useAddSizeMutation, useDeleteSizeMutation, useGetAllSizeQuery, useGetOneSizeQuery, useUpdateSizeMutation } = sizeApi;
+export const { useAddSizeMutation, useDeleteSizeMutation, useGetAllSizeQuery, useGetOneSizeQuery, useUpdateSizeMutation, useGetProductsBySizeQuery } = sizeApi;
 export default sizeApi;

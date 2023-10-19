@@ -35,7 +35,6 @@ export const get = async (req, res) => {
         message: "Không tìm thấy size!",
       });
     }
-    const product = await Product.find({ categoryId: req.params.id })
     return res.status(200).json({
       message: "Lấy size thành công!",
       data: sizes,
@@ -119,6 +118,40 @@ export const update = async (req, res) => {
       message: "Size đã được cập nhật thành công!",
       data: sizes,
     });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const getProductsBysize = async (req, res) => {
+  try {
+    const sizeId = req.params.id;
+
+    // Kiểm tra trong mongoose nếu id không phải là một ObjectId thì trả về message
+    if (!mongoose.Types.ObjectId.isValid(sizeId)) {
+      return res.status(401).json({
+        message: "Không tìm thấy ID danh mục"
+      });
+    }
+
+    // Tìm danh mục dựa trên sizeId
+    const size = await Size.findById(sizeId);
+
+    if (!size) {
+      return res.status(400).json({
+        message: "Không tồn tại danh mục bạn đang tìm"
+      });
+    }
+
+    // Lấy sản phẩm dựa trên danh mục
+    const products = await Product.find({ size_id: sizeId });
+
+    return res.status(200).json({
+      data: products
+    });
+    
   } catch (error) {
     return res.status(500).json({
       message: error.message,

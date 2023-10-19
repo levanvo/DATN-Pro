@@ -1,41 +1,64 @@
 import React, { useState } from 'react';
-import { Divider, Table,Popconfirm, message,Button,Input } from 'antd';
+import { Divider, Table, Popconfirm, message, Button, Input } from 'antd';
 import { ISize } from '../../../Models/interfaces';
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import Loading from '../../../Component/Loading';
-import {DeleteFilled,EditOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useDeleteSizeMutation, useGetAllSizeQuery } from '../../../Services/Api_Size';
 
 const { Search } = Input;
 
-// rowSelection object indicates the need for row selection
-const rowSelection = {
-  onChange: (selectedRowKeys: React.Key[], selectedRows:any) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-};
-
-
 const SizeList = () => {
-  const {data: getAllSize,isLoading} = useGetAllSizeQuery()
-  const [removeSize] = useDeleteSizeMutation()
-  const [messageApi,contextHolder] = message.useMessage() 
+  const { data: getAllSize, isLoading } = useGetAllSizeQuery();
+  const [removeSize] = useDeleteSizeMutation();
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const dataSource = getAllSize?.data.map(({_id,name}:ISize) => ({
+  const dataSource = getAllSize?.data.map(({ _id, name }: ISize) => ({
     key: _id,
     name
-  }))
+  })) || [];
+
+  const [selectedSizes, setSelectedSizes] = useState<ISize[]>([]);
+  const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
 
   const confirm = (id: number | string) => {
-    
-    removeSize(id).unwrap().then(() => {
-      messageApi.open({
-        type: "success",
-        content: "Xóa size thành công"
+    removeSize(id)
+      .unwrap()
+      .then(() => {
+        messageApi.open({
+          type: 'success',
+          content: 'Xóa size thành công'
+        });
+        setSelectedSizes(prevSelectedSizes =>
+          prevSelectedSizes.filter(size => size.key !== id)
+        );
       })
-    })
-  }
+      .catch((error) => {
+        messageApi.error('Đã xảy ra lỗi khi xóa size');
+      });
+  };
+
+  const handleSelectionChange = (selectedRowKeys: React.Key[], selectedRows: ISize[]) => {
+    setSelectedSizes(selectedRows);
+    console.log('selectedRowKeys:', selectedRowKeys);
+    console.log('selectedRows:', selectedRows);
+  };
+
+  const deleteSelectedSizes = () => {
+    selectedSizes.forEach((size,index) => {
+      removeSize(size.key)
+        .unwrap()
+        .then(() => {
+          if (index === selectedSizes.length - 1 && !isDeleteSuccess) {
+            messageApi.success('Xóa size thành công');
+            setIsDeleteSuccess(true);
+          }
+        })
+        .catch((error) => {
+          messageApi.error('Đã xảy ra lỗi khi xóa size');
+        });
+    });
+    setSelectedSizes([]);
+  };
 
   const columns = [
     {
@@ -44,45 +67,70 @@ const SizeList = () => {
       render: (text: string) => (<a>{text}</a>),
       align: 'center',
     },
-  
     {
       title: 'Action',
       key: 'action',
-      render: ({key: id}: any) => (
-        <div className="flex space-x-4" style={{justifyContent: 'center', alignItems: "center"}}>
-            <Popconfirm
-                title="Bạn có chắc chắn muốn xóa không?"
-                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                onConfirm={() => confirm(id)}
-                okText={
-                  <span style={{ color: 'black'}}>Yes</span>
-                }
-                cancelText="No"
-            >
-              <DeleteFilled style={{color: '#FF0000',fontSize: "20px"}}/>
-            </Popconfirm>
-            
-            <Link to={`/admin/size/${id}/update`}>
-              <EditOutlined style={{fontSize: "20px"}}/>
-            </Link>
+      render: ({ key: id }: any) => (
+        <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
+          <Popconfirm
+            title="Bạn có chắc chắn muốn xóa không?"
+            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+            onConfirm={() => confirm(id)}
+            okText={<span style={{ color: 'black' }}>Yes</span>}
+            cancelText="No"
+          >
+            <DeleteFilled style={{ color: '#FF0000', fontSize: "20px" }} />
+          </Popconfirm>
+          <Link to={`/admin/size/${id}/update`}>
+            <EditOutlined style={{ fontSize: "20px" }} />
+          </Link>
         </div>
-       ),
-       align: 'center',
+      ),
+      align: 'center',
     },
   ];
-  
+
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const handleSearch = (value: string) => {
+    setSearchKeyword(value);
+  };
+
+  const filteredDataSource = dataSource.filter((item:any) =>
+    item.name.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
+
   return (
     <div>
       {contextHolder}
       <div>
-        <Button type="primary" style={{background: "blue"}}>
+        <Button type="primary" style={{ background: "blue" }}>
           <Link to={`/admin/size/add`}>Thêm mới</Link>
         </Button>
-          <Search placeholder="tìm từ khóa" allowClear  style={{ width: 300, marginLeft: 50 }} />
+        <Search
+          placeholder="Tìm từ khóa"
+          allowClear
+          style={{ width: 300, marginLeft: 50 }}
+          onSearch={handleSearch}
+        />
       </div>
       <Divider />
-      {isLoading ? <Loading /> : <Table rowSelection={{...rowSelection,}} columns={columns} dataSource={dataSource}/>}
-      
+      <Table
+        rowSelection={{
+          selectedRowKeys: selectedSizes.map(size => size.key),
+          onChange: handleSelectionChange
+        }}
+        columns={columns}
+        dataSource={filteredDataSource}
+      />
+      <Button
+        type="primary"
+        danger
+        onClick={deleteSelectedSizes}
+        disabled={selectedSizes.length === 0}
+      >
+        Xóa các size đã chọn
+      </Button>
     </div>
   );
 };
