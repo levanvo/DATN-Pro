@@ -57,6 +57,11 @@ export const createProduct = async (req, res) => {
         products: newProduct._id,
       },
     })
+    await Size.findByIdAndUpdate(newProduct.size_id, {
+      $addToSet: {
+        products: newProduct._id,
+      },
+    })
     return res.json({
       message: "Thêm sản phẩm thành công",
       data: newProduct,

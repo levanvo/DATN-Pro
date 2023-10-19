@@ -29,3 +29,8 @@ export interface IUser {
   password: string,
   confirmPassword: string
 }
+
+export interface ISize {
+  _id?: number | string,
+  name: string
+}

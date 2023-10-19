@@ -18,9 +18,13 @@ import ProductList from "./Page/Admin/Product/ProductList";
 import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
 import {useState} from "react"
 import AdminLogin from "./Page/Login/AdminLogin";
+import SizeList from "./Page/Admin/Size/SizeList";
+import AdminSizeAdd from "./Page/Admin/Size/AddSize";
+import AdminSizeUpdate from "./Page/Admin/Size/UpdateSize";
 import ForgotPassword from "./Page/ForgotPassword";
 import VerificationCodes from "./Page/VerificationCodes";
 import ChangePassword from "./Page/ChangePassword";
+import ProductsSize from "./Page/SizeProduct";
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -42,12 +46,16 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="size/:id/products" element={<ProductsSize />} />
       </Route>
 
       <Route path="/admin" element={<Layout_Admin />}>
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
+        <Route path="size/list" element={<SizeList />} />
+        <Route path="size/add" element={<AdminSizeAdd />} />
+        <Route path="size/:id/update" element={<AdminSizeUpdate />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
