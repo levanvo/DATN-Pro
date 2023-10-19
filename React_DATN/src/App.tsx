@@ -16,7 +16,7 @@ import AddProduct from "./Page/Admin/Product/AddProduct";
 import Layout_Admin from "./Page/Layout/Layout_Admin";
 import ProductList from "./Page/Admin/Product/ProductList";
 import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
-import {useState} from "react"
+import { useState } from "react"
 import AdminLogin from "./Page/Login/AdminLogin";
 import ForgotPassword from "./Page/ForgotPassword";
 import VerificationCodes from "./Page/VerificationCodes";
@@ -24,21 +24,27 @@ import ChangePassword from "./Page/ChangePassword";
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const handleSearch = (keyword: string) => {
+    setSearchKeyword(keyword);
+  };
   Config();
   return (
     <Routes>
-      <Route path="/" element={<Layout_Web />}>
+      <Route path="/" element={<Layout_Web onSearch={handleSearch} />}>
         <Route index element={<HomePage />} />
         <Route path="cart" element={<Cart />} />
-        <Route path="products" element={<Products />} />
+        <Route path="products" element={<Products searchKeyword={searchKeyword} />} />
         <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="checkout" element={<Checkout />} />
         <Route path="register" element={<Register />} />
-        <Route path="forgot-password" element={<ForgotPassword />}/>
-        <Route path="verification-codes" element= {<VerificationCodes />}/>
-        <Route path="change-password" element={<ChangePassword />}/>
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="verification-codes" element={<VerificationCodes />} />
+        <Route path="change-password" element={<ChangePassword />} />
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
