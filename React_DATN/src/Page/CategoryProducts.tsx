@@ -28,6 +28,10 @@ const ProductsCategory = () => {
     return <div>Error loading products.</div>;
   }
 
+  if (!ProductsCategoty?.data || ProductsCategoty?.data.length === 0) {
+    return <div>Không có sản phẩm nào theo category.</div>;
+  }
+
   return (
     <div className="w-[90vw] mx-auto">
       <div className="product-banner">
