@@ -5,15 +5,7 @@ import mongoose from 'mongoose';
 export const getAll = async (req, res) => {
   try {
     const sizes = await Size.find();
-    if (sizes.length === 0) {
-      return res.json({
-        message: "Không lấy được danh sách size!",
-      });
-    }
-    return res.status(200).json({
-      message: "Lấy danh sách size thành công!",
-      data: sizes,
-    });
+    return res.status(200).json(sizes);
   } catch (error) {
     return res.status(400).json({
       message: error.message,

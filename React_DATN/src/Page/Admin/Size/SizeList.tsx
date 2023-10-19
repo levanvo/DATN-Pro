@@ -12,10 +12,10 @@ const SizeList = () => {
   const [removeSize] = useDeleteSizeMutation();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const dataSource = getAllSize?.data.map(({ _id, name }: ISize) => ({
+  const dataSource = getAllSize?.map(({ _id, name }: ISize) => ({
     key: _id,
     name
-  })) || [];
+  }))
 
   const [selectedSizes, setSelectedSizes] = useState<ISize[]>([]);
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
@@ -96,7 +96,7 @@ const SizeList = () => {
     setSearchKeyword(value);
   };
 
-  const filteredDataSource = dataSource.filter((item:any) =>
+  const filteredDataSource = dataSource?.filter((item:any) =>
     item.name.toLowerCase().includes(searchKeyword.toLowerCase())
   );
 
@@ -115,8 +115,7 @@ const SizeList = () => {
         />
       </div>
       <Divider />
-      <Table
-        rowSelection={{
+      <Table rowSelection={{
           selectedRowKeys: selectedSizes.map(size => size.key),
           onChange: handleSelectionChange
         }}

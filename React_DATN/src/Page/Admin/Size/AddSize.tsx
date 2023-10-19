@@ -20,12 +20,12 @@ const AdminSizeAdd = () => {
             setIsLoadingScreen(true);
 
             // Kiểm tra size đã tồn tại hay chưa
-            const isSizeExisted = getAllSize?.data.some((size: ISize) => size.name === values.name);
+            const isSizeExisted = getAllSize?.some((size: ISize) => size.name === values.name);
 
             if (isSizeExisted) {
                 messageApi.open({
                     type: "error",
-                    content: "Size đã tồn tại trong cơ sở dữ liệu",
+                    content: "Size đã tồn tại",
                 });
                 setIsLoadingScreen(false);
                 return;
