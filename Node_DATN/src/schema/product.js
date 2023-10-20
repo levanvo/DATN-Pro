@@ -13,6 +13,7 @@ export const productSchema = joi.object({
     "number.empty": "Giá không được để trống",
     "any.required": "Trường price là bắt buộc",
   }),
+  imgUrl: joi.array().items(joi.string()),
   description: joi.string(),
   categoryId: joi.string().required().messages({
     "string.empty": "Danh mục không được để trống",

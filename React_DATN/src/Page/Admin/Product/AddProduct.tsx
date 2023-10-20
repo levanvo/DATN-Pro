@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from "react";
-import { Button, Form, Input, Upload, Modal,Select,message } from "antd";
+import { useState,useEffect } from "react";
+import { Button, Form, Input, Upload, Modal,Select,message,InputNumber } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { IProduct,IColor } from "../../../Models/interfaces";
@@ -72,12 +72,10 @@ const AddProduct = () => {
   useEffect(() => {
     if(error && "data" in error){
       const errDetails = error.data as {message: string[]}
-      errDetails.message.forEach((err) => {
         messageApi.open({
           type: "error",
-          content: err
+          content: errDetails.message
         })
-      });
     }
   },[error])
 
@@ -96,7 +94,6 @@ const AddProduct = () => {
         formData
       )
 
-      console.log(response)
 
       // Assuming response.data contains the uploaded image URLs
       const imageUrls = response.data.urls.map((urls: urlObject) => urls.url)
@@ -110,7 +107,8 @@ const AddProduct = () => {
           categoryId: values.categoryId,
           description: values.description,
           color_id: values.color_id,
-          size_id: values.size_id
+          size_id: values.size_id,
+          quantity: values.quantity
         };
 
         addProduct(newProduct)
@@ -174,7 +172,7 @@ const AddProduct = () => {
         <Form.Item label="Color" name="color_id" rules={[{ required: true }]}>
           <Select style={{ width: 200 }} loading={isLoading}>
             {data ? (
-              data.map((color: IColor) => (
+              data?.map((color: IColor) => (
                 <Select.Option key={color._id} value={color._id}>
                   {color.name}
                 </Select.Option>
@@ -197,7 +195,7 @@ const AddProduct = () => {
           ))
         ) : (
           <p>Loading...</p>
-  )}
+        )}
 
           </Select>
         </Form.Item>
@@ -218,7 +216,19 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item
+          name="quantity"
+          label="Số lượng"
+          rules={[{ required: true,message: "Số lượng không được bỏ trống" }]}
+        >
+          <InputNumber  />
+        </Form.Item>
+
+        <Form.Item label="Mô tả sản phẩm" name="description">
+          <TextArea rows={4} />
+        </Form.Item>
+
+        <Form.Item label="Tải lên">
           <Upload
             listType="picture-card"
             name="images"

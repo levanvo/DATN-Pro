@@ -2,6 +2,8 @@ import Product from "../models/product.js"
 import Category from "../models/category.js"
 import { productSchema } from "../schema/product.js"
 import mongoose from "mongoose"
+import Color from "../models/color.js"
+import Size from "../models/size.js"
 
 export const getProduct = async (req, res) => {
   try {
@@ -53,21 +55,14 @@ export const createProduct = async (req, res) => {
         message: "Không thêm sản phẩm",
       })
     }
-    await Category.findByIdAndUpdate(newProduct.categoryId, {
-      $addToSet: {
-        products: newProduct._id,
-      },
-    })
-    await Color.findByIdAndUpdate(newProduct.color_id, {
-      $addToSet: {
-        products: newProduct._id,
-      },
-    })
-    await Size.findByIdAndUpdate(newProduct.size_id, {
-      $addToSet: {
-        products: newProduct._id,
-      },
-    })
+    const updateInfo = {
+      products: newProduct._id,
+    };
+    await Promise.all([
+      Category.findByIdAndUpdate(newProduct.categoryId, { $addToSet: updateInfo }),
+      Color.findByIdAndUpdate(newProduct.color_id, { $addToSet: updateInfo }),
+      Size.findByIdAndUpdate(newProduct.size_id, { $addToSet: updateInfo }),
+    ]);
     return res.json({
       message: "Thêm sản phẩm thành công",
       data: newProduct,

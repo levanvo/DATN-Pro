@@ -12,7 +12,7 @@ export const getAll = async (req, res) => {
     return res.status(200).json(colors)
   } catch (error) {
     return res.status(400).json({
-      message: error,
+      message: error.message,
     })
   }
 }
@@ -39,7 +39,7 @@ export const get = async (req, res) => {
     })
   } catch (error) {
     return res.status(400).json({
-      message: error,
+      message: error.message,
     })
   }
 }
@@ -59,7 +59,7 @@ export const create = async (req, res) => {
     })
   } catch (error) {
     return res.status(400).json({
-      message: error,
+      message: error.message,
     })
   }
 }
@@ -85,7 +85,7 @@ export const remove = async (req, res) => {
     })
   } catch (error) {
     return res.status(500).json({
-      message: error,
+      message: error.message,
     })
   }
 }
@@ -115,7 +115,7 @@ export const update = async (req, res) => {
     })
   } catch (error) {
     return res.status(500).json({
-      message: error,
+      message: error.message,
     })
   }
 }

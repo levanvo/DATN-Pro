@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Divider, Table,Popconfirm, message,Button,Input } from 'antd';
 import { useDeleteProductMutation, useGetAllProductQuery } from '../../../Services/Api_Product';
 import { IProduct } from '../../../Models/interfaces';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined,FilterOutlined } from '@ant-design/icons';
 import Loading from '../../../Component/Loading';
 import {DeleteFilled,EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
+import type { ColumnsType, TableProps } from 'antd/es/table';
 
 
 const { Search } = Input;
@@ -19,12 +20,15 @@ const rowSelection = {
   },
 };
 
-
 const ProductList = () => {
   const {data: getAllProduct,isLoading, error} = useGetAllProductQuery()
   const [removeProduct] = useDeleteProductMutation()
   const [messageApi,contextHolder] = message.useMessage() 
   const {data: categories} = useGetAllCategoryQuery()
+  const [searchText, setSearchText] = useState('');
+  const [minPrice, setMinPrice] = useState(''); 
+  const [maxPrice, setMaxPrice] = useState('');
+  
   const dataSource = getAllProduct?.map(({_id,name,original_price,price,imgUrl,categoryId}:IProduct) => ({
     key: _id,
     name,
@@ -43,6 +47,14 @@ const ProductList = () => {
       })
     })
   }
+  const filteredDataSource = searchText?dataSource?.filter((product) =>
+      product.name.toLowerCase().includes(searchText.toLowerCase())
+    ) : dataSource;
+
+  //Tìm kiếm theo tên
+  const handleSearch = (value:string) => {
+    setSearchText(value);
+  };
 
   const columns:any[] = [
     {
@@ -70,7 +82,6 @@ const ProductList = () => {
       key: "categoryId",
       render: (categoryId: string) => {
         if(categories){
-          console.log(categories);
           const categoryName = categories.find((c) => c._id === categoryId)
           return categoryName ? categoryName.name : "không xác định"
         }
@@ -122,10 +133,16 @@ const ProductList = () => {
         <Button type="primary" style={{background: "blue"}}>
           <Link to={`/admin/product/add`}>Thêm mới</Link>
         </Button>
-          <Search placeholder="tìm từ khóa" allowClear  style={{ width: 300, marginLeft: 50 }} />
+          <Search 
+        onSearch={handleSearch} placeholder="tìm từ khóa" allowClear  style={{ width: 300, marginLeft: 50 }} />
+        
+        <Button>
+          <FilterOutlined />
+        </Button>
+        
       </div>
       <Divider />
-      {isLoading ? <Loading /> : <Table rowSelection={{...rowSelection,}} columns={columns} dataSource={dataSource}/>}
+      {isLoading ? <Loading /> : <Table rowSelection={{...rowSelection,}} columns={columns} dataSource={filteredDataSource}/>}
       
     </div>
   );
