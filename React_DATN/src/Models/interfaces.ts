@@ -16,8 +16,8 @@ export interface IProduct {
 }
 
 export interface ICategory {
-  _id: number | string
-  name: string
+  _id?: number | string,
+  name: string,
   imgUrl?: string
 }
 
