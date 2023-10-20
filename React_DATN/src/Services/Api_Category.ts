@@ -1,15 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { ICategory, IProduct } from "../Models/interfaces"
+import { pause } from "../utils/pause"
 
 const categoryApi = createApi({
     reducerPath: "category",
     tagTypes: ["Category"],
     baseQuery: fetchBaseQuery({
-        baseUrl: `http://localhost:8080`
+        baseUrl: `http://localhost:8080`,
+        fetchFn: async (...args) => (
+            await pause(1000),
+            fetch(...args)
+        )
     }),
     endpoints: (builder) => ({
         getAllCategory: builder.query<ICategory[], void>({
-            query: () => `/api/category`
+            query: () => `/api/category`,
+            providesTags:['Category']
         }),
 
         getOneCategory: builder.query<ICategory, number | string>({

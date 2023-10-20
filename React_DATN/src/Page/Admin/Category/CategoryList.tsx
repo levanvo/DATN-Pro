@@ -8,7 +8,7 @@ import { useGetAllCategoryQuery, useRemoveCategoryMutation } from "../../../Serv
 const CategoryList = () => {
   const { Search } = Input
   const [searchQuery, setSearchQuery] = useState<string>("")
-
+  const [messageApi, contextHolder] = message.useMessage()
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<React.Key[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -36,6 +36,13 @@ const CategoryList = () => {
   const filteredData = dataSource.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
+  const comfim = (_id: string | number)=>{
+    removeCategory(_id)
+    messageApi.open({
+      type: "success",
+      content: 'xóa thành công'
+    })
+  }
 
   const columns = [
     {
@@ -61,10 +68,7 @@ const CategoryList = () => {
             <Popconfirm
               title="Xoá category"
               description="Bạn có chắc muốn xoá category này không?"
-              onConfirm={() => {
-                removeCategory(category.key)
-                message.error("Remove success")
-              }}
+              onConfirm={()=>comfim(category.key)}
               okText={<span style={{ color: "black" }}>Yes</span>}
               cancelText="No"
             >
@@ -116,6 +120,7 @@ const CategoryList = () => {
 
   return (
     <div>
+      {contextHolder}
       <div style={{ marginBottom: 16 }}>
         <Button
           type="primary"

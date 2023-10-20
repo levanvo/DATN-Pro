@@ -1,42 +1,49 @@
 import React, { useState } from "react";
-import { Form, Input, Button,Modal, message } from "antd";
+import { Form, Input, Button, Modal, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useAddCategoryMutation, useGetAllCategoryQuery } from "../../../Services/Api_Category";
 import { ICategory } from "../../../Models/interfaces";
+import Loading from "../../../Component/Loading";
 
 
 
 const AddCategory = () => {
-  const [messageApi,contextHolder] = message.useMessage()
-
+    const [messageApi, contextHolder] = message.useMessage()
+    const [isLoadingScreen, setIsLoadingScreen] = useState(false);
     const [addCategory] = useAddCategoryMutation();
     const navigate = useNavigate();
     const { data: allCategories } = useGetAllCategoryQuery();
+
     const isCategoryNameExists = (name: string) => {
-        return allCategories?.some((category:ICategory) => category.name === name);
+        return allCategories?.some((category: ICategory) => category.name === name);
     };
-    const onFinish = (values: any) => {
-        const { name } = values;
-        if (isCategoryNameExists(name)) {
-            // Nếu tên category đã tồn tại, hiển thị thông báo lỗi
-            message.error({
-                content: 'Tên category đã tồn tại. Vui lòng chọn tên khác.',
-            });
-        } else {
-            // Nếu tên category không trùng lặp, thực hiện thêm category
-            addCategory(values)
-                .unwrap()
-                .then(() => {
-                    messageApi.open({
-                      type: "success",
-                      content: "Thêm sản phẩm thành công"
-                    })
-                    setTimeout(() => {
-                        window.location.href = 'http://localhost:5173/admin/category/list'
-                      }, 2000);
-                  });
+    const onFinish = async (values: ICategory) => {
+        try {
+            setIsLoadingScreen(true)
+            const { name } = values;
+            if (isCategoryNameExists(name)) {
+                // Nếu tên category đã tồn tại, hiển thị thông báo lỗi
+                message.error({
+                    content: 'Tên category đã tồn tại. Vui lòng chọn tên khác.',
+                });
+            } else {
+                // Nếu tên category không trùng lặp, thực hiện thêm category
+                addCategory(values)
+                    .unwrap()
+                    .then(() => {
+                        messageApi.open({
+                            type: "success",
+                            content: "Thêm sản phẩm thành công"
+                        })
+                        setTimeout(() => {
+                            navigate('admin/category/list')
+                        }, 2000);
+                    });
+            }
+        } catch (error) {
+            console.error("Thêm Không Thành công", error)
+            setIsLoadingScreen(false)
         }
-            
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -50,7 +57,9 @@ const AddCategory = () => {
     };
     return (
         <div className="max-w-4xl mx-auto">
+
             <div>
+            {isLoadingScreen && <Loading />}
                 {contextHolder}
             </div>
             <h2 className="font-bold text-2xl mb-4">Thêm Category</h2>
@@ -70,15 +79,16 @@ const AddCategory = () => {
                     rules={[
                         { required: true, message: "Vui lòng nhập tên Category" },
                         { min: 3, message: "Ít nhất 3 ký tự" },
-                        {pattern: alphaNumericRegExp, 
-                        message: "Không được để khoảng trống ở đầu và phải có chữ cái và số",
+                        {
+                            pattern: alphaNumericRegExp,
+                            message: "Không được để khoảng trống ở đầu và phải có chữ cái và số",
                         }
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
-                
+
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" danger htmlType="submit">
