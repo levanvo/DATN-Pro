@@ -28,7 +28,7 @@ const AddCategory = () => {
                 });
             } else {
                 // Nếu tên category không trùng lặp, thực hiện thêm category
-                addCategory(values)
+             await addCategory(values)
                     .unwrap()
                     .then(() => {
                         messageApi.open({
@@ -36,10 +36,11 @@ const AddCategory = () => {
                             content: "Thêm sản phẩm thành công"
                         })
                         setTimeout(() => {
-                            navigate('admin/category/list')
+                            navigate('/admin/category/list')
                         }, 2000);
                     });
             }
+        setIsLoadingScreen(false)
         } catch (error) {
             console.error("Thêm Không Thành công", error)
             setIsLoadingScreen(false)
@@ -58,10 +59,8 @@ const AddCategory = () => {
     return (
         <div className="max-w-4xl mx-auto">
 
-            <div>
             {isLoadingScreen && <Loading />}
                 {contextHolder}
-            </div>
             <h2 className="font-bold text-2xl mb-4">Thêm Category</h2>
             <Form
                 name="basic"
