@@ -2267,11 +2267,21 @@ ul.address li span {
 }
 
 .price-range input {
-    border: 0 none;
-    color: #888;
+    width: 40%;
+    border: 1px solid gray;
+    border-radius: 8px;
+    /* color: #888; */
     display: inline-block;
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 20px;
+    outline: none;
+}
+.price-filter_line{
+    flex: 1;
+    height: 1px;
+    background: #bdbdbd;
+    margin: 0 0.625rem;
 }
 
 .price-filter .ui-slider-range {
