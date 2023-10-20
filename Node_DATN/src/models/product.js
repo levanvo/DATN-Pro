@@ -33,12 +33,6 @@ const productSchema = new mongoose.Schema({
   quantity: {
     type: Number,
   },
-  quantity_sold: {
-    type: Number,
-  },
-  inventory_number: {
-    type: Number,
-  },
   discount_code_id: {
     type: String,
   },

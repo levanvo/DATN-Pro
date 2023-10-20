@@ -1,17 +1,15 @@
 export interface IProduct {
-  _id?: string | number
-  name: string
-  original_price: number
-  price: number
-  description?: string
-  imgUrl?: string[]
-  categoryId?: string
-  size_id?: string
-  color_id?: string
-  quantity?: number
-  quantity_sold?: number
-  inventory_number?: number
-  discount_code_id?: string
+  _id?: string | number,
+  name: string,
+  original_price: number,
+  price: number,
+  description?: string,
+  imgUrl: string[],
+  categoryId: string,
+  size_id: string,
+  color_id: string,
+  quantity?: number,
+  discount_code_id?: string,
   poinId?: string
 }
 
@@ -22,16 +20,15 @@ export interface ICategory {
 }
 
 export interface IUser {
-  _id?: number | string
-  username: string
-  email?: string
-  password: string
+  _id?: number | string,
+  username: string,
+  email?: string,
+  password: string,
   confirmPassword: string
 }
 export interface IColor {
-  _id: string
+  _id: string,
   name: string
-  products: []
 }
 
 export interface ISize {

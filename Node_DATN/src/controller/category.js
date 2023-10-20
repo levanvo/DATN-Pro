@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 
 export const getAll = async (req, res) => {
   try {
-    //   const categorys = await Category.find().populate("products");
     const categorys = await Category.find();
     if (categorys.length === 0) {
       return res.json({
@@ -31,7 +30,6 @@ export const get = async (req, res) => {
       })
     }
 
-    // const categorys = await Category.findById(req.params.id).populate("products");
     const categorys = await Category.findById(req.params.id).populate("products");
     if (!categorys) {
       return res.status(400).json({

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Form, Input, Upload, Modal,Select,message } from "antd";
+import { useState,useEffect } from "react";
+import { Button, Form, Input, Upload, Modal,Select,message,InputNumber } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { IProduct,IColor } from "../../../Models/interfaces";
@@ -11,6 +11,10 @@ import Loading from "../../../Component/Loading";
 import {useNavigate} from "react-router-dom"
 import { useGetAllSizeQuery } from "../../../Services/Api_Size";
 import { useGetColorsQuery } from "../../../Services/api_Color"
+
+
+const { TextArea } = Input;
+
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -26,7 +30,7 @@ type urlObject = {
 
 const AddProduct = () => {
   const navigate = useNavigate()
-  const [addProduct] = useAddProductMutation();
+  const [addProduct, {error}] = useAddProductMutation();
   const {data: getAllCategory,isLoading} = useGetAllCategoryQuery()
   const {data: getAllSize,isLoadingSize} = useGetAllSizeQuery()
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -65,6 +69,16 @@ const AddProduct = () => {
     return false
   }
 
+  useEffect(() => {
+    if(error && "data" in error){
+      const errDetails = error.data as {message: string[]}
+        messageApi.open({
+          type: "error",
+          content: errDetails.message
+        })
+    }
+  },[error])
+
   const onFinish = async (values: IProduct) => {
     try {
       setIsLoadingScreen(true)
@@ -76,7 +90,7 @@ const AddProduct = () => {
       })
 
       const response = await axios.post(
-        "http://localhost:8080/api/images/upload", // Your Cloudinary upload endpoint
+        "http://localhost:8080/api/images/upload", 
         formData
       )
 
@@ -91,7 +105,10 @@ const AddProduct = () => {
           price: values.price,
           imgUrl: imageUrls,
           categoryId: values.categoryId,
-          size_id: values.size_id
+          description: values.description,
+          color_id: values.color_id,
+          size_id: values.size_id,
+          quantity: values.quantity
         };
 
         addProduct(newProduct)
@@ -111,6 +128,8 @@ const AddProduct = () => {
       setIsLoadingScreen(false)
     }
   }
+
+
 
   return (
     <div>
@@ -145,7 +164,7 @@ const AddProduct = () => {
           ))
         ) : (
           <p>Loading...</p>
-  )}
+         )}
 
           </Select>
         </Form.Item>
@@ -153,7 +172,7 @@ const AddProduct = () => {
         <Form.Item label="Color" name="color_id" rules={[{ required: true }]}>
           <Select style={{ width: 200 }} loading={isLoading}>
             {data ? (
-              data.map((color: IColor) => (
+              data?.map((color: IColor) => (
                 <Select.Option key={color._id} value={color._id}>
                   {color.name}
                 </Select.Option>
@@ -176,7 +195,7 @@ const AddProduct = () => {
           ))
         ) : (
           <p>Loading...</p>
-  )}
+        )}
 
           </Select>
         </Form.Item>
@@ -197,7 +216,19 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item
+          name="quantity"
+          label="Số lượng"
+          rules={[{ required: true,message: "Số lượng không được bỏ trống" }]}
+        >
+          <InputNumber  />
+        </Form.Item>
+
+        <Form.Item label="Mô tả sản phẩm" name="description">
+          <TextArea rows={4} />
+        </Form.Item>
+
+        <Form.Item label="Tải lên">
           <Upload
             listType="picture-card"
             name="images"
@@ -220,8 +251,8 @@ const AddProduct = () => {
           <img alt="example" style={{ width: "100%" }} src={previewImage} />
         </Modal>
 
-        <Form.Item>
-          <Button type="primary" danger htmlType="submit">
+        <Form.Item wrapperCol={{ offset: 4, span: 11 }}>
+          <Button type="primary" danger htmlType="submit" style={{marginRight: 20}}>
             Thêm mới
           </Button>
           <Button

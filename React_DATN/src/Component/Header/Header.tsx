@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom"
-import jwt_decode from 'jwt-decode';
 import { ImCancelCircle } from "react-icons/im"
 import { UserOutlined } from "@ant-design/icons"
 import { message } from "antd"

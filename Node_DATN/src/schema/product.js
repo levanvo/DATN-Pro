@@ -13,14 +13,8 @@ export const productSchema = joi.object({
     "number.empty": "Giá không được để trống",
     "any.required": "Trường price là bắt buộc",
   }),
-  description: joi.string().required().messages({
-    "string.empty": "Mô tả sản phẩm không được để trống",
-    "any.required": "Trường description là bắt buộc",
-  }),
-  imgUrl: joi.string().required().messages({
-    "string.empty": "Ảnh sản phẩm không được để trống",
-    "any.required": "Trường imgUrl là bắt buộc",
-  }),
+  imgUrl: joi.array().items(joi.string()),
+  description: joi.string(),
   categoryId: joi.string().required().messages({
     "string.empty": "Danh mục không được để trống",
     "any.required": "Trường categoryId là bắt buộc",
@@ -36,15 +30,5 @@ export const productSchema = joi.object({
   quantity: joi.number().required().messages({
     "number.empty": "Số lượng sản phẩm không được để trống",
     "any.required": "Trường quantity là bắt buộc",
-  }),
-  quantity_sold: joi.number().required().messages({
-    "number.empty": "Số lượng sản phẩm đã bán không được để trống",
-    "any.required": "Trường quantity_sold là bắt buộc",
-  }),
-  inventory_number: joi.number().required().messages({
-    "number.empty": "Số lượng hàng tồn kho không được để trống",
-    "any.required": "Trường inventory_number là bắt buộc",
-  }),
-  discount_code_id: joi.string(),
-  poinId: joi.string().required(),
+  })
 })
