@@ -1,13 +1,19 @@
+import { ICategory, IProduct, ISize } from "../Models/interfaces";
 import { Link } from "react-router-dom";
-import { IProduct, ISize } from "../Models/interfaces";
 import { useGetAllProductQuery } from "../Services/Api_Product";
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useGetAllCategoryQuery } from "../Services/Api_Category";
 import { useGetAllSizeQuery } from "../Services/Api_Size";
 
 const Products = ({ searchKeyword }: { searchKeyword: string }) => {
   const { data: producData, isLoading, error } = useGetAllProductQuery();
   const {
+    data: categoryData,
+    isLoading: isLoadingCategory,
+    error: errorCategory
+  } = useGetAllCategoryQuery();
+  const{
     data: sizeData,
     isLoading: isLoadingSize,
     error: errorSize,
@@ -103,8 +109,12 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
       currency: "VND",
     }).format(value);
 
+  if (isLoadingCategory) return <div>Loading...Category</div>;
+  if (errorCategory) return <div>Error: Category</div>;
+
   if (isLoadingSize) return <div>Loading...Size</div>;
   if (errorSize) return <div>Error: Size</div>;
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error</div>;
   return (
@@ -141,21 +151,17 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                   <div className="single-sidebar-title">
                     <h3>Sản Phảm</h3>
                   </div>
+                  {/*Load dữ liệu Category */}
                   <div className="single-sidebar-content">
-                    <ul>
-                      <li>
-                        <a href="#">ADIDAS (4)</a>
-                      </li>
-                      <li>
-                        <a href="#">MLB (6)</a>
-                      </li>
-                      <li>
-                        <a href="#">VANS (1)</a>
-                      </li>
-                      <li>
-                        <a href="#">NIKE (3)</a>
-                      </li>
-                    </ul>
+                    {categoryData?.map((category: ICategory)=>{
+                      return(
+                        <ul>
+                          <li key={category._id}>
+                            <Link to={`/category/${category._id}/products`}>{category.name}</Link>
+                          </li>
+                        </ul>
+                      )
+                    })}
                   </div>
                 </div>
                 <div className="single-sidebar">
@@ -184,13 +190,11 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                     <h3>Size</h3>
                   </div>
                   <div className="single-sidebar-content">
-                    {sizeData?.map((size: ISize) => {
-                      return (
-                        <ul key={size._id}>
-                          <li>
-                            <Link to={`/size/${size._id}/products`}>
-                              {size.name}
-                            </Link>
+                  {sizeData?.map((size: ISize)=>{
+                      return(
+                        <ul>
+                          <li key={size._id}>
+                            <Link to={`/size/${size._id}/products`}>{size.name}</Link>
                           </li>
                         </ul>
                       );

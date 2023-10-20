@@ -27,6 +27,11 @@ import AdminSizeUpdate from "./Page/Admin/Size/UpdateSize";
 import ForgotPassword from "./Page/ForgotPassword";
 import VerificationCodes from "./Page/VerificationCodes";
 import ChangePassword from "./Page/ChangePassword";
+import ProductsCategory from "./Page/CategoryProducts";
+import CategoryList from "./Page/Admin/Category/CategoryList";
+import AddCategory from "./Page/Admin/Category/CategoryAdd";
+import UpdateCategory from "./Page/Admin/Category/CategoryUpdate";
+
 import ProductsSize from "./Page/SizeProduct";
 import ListColor from "./Page/Admin/colorProduct/listColor"
 import CreateColor from "./Page/Admin/colorProduct/createColor"
@@ -59,6 +64,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="blog-detail" element={<Blog_details />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="category/:id/products" element={<ProductsCategory />} />
         <Route path="size/:id/products" element={<ProductsSize />} />
       </Route>
 
@@ -67,6 +73,9 @@ function App() {
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
+        <Route path="category/list" element={<CategoryList />} />
+        <Route path="category/add" element={<AddCategory />} />
+        <Route path="category/:id/update" element={<UpdateCategory />} />
         <Route path="colors" element={<ListColor />} />
         <Route path="color/create" element={<CreateColor />} />
         <Route path="color/:id/update" element={<UpdateColor />} />

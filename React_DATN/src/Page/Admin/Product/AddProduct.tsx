@@ -80,7 +80,6 @@ const AddProduct = () => {
         formData
       )
 
-      console.log(response)
 
       // Assuming response.data contains the uploaded image URLs
       const imageUrls = response.data.urls.map((urls: urlObject) => urls.url)
