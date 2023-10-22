@@ -18,6 +18,10 @@ const productSchema = new mongoose.Schema({
         type: String
     }
   ],
+  productDetailsId: {
+    type: Schema.Types.ObjectId,
+    ref: "ProductDetails",
+  },
   categoryId: {
     type: Schema.Types.ObjectId,
     ref: "Category",
@@ -35,10 +39,7 @@ const productSchema = new mongoose.Schema({
   },
   discount_code_id: {
     type: String,
-  },
-  poinId: {
-    type: String,
-  },
+  }
 },{timestamps: true, versionKey: false})
 
 export default mongoose.model("Product", productSchema)

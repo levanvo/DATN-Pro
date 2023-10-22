@@ -1,5 +1,7 @@
 import Product from "../models/product.js"
 import Category from "../models/category.js"
+import ProductDetails from "../models/productDetails.js"
+
 import { productSchema } from "../schema/product.js"
 import mongoose from "mongoose"
 import Color from "../models/color.js"
@@ -7,7 +9,7 @@ import Size from "../models/size.js"
 
 export const getProduct = async (req, res) => {
   try {
-    const data = await Product.find()
+    const data = await Product.find().populate('productDetailsId');
     if(data.length===0){
       return res.status(400).json({
         message: "Không có sản phẩm nào"
@@ -16,28 +18,32 @@ export const getProduct = async (req, res) => {
     return res.status(200).json(data)
   } catch (error) {
     return res.status(404).json({
-      message: "Không lấy được danh sách sản phẩm",
+      message: error.message,
     })
   }
 }
 
 export const readProduct = async (req, res) => {
   try {
-    const data = await Product.findById({ _id: req.params.id })
-      .populate(["categoryId", "size_id", "color_id"])
-      .exec()
+    // Find the product by its ID
+    const product = await Product.findById(req.params.id);
 
-    if (!data) {
+    if (!product) {
       return res.status(400).json({
         message: "Không có sản phẩm nào",
-      })
+      });
     }
 
-    return res.status(200).json(data)
+    // Now, populate the details from the ProductDetails collection
+    const productWithDetails = await Product.populate(product, [
+      { path: "productDetails", populate: ["size_id", "color_id"] }
+    ]);
+
+    return res.status(200).json(productWithDetails);
   } catch (error) {
     return res.status(404).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
 }
 
