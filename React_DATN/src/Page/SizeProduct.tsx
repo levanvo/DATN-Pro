@@ -107,7 +107,7 @@ const ProductsSize = () => {
                   </div>
                   {/*Load dữ liệu Size */}
                   <div className="single-sidebar-content">
-                    {sizeData?.data.map((size: ISize) => {
+                    {sizeData?.map((size: ISize) => {
                       return (
                         <ul>
                           <li key={size._id}>
