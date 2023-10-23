@@ -1,11 +1,11 @@
 import express from "express"
 import {
   createProduct,
-  deleteSelectedProducts,
   getProduct,
   readProduct,
   removeProduct,
   updateProduct,
+  restoreProduct
 } from "../controller/product.js"
 const router = express.Router()
 
@@ -14,6 +14,5 @@ router.get("/product/:id", readProduct)
 router.post("/product", createProduct)
 router.delete("/product/:id", removeProduct)
 router.patch("/product/:id", updateProduct)
-router.delete("/product/removeAll", deleteSelectedProducts)
-
+router.post("/product/restore/:id",restoreProduct)
 export default router

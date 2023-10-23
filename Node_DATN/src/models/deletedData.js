@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose"
 
-const productSchema = new mongoose.Schema({
+const deleteDataSchema = new mongoose.Schema({
   name: {
     type: String,
   },
@@ -40,6 +40,4 @@ const productSchema = new mongoose.Schema({
   quantity_sold: Number // số lượng đã bán
 },{timestamps: true, versionKey: false})
 
-
-
-export default mongoose.model("Product", productSchema)
+export default mongoose.model("DeletedProduct", deleteDataSchema)
