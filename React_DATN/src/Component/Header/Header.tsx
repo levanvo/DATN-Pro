@@ -35,6 +35,7 @@ const Header = ({ onSearch }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    console.log("searchKeyword", searchKeyword)
     onSearch(searchKeyword);
   };
 
