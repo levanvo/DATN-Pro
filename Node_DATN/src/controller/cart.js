@@ -84,3 +84,44 @@ export const addToCart = async(req,res) => {
     }
 }
 
+export const deleteToCart = async (req, res) => {
+  const userId = req.user._id;
+  const itemIdToDelete = req.params.id;
+
+  try {
+    // Tìm giỏ hàng của người dùng dựa vào userId
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: "Không tìm thấy giỏ hàng của người dùng." });
+    }
+
+    // Tìm sản phẩm cần xóa trong mảng products của giỏ hàng
+    const itemIndexToDelete = cart.products.findIndex((item) =>
+      item._id.equals(itemIdToDelete)
+    );
+
+    if (itemIndexToDelete === -1) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy sản phẩm trong giỏ hàng." });
+    }
+
+    // Xóa sản phẩm khỏi mảng products của giỏ hàng
+    cart.products.splice(itemIndexToDelete, 1);
+
+    // Lưu giỏ hàng sau khi xóa
+    await cart.save();
+
+    res.status(200).json({
+      message: "Xóa sản phẩm khỏi giỏ hàng thành công",
+      cart,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Đã xảy ra lỗi khi xóa sản phẩm khỏi giỏ hàng.",
+      error: error.message,
+    });
+  }
+};
+

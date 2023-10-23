@@ -18,10 +18,6 @@ const productSchema = new mongoose.Schema({
         type: String
     }
   ],
-  productDetailsId: {
-    type: Schema.Types.ObjectId,
-    ref: "ProductDetails",
-  },
   categoryId: {
     type: Schema.Types.ObjectId,
     ref: "Category",
