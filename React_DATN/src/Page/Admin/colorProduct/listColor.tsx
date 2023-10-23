@@ -30,7 +30,7 @@ const ListColor = () => {
     index: index + 1,
     key: item._id,
     name: item.name,
-    products: item.products,
+    unicode: item.unicode,
   }))
 
   const handleSearch = (value: string) => {
@@ -50,23 +50,22 @@ const ListColor = () => {
     {
       title: "Màu",
       dataIndex: "name",
-      render: (text: string) => (
-        <Link to={`/admin/product/list`}>
-          <p style={{}}>{text}</p>
-        </Link>
+      render: (text: string) => <p style={{}}>{text}</p>,
+    },
+    {
+      title: "Unicode",
+      dataIndex: "unicode",
+      render: (unicode: string) => (
+        <p
+          style={{
+            background: unicode,
+            width: "25px",
+            height: "25px",
+            borderRadius: "50%",
+          }}
+        ></p>
       ),
     },
-    // {
-    //   title: "Products",
-    //   dataIndex: "products",
-    //   render: (products: []) => (
-    //     <div>
-    //       {products.map((item, index) => (
-    //         <p key={index}>{item}</p>
-    //       ))}
-    //     </div>
-    //   ),
-    // },
     {
       title: "Hành Động",
       key: "action",
