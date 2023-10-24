@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Table,Popconfirm, message,Button,Input } from 'antd';
+import { Divider, Table,Popconfirm, message,Button,Input,Menu,Dropdown  } from 'antd';
 import { useDeleteProductMutation, useGetAllProductQuery } from '../../../Services/Api_Product';
 import { IProduct } from '../../../Models/interfaces';
 import { QuestionCircleOutlined,FilterOutlined } from '@ant-design/icons';
@@ -14,11 +14,7 @@ const { Search } = Input;
 
 
 // rowSelection object indicates the need for row selection
-const rowSelection = {
-  onChange: (selectedRowKeys: React.Key[], selectedRows:any) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-};
+
 
 const ProductList = () => {
   const {data: getAllProduct,isLoading, error} = useGetAllProductQuery()
@@ -26,9 +22,36 @@ const ProductList = () => {
   const [messageApi,contextHolder] = message.useMessage() 
   const {data: categories} = useGetAllCategoryQuery()
   const [searchText, setSearchText] = useState('');
-  const [minPrice, setMinPrice] = useState(''); 
-  const [maxPrice, setMaxPrice] = useState('');
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [isApplyClicked, setIsApplyClicked] = useState(false);
+  const [priceRange, setPriceRange] = useState({ min: "", max: "" });
+  const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false)
+
   
+  const rowSelection = {
+    selectedRowKeys: selectedProductId,
+    onChange: (selectedRowKeys: React.Key[]) => {
+      setSelectedProductId(selectedRowKeys)
+    },
+  };
+
+  const deleteMultipleProducts = async () => {
+    try {
+      setIsLoadingDelete(true)
+      if (selectedProductId.length === 0) {
+        message.error("Vui lòng chọn các category muốn xoá!")
+        return
+      }
+      const productIdAll = selectedProductId.map((key) => key.toString());
+      await Promise.all(productIdAll.map((productId)=> removeProduct(productId)))
+      message.success("Xóa thành công")
+    } catch (error) {
+      message.error("Đã có lỗi xảy ra vui lòng thử lại")
+    }
+    setIsLoadingDelete(false)
+  }
+
   const dataSource = getAllProduct?.map(({_id,name,original_price,price,imgUrl,categoryId}:IProduct) => ({
     key: _id,
     name,
@@ -37,6 +60,51 @@ const ProductList = () => {
     imgUrl,
     categoryId
   }))
+
+  const handleFilterVisibleChange = (visible:any) => {
+    setFilterVisible(visible);
+  };
+
+  const handleApplyClick = () => {
+    setIsApplyClicked(true);
+  };
+
+  const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsApplyClicked(false);
+    setPriceRange((prevState) => ({
+      ...prevState,
+      min: event.target.value,
+    }));
+  };
+
+  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsApplyClicked(false);
+    setPriceRange((prevState) => ({
+      ...prevState,
+      max: event.target.value,
+    }));
+  };
+  
+
+  const filterMenu = (
+    <Menu>
+      <Menu.Item key="1">
+        <Input placeholder="Min Price" value={priceRange.min} onChange={handleMinPriceChange}/>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <Input placeholder="Max Price" value={priceRange.max} onChange={handleMaxPriceChange}/>
+      </Menu.Item>
+      <div className='d-flex mt-3'>
+        <Button danger type="primary" onClick={handleApplyClick} style={{marginLeft: 12,marginRight:10}}>
+          Submit
+        </Button>
+        <Button onClick={() => setFilterVisible(false)}>
+          Close
+        </Button>
+      </div>
+    </Menu>
+  );
+  
   
   const confirm = (id: number | string) => {
     
@@ -129,16 +197,34 @@ const ProductList = () => {
   return (
     <div>
       {contextHolder}
+      {isLoadingDelete && <Loading />}
       <div>
+        <Button 
+          style={{marginRight: 20}}
+          type="primary"
+          onClick={deleteMultipleProducts}
+          danger
+        >
+          Xoá mục đã chọn
+        </Button>
+
         <Button type="primary" style={{background: "blue"}}>
           <Link to={`/admin/product/add`}>Thêm mới</Link>
         </Button>
           <Search 
         onSearch={handleSearch} placeholder="tìm từ khóa" allowClear  style={{ width: 300, marginLeft: 50 }} />
         
-        <Button>
-          <FilterOutlined />
-        </Button>
+        <Dropdown
+            visible={filterVisible}
+            onVisibleChange={handleFilterVisibleChange}
+            overlay={filterMenu}
+            trigger={['click']}
+          >
+            <Button style={{marginLeft:20}}>
+              <FilterOutlined />
+            </Button>
+       </Dropdown>
+
         
       </div>
       <Divider />
