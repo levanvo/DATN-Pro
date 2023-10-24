@@ -44,73 +44,42 @@ const Product = () => {
                                         <div role="tabpanel" className="tab-pane fade show active" id="tab1">
                                             <div className="product-slider carousel-margin">
                                                 <div className="col">
-                                                    <div className="single-product">
-                                                        <div className="level-pro-new">
-                                                            <span>new</span>
-                                                        </div>
-                                                        <div className="product-img">
-                                                            <div>
-                                                                <img src="img/product/1.png" className="primary-img" />
-                                                                <img src="img/product/2.png" className="secondary-img" />
+                                                    {productData?.map((product)=>(
+                                                        <div className="single-product">
+                                                            <div className="level-pro-new">
+                                                                <span>new</span>
+                                                            </div>
+                                                            <div className="product-img">
+                                                                <div>
+                                                                    <img src={product.imgUrl[0]} className="primary-img" />
+                                                                    <img src={product.imgUrl[1]} className="secondary-img" />
+                                                                </div>
+                                                            </div>
+                                                            <div className="product-name">
+                                                                <h1>{product.name}</h1>
+                                                            </div>
+                                                            <div className="price-rating">
+                                                                <span>$170.00</span>
+                                                                <div className="ratings">
+                                                                    <i className="fa fa-star" />
+                                                                    <i className="fa fa-star" />
+                                                                    <i className="fa fa-star" />
+                                                                    <i className="fa fa-star" />
+                                                                    <i className="fa fa-star-half-o" />
+                                                                </div>
+                                                            </div>
+                                                            <div className="actions">
+                                                                <button type="submit" className="cart-btn" title="Add to cart">add to cart</button>
+                                                                <ul className="add-to-link">
+                                                                    <li><a className="modal-view" data-target="#productModal" data-bs-toggle="modal" href="#"> <i className="fa fa-search" /></a></li>
+                                                                    <li><a href="#"> <i className="fa fa-heart-o" /></a></li>
+                                                                    <li><a href="#"> <i className="fa fa-refresh" /></a></li>
+                                                                </ul>
                                                             </div>
                                                         </div>
-                                                        <div className="product-name">
-                                                            <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>
-                                                        </div>
-                                                        <div className="price-rating">
-                                                            <span>$170.00</span>
-                                                            <div className="ratings">
-                                                                <i className="fa fa-star" />
-                                                                <i className="fa fa-star" />
-                                                                <i className="fa fa-star" />
-                                                                <i className="fa fa-star" />
-                                                                <i className="fa fa-star-half-o" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="actions">
-                                                            <button type="submit" className="cart-btn" title="Add to cart">add to cart</button>
-                                                            <ul className="add-to-link">
-                                                                <li><a className="modal-view" data-target="#productModal" data-bs-toggle="modal" href="#"> <i className="fa fa-search" /></a></li>
-                                                                <li><a href="#"> <i className="fa fa-heart-o" /></a></li>
-                                                                <li><a href="#"> <i className="fa fa-refresh" /></a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                    <div className="single-product">
-                                                        <div className="level-pro-sale">
-                                                            <span>sale</span>
-                                                        </div>
-                                                        <div className="product-img">
-                                                            <div>
-                                                                <img src="img/product/1.png" className="primary-img" />
-                                                                <img src="img/product/2.png" className="secondary-img" />
-                                                            </div>                                       
-                                                        </div>
-                                                        <div className="product-name">
-                                                            <a href="single-product.html" title="Fusce aliquam">Fusce aliquam</a>
-                                                        </div>
-                                                        <div className="price-rating">
-                                                            <span className="old-price">$700.00</span>
-                                                            <span>$800.00</span>
-                                                            <div className="ratings">
-                                                                <i className="fa fa-star" />
-                                                                <i className="fa fa-star" />
-                                                                <i className="fa fa-star" />
-                                                                <i className="fa fa-star" />
-                                                                <i className="fa fa-star-half-o" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="actions">
-                                                            <button type="submit" className="cart-btn" title="Add to cart">add to cart</button>
-                                                            <ul className="add-to-link">
-                                                                <li><a className="modal-view" data-target="#productModal" data-bs-toggle="modal" href="#"> <i className="fa fa-search" /></a></li>
-                                                                <li><a href="#"> <i className="fa fa-heart-o" /></a></li>
-                                                                <li><a href="#"> <i className="fa fa-refresh" /></a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
+                                                    ))}     
                                                 </div>
-                                                <div className="col">
+                                                {/* <div className="col">
                                                     <div className="single-product">
                                                         <div className="level-pro-sale">
                                                             <span>sale</span>
@@ -181,8 +150,8 @@ const Product = () => {
                                                             </ul>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col">
+                                                </div> */}
+                                                {/* <div className="col">
                                                     <div className="single-product">
                                                         <div className="level-pro-new">
                                                             <span>new</span>
@@ -252,8 +221,8 @@ const Product = () => {
                                                             </ul>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                 <div className="col">
+                                                </div> */}
+                                                 {/* <div className="col">
                                                     <div className="single-product">
                                                         <div className="level-pro-new">
                                                             <span>new</span>
@@ -322,8 +291,8 @@ const Product = () => {
                                                             </ul>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col">
+                                                </div> */}
+                                                {/* <div className="col">
                                                     <div className="single-product">
                                                         <div className="level-pro-sale">
                                                             <span>sale</span>
@@ -388,8 +357,8 @@ const Product = () => {
                                                             </ul>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col">
+                                                </div> */}
+                                                {/* <div className="col">
                                                     <div className="single-product">
                                                         <div className="product-img">
                                                             <div>
@@ -452,8 +421,8 @@ const Product = () => {
                                                             </ul>
                                                         </div>
                                                     </div>
-                                                </div>
-                                               <div className="col">
+                                                </div> */}
+                                               {/* <div className="col">
                                                     <div className="single-product">
                                                         <div className="level-pro-new">
                                                             <span>new</span>
@@ -516,7 +485,7 @@ const Product = () => {
                                                             </ul>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                         <div role="tabpanel" className="tab-pane fade" id="tab2">
