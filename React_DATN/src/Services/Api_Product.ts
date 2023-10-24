@@ -46,9 +46,25 @@ const productApi = createApi({
         method: "PATCH"
       }),
       invalidatesTags: ["Product"]
+    }),
+
+    updatesProduct: builder.mutation<IProduct,IProduct>({
+      query: (products) => ({
+        url: `/api/products/${products._id}`,
+        method: "PUT",
+        body:products
+      }),
+      invalidatesTags: ["Product"]
     })
   }),
 });
 
-export const { useGetAllProductQuery, useAddProductMutation,useDeleteProductMutation, useGetOneProductQuery, useUpdateProductMutation } = productApi;
+export const { 
+  useGetAllProductQuery,
+   useAddProductMutation,
+   useDeleteProductMutation, 
+   useGetOneProductQuery, 
+   useUpdateProductMutation,
+   useUpdatesProductMutation
+   } = productApi;
 export default productApi;

@@ -124,4 +124,3 @@ export const deleteToCart = async (req, res) => {
     });
   }
 };
-

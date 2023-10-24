@@ -255,32 +255,6 @@ body {
     height: 53px;
 }
 
-.dashboard ul li {
-    border-left: 1px solid #cecece;
-    border-right: 1px solid #cecece;
-    line-height: 55px;
-    min-height: 55px;
-    text-align: center;
-    width: 50px;
-    position: relative;
-    float: left;
-}
-
-.account-menu,
-.cart-menu {
-    display: inline-block;
-    margin: -6px 2px;
-}
-
-.account-menu ul li {
-    border-right: medium none;
-}
-
-.dashboard ul li a {
-    display: block;
-}
-
-
 .cart-menu ul li a>span {
     background-color: #000000;
     border-radius: 50%;
@@ -301,90 +275,6 @@ body {
     color: #F36871;
 }
 
-.dashboard .account-menu ul li ul,
-.dashboard .cart-menu ul li .cart-info {
-    background-color: rgba(53, 53, 53, 0.82);
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
-    min-width: 170px;
-    padding: 15px;
-    position: absolute;
-    right: 0;
-}
-
-.dashboard .account-menu ul li ul li {
-    border-bottom: 1px solid #3e3e3e;
-    border-left: 0 none;
-    display: block;
-    line-height: 30px;
-    min-height: 30px;
-    text-align: right;
-    width: inherit;
-    float: none;
-}
-
-.dashboard .account-menu ul li ul li a {
-    color: #fff;
-    font-size: 13px;
-    font-weight: 300;
-    text-transform: capitalize;
-}
-
-.dashboard .account-menu ul li ul li a:hover {
-    color: #F36871;
-}
-
-.dashboard .account-menu ul li ul {
-    opacity: 0;
-    transform: scaleY(0);
-    transform-origin: 0 0 0;
-    transition: all 0.5s ease 0s;
-    visibility: hidden;
-    z-index: 99;
-}
-
-.dashboard .account-menu ul li ul.search {
-    padding: 0;
-    right: -26px;
-    top: 103%;
-    width: 260px;
-}
-
-.dashboard .account-menu ul li ul.search li {
-    position: relative;
-}
-
-.dashboard .account-menu ul li ul.search li input {
-    font-size: 12px;
-    height: 40px;
-    left: 0;
-    padding: 0 20px;
-    position: absolute;
-    width: 100%;
-    border: 0;
-    box-shadow: 1px 1px 5px #aaa;
-}
-
-.dashboard .account-menu ul li ul.search li button {
-    background-color: transparent;
-    border: 0 none;
-    color: #333;
-    height: 40px;
-    line-height: 40px;
-    position: absolute;
-    right: 0;
-    width: 40px;
-    font-weight: 700;
-}
-
-.dashboard .account-menu ul li ul.search li button:hover {
-    color: #05BCD1;
-}
-
-.dashboard .account-menu ul li:hover ul {
-    opacity: 1;
-    transform: scaleY(1);
-    visibility: visible;
-}
 
 /*----------------------------------------*/
 /*  2.1.4 Cart menu
@@ -693,7 +583,7 @@ body {
 
 .mean-container .mean-bar:after {
     color: #fff;
-    content: "catagories";
+    content: "Menu";
     font-family: 'Montserrat', sans-serif;
     font-size: 18px;
     font-weight: 500;
@@ -710,7 +600,7 @@ body {
 .mean-container .mean-nav ul li a {
     border-top: 1px solid #bbb;
     color: #666;
-    background-color: #fff;
+    background-color: #5f5f5f;
     font-family: 'Montserrat', sans-serif;
     text-transform: capitalize;
     font-weight: 500;
@@ -2717,7 +2607,7 @@ ul.address li span {
     margin: 5px;
     position: relative;
     text-align: center;
-    width: 35px;
+    width: 55px;
 }
 
 .qtybutton {

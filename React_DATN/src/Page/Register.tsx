@@ -1,54 +1,56 @@
-import React, { useState } from 'react'
+import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Form, Input } from 'antd';
-// import { OauthServiceSignup } from '../Handle/Oauth-Services/OauthUser';
-import { GetAllUser } from '../Api/Api_User';
+import { Button, Form, Input, message } from 'antd';
+import { useSignupMutation } from '../Services/Api_User';
 
 const Register = () => {
     const navigate = useNavigate();
-    const [getDataUser, setDataUser] = useState({});
-    // const LogupForm = async (values) => {
-    //     OauthServiceSignup(values)
-    //         .then((data) => {
-    //             setDataUser(data);
-    //             navigate(`/login`);
-    //             alert("Chúc mừng bạn đăng kí thành công, đăng nhập ngay nào !");
-    //         })
-    //         .catch((error) => {
-    //             const showError = error.response.data.message
-    //             alert(showError);
-    //         });
-    //     const checkDataUser = Object.keys(getDataUser.dataUser).length === 0;
-    //     console.log(getDataUser.dataUser);
-    //     console.log(checkDataUser);
-    // };
+    const [setMessage, getMessage] = message.useMessage();
+    const [signup]: any = useSignupMutation();
+
+    const onFinish = async (values: any) => {
+        try {
+            console.log("values: ", values);
+            values.username.length < 3 && setMessage.open({ type: "error", content: "Tên tài khoản trên 2 kí tự !" });
+            values.password.length < 6 && setMessage.open({ type: "error", content: "Mật khẩu phải trên 5 kí tự !" });
+            values.password != values.confirmPassword && setMessage.open({ type: "error", content: "Mật khẩu không trùng nhau !" });
+            if (values.email.includes("@gmail.com")) {
+                signup(values)
+                    .unwrap()
+                    .then(() => {
+                        setMessage.open({
+                            type: "success",
+                            content: "Đăng kí tài khoản thành công.",
+                        });
+                        setTimeout(() => {
+                            navigate("/login");
+                        }, 1800);
+                    });
+            } else {
+                setMessage.open({
+                    type: "error",
+                    content: "Không đúng định dạng email."
+                });
+            }
+        } catch (err) {
+            console.log("Lỗi try-catch đăng kí: ", err);
+        };
+    };
+
     return (
         <div className='w-[90vw] mx-auto'>
-            <div className="shopping-cart">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="location">
-                                <ul>
-                                    <li><a href="index.html" title="go to homepage">Home<span>/</span></a></li>
-                                    <li><strong>Register page</strong></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="login-area ptb-120">
+            {getMessage}
+            <div className="login-area mt-5">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-6 offset-md-3 text-center">
                             <div className="login">
                                 <div className="login-form-container">
-                                <Link to={`/login`} className='underline'><img title='back' className='w-6 h-6 hover:-translate-x-[3px] duration-200' src="../../img/IMAGE_CREATED/previous.png" alt="" /></Link>
+                                    <Link to={`/login`} className='underline'><img title='back' className='w-6 h-6 hover:-translate-x-[3px] duration-200' src="../../img/IMAGE_CREATED/previous.png" alt="" /></Link>
                                     <div className="login-text">
-                                        
-                                        <h2>Register</h2>
-                                        <span>Please Register using account detail bellow.</span>
+
+                                        <h2>Đăng kí</h2>
+                                        <h5 style={{ marginTop: 10, textAlign: "center", marginBottom: 60, color: "green" }}>Vui lòng điền các thông tin cần thiết.</h5>
                                     </div>
                                     <div className="logup-form">
                                         <Form
@@ -65,11 +67,11 @@ const Register = () => {
                                             initialValues={{
                                                 remember: true,
                                             }}
-                                            // onFinish={LogupForm}
+                                            onFinish={onFinish}
                                             autoComplete="off"
                                         >
                                             <Form.Item
-                                                label="Username"
+                                                label="Tên tài khoản"
                                                 name="username"
                                                 rules={[
                                                     {
@@ -95,7 +97,7 @@ const Register = () => {
                                             </Form.Item>
 
                                             <Form.Item
-                                                label="Password"
+                                                label="Mật khẩu"
                                                 name="password"
                                                 rules={[
                                                     {
@@ -107,7 +109,7 @@ const Register = () => {
                                                 <Input type='password' />
                                             </Form.Item>
                                             <Form.Item
-                                                label="Re-Password"
+                                                label="Nhập lại mật khẩu"
                                                 name="confirmPassword"
                                                 rules={[
                                                     {
@@ -119,20 +121,13 @@ const Register = () => {
                                                 <Input type='password' />
                                             </Form.Item>
 
-                                            <div className="flex justify-between">
-                                                <div className="">
-                                                    <input type="checkbox" id="remember" />
-                                                    <label htmlFor="remember">Remember me</label>
-                                                </div>
-                                                <a href="#">Forgot Password?</a>
-                                            </div>
                                             <Form.Item
                                                 wrapperCol={{
                                                     offset: 8,
                                                     span: 16,
                                                 }}
                                             >
-                                                <Button htmlType="submit" className='w-36'>Logup</Button>
+                                                <Button htmlType="submit" className='w-36'>Đăng kí</Button>
                                             </Form.Item>
                                         </Form>
                                     </div>

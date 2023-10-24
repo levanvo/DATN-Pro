@@ -30,7 +30,7 @@ const CreateColor = () => {
     }
     createColor(updatedValues)
     message.success("Create color success")
-    navigate("/admin/colors")
+    navigate("/admin/color/list")
   }
   //----------------------------------------------------------
   //   if (isLoading) return <div>Loading...</div>
@@ -95,7 +95,7 @@ const CreateColor = () => {
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button htmlType="submit">Submit</Button>
-          <Link to="/admin/colors">
+          <Link to="/admin/color/list">
             <Button style={{ margin: "0 0 0 8px" }}>Cancel</Button>
           </Link>
         </Form.Item>
