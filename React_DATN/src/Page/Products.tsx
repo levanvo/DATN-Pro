@@ -18,7 +18,6 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
     isLoading: isLoadingSize,
     error: errorSize,
   } = useGetAllSizeQuery();
-  console.log(producData);
 
   const [isApplyClicked, setIsApplyClicked] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });

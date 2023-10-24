@@ -20,7 +20,6 @@ const UpdateCategory = () => {
     const [isLoadingScreen, setIsLoadingScreen] = useState(false);
     const [messageApi, contextHolder] = message.useMessage()
     const { id } = useParams()
-    console.log(updateCategory);
     
     
     const { data: categoryData, isLoading } = useGetOneCategoryQuery(id || "")
@@ -43,8 +42,6 @@ const UpdateCategory = () => {
             updateCategory({ ...values, _id: id })
                 .unwrap()
                 .then(() => {
-                    console.log({ ...values, _id: id });
-                    
                     messageApi.open({
                         type: "success",
                         content: "Cập nhật thành công"

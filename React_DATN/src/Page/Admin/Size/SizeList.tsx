@@ -4,6 +4,8 @@ import { ISize } from '../../../Models/interfaces';
 import { QuestionCircleOutlined, DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useDeleteSizeMutation, useGetAllSizeQuery } from '../../../Services/Api_Size';
+import Loading from '../../../Component/Loading';
+
 
 const { Search } = Input;
 
@@ -17,7 +19,7 @@ const SizeList = () => {
     name
   }))
 
-  const [selectedSizes, setSelectedSizes] = useState<ISize[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<any[]>([]);
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
 
   const confirm = (id: number | string) => {
@@ -29,7 +31,7 @@ const SizeList = () => {
           content: 'Xóa size thành công'
         });
         setSelectedSizes(prevSelectedSizes =>
-          prevSelectedSizes.filter(size => size.key !== id)
+          prevSelectedSizes.filter((size: any) => size.key !== id)
         );
       })
       .catch((error) => {
@@ -39,12 +41,10 @@ const SizeList = () => {
 
   const handleSelectionChange = (selectedRowKeys: React.Key[], selectedRows: ISize[]) => {
     setSelectedSizes(selectedRows);
-    console.log('selectedRowKeys:', selectedRowKeys);
-    console.log('selectedRows:', selectedRows);
   };
 
   const deleteSelectedSizes = () => {
-    selectedSizes.forEach((size,index) => {
+    selectedSizes.forEach((size, index) => {
       removeSize(size.key)
         .unwrap()
         .then(() => {
@@ -60,7 +60,7 @@ const SizeList = () => {
     setSelectedSizes([]);
   };
 
-  const columns = [
+  const columns: any = [
     {
       title: 'Size',
       dataIndex: 'name',
@@ -96,7 +96,7 @@ const SizeList = () => {
     setSearchKeyword(value);
   };
 
-  const filteredDataSource = dataSource?.filter((item:any) =>
+  const filteredDataSource = dataSource?.filter((item: any) =>
     item.name.toLowerCase().includes(searchKeyword.toLowerCase())
   );
 
@@ -115,13 +115,18 @@ const SizeList = () => {
         />
       </div>
       <Divider />
-      <Table rowSelection={{
+      {isLoading ?
+        <Loading />
+        :
+        <Table rowSelection={{
           selectedRowKeys: selectedSizes.map(size => size.key),
           onChange: handleSelectionChange
         }}
-        columns={columns}
-        dataSource={filteredDataSource}
-      />
+          columns={columns}
+          dataSource={filteredDataSource}
+        />
+      }
+
       <Button
         type="primary"
         danger
