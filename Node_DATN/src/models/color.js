@@ -5,6 +5,9 @@ const colorSchema = new mongoose.Schema(
     name: {
       type: String,
     },
+    unicode: {
+      type: String,
+    },
     products: [
       {
         type: mongoose.Types.ObjectId,
