@@ -251,36 +251,9 @@ body {
 /*----------------------------------------*/
 
 .dashboard {
-    display: flex;
-    align-items: center;
-    justify-content: end;
+    float: right;
+    height: 53px;
 }
-
-.dashboard ul li {
-    text-align: center;
-    width: 50px;
-    position: relative;
-    float: left;
-}
-
-.account-menu {
-    margin: 0px 10px;
-}
-
-.account-menu,
-.cart-menu {
-    display: inline-block;
-    margin: -6px 2px;
-}
-
-.account-menu ul li {
-    border-right: medium none;
-}
-
-.dashboard ul li a {
-    display: block;
-}
-
 
 .cart-menu ul li a>span {
     background-color: #000000;
@@ -289,8 +262,8 @@ body {
     height: 20px;
     line-height: 20px;
     position: absolute;
-    right: 16px;
-    top: 2px;
+    right: 3px;
+    top: 12px;
     width: 20px;
 }
 
@@ -432,8 +405,15 @@ body {
 /*  2.2.1 Logo
 /*----------------------------------------*/
 
-.mainmenu-area .logo img {
-    width: 100px;
+.mainmenu-area .logo {
+    max-width: 100%;
+    position: absolute;
+    top: -55px;
+}
+
+.mainmenu-area .logo a {
+    display: block;
+    background-color: #fff;
 }
 
 .mainmenu ul li {
@@ -444,12 +424,6 @@ body {
 /*----------------------------------------*/
 /*  2.2.2 Mainmenu
 /*----------------------------------------*/
-.mainmenu{
-    display: flex;
-    justify-content: center;
-    margin-top: 4px;
-}
-
 .mainmenu ul li a {
     color: #232323;
     display: block;
@@ -466,7 +440,6 @@ body {
 .mainmenu ul li:hover a {
     color: #ff6600;
 }
-
 
 /*----------------------------------------*/
 /*  2.2.2.1 Megamenu

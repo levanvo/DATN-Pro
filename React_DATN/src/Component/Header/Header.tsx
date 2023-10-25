@@ -148,7 +148,7 @@ const Header = ({ onSearch }: any) => {
                 </a>
               </div>
             </div>
-            <div className="col-lg-6">
+            <div className="col-lg-9">
               <div className="mainmenu">
                 <nav>
                   <ul>
@@ -156,6 +156,41 @@ const Header = ({ onSearch }: any) => {
                       <a href="/">Trang chủ</a>
 
                     </li>
+
+                    <li>
+                      <a href="/products">Sản phẩm</a>
+                    </li>
+
+                    <li className="mega-jewellery">
+                      <a href="/">Jewellery</a>
+                    </li>
+                    <li>
+                      <a href="/">accessories</a>
+                    </li>
+                    <li>
+                      <a href="#">Khác</a>
+                      <div className="sub-menu pages">
+                        <span>
+                          <a href="/contact">Liên hệ chúng tôi</a>
+                        </span>
+                        <span>
+                          <a href="/blog">Lưu trữ nguồn</a>
+                        </span>
+                      </div>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+            <div className="col-sm-12">
+              <div className="mobile-menu">
+                <nav>
+                  <ul>
+                    <li>
+                      <a href="/">Trang chủ</a>
+
+                    </li>
+
                     <li>
                       <a href="/products">Sản phẩm</a>
                     </li>
