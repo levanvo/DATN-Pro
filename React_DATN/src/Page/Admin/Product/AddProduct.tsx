@@ -119,8 +119,6 @@ const AddProduct = () => {
               content: "Thêm sản phẩm thành công",
             })
           })
-
-        console.log("dữ liệu", newProduct)
       }
       setIsLoadingScreen(false)
     } catch (error) {

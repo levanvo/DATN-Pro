@@ -1,12 +1,11 @@
 import React, { useState } from "react"
 import { Button, Table, Popconfirm, message, Input } from "antd"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ICategory } from "../../../Models/interfaces"
 import Loading from "../../../Component/Loading"
 import { useGetAllCategoryQuery, useRemoveCategoryMutation } from "../../../Services/Api_Category"
 
 const CategoryList = () => {
-  const { Search } = Input
   const [searchQuery, setSearchQuery] = useState<string>("")
   const [messageApi, contextHolder] = message.useMessage()
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<React.Key[]>([])
@@ -14,6 +13,7 @@ const CategoryList = () => {
 
   const { data, isLoading, error } = useGetAllCategoryQuery(undefined)
   const [removeCategory] = useRemoveCategoryMutation()
+  const navigate = useNavigate()
 
   if (isLoading) return <Loading />
   if (error) return <div>Error...</div>
@@ -86,7 +86,6 @@ const CategoryList = () => {
   ]
  
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys)
     setSelectedCategoryIds(newSelectedRowKeys)
   }
 
@@ -106,9 +105,6 @@ const CategoryList = () => {
     Promise.all(selectedCategoryIds.map((categoryId) => removeCategory(categoryId)))
       .then(() => {
         message.success("Xóa category thành công")
-        setTimeout(() => {
-          window.location.href = 'http://localhost:5173/admin/category/list'
-        }, 2000);
       })
       .catch(() => {
         message.error("Xóa category thất bại. xin thử lại")

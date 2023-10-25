@@ -8,7 +8,6 @@ const ProductsSize = () => {
   const { id } = useParams();
   
   const { data: ProductsSize, isLoading, isError } = useGetProductsBySizeQuery(id);
-    console.log(ProductsSize);
 
   const {
     data: sizeData,

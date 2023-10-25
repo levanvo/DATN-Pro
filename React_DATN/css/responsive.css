@@ -50,10 +50,6 @@
         bottom: 0px;
     }
 
-    .dashboard .account-menu ul li,
-    .cart-menu>ul>li {
-        width: 45px;
-    }
 
     .mainmenu ul li div.mega-menu.women {
         left: -230px;
@@ -250,9 +246,7 @@
         background-color: #fff;
     }
 
-    .account-menu ul li.search {
-        display: none;
-    }
+
 
     .site-option {
         float: none;
@@ -393,9 +387,7 @@
         border: 0px;
     }
 
-    .dashboard .account-menu ul li ul li {
-        border-top: 0px solid #3e3e3e;
-    }
+
 
     .mainmenu-area .logo a {
         width: 60%;

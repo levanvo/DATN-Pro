@@ -1,3 +1,6 @@
+*{
+    user-select: none;
+}
 ._header-web {
     position: fixed;
     z-index: 10;
@@ -57,7 +60,7 @@
 }
 #search-webSite:checked ~ .form-webSite{
     top: 80px;
-    z-index: 2;
+    z-index: 100;
 }
 .form-webSite{
     border-radius: 10px;
@@ -90,7 +93,7 @@
 #search-webSite:checked ~ .display-website-search{
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: 99;
 }
 .nav-left{
     background: #000;

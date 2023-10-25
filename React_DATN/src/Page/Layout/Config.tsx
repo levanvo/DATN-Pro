@@ -41,17 +41,17 @@ export default function Run() {
             /*----------------------------
              product-slider
             ------------------------------ */
-            $(".product-slider").owlCarousel({
-                autoPlay: false,
-                slideSpeed: 2000,
-                pagination: false,
-                navigation: false,
-                items: 3,
-                itemsDesktop: [1199, 3],
-                itemsDesktopSmall: [980, 3],
-                itemsTablet: [768, 2],
-                itemsMobile: [479, 1],
-            });
+            // $(".product-slider").owlCarousel({
+            //     autoPlay: false,
+            //     slideSpeed: 2000,
+            //     pagination: false,
+            //     navigation: false,
+            //     items: 3,
+            //     itemsDesktop: [1199, 3],
+            //     itemsDesktopSmall: [980, 3],
+            //     itemsTablet: [768, 2],
+            //     itemsMobile: [479, 1],
+            // });
 
             /*----------------------------
              feature-product-slider

@@ -54,7 +54,6 @@ const UpdateProduct = () => {
         })
         setIsLoadingScreen(false)
     } catch (error) {
-        console.log("Lỗi khi cập nhật");
         setIsLoadingScreen(false)
     }
     
