@@ -23,7 +23,7 @@ export const productSchema = joi.object({
     "string.empty": "Size không được để trống",
     "any.required": "Trường size_id là bắt buộc",
   }),
-  color_id: joi.string().required().messages({
+  color_id: joi.required().messages({
     "string.empty": "Màu không được để trống",
     "any.required": "Trường color là bắt buộc",
   }),
@@ -31,6 +31,6 @@ export const productSchema = joi.object({
     "number.empty": "Số lượng sản phẩm không được để trống",
     "any.required": "Trường quantity là bắt buộc",
   }),
-  view:joi.number(),
-  arrayColor:joi.array(),
+  view: joi.number(),
+  arrayColor: joi.array(),
 })

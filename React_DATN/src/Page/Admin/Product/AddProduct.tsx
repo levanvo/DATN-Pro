@@ -1,20 +1,27 @@
-import { useState,useEffect } from "react";
-import { Button, Form, Input, Upload, Modal,Select,message,InputNumber } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import axios from "axios";
-import { IProduct,IColor } from "../../../Models/interfaces";
-import type { UploadFile } from "antd/es/upload/interface";
-import type { RcFile, UploadProps } from "antd/es/upload";
-import { useAddProductMutation } from "../../../Services/Api_Product";
-import { useGetAllCategoryQuery } from "../../../Services/Api_Category";
-import Loading from "../../../Component/Loading";
-import {useNavigate} from "react-router-dom"
-import { useGetAllSizeQuery } from "../../../Services/Api_Size";
+import { useState, useEffect } from "react"
+import {
+  Button,
+  Form,
+  Input,
+  Upload,
+  Modal,
+  Select,
+  message,
+  InputNumber,
+} from "antd"
+import { PlusOutlined } from "@ant-design/icons"
+import axios from "axios"
+import { IProduct, IColor } from "../../../Models/interfaces"
+import type { UploadFile } from "antd/es/upload/interface"
+import type { RcFile, UploadProps } from "antd/es/upload"
+import { useAddProductMutation } from "../../../Services/Api_Product"
+import { useGetAllCategoryQuery } from "../../../Services/Api_Category"
+import Loading from "../../../Component/Loading"
+import { useNavigate } from "react-router-dom"
+import { useGetAllSizeQuery } from "../../../Services/Api_Size"
 import { useGetColorsQuery } from "../../../Services/api_Color"
 
-
-const { TextArea } = Input;
-
+const { TextArea } = Input
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -30,15 +37,15 @@ type urlObject = {
 
 const AddProduct = () => {
   const navigate = useNavigate()
-  const [addProduct, {error}] = useAddProductMutation();
-  const {data: getAllCategory,isLoading} = useGetAllCategoryQuery()
-  const {data: getAllSize,isLoadingSize} = useGetAllSizeQuery()
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [previewTitle, setPreviewTitle] = useState("");
-  const [isLoadingScreen, setIsLoadingScreen] = useState(false);
-  const [messageApi,contextHolder] = message.useMessage()
+  const [addProduct, { error }] = useAddProductMutation()
+  const { data: getAllCategory, isLoading } = useGetAllCategoryQuery()
+  const { data: getAllSize, isLoadingSize } = useGetAllSizeQuery()
+  const [fileList, setFileList] = useState<UploadFile[]>([])
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [previewImage, setPreviewImage] = useState("")
+  const [previewTitle, setPreviewTitle] = useState("")
+  const [isLoadingScreen, setIsLoadingScreen] = useState(false)
+  const [messageApi, contextHolder] = message.useMessage()
   const { data } = useGetColorsQuery(undefined)
 
   const handleCancel = () => setPreviewOpen(false)
@@ -70,16 +77,16 @@ const AddProduct = () => {
   }
 
   useEffect(() => {
-    if(error && "data" in error){
-      const errDetails = error.data as {message: string[]}
-        messageApi.open({
-          type: "error",
-          content: errDetails.message
-        })
+    if (error && "data" in error) {
+      const errDetails = error.data as { message: string[] }
+      messageApi.open({
+        type: "error",
+        content: errDetails.message,
+      })
     }
-  },[error])
+  }, [error])
 
-  const onFinish = async (values: IProduct) => {
+  const onFinish = async (values: any) => {
     try {
       setIsLoadingScreen(true)
       const formData = new FormData()
@@ -90,10 +97,9 @@ const AddProduct = () => {
       })
 
       const response = await axios.post(
-        "http://localhost:8080/api/images/upload", 
+        "http://localhost:8080/api/images/upload",
         formData
       )
-
 
       // Assuming response.data contains the uploaded image URLs
       const imageUrls = response.data.urls.map((urls: urlObject) => urls.url)
@@ -108,8 +114,8 @@ const AddProduct = () => {
           description: values.description,
           color_id: values.color_id,
           size_id: values.size_id,
-          quantity: values.quantity
-        };
+          quantity: values.quantity,
+        }
 
         addProduct(newProduct)
           .unwrap()
@@ -126,8 +132,6 @@ const AddProduct = () => {
       setIsLoadingScreen(false)
     }
   }
-
-
 
   return (
     <div>
@@ -149,30 +153,16 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item label="Danh mục" name="categoryId" rules={[{ required: true }]}>
-          <Select
-            style={{ width: 200 }}
-            loading={isLoading}
-          >
-          {getAllCategory ? (
-          getAllCategory?.map((category:any) => (
-            <Select.Option key={category._id} value={category._id}>
-              {category.name}
-            </Select.Option>
-          ))
-        ) : (
-          <p>Loading...</p>
-         )}
-
-          </Select>
-        </Form.Item>
-
-        <Form.Item label="Color" name="color_id" rules={[{ required: true }]}>
+        <Form.Item
+          label="Danh mục"
+          name="categoryId"
+          rules={[{ required: true }]}
+        >
           <Select style={{ width: 200 }} loading={isLoading}>
-            {data ? (
-              data?.map((color: IColor) => (
-                <Select.Option key={color._id} value={color._id}>
-                  {color.name}
+            {getAllCategory ? (
+              getAllCategory?.map((category: any) => (
+                <Select.Option key={category._id} value={category._id}>
+                  {category.name}
                 </Select.Option>
               ))
             ) : (
@@ -180,21 +170,28 @@ const AddProduct = () => {
             )}
           </Select>
         </Form.Item>
-        <Form.Item label="Size" name="size_id" rules={[{ required: true }]}>
-          <Select
-            style={{ width: 200 }}
-            loading={isLoadingSize}
-          >
-          {getAllSize ? (
-          getAllSize?.map((size:any) => (
-            <Select.Option key={size._id} value={size._id}>
-              {size.name}
-            </Select.Option>
-          ))
-        ) : (
-          <p>Loading...</p>
-        )}
 
+        <Form.Item label="Color" name="color_id" rules={[{ required: true }]}>
+          <Select mode="multiple" style={{ width: 200 }} loading={isLoading}>
+            {data?.map((color: IColor) => (
+              <Select.Option key={color._id} value={color._id}>
+                {color.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item label="Size" name="size_id" rules={[{ required: true }]}>
+          <Select style={{ width: 200 }} loading={isLoadingSize}>
+            {getAllSize ? (
+              getAllSize?.map((size: any) => (
+                <Select.Option key={size._id} value={size._id}>
+                  {size.name}
+                </Select.Option>
+              ))
+            ) : (
+              <p>Loading...</p>
+            )}
           </Select>
         </Form.Item>
 
@@ -217,9 +214,9 @@ const AddProduct = () => {
         <Form.Item
           name="quantity"
           label="Số lượng"
-          rules={[{ required: true,message: "Số lượng không được bỏ trống" }]}
+          rules={[{ required: true, message: "Số lượng không được bỏ trống" }]}
         >
-          <InputNumber  />
+          <InputNumber />
         </Form.Item>
 
         <Form.Item label="Mô tả sản phẩm" name="description">
@@ -250,7 +247,12 @@ const AddProduct = () => {
         </Modal>
 
         <Form.Item wrapperCol={{ offset: 4, span: 11 }}>
-          <Button type="primary" danger htmlType="submit" style={{marginRight: 20}}>
+          <Button
+            type="primary"
+            danger
+            htmlType="submit"
+            style={{ marginRight: 20 }}
+          >
             Thêm mới
           </Button>
           <Button
