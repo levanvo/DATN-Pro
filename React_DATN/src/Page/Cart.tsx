@@ -25,7 +25,6 @@ const Cart = () => {
     };
 
     if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error</div>;
     return (
         
         <div className='w-[90vw] mx-auto'>
