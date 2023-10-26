@@ -64,6 +64,8 @@ const ProductList = () => {
     setFilterVisible(visible);
   };
 
+
+  // hàm thực hiện lọc sản phẩm theo giá
  const handleApplyClick = () => {
   setIsApplyClicked(true);
 };
