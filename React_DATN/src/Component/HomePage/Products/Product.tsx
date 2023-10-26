@@ -3,7 +3,7 @@ import {
     useGetAllProductQuery,
     // useUpdateProductMutation,
     useGetOneProductQuery,
-    useUpdatesProductMutation
+    useUpdateProductMutation
 } from '../../../Services/Api_Product'
 import { Link } from "react-router-dom"
 import Skeleton from '@mui/material/Skeleton';
@@ -14,7 +14,7 @@ import Loading from '../../Loading';
 const Product = () => {
     const [getId, setId]: any = useState("");
     const { data: productData, isLoading }: any = useGetAllProductQuery();
-    const [UpdatesProduct] = useUpdatesProductMutation();
+    const [UpdatesProduct] = useUpdateProductMutation();
     const { data: dataOne }:any = useGetOneProductQuery(getId)
     if (dataOne) {
         // console.log("view: ",dataOne.view);

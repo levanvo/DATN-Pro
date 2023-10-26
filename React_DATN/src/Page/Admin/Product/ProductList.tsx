@@ -7,7 +7,6 @@ import Loading from '../../../Component/Loading';
 import {DeleteFilled,EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
-import type { ColumnsType, TableProps } from 'antd/es/table';
 
 
 const { Search } = Input;
@@ -65,9 +64,10 @@ const ProductList = () => {
     setFilterVisible(visible);
   };
 
-  const handleApplyClick = () => {
-    setIsApplyClicked(true);
-  };
+ const handleApplyClick = () => {
+  setIsApplyClicked(true);
+};
+
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsApplyClicked(false);

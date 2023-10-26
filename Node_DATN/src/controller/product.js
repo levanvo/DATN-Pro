@@ -98,7 +98,6 @@ export const removeProduct = async (req, res) => {
     // Lưu sản phẩm đã xóa vào bảng "deleted_products"
     await deletedProduct.save();
 
-    console.log(deletedProduct);
     // Sau đó, xóa sản phẩm khỏi bảng "Product"
     await Product.findByIdAndRemove(req.params.id).exec();
 
@@ -202,11 +201,31 @@ export const getAllDeletedProducts = async (req, res) => {
 
     return res.status(200).json(deletedProducts);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       message: error,
     });
   }
 };
+
+//Xóa sản phẩm vĩnh viễn
+export const deleteProduct = async (req,res) => {
+  try {
+    const {id} = req.params
+    const product = await DeletedProduct.findByIdAndDelete(id)
+    if(!product){
+      return res.status(400).json({
+        message: "Không tìm thấy sản phẩm cần xóa"
+      })
+    }
+
+    return res.status(200).json({
+      message: "Xóa sản phẩm thành công"
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: error,
+    });
+  }
+}
 
 
