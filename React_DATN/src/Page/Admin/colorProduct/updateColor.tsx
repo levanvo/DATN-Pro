@@ -37,7 +37,7 @@ const UpdateColor = () => {
 
     updateProduct(updatedValues)
     message.success("Update product success")
-    navigate("/admin/colors")
+    navigate("/admin/color/list")
   }
   //-------------------------------------------------------------
   if (isLoading) return <Loading />
@@ -112,7 +112,7 @@ const UpdateColor = () => {
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button htmlType="submit">Submit</Button>
-          <Link to="/admin/colors">
+          <Link to="/admin/color/list">
             <Button style={{ margin: "0 0 0 8px" }}>Cancel</Button>
           </Link>
         </Form.Item>
