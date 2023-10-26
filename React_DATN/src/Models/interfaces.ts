@@ -36,3 +36,14 @@ export interface ISize {
   _id?: number | string
   name: string
 }
+
+export interface ICart {
+  _id?: string | number;
+  products: ICartItem[];
+  userId: string | number;
+}
+
+export interface ICartItem {
+  productId: string;
+  quantity: number;
+}

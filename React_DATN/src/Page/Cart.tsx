@@ -1,6 +1,14 @@
 import React from 'react'
+import { useGetCartQuery } from '../Services/Api_cart';
+import { ICart } from '../Models/interfaces';
 
 const Cart = () => {
+    const { data: cartData, isLoading, error } = useGetCartQuery();
+    console.log(cartData);
+    
+
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error</div>;
     return (
         <div className='w-[90vw] mx-auto'>
             <div className="shopping-cart">
@@ -32,7 +40,41 @@ const Cart = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="text-center">
-                                        <tr>
+                                        {/* {cartData?.data?.map((cart: ICart) => {
+                                            return ( */}
+                                                <tr>
+                                                    <td className="cart-item-img">
+                                                        <a href="single-product.html">
+                                                            <img src="img/cart/3.png" alt="" />
+                                                        </a>
+                                                    </td>
+                                                    <td className="cart-product-name">
+                                                        <a href="single-product.html">Cras neque metus</a>
+                                                    </td>
+                                                    <td className="edit">
+                                                        <a href="#">Edit</a>
+                                                    </td>
+                                                    <td className="move-wishlist">
+                                                        <a href="#">Move</a>
+                                                    </td>
+                                                    <td className="unit-price">
+                                                        <span>$174.00</span>
+                                                    </td>
+                                                    <td className="quantity">
+                                                        <span>1</span>
+                                                    </td>
+                                                    <td className="subtotal">
+                                                        <span>$174.00</span>
+                                                    </td>
+                                                    <td className="remove-icon">
+                                                        <a href="#">
+                                                            <img src="img/cart/btn_remove.png" alt="" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {/* )
+                                        })} */}
+                                        {/* <tr>
                                             <td className="cart-item-img">
                                                 <a href="single-product.html">
                                                     <img src="img/cart/3.png" alt="" />
@@ -121,7 +163,7 @@ const Cart = () => {
                                                     <img src="img/cart/btn_remove.png" alt="" />
                                                 </a>
                                             </td>
-                                        </tr>
+                                        </tr> */}
                                     </tbody>
                                 </table>
                                 <div className="shopping-button">

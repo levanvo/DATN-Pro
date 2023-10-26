@@ -74,7 +74,7 @@ export const signin = async (req, res) => {
         message: "Mật khẩu không chính xác"
       })
     }
-    const token = jwt.sign({ _id: checkUser.id }, "sneakers", { expiresIn: "2h" })
+    const token = jwt.sign({ _id: checkUser._id }, "sneakers", { expiresIn: 86400 })
     checkUser.password = undefined
     return res.status(200).json({
       message: "Đăng nhập thành công",
