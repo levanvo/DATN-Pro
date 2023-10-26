@@ -92,11 +92,13 @@ export const removeProduct = async (req, res) => {
     }
 
     // Tạo một bản sao của sản phẩm trước khi xóa nó tạm thời
+    
     const deletedProduct = new DeletedProduct(productToBeDeleted.toJSON());
 
     // Lưu sản phẩm đã xóa vào bảng "deleted_products"
     await deletedProduct.save();
 
+    console.log(deletedProduct);
     // Sau đó, xóa sản phẩm khỏi bảng "Product"
     await Product.findByIdAndRemove(req.params.id).exec();
 
@@ -151,7 +153,12 @@ export const updateProduct = async (req, res) => {
 export const restoreProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Định dạng ID không hợp lệ để khôi phục sản phẩm",
+      });
+    }
+
     // Tìm sản phẩm trong bảng "deleted_products"
     const deletedProduct = await DeletedProduct.findById(id).exec();
 
@@ -180,4 +187,26 @@ export const restoreProduct = async (req, res) => {
     });
   }
 };
+
+
+// lấy ra tất cả dữ liệu đã xóa
+export const getAllDeletedProducts = async (req, res) => {
+  try {
+    const deletedProducts = await DeletedProduct.find().sort({ createdAt: -1 }).exec();
+
+    if (deletedProducts.length === 0) {
+      return res.status(404).json({
+        message: "Không có sản phẩm nào",
+      });
+    }
+
+    return res.status(200).json(deletedProducts);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: error,
+    });
+  }
+};
+
 

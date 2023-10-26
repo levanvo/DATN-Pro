@@ -55,6 +55,11 @@ const productApi = createApi({
         body:products
       }),
       invalidatesTags: ["Product"]
+    }),
+
+    getAllDeletedProducts: builder.query<IProduct[], void>({
+      query: () => `/api/restore-product-data`,
+      providesTags: ["Product"]
     })
   }),
 });
@@ -65,6 +70,7 @@ export const {
    useDeleteProductMutation, 
    useGetOneProductQuery, 
    useUpdateProductMutation,
-   useUpdatesProductMutation
+   useUpdatesProductMutation,
+    useGetAllDeletedProductsQuery
    } = productApi;
 export default productApi;
