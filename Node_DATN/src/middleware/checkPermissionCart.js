@@ -9,8 +9,7 @@ export const checkPermissionCart = async (req, res, next) => {
 
     // lấy jwt token từ header
     const token = req.headers.authorization.split(" ")[1];
-    console.log("aaaaa", token);
-    jwt.verify(JSON.parse(token), "sneakers", async (err, payload) => {
+    jwt.verify(token, "sneakers", async (err, payload) => {
       if (err) {
         if (err.name === "JsonWebTokenError") {
           return res.status(404).json({

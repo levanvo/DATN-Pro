@@ -9,9 +9,9 @@ const cartApi = createApi({
         baseUrl: "http://localhost:8080",
         prepareHeaders: (headers) => {
             headers.set("Content-type", "appliation/json"),
-            headers.set("authorization", "Bearer " + localStorage.getItem("token") || "")
+                headers.set("authorization", "Bearer " + JSON.parse(localStorage.getItem("token") || ""))
             return headers;
-          },
+        },
         fetchFn: async (...args) => (
             await pause(1000),
             fetch(...args)
@@ -29,16 +29,16 @@ const cartApi = createApi({
                 method: "POST",
                 body: { products },
             }),
-        invalidatesTags: ["Cart"]
+            invalidatesTags: ["Cart"]
 
         }),
 
         deleteFromCart: builder.mutation<ICart, string>({
             query: (productId) => ({
-                url: `/api/cart/delete/${productId}`,
+                url: `/api/cart/${productId}`,
                 method: "DELETE",
             }),
-      invalidatesTags: ["Cart"]
+            invalidatesTags: ["Cart"]
 
         }),
     }),

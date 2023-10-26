@@ -2257,7 +2257,7 @@ ul.address li span {
     padding-right: 15px;
 }
 
-.product-navigation li a {}
+/* .product-navigation li a {} */
 
 .product-navigation li a.active,
 .product-navigation li:hover a {
@@ -2973,7 +2973,7 @@ p.tag-rules {
 .quantity span,
 .subtotal span,
 .remove-icon a {
-    line-height: 90px;
+    line-height: 100px;
 }
 
 .shopping-button {
@@ -3584,7 +3584,7 @@ button.check-button:hover,
     text-transform: capitalize;
 }
 
-.author-comment p {}
+/* .author-comment p {} */
 
 .comment-list ul li {
     margin-bottom: 20px;
