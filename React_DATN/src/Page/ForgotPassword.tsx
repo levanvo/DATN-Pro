@@ -48,7 +48,7 @@ const ForgotPassword = () => {
         console.log('Failed:', errorInfo);
     };
     return (
-        <div>
+        <div className='mt-36'>
             {contexHolder}
             {isLoadingSeen && <Loading />}
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', }}>

@@ -56,7 +56,7 @@ const Checkout = () => {
 
 
     return (
-        <div className='w-[90vw] mx-auto'>
+        <div className='w-[90vw] mx-auto mt-44'>
             <div className="checkout-area">
                 <div className="container">
                     <h2 className="checkout_title">Checkout</h2>

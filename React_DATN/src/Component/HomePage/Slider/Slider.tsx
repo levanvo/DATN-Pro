@@ -2,7 +2,7 @@ import React from 'react'
 const Slider = () => {
     return (
         <div>
-            <div className="slider-area home1 -mt-32">
+            <div className="slider-area mt-44">
                 <div className="bend niceties preview-2">
                     <div id="nivoslider" className="slides mt-32">
                         <img src="img/slider/slider-1.jpg" alt="" title="#slider-direction-1" />

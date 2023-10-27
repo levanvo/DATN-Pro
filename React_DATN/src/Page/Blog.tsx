@@ -2,7 +2,7 @@ import React from 'react'
 
 const Blog = () => {
     return (
-        <div className='w-[90vw] mx-auto'>
+        <div className='w-[90vw] mx-auto mt-40'>
             <div className="blog-banner">
                 <img src="img/product/banner.jpg" alt="" />
             </div>

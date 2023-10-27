@@ -38,7 +38,7 @@ const Register = () => {
     };
 
     return (
-        <div className='w-[90vw] mx-auto'>
+        <div className='w-[90vw] mx-auto mt-44'>
             {getMessage}
             <div className="login-area mt-5">
                 <div className="container">

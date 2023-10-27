@@ -29,7 +29,7 @@ const ProductsSize = () => {
   }
 
   return (
-    <div className="w-[90vw] mx-auto">
+    <div className="w-[90vw] mx-auto mt-36">
       <div className="product-banner">
         <img src="img/product/banner.jpg" alt="" />
       </div>

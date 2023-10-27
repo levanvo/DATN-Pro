@@ -2,7 +2,7 @@ import React from 'react'
 
 const Bill = () => {
     return (
-        <div className='w-[90vw] mx-auto'>
+        <div className='w-[90vw] mx-auto mt-24'>
             <section className="order_details section_gap">
                 <div className="container">
                     <h3 className="title_confirmation">Thank you. Your order has been received.</h3>

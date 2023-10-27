@@ -1,11 +1,10 @@
 import { useEffect,useState } from 'react';
 import { Button, Form, Input, Select, message } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetOneProductQuery } from '../../../Services/Api_Product';
+import { useGetOneProductQuery, useUpdateProductMutation } from '../../../Services/Api_Product';
 import Loading from '../../../Component/Loading';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
 import { ICategory, IProduct } from '../../../Models/interfaces';
-import { useUpdateProductMutation } from '../../../Services/Products';
 
 const { Option } = Select;
 

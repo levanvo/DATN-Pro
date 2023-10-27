@@ -37,6 +37,7 @@ import ListColor from "./Page/Admin/colorProduct/listColor"
 import CreateColor from "./Page/Admin/colorProduct/createColor"
 import UpdateColor from "./Page/Admin/colorProduct/updateColor"
 import Dashboard from "./Page/Admin/Dashboard";
+import GetAllDeletedProducts from "./Page/Admin/Product/getAllDeletedProducts";
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -46,6 +47,8 @@ function App() {
   const handleSearch = (keyword: string) => {
     setSearchKeyword(keyword);
   };
+
+  
   Config();
   return (
     <Routes>
@@ -88,6 +91,7 @@ function App() {
         <Route path="size/list" element={<SizeList />} />
         <Route path="size/add" element={<AdminSizeAdd />} />
         <Route path="size/:id/update" element={<AdminSizeUpdate />} />
+        <Route  path="restore-product-data" element={<GetAllDeletedProducts />}/>
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

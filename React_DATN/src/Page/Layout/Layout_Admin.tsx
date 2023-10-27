@@ -9,6 +9,7 @@ import {
   BarChartOutlined,
   EditOutlined,
   HomeOutlined,
+  ContainerOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
@@ -38,11 +39,12 @@ const items: MenuItem[] = [
   getItem('Kho', 'sub1', <HddOutlined />, [
     getItem('Sản phẩm', '1', <DeploymentUnitOutlined />, undefined, 'product/list'),
     getItem('Màu', '2', <FormatPainterOutlined />, undefined, 'color/list'),
-    getItem('Kích thước', '3', <PieChartOutlined />, undefined, 'size/list')
+    getItem('Kích thước', '3', <PieChartOutlined />, undefined, 'size/list'),
+    getItem('Khôi phục sản phẩm', '4', <ContainerOutlined />, undefined, 'restore-product-data')
   ]),
-  getItem('Bình luận', '4', <EditOutlined />, undefined, 'comment/list'),
-  getItem('Danh mục', '5', <GoldOutlined />, undefined, 'category/list'),
-  getItem('Users', '6', <UserOutlined />, undefined, 'user/list'),
+  getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
+  getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
+  getItem('Users', '7', <UserOutlined />, undefined, 'user/list'),
 ];
 
 const Layout_Admin: React.FC = () => {

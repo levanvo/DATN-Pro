@@ -7,12 +7,14 @@ import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs, Pagination } from "swiper/modules";
 import { useParams } from "react-router-dom";
 import { useGetOneProductQuery, useGetAllProductQuery } from "../Services/Api_Product";
-import { useGetColorsQuery, useGetOneColorQuery } from "../Services/api_Color";
+import { useGetColorsQuery, useGetOneColorQuery } from "../Services/Api_Color";
 import { useGetAllSizeQuery, useGetOneSizeQuery } from "../Services/Api_Size";
 import {
   PlusOutlined,
   MinusOutlined,
 } from "@ant-design/icons"
+import { useAddToCartMutation } from "../Services/Api_cart";
+import { ICartItem } from "../Models/interfaces";
 
 const ProductDetail = () => {
   // state Swiper
@@ -28,6 +30,16 @@ const ProductDetail = () => {
   // console.log("getColor: ", productData?.color_id?.unicode);
   console.log("getColor===========: ", productData);
 
+  const [addToCart] = useAddToCartMutation();
+
+  const handleAddToCart = () => {
+    const quantityInput = document.getElementById("quanityBuy");
+    if (quantityInput) {
+      const quantity = parseInt(quantityInput.value);
+      addToCart([{ id: productData?._id, quantity }]);
+    }
+  };
+
 
   const ChooseColor = (color: any) => {
     console.log(color);
@@ -38,15 +50,27 @@ const ProductDetail = () => {
 
   }
 
-  const Minus=()=>{
-    const valueQuantity=document.getElementById("quanityBuy");
-
+  const Minus = () => {
+    const valueQuantity = document.getElementById("quanityBuy");
+    if (valueQuantity) {
+      const quantity = parseInt(valueQuantity.value);
+      if (quantity > 1) {
+        valueQuantity.value = (quantity - 1).toString();
+      }
+    }
   }
-  const Plus=()=>{
-    const valueQuantity=document.getElementById("quanityBuy");
+  const Plus = () => {
+    const valueQuantity = document.getElementById("quanityBuy");
+    if (valueQuantity) {
+      const quantity = parseInt(valueQuantity.value);
+      const maxQuantity = productData?.quantity || 0; // Lấy giá trị tối đa cho số lượng từ dữ liệu sản phẩm
+      if (quantity < maxQuantity) {
+        valueQuantity.value = (quantity + 1).toString();
+      }
+    }
   }
   return (
-    <div className="w-[90vw] mx-auto">
+    <div className="w-[90vw] mx-auto mt-36">
       <div className="Single-product-location home2">
         <div className="container">
           <div className="row">
@@ -225,15 +249,22 @@ const ProductDetail = () => {
                       <div className="d-flex align-items-center">
                         <span style={{ fontSize: "20px" }}>Qty: </span>
                         <div className="inp_group">
-                          <button><MinusOutlined onChange={()=>Minus()}/></button>
-                          <input className="cart-plus-minus-box outline-0" type="text"
-                            name="qtybutton" readOnly id="quanityBuy" value={1} max={productData?.quantity} min={1}
+                          <button onClick={Minus}><MinusOutlined /></button>
+                          <input
+                            className="cart-plus-minus-box outline-0"
+                            type="text"
+                            name="qtybutton"
+                            readOnly
+                            id="quanityBuy"
+                            value={1}
+                            max={productData?.quantity}
+                            min={1}
                           />
-                          <button><PlusOutlined onChange={()=>Plus()}/></button>
+                          <button onClick={Plus}><PlusOutlined /></button>
                         </div>
                       </div>
                     </div>
-                    <button className="cart-btn">Thêm vào giỏ</button>
+                    <button className="cart-btn" onClick={handleAddToCart}>Thêm vào giỏ</button>
                   </div>
                 </div>
               </div>

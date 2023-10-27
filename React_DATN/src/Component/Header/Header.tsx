@@ -10,7 +10,7 @@ interface User {
 const Header = ({ onSearch }: any) => {
   const [messageApi, contexHolder] = message.useMessage()
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  let user: User | null = null; // Khởi tạo user là null
+  let user: User | any = null;
   const userString = localStorage.getItem("user");
   const VerifyAccount = localStorage.getItem("token");
 
@@ -40,28 +40,14 @@ const Header = ({ onSearch }: any) => {
   };
 
   return (
-    <header>
+    <header className='_header-web'>
       {contexHolder}
       <div className="top-link">
         <div className="container">
           <div className="row">
-            <div className="col-lg-7 offset-lg-3 col-md-9 d-none d-md-block">
+            <div className="col-lg-6 offset-lg-3 col-md-9 d-none d-md-block">
               <div className="site-option">
-                <ul>
-                  <li className="currency">
-                    <a href="#">
-                      USD <i className="fa fa-angle-down" />{" "}
-                    </a>
-                    <ul className="sub-site-option">
-                      <li>
-                        <a href="#">Eur</a>
-                      </li>
-                      <li>
-                        <a href="#">Usd</a>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
+                
               </div>
               <div className="call-support">
                 <p>
@@ -69,7 +55,7 @@ const Header = ({ onSearch }: any) => {
                 </p>
               </div>
             </div>
-            <div className="col-lg-2 col-md-3 position-relative">
+            <div className="col-lg-3 col-md-3 position-relative">
               <div className="flex space-x-3 mt-3">
                 {/* Thanh tìm kiếm */}
                 {
@@ -90,49 +76,51 @@ const Header = ({ onSearch }: any) => {
                 }
                 <div className="cart-img">
                   {VerifyAccount ?
-                    <a href="/cart"><img className='active:scale-90' src="img/icon-cart.png" alt="" /></a>
+                    <a href="/cart"><img className='active:scale-90 ' src="img/icon-cart.png" alt="" /></a>
                     :
-                    <Link to={`/login`}><img className='active:scale-90' src="img/icon-cart.png" alt="" /></Link>
+                    <Link to={`/login`}><img className='active:scale-90 ' src="img/icon-cart.png" alt="" /></Link>
                   }
 
                 </div>
                 {user ?
                   (
                     <div className="account-menu">
-                      <Link to={`/admin`}>{user.username}</Link>
-                      <button onClick={handleLogout}>Logout</button>
+                      <div className="flex justify-center">
+                        <div className="flex space-x-1">
+                          {
+                            user.role == "admin" || user.role == "staff" ?
+                              <div className="relative">
+                                <Link className='w-10 h-10' to={`/admin`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
+                                <ul className="formSelectUser">
+                                  <Link to={`/admin`}><li>Quản trị</li></Link>
+                                  <Link to={``}><li onClick={()=>handleLogout()}>Đăng xuất</li></Link>
+                                  <Link to={``}><li>Cài đặt</li></Link>
+                                </ul>
+                              </div>
+
+                              :
+                              <div className="relative">
+                                <Link className='w-10 h-10 imgUserSelector' to={`/client`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
+                                <ul className="formSelectUser">
+                                  <Link to={`/admin`}><li>Quản trị</li></Link>
+                                  <Link to={``}><li onClick={()=>handleLogout()}>Đăng xuất</li></Link>
+                                  <Link to={``}><li>Cài đặt</li></Link>
+                                </ul>
+                              </div>
+                          }
+                          <li className='text-green-500'></li>
+                        </div>
+                        <p>{user.username}</p>
+                      </div>
                     </div>
                   )
                   :
                   (
                     <div className="account-menu">
                       <Link to={`/login`}><UserOutlined style={{ fontSize: "24px", color: "black" }} /></Link>
-                      
-                      {/* <div className="mainmenu-area product-items h-10 ">
-                        <div className="mainmenu h-10 ">
-                          <nav>
-                            <ul>
-                              <li>
-                                <a href="#" className='h-10 text-xs p-0 bg-white'><UserOutlined style={{ fontSize: "24px", color: "black" }} /></a>
-                                <div className="sub-menu pages">
-                                  <span>
-                                    <a href="/contact">Liên hệ chúng tôi</a>
-                                  </span>
-                                  <span>
-                                    <a href="/blog">Lưu trữ nguồn</a>
-                                  </span>
-                                </div>
-                              </li>
-                            </ul>
-                          </nav>
-                        </div>
-                      </div> */}
-
                     </div>
                   )
                 }
-
-
               </div>
             </div>
           </div>
