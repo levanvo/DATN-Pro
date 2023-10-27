@@ -95,7 +95,8 @@ export const removeProduct = async (req, res) => {
     }
 
     // Tạo một bản sao của sản phẩm trước khi xóa nó tạm thời
-    const deletedProduct = new DeletedProduct(productToBeDeleted.toJSON())
+    
+    const deletedProduct = new DeletedProduct(productToBeDeleted.toJSON());
 
     // Lưu sản phẩm đã xóa vào bảng "deleted_products"
     await deletedProduct.save()
@@ -151,7 +152,12 @@ export const updateProduct = async (req, res) => {
 
 export const restoreProduct = async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Định dạng ID không hợp lệ để khôi phục sản phẩm",
+      });
+    }
 
     // Tìm sản phẩm trong bảng "deleted_products"
     const deletedProduct = await DeletedProduct.findById(id).exec()
@@ -180,4 +186,47 @@ export const restoreProduct = async (req, res) => {
       message: error.message,
     })
   }
+};
+
+
+// lấy ra tất cả dữ liệu đã xóa
+export const getAllDeletedProducts = async (req, res) => {
+  try {
+    const deletedProducts = await DeletedProduct.find().sort({ createdAt: -1 }).exec();
+
+    if (deletedProducts.length === 0) {
+      return res.status(404).json({
+        message: "Không có sản phẩm nào",
+      });
+    }
+
+    return res.status(200).json(deletedProducts);
+  } catch (error) {
+    return res.status(500).json({
+      message: error,
+    });
+  }
+};
+
+//Xóa sản phẩm vĩnh viễn
+export const deleteProduct = async (req,res) => {
+  try {
+    const {id} = req.params
+    const product = await DeletedProduct.findByIdAndDelete(id)
+    if(!product){
+      return res.status(400).json({
+        message: "Không tìm thấy sản phẩm cần xóa"
+      })
+    }
+
+    return res.status(200).json({
+      message: "Xóa sản phẩm thành công"
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: error,
+    });
+  }
 }
+
+

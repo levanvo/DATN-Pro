@@ -32,6 +32,7 @@ const productApi = createApi({
       invalidatesTags: ["Product"]
     }),
 
+    // Xóa sản phẩm tạm thời
     deleteProduct: builder.mutation<void,number | string>({
         query: (id) => ({
             url: `/api/product/${id}`,
@@ -43,20 +44,36 @@ const productApi = createApi({
     updateProduct: builder.mutation<IProduct,IProduct>({
       query: (product) => ({
         url: `/api/product/${product._id}`,
-        method: "PATCH"
+        method: "PATCH",
+        body: product
       }),
       invalidatesTags: ["Product"]
     }),
 
-    updatesProduct: builder.mutation<IProduct,IProduct>({
-      query: (products) => ({
-        url: `/api/products/${products._id}`,
-        method: "PUT",
-        body:products
+    //API in ra tất cả sản phẩm xóa tạm thời
+    getAllDeletedProducts: builder.query<IProduct[], void>({
+      query: () => `/api/restore-product-data`,
+      providesTags: ["Product"]
+    }),
+
+    // API khôi phục sản phẩm
+    restoreProduct: builder.mutation({
+      query: (id) => ({
+        url: `/api/product/restore/${id}`,
+        method: "PUT"
+      }),
+      invalidatesTags: ["Product"]
+    }),
+
+    //API Xóa sản phẩm vĩnh viễn
+    removeProduct: builder.mutation({
+      query: (id) => ({
+        url: `/api/product/${id}/delete`,
+        method: "DELETE"
       }),
       invalidatesTags: ["Product"]
     })
-  }),
+  })
 });
 
 export const { 
@@ -65,6 +82,8 @@ export const {
    useDeleteProductMutation, 
    useGetOneProductQuery, 
    useUpdateProductMutation,
-   useUpdatesProductMutation
+   useGetAllDeletedProductsQuery,
+   useRestoreProductMutation,
+   useRemoveProductMutation
    } = productApi;
 export default productApi;

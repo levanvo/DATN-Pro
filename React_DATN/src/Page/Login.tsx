@@ -46,7 +46,7 @@ const Login = () => {
         }
     }, [error]);
     return (
-        <div className=''>
+        <div className='mt-36'>
             {contexHolder}
             {isLoadingSeen && <Loading />}
             <div className='' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '70vh', }}>

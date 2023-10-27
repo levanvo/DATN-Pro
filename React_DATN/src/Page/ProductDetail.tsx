@@ -38,15 +38,15 @@ const ProductDetail = () => {
 
   }
 
-  const Minus=()=>{
-    const valueQuantity=document.getElementById("quanityBuy");
+  const Minus = () => {
+    const valueQuantity = document.getElementById("quanityBuy");
 
   }
-  const Plus=()=>{
-    const valueQuantity=document.getElementById("quanityBuy");
+  const Plus = () => {
+    const valueQuantity = document.getElementById("quanityBuy");
   }
   return (
-    <div className="w-[90vw] mx-auto">
+    <div className="w-[90vw] mx-auto mt-36">
       <div className="Single-product-location home2">
         <div className="container">
           <div className="row">
@@ -225,11 +225,11 @@ const ProductDetail = () => {
                       <div className="d-flex align-items-center">
                         <span style={{ fontSize: "20px" }}>Qty: </span>
                         <div className="inp_group">
-                          <button><MinusOutlined onChange={()=>Minus()}/></button>
+                          <button><MinusOutlined onChange={() => Minus()} /></button>
                           <input className="cart-plus-minus-box outline-0" type="text"
                             name="qtybutton" readOnly id="quanityBuy" value={1} max={productData?.quantity} min={1}
                           />
-                          <button><PlusOutlined onChange={()=>Plus()}/></button>
+                          <button><PlusOutlined onChange={() => Plus()} /></button>
                         </div>
                       </div>
                     </div>

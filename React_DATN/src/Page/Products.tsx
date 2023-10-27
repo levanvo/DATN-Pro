@@ -119,7 +119,7 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error</div>;
   return (
-    <div className="w-[90vw] mx-auto">
+    <div className="w-[90vw] mx-auto mt-44">
       <div className="product-banner">
         <img src="img/product/banner.jpg" alt="" />
       </div>

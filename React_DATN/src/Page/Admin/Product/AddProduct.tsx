@@ -39,7 +39,7 @@ const AddProduct = () => {
   const navigate = useNavigate()
   const [addProduct, { error }] = useAddProductMutation()
   const { data: getAllCategory, isLoading } = useGetAllCategoryQuery()
-  const { data: getAllSize, isLoadingSize } = useGetAllSizeQuery()
+  const { data: getAllSize, isLoading: isLoadingSize } = useGetAllSizeQuery()
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewImage, setPreviewImage] = useState("")
@@ -78,7 +78,7 @@ const AddProduct = () => {
 
   useEffect(() => {
     if (error && "data" in error) {
-      const errDetails = error.data as { message: string[] }
+      const errDetails = error.data as { message: string }
       messageApi.open({
         type: "error",
         content: errDetails.message,
@@ -88,6 +88,7 @@ const AddProduct = () => {
 
   const onFinish = async (values: any) => {
     try {
+      // mở loading
       setIsLoadingScreen(true)
       const formData = new FormData()
       fileList.forEach((file) => {
@@ -117,16 +118,19 @@ const AddProduct = () => {
           quantity: values.quantity,
         }
 
-        addProduct(newProduct)
-          .unwrap()
-          .then(() => {
-            messageApi.open({
-              type: "success",
-              content: "Thêm sản phẩm thành công",
-            })
-          })
+        await addProduct(newProduct)
+        messageApi.open({
+          type: "success",
+          content: "Thêm sản phẩm thành công",
+        })
+
+        // đóng loading
+        setIsLoadingScreen(false)
+
+        setTimeout(() => {
+          navigate("/admin/product/list")
+        }, 1500)
       }
-      setIsLoadingScreen(false)
     } catch (error) {
       console.error("Error uploading images:", error)
       setIsLoadingScreen(false)
@@ -148,21 +152,72 @@ const AddProduct = () => {
         <Form.Item
           name="name"
           label="Tên sản phẩm"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true, message: "Tên sản phẩm không được để trống" },
+          ]}
         >
           <Input />
         </Form.Item>
-
         <Form.Item
           label="Danh mục"
           name="categoryId"
-          rules={[{ required: true }]}
+          rules={[
+            {
+              required: true,
+              message: "Danh mục không được để trống",
+            },
+          ]}
         >
           <Select style={{ width: 200 }} loading={isLoading}>
             {getAllCategory ? (
               getAllCategory?.map((category: any) => (
                 <Select.Option key={category._id} value={category._id}>
                   {category.name}
+                </Select.Option>
+              ))
+            ) : (
+              <p>Loading...</p>
+            )}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          label="Color"
+          name="color_id"
+          rules={[
+            {
+              required: true,
+              message: "Color không được để trống",
+            },
+          ]}
+        >
+          <Select style={{ width: 200 }} loading={isLoading}>
+            {getAllCategory ? (
+              getAllCategory?.map((category: any) => (
+                <Select.Option key={category._id} value={category._id}>
+                  {category.name}
+                </Select.Option>
+              ))
+            ) : (
+              <p>Loading...</p>
+            )}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Size"
+          name="size_id"
+          rules={[
+            {
+              required: true,
+              message: "Size không được để trống",
+            },
+          ]}
+        >
+          <Select style={{ width: 200 }} loading={isLoadingSize}>
+            {getAllSize ? (
+              getAllSize?.map((size: any) => (
+                <Select.Option key={size._id} value={size._id}>
+                  {size.name}
                 </Select.Option>
               ))
             ) : (
@@ -198,15 +253,37 @@ const AddProduct = () => {
         <Form.Item
           name="original_price"
           label="Giá gốc"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true, message: "Giá gốc không được để trống" },
+            {
+              validator: (_, values) => {
+                if (!isNaN(values)) {
+                  return Promise.resolve()
+                } else {
+                  return Promise.reject(new Error("Giá gốc phải là số"))
+                }
+              },
+            },
+          ]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
           name="price"
-          label="Giá đã giảm"
-          rules={[{ required: true }]}
+          label="Giá hiện tại"
+          rules={[
+            { required: true, message: "Giá hiện tại không được để trống" },
+            {
+              validator: (_, values) => {
+                if (!isNaN(values)) {
+                  return Promise.resolve()
+                } else {
+                  return Promise.reject(new Error("Giá hiện tại phải là số"))
+                }
+              },
+            },
+          ]}
         >
           <Input />
         </Form.Item>
@@ -214,7 +291,18 @@ const AddProduct = () => {
         <Form.Item
           name="quantity"
           label="Số lượng"
-          rules={[{ required: true, message: "Số lượng không được bỏ trống" }]}
+          rules={[
+            { required: true, message: "Số lượng không được để trống" },
+            {
+              validator: (_, values) => {
+                if (!isNaN(values)) {
+                  return Promise.resolve()
+                } else {
+                  return Promise.reject(new Error("Số lượng phải là số"))
+                }
+              },
+            },
+          ]}
         >
           <InputNumber />
         </Form.Item>
