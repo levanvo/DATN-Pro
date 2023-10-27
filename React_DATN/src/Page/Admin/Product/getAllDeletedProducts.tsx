@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Divider, Table,Popconfirm, message,Button,Input,Menu,Dropdown  } from 'antd';
-import { useDeleteProductMutation, useGetAllProductQuery } from '../../../Services/Api_Product';
+import { useDeleteProductMutation, useGetAllDeletedProductsQuery, useRemoveProductMutation, useRestoreProductMutation} from '../../../Services/Api_Product';
 import { IProduct } from '../../../Models/interfaces';
 import { QuestionCircleOutlined,FilterOutlined } from '@ant-design/icons';
 import Loading from '../../../Component/Loading';
-import {DeleteFilled,EditOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import {DeleteFilled } from '@ant-design/icons';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
+
 
 
 const { Search } = Input;
@@ -15,9 +16,9 @@ const { Search } = Input;
 // rowSelection object indicates the need for row selection
 
 
-const ProductList = () => {
-  const {data: getAllProduct,isLoading, error} = useGetAllProductQuery()
-  const [removeProduct] = useDeleteProductMutation()
+const GetAllDeletedProducts = () => {
+  const {data: getAllProduct,isLoading, error} = useGetAllDeletedProductsQuery()
+  const [removeProduct] = useRemoveProductMutation()
   const [messageApi,contextHolder] = message.useMessage() 
   const {data: categories} = useGetAllCategoryQuery()
   const [searchText, setSearchText] = useState('');
@@ -26,7 +27,8 @@ const ProductList = () => {
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
-
+  const [restoreData] = useRestoreProductMutation()
+  const navigate = useNavigate()
   
   const rowSelection = {
     selectedRowKeys: selectedProductId,
@@ -35,16 +37,38 @@ const ProductList = () => {
     },
   };
 
+  // hàm khôi phục những sản phẩm đã chọn
+  const restoreMultipleProducts = async () => {
+    try {
+      setIsLoadingDelete(true)
+      if (selectedProductId.length === 0) {
+        message.error("Vui lòng chọn các sản phẩm muốn khôi phục!")
+        return
+      }
+      const productIdAll = selectedProductId.map((key) => key.toString());
+      await Promise.all(productIdAll.map((productId)=> restoreData(productId)))
+      message.success("Khôi phục sản phẩm thành công")
+
+      setTimeout(() => {
+        navigate("/admin/product/list")
+      },1500)
+    } catch (error) {
+      message.error("Đã có lỗi xảy ra vui lòng thử lại")
+    }
+    setIsLoadingDelete(false)
+  }
+
+
   const deleteMultipleProducts = async () => {
     try {
       setIsLoadingDelete(true)
       if (selectedProductId.length === 0) {
-        message.error("Vui lòng chọn các category muốn xoá!")
+        message.error("Vui lòng chọn các sản phẩm muốn xoá!")
         return
       }
       const productIdAll = selectedProductId.map((key) => key.toString());
       await Promise.all(productIdAll.map((productId)=> removeProduct(productId)))
-      message.success("Xóa thành công")
+      message.success("Xóa sản phẩm thành công")
     } catch (error) {
       message.error("Đã có lỗi xảy ra vui lòng thử lại")
     }
@@ -64,10 +88,9 @@ const ProductList = () => {
     setFilterVisible(visible);
   };
 
- const handleApplyClick = () => {
-  setIsApplyClicked(true);
-};
-
+  const handleApplyClick = () => {
+    setIsApplyClicked(true);
+  };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsApplyClicked(false);
@@ -84,6 +107,8 @@ const ProductList = () => {
       max: event.target.value,
     }));
   };
+
+  
   
 
   const filterMenu = (
@@ -105,9 +130,8 @@ const ProductList = () => {
     </Menu>
   );
   
-  
+  // hàm thực hiện xóa vĩnh viễn sản phẩm
   const confirm = (id: number | string) => {
-    
     removeProduct(id).unwrap().then(() => {
       messageApi.open({
         type: "success",
@@ -115,6 +139,25 @@ const ProductList = () => {
       })
     })
   }
+
+  // hàm khôi phục sản phẩm
+  const restoreProduct = async (id:number | string) => {
+    try {
+      setIsLoadingDelete(true)
+        await restoreData(id)
+        message.success("Khôi phục sản phẩm thành công")
+      setIsLoadingDelete(false)
+
+      setTimeout(() => {
+          navigate("/admin/product/list")
+        },1500)
+    } catch (error) {
+      message.error("Đã có lỗi xảy ra vui lòng thử lại")
+      setIsLoadingDelete(false)
+    }
+  
+  } 
+
   const filteredDataSource = searchText?dataSource?.filter((product) =>
       product.name.toLowerCase().includes(searchText.toLowerCase())
     ) : dataSource;
@@ -172,8 +215,22 @@ const ProductList = () => {
       key: 'action',
       render: ({key: id}: any) => (
         <div className="flex space-x-4" style={{justifyContent: 'center', alignItems: "center"}}>
+            
             <Popconfirm
-                title="Bạn có chắc chắn muốn xóa không?"
+                title="Bạn có chắc chắn muốn khôi phục sản phẩm không?"
+                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                onConfirm={() => restoreProduct(id)}
+                okText={
+                  <span style={{ color: 'black'}}>Yes</span>
+                }
+                cancelText="No"
+            >
+              <Button>Khôi phục</Button>
+              {/* <DeleteFilled style={{color: '#FF0000',fontSize: "20px"}}/> */}
+            </Popconfirm>
+
+            <Popconfirm
+                title="Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm không?"
                 icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                 onConfirm={() => confirm(id)}
                 okText={
@@ -183,11 +240,6 @@ const ProductList = () => {
             >
               <DeleteFilled style={{color: '#FF0000',fontSize: "20px"}}/>
             </Popconfirm>
-            
-            <Link to={`/admin/product/${id}/update`}>
-
-              <EditOutlined style={{fontSize: "20px"}}/>
-            </Link>
         </div>
        ),
        align: 'center',
@@ -202,10 +254,19 @@ const ProductList = () => {
         <Button 
           style={{marginRight: 20}}
           type="primary"
+          onClick={restoreMultipleProducts}
+          danger
+        >
+          Khôi phục mục đã chọn
+        </Button>
+
+        <Button 
+          style={{marginRight: 20}}
+          type="primary"
           onClick={deleteMultipleProducts}
           danger
         >
-          Xoá mục đã chọn
+          Xóa mục đã chọn
         </Button>
 
         <Button type="primary" style={{background: "blue"}}>
@@ -234,4 +295,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default GetAllDeletedProducts;
