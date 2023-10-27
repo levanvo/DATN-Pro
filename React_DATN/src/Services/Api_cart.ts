@@ -25,7 +25,7 @@ const cartApi = createApi({
 
         addToCart: builder.mutation<ICart, ICartItem[]>({
             query: (products) => ({
-                url: "/api/cart/add",
+                url: "/api/cart",
                 method: "POST",
                 body: { products },
             }),
