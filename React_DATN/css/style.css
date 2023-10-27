@@ -2972,7 +2972,7 @@ p.tag-rules {
 .unit-price span,
 .quantity span,
 .subtotal span,
-.remove-icon a {
+.remove-icon div {
     line-height: 100px;
 }
 

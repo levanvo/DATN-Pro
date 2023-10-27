@@ -1,5 +1,6 @@
-// import React from 'react'
-import { message } from 'antd';
+import {useEffect} from 'react'
+import { message,Popconfirm } from 'antd';
+import { QuestionCircleOutlined,CloseOutlined } from '@ant-design/icons';
 import { useDeleteFromCartMutation, useGetCartQuery } from '../Services/Api_cart';
 // import { ICart } from '../Models/interfaces';
 
@@ -8,6 +9,18 @@ const Cart = () => {
     console.log(cartData);
     const [messageApi, contextHolder] = message.useMessage();
 
+    useEffect(() => {
+        if(error){
+            if("data" in error){
+                const errorData = error.data as {message: string}
+                messageApi.open({
+                    type: "error",
+                    content: errorData.message
+                })
+            }
+        }
+    },[error])
+    
     const [deleteCart] = useDeleteFromCartMutation();
 
     const confirm = (productId: string) => {
@@ -46,33 +59,26 @@ const Cart = () => {
                                 <table className="table-bordered table table-hover">
                                     <thead>
                                         <tr>
-                                            <th className="cart-item-img"></th>
-                                            <th className="cart-product-name">Tên sản phẩm</th>
-                                            <th className="edit"></th>
-                                            <th className="move-wishlist">Chuyển đến danh sách yêu thích</th>
-                                            <th className="unit-price">Giá</th>
-                                            <th className="quantity">Số lượng</th>
-                                            <th className="subtotal">Tổng tiền</th>
-                                            <th className="remove-icon"></th>
+                                            <th style={{textAlign: "center"}} className="cart-item-img">Hình ảnh</th>
+                                            <th style={{textAlign: "center"}} className="cart-product-name">Tên sản phẩm</th>
+                                            <th style={{textAlign: "center"}} className="unit-price">Giá</th>
+                                            <th style={{textAlign: "center"}} className="quantity">Số lượng</th>
+                                            <th style={{textAlign: "center"}} className="subtotal">Tổng tiền</th>
+                                            <th style={{textAlign: "center"}} className="remove-icon">Công cụ</th>
                                         </tr>
                                     </thead>
                                     <tbody className="text-center">
                                         {cartData?.products.map((product: any) => (
                                             <tr key={product._id}>
                                                 <td className="cart-item-img">
-                                                    <a href="single-product.html">
+                                                    <a href="#">
                                                         <img src={product.productId.imgUrl[0]} alt="" width={100} style={{ margin: 'auto' }} />
                                                     </a>
                                                 </td>
                                                 <td className="cart-product-name">
                                                     <a href="single-product.html">{product.productId.name}</a>
                                                 </td>
-                                                <td className="edit">
-                                                    <a href="#">Edit</a>
-                                                </td>
-                                                <td className="move-wishlist">
-                                                    <a href="#">Move</a>
-                                                </td>
+
                                                 <td className="unit-price">
                                                     <span>{product.productId.original_price}đ</span>
                                                 </td>
@@ -82,10 +88,22 @@ const Cart = () => {
                                                 <td className="subtotal">
                                                     <span>{product.quantity * product.productId.price}đ</span>
                                                 </td>
-                                                <td className="remove-icon">
-                                                    <a href="#" onClick={() => confirm(product._id)}>
-                                                        <img src="img/cart/btn_remove.png" alt="" style={{ margin: 'auto', marginTop: 43 }} />
-                                                    </a>
+                                                <td className="flex remove-icon" style={{justifyContent: 'center', alignItems: "center"}}>
+                                                    <div>
+
+                                                    <Popconfirm
+                                                        title="Bạn có chắc chắn muốn xóa không?"
+                                                        icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                                                        onConfirm={() => confirm(product._id)}
+                                                        okText={
+                                                        <span style={{ color: 'black'}}>Yes</span>
+                                                        }
+                                                        cancelText="No"
+                                                    >
+                                                    <CloseOutlined style={{color: '#FF0000',fontSize: "20px"}}/>
+                                                    </Popconfirm>
+                                                    </div>
+                                                        
                                                 </td>
                                             </tr>
                                         ))}
