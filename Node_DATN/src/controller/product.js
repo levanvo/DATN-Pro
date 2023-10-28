@@ -8,10 +8,10 @@ import Size from "../models/size.js"
 
 export const getProduct = async (req, res) => {
   try {
-    const data = await Product.find().sort({ createdAt: -1 }).exec();
-    if(data.length===0){
+    const data = await Product.find().sort({ createdAt: -1 }).exec()
+    if (data.length === 0) {
       return res.status(400).json({
-        message: "Không có sản phẩm nào"
+        message: "Không có sản phẩm nào",
       })
     }
     return res.status(200).json(data)
@@ -37,7 +37,7 @@ export const readProduct = async (req, res) => {
     return res.status(200).json(data)
   } catch (error) {
     return res.status(404).json({
-      message: error.message
+      message: error.message,
     })
   }
 }
@@ -58,12 +58,14 @@ export const createProduct = async (req, res) => {
     }
     const updateInfo = {
       products: newProduct._id,
-    };
+    }
     await Promise.all([
-      Category.findByIdAndUpdate(newProduct.categoryId, { $addToSet: updateInfo }),
+      Category.findByIdAndUpdate(newProduct.categoryId, {
+        $addToSet: updateInfo,
+      }),
       Color.findByIdAndUpdate(newProduct.color_id, { $addToSet: updateInfo }),
       Size.findByIdAndUpdate(newProduct.size_id, { $addToSet: updateInfo }),
-    ]);
+    ])
     return res.json({
       message: "Thêm sản phẩm thành công",
       data: newProduct,
@@ -78,17 +80,18 @@ export const createProduct = async (req, res) => {
 export const removeProduct = async (req, res) => {
   try {
     const { id } = req.params
+    console.log(req.body)
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         message: "Không tìm thấy sản phẩm cần xóa",
       })
     }
 
-    const productToBeDeleted = await Product.findById(req.params.id).exec();
+    const productToBeDeleted = await Product.findById(req.params.id).exec()
     if (!productToBeDeleted) {
       return res.status(400).json({
         message: "Sản phẩm không tồn tại trong database",
-      });
+      })
     }
 
     // Tạo một bản sao của sản phẩm trước khi xóa nó tạm thời
@@ -96,10 +99,10 @@ export const removeProduct = async (req, res) => {
     const deletedProduct = new DeletedProduct(productToBeDeleted.toJSON());
 
     // Lưu sản phẩm đã xóa vào bảng "deleted_products"
-    await deletedProduct.save();
+    await deletedProduct.save()
 
     // Sau đó, xóa sản phẩm khỏi bảng "Product"
-    await Product.findByIdAndRemove(req.params.id).exec();
+    await Product.findByIdAndRemove(req.params.id).exec()
 
     return res.status(200).json({
       message: "Xoá sản phẩm thành công",
@@ -111,7 +114,6 @@ export const removeProduct = async (req, res) => {
     })
   }
 }
-
 
 export const updateProduct = async (req, res) => {
   try {
@@ -146,7 +148,6 @@ export const updateProduct = async (req, res) => {
   }
 }
 
-
 // Khôi phục sản phẩm
 
 export const restoreProduct = async (req, res) => {
@@ -159,31 +160,31 @@ export const restoreProduct = async (req, res) => {
     }
 
     // Tìm sản phẩm trong bảng "deleted_products"
-    const deletedProduct = await DeletedProduct.findById(id).exec();
+    const deletedProduct = await DeletedProduct.findById(id).exec()
 
     if (!deletedProduct) {
       return res.status(404).json({
         message: "Không tìm thấy sản phẩm cần khôi phục",
-      });
+      })
     }
 
     // Tạo một bản sao của sản phẩm đã xóa
-    const restoredProduct = new Product(deletedProduct.toJSON());
+    const restoredProduct = new Product(deletedProduct.toJSON())
 
     // Lưu sản phẩm đã khôi phục vào bảng "Product"
-    await restoredProduct.save();
+    await restoredProduct.save()
 
     // Xóa sản phẩm đã khôi phục khỏi bảng "deleted_products"
-    await DeletedProduct.findByIdAndRemove(id).exec();
+    await DeletedProduct.findByIdAndRemove(id).exec()
 
     return res.status(200).json({
       message: "Khôi phục sản phẩm thành công",
       productRestored: restoredProduct,
-    });
+    })
   } catch (error) {
     return res.status(500).json({
       message: error.message,
-    });
+    })
   }
 };
 
