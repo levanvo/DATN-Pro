@@ -31,6 +31,6 @@ export const productSchema = joi.object({
     "number.empty": "Số lượng sản phẩm không được để trống",
     "any.required": "Trường quantity là bắt buộc",
   }),
-  view:joi.number(),
-  arrayColor:joi.array(),
+  view: joi.number(),
+  arrayColor: joi.array(),
 })

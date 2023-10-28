@@ -13,7 +13,7 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
     isLoading: isLoadingCategory,
     error: errorCategory
   } = useGetAllCategoryQuery();
-  const{
+  const {
     data: sizeData,
     isLoading: isLoadingSize,
     error: errorSize,
@@ -28,7 +28,9 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
   if (isApplyClicked || searchKeyword) {
     filteredProducts = producData?.filter((product: IProduct) => {
       const productName = product.name.toLowerCase();
+      console.log("productName", productName)
       const productPrice = product.price;
+      console.log(productName.includes(searchKeyword.toLowerCase()))
       const isNameMatch = productName.includes(searchKeyword.toLowerCase());
       const isPriceMatch =
         (!priceRange.min || productPrice >= parseInt(priceRange.min)) &&
@@ -117,7 +119,7 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error</div>;
   return (
-    <div className="w-[90vw] mx-auto">
+    <div className="w-[90vw] mx-auto mt-44">
       <div className="product-banner">
         <img src="img/product/banner.jpg" alt="" />
       </div>
@@ -152,10 +154,10 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                   </div>
                   {/*Load dữ liệu Category */}
                   <div className="single-sidebar-content">
-                    {categoryData?.map((category: ICategory)=>{
-                      return(
-                        <ul>
-                          <li key={category._id}>
+                    {categoryData?.map((category: ICategory) => {
+                      return (
+                        <ul key={category._id}>
+                          <li>
                             <Link to={`/category/${category._id}/products`}>{category.name}</Link>
                           </li>
                         </ul>
@@ -189,10 +191,10 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                     <h3>Size</h3>
                   </div>
                   <div className="single-sidebar-content">
-                  {sizeData?.map((size: ISize)=>{
-                      return(
-                        <ul>
-                          <li key={size._id}>
+                    {sizeData?.map((size: ISize) => {
+                      return (
+                        <ul key={size._id}>
+                          <li>
                             <Link to={`/size/${size._id}/products`}>{size.name}</Link>
                           </li>
                         </ul>

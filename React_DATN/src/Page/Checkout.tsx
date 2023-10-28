@@ -1,499 +1,207 @@
+import React, { useState } from "react"
+import Select from 'react-select';
+import vietnamData from '../Services/vietnamData'
+
 const Checkout = () => {
+    // kiểm tra ng dùng có chọn sử dụng mã giảm giá không
+    const [isVisible, setIsVisible] = useState(false);
+
+    const handleLabelClick = () => {
+        setIsVisible(!isVisible);
+
+    };
+
+    // tăng giảm số lượng
+    const [quantity, setQuantity] = useState(1);
+
+    const decreaseQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
+        }
+    };
+
+    const increaseQuantity = () => {
+        setQuantity(quantity + 1);
+    };
+
+    // lựa chọn tỉnh thành 
+    const [selectedCity, setSelectedCity] = useState(null);
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
+
+    const handleCityChange = (selectedOption) => {
+        setSelectedCity(selectedOption);
+        setSelectedDistrict(null); // Reset lựa chọn quận/huyện khi thay đổi tỉnh/thành phố
+    };
+
+    const handleDistrictChange = (selectedOption) => {
+        setSelectedDistrict(selectedOption);
+    };
+
+    // Lấy danh sách quận/huyện dựa trên tỉnh/thành phố đã chọn
+    const getDistricts = () => {
+        if (selectedCity) {
+            const city = vietnamData.find((item) => item.value === selectedCity.value);
+            if (city) {
+                return city.districts;
+            }
+        }
+    }
+
+    // lựa chọn hình thức tt
+    const [selectedMethod, setSelectedMethod] = useState('cod');
+
+    const handlePaymentMethodChange = (event) => {
+        setSelectedMethod(event.target.value);
+    };
+
+
     return (
-        <div className='w-[90vw] mx-auto'>
+        <div className='w-[90vw] mx-auto mt-44'>
             <div className="checkout-area">
                 <div className="container">
-                    <div className="row">
-                        <div className="col-md-12">
-                            <div className="location">
+                    <h2 className="checkout_title">Checkout</h2>
+                    <div className="box_shadow">
+                        <div className="checkout_content">
+                            <div className="checkout_products">
+                                <div className="product_thumbnail">
+                                    <a href="#">
+                                        <img className="product_thumbnail-img" src="../../img/product/13.png" alt="product_name" />
+                                    </a>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                                    </svg>
+                                </div>
+                                <div className="product_name">
+                                    <a href="#">Nike KD VII 7 GS Boys Girls</a>
+                                    <div className="prduct_variation">
+                                        <span className="product_size">Size: 39</span>
+                                        <span className="product_color">Color: Black</span>
+                                    </div>
+                                </div>
+                                <div className="product_quantity">
+                                    <span>896.000&#8363;</span>
+                                    <div className="quantity">
+                                        <button onClick={decreaseQuantity}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" style={{ margin: "0 auto" }} width="16" height="16" fill="currentColor" className="bi bi-dash" viewBox="0 0 16 16">
+                                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
+                                            </svg>
+                                        </button>
+                                        <input type="text" inputMode="numeric" value={quantity} />
+                                        <button onClick={increaseQuantity}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16">
+                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="coupon">
+                                <label htmlFor="" onClick={handleLabelClick}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path d="M47,21a1,1,0,0,0,1-1V12a3,3,0,0,0-3-3H18a1,1,0,0,0-1,1,2,2,0,0,1-4,0,1,1,0,0,0-1-1H3a3,3,0,0,0-3,3v8a1,1,0,0,0,1,1,3,3,0,0,1,0,6,1,1,0,0,0-1,1v8a3,3,0,0,0,3,3h9a1,1,0,0,0,1-1,2,2,0,0,1,4,0,1,1,0,0,0,1,1H45a3,3,0,0,0,3-3V28a1,1,0,0,0-1-1,3,3,0,0,1,0-6Zm-1,7.9V36a1,1,0,0,1-1,1H18.87a4,4,0,0,0-7.74,0H3a1,1,0,0,1-1-1V28.9a5,5,0,0,0,0-9.8V12a1,1,0,0,1,1-1h8.13a4,4,0,0,0,7.74,0H45a1,1,0,0,1,1,1v7.1A5,5,0,0,0,46,28.9Z" fill="#00ccff" /><path d="M14 17v2a1 1 0 0 0 2 0V17A1 1 0 0 0 14 17zM14 23v2a1 1 0 0 0 2 0V23A1 1 0 0 0 14 23zM14 29v2a1 1 0 0 0 2 0V29A1 1 0 0 0 14 29zM36.29 16.29l-14 14A1 1 0 0 0 23 32c.59 0-.53.94 14.71-14.29A1 1 0 0 0 36.29 16.29zM35 25a4 4 0 1 0 4 4A4 4 0 0 0 35 25zm0 6a2 2 0 1 1 2-2A2 2 0 0 1 35 31zM25 23a4 4 0 1 0-4-4A4 4 0 0 0 25 23zm0-6a2 2 0 1 1-2 2A2 2 0 0 1 25 17z" fill="#00ccff" /></svg>
+                                    Sử dụng mã giảm giá
+                                </label>
+                                {isVisible && <div className="coupon_inp">
+                                    <input type="text" placeholder="Mã ưu đãi" />
+                                    <button type="submit">Áp dụng</button>
+                                </div>}
+                                <div className="total_review">
+                                    <span>Tạm tính (1 sản phẩm): </span>
+                                    <span>896.000&#8363;</span>
+                                </div>
+                            </div>
+                        </div>
+                        <form action="" className="form_checkout">
+                            <h3>THANH TOÁN VÀ GIAO HÀNG</h3>
+                            <label htmlFor="name">Họ và tên <abbr className="required" title="bắt buộc">&#8727;</abbr></label>
+                            <input className="form_checkout-inp" type="text" name="name" placeholder="Họ tên của bạn" />
+                            <label htmlFor="phone">Số điện thoại <abbr className="required" title="bắt buộc">&#8727;</abbr></label>
+                            <input className="form_checkout-inp" type="text" name="phone" placeholder="Số điện thoại của bạn" />
+                            <div className="selections">
+                                <div className="selection">
+                                    <label htmlFor="">Tỉnh/Thành phố  <abbr className="required" title="bắt buộc">&#8727;</abbr></label>
+                                    <Select
+                                        value={selectedCity}
+                                        onChange={handleCityChange}
+                                        options={vietnamData}
+                                        placeholder="Chọn tỉnh thành phố"
+                                    />
+                                </div>
+                                <div className="selection">
+                                    <label htmlFor="">Quận/Huyện  <abbr className="required" title="bắt buộc">&#8727;</abbr></label>
+                                    <Select
+                                        value={selectedDistrict}
+                                        onChange={handleDistrictChange}
+                                        options={getDistricts()}
+                                        placeholder="Chọn quận huyện"
+                                        isDisabled={!selectedCity}
+                                    />
+                                </div>
+                            </div>
+                            <label htmlFor="address">Địa chỉ <abbr className="required" title="bắt buộc">&#8727;</abbr></label>
+                            <input className="form_checkout-inp" type="text" name="address" placeholder="Ví dụ: Số 20, ngõ 20" />
+                            <label htmlFor="note">Ghi chú đơn hàng (tuỳ chọn)</label>
+                            <textarea name="note" id="" cols={5} rows={2} placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
+                        </form>
+                        <div className="order_reviews">
+                            <p className="order_cart-subtotal">
+                                <span>Tạm tính (1 sản phẩm):</span>
+                                <span>896.000&#8363;</span>
+                            </p>
+                            <p className="order_cart-shipping">
+                                <span>Giao hàng</span>
+                                <span>Giao hàng miễn phí</span>
+                            </p>
+                            <p className="order_cart-total">
+                                <span>Tổng:</span>
+                                <span>896.000&#8363;</span>
+                            </p>
+                            <div className="select_payment">
                                 <ul>
-                                    <li><a href="index.html" title="go to homepage">Home<span>/</span></a>  </li>
-                                    <li><strong> checkout</strong></li>
+                                    <li>
+                                        <input
+                                            id="cod"
+                                            type="radio"
+                                            className="select_payment-inp"
+                                            name="payment_method-cod"
+                                            value="cod"
+                                            checked={selectedMethod === 'cod'}
+                                            onChange={handlePaymentMethodChange}
+                                        />
+                                        <label htmlFor="cod">Nhận hàng thanh toán (COD)</label>
+                                        <div className="cod_extend" style={{ display: selectedMethod === 'cod' ? 'block' : 'none' }}>
+                                            Nhận hàng rồi thanh toán (COD)
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <input
+                                            id="transfer"
+                                            type="radio"
+                                            className="select_payment-inp"
+                                            name="payment_method-transfer"
+                                            value="transfer"
+                                            checked={selectedMethod === 'transfer'}
+                                            onChange={handlePaymentMethodChange}
+                                        />
+                                        <label htmlFor="transfer">Chuyển khoản ngân hàng</label>
+                                        <div className="transfer_extend" style={{ display: selectedMethod === 'transfer' ? 'block' : 'none' }}>
+                                            <span>Quét mã qua ứng dụng Ngân hàng/ Ví điện tử</span>
+                                            <div className="qr_code">
+                                                <img src="../../img/codeqr_.png" alt="" />
+                                            </div>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
+                            <button>Đặt hàng</button>
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-lg-3">
-                            <div className="product-sidebar">
-                                <div className="sidebar-title">
-                                    <h2>Shopping Options</h2>
-                                </div>
-                                <div className="single-sidebar">
-                                    <div className="single-sidebar-title">
-                                        <h3>Category</h3>
-                                    </div>
-                                    <div className="single-sidebar-content">
-                                        <ul>
-                                            <li><a href="#">Dresses (4)</a></li>
-                                            <li><a href="#">shoes (6)</a></li>
-                                            <li><a href="#">Handbags (1)</a></li>
-                                            <li><a href="#">Clothing (3)</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="single-sidebar">
-                                    <div className="single-sidebar-title">
-                                        <h3>Color</h3>
-                                    </div>
-                                    <div className="single-sidebar-content">
-                                        <ul>
-                                            <li><a href="#">Black (2)</a></li>
-                                            <li><a href="#">Blue (2)</a></li>
-                                            <li><a href="#">Green (4)</a></li>
-                                            <li><a href="#">Grey (2)</a></li>
-                                            <li><a href="#">Red (2)</a></li>
-                                            <li><a href="#">White (2)</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="banner-left">
-                                    <a href="#">
-                                        <img style={{ height: "283px", paddingBottom: "20px" }} src="img/product/banner_left.jpg" alt="" />
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-9">
-                            <div className="checkout-banner hidden-xs">
-                                <a href="#">
-                                    <img src="img/checkout/checkout_banner.jpg" alt="" />
-                                </a>
-                            </div>
-                            <div className="checkout-heading">
-                                <h2>Checkout</h2>
-                            </div>
-                            <div className="checkout-accordion">
-                                <div className="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                    <div className="panel panel-default">
-                                        <div className="panel-heading" role="tab" id="headingOne">
-                                            <h4 className="panel-title">
-                                                <a role="button" data-bs-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                    Step 1: Checkout Options
-                                                    <i className="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseOne" className="panel-collapse collapse show" role="tabpanel" aria-labelledby="headingOne" data-bs-parent="#accordion">
-                                            <div className="panel-body">
-                                                <div className="row">
-                                                    <div className="col-lg-6">
-                                                        <div className="checkout-collapse">
-                                                            <h3 className="checkout-title">New Customer</h3>
-                                                            <p className="c-title-content">Checkout Options</p>
-                                                            <form action="#">
-                                                                <div className="radio">
-                                                                    <label>
-                                                                        <input type="radio" name="account" value="register" />Register Account
-                                                                    </label>
-                                                                </div>
-                                                                <div className="radio">
-                                                                    <label>
-                                                                        <input type="radio" name="account" value="guest" />Guest Checkout
-                                                                    </label>
-                                                                </div>
-                                                                <p>By creating an account you will be able to shop faster, be up to date on an order&#39;s status, and keep track of the orders you have previously made.</p>
-                                                                <button type="submit" value="Continue" className="check-button">Continue</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-lg-6">
-                                                        <div className="checkout-collapse">
-                                                            <h3 className="checkout-title">Returning Customer</h3>
-                                                            <p className="c-title-content">I am a returning customer</p>
-                                                            <form action="#">
-                                                                <div className="form-box">
-                                                                    <div className="form-name">
-                                                                        <label>E-mail</label>
-                                                                        <input type="email" />
-                                                                    </div>
-                                                                </div>
-                                                                <div className="form-box">
-                                                                    <div className="form-name">
-                                                                        <label>Password</label>
-                                                                        <input type="password" />
-                                                                    </div>
-                                                                </div>
-                                                                <a href="#">Forgotten Password</a>
-                                                            </form>
-                                                            <button type="submit" value="Continue" className="check-button">Continue</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="panel panel-default">
-                                        <div className="panel-heading" role="tab" id="headingTwo">
-                                            <h4 className="panel-title">
-                                                <a className="collapsed" role="button" data-bs-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                    Step 2: Account & Billing Details
-                                                    <i className="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseTwo" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" data-bs-parent="#accordion">
-                                            <div className="panel-body">
-                                                <div className="row">
-                                                    <div className="col-md-6">
-                                                        <div className="account-details">
-                                                            <h4>Your Personal Details</h4>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>First Name <em>*</em> </label>
-                                                                    <input type="text" placeholder="First Name" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>Last Name <em>*</em> </label>
-                                                                    <input type="text" placeholder="Last Name" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>E-mail <em>*</em> </label>
-                                                                    <input type="email" placeholder="E-mail" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>Telephone <em>*</em> </label>
-                                                                    <input type="text" placeholder="Telephone" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>Fax </label>
-                                                                    <input type="text" placeholder="Fax" />
-                                                                </div>
-                                                            </div>
-                                                            <h4>Your Password</h4>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>Password <em>*</em> </label>
-                                                                    <input type="password" placeholder="Password" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>Password Confirm <em>*</em> </label>
-                                                                    <input type="password" placeholder="Password Confirm" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="checkbox">
-                                                                <input type="checkbox" name="newsletter" />I wish to subscribe to the Malias1 newsletter.
-                                                            </div>
-                                                            <div className="checkbox">
-                                                                <input type="checkbox" checked="" name="shipping-address" />My delivery and billing addresses are the same.
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <div className="checkout-collapse">
-                                                            <h4>Your Address</h4>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>Company </label>
-                                                                    <input type="text" placeholder="Company" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>Address 1 <em>*</em> </label>
-                                                                    <input type="text" placeholder="Address 1" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>Address 2 <em>*</em> </label>
-                                                                    <input type="text" placeholder="Address 2" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>City <em>*</em> </label>
-                                                                    <input type="text" placeholder="City" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label>Post Code <em>*</em> </label>
-                                                                    <input type="text" placeholder="Post Code" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label> country <em>*</em> </label>
-                                                                    <select>
-                                                                        <option value="1">---Please select---</option>
-                                                                        <option value="1">Afghanistan</option>
-                                                                        <option value="1">Algeria</option>
-                                                                        <option value="1">American Samoa</option>
-                                                                        <option value="1">Australia</option>
-                                                                        <option value="1">Bangladesh</option>
-                                                                        <option value="1">Belgium</option>
-                                                                        <option value="1">Bosnia and Herzegovina</option>
-                                                                        <option value="1">Chile</option>
-                                                                        <option value="1">China</option>
-                                                                        <option value="1">Egypt</option>
-                                                                        <option value="1">Finland</option>
-                                                                        <option value="1">France</option>
-                                                                        <option value="1">United State</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-box">
-                                                                <div className="form-name">
-                                                                    <label> State/Province </label>
-                                                                    <select>
-                                                                        <option value="1">---Please select---</option>
-                                                                        <option value="1">Arizona</option>
-                                                                        <option value="1">Armed Forces Africa</option>
-                                                                        <option value="1">California</option>
-                                                                        <option value="1">Florida</option>
-                                                                        <option value="1">Indiana</option>
-                                                                        <option value="1">Marshall Islands</option>
-                                                                        <option value="1">Minnesota</option>
-                                                                        <option value="1">New Mexico</option>
-                                                                        <option value="1">Utah</option>
-                                                                        <option value="1">Virgin Islands</option>
-                                                                        <option value="1">West Virginia</option>
-                                                                        <option value="1">Wyoming</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="privacy-policy">
-                                                    I have read and agree to the
-                                                    <a href="#">Privacy Policy</a>
-                                                    <input type="checkbox" name="agree" />
-                                                    <button type="submit" value="Continue" className="check-button">Continue</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="panel panel-default">
-                                        <div className="panel-heading" role="tab" id="headingThree">
-                                            <h4 className="panel-title">
-                                                <a className="collapsed" role="button" data-bs-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                    Step 3: Delivery Details
-                                                    <i className="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseThree" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree" data-bs-parent="#accordion">
-                                            <div className="panel-body">
-                                                <div className="row">
-                                                    <div className="col-md-12">
-                                                        <div className="delivery-details">
-                                                            <form action="#">
-                                                                <div className="list-style">
-                                                                    <div className="form-name">
-                                                                        <label>First Name <em>*</em> </label>
-                                                                        <input type="text" placeholder="First Name" />
-                                                                    </div>
-                                                                    <div className="form-name">
-                                                                        <label>Last Name <em>*</em> </label>
-                                                                        <input type="text" placeholder="Last Name" />
-                                                                    </div>
-                                                                    <div className="form-name">
-                                                                        <label>Company </label>
-                                                                        <input type="text" placeholder="Company" />
-                                                                    </div>
-                                                                    <div className="form-name">
-                                                                        <label>Address 1 <em>*</em> </label>
-                                                                        <input type="text" placeholder="Address 1" />
-                                                                    </div>
-                                                                    <div className="form-name">
-                                                                        <label>Address 2 <em>*</em> </label>
-                                                                        <input type="text" placeholder="Address 2" />
-                                                                    </div>
-                                                                    <div className="form-name">
-                                                                        <label>City <em>*</em> </label>
-                                                                        <input type="text" placeholder="City" />
-                                                                    </div>
-                                                                    <div className="form-name">
-                                                                        <label>Post Code <em>*</em> </label>
-                                                                        <input type="text" placeholder="Post Code" />
-                                                                    </div>
-                                                                    <div className="form-name">
-                                                                        <label> country <em>*</em> </label>
-                                                                        <select>
-                                                                            <option value="1">---Please select---</option>
-                                                                            <option value="1">Afghanistan</option>
-                                                                            <option value="1">Algeria</option>
-                                                                            <option value="1">American Samoa</option>
-                                                                            <option value="1">Australia</option>
-                                                                            <option value="1">Bangladesh</option>
-                                                                            <option value="1">Belgium</option>
-                                                                            <option value="1">Bosnia and Herzegovina</option>
-                                                                            <option value="1">Chile</option>
-                                                                            <option value="1">China</option>
-                                                                            <option value="1">Egypt</option>
-                                                                            <option value="1">Finland</option>
-                                                                            <option value="1">France</option>
-                                                                            <option value="1">United State</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div className="form-name">
-                                                                        <label> State/Province </label>
-                                                                        <select>
-                                                                            <option value="1">---Please select---</option>
-                                                                            <option value="1">Arizona</option>
-                                                                            <option value="1">Armed Forces Africa</option>
-                                                                            <option value="1">California</option>
-                                                                            <option value="1">Florida</option>
-                                                                            <option value="1">Indiana</option>
-                                                                            <option value="1">Marshall Islands</option>
-                                                                            <option value="1">Minnesota</option>
-                                                                            <option value="1">New Mexico</option>
-                                                                            <option value="1">Utah</option>
-                                                                            <option value="1">Virgin Islands</option>
-                                                                            <option value="1">West Virginia</option>
-                                                                            <option value="1">Wyoming</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="panel panel-default">
-                                        <div className="panel-heading" role="tab" id="headingFour">
-                                            <h4 className="panel-title">
-                                                <a className="collapsed" role="button" data-bs-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                                    Step 4: Delivery Method
-                                                    <i className="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseFour" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour" data-bs-parent="#accordion">
-                                            <div className="panel-body">
-                                                <div className="delivery-method">
-                                                    <p>Please select the preferred shipping method to use on this order.</p>
-                                                    <p> <strong>Flat Rate</strong> </p>
-                                                    <div className="radio">
-                                                        <input type="radio" checked="" value="shipping-method" />Flat Shipping Rate - $5.00
-                                                    </div>
-                                                    <p> <strong> Add Comments About Your Order</strong></p>
-                                                    <p> <textarea name="comment" rows="8"></textarea> </p>
-                                                    <button type="submit" value="Continue" className="check-button">Continue</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="panel panel-default">
-                                        <div className="panel-heading" role="tab" id="headingFive">
-                                            <h4 className="panel-title">
-                                                <a className="collapsed" role="button" data-bs-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                                    Step 5: Payment Method
-                                                    <i className="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseFive" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive" data-bs-parent="#accordion">
-                                            <div className="panel-body">
-                                                <div className="patment-method">
-                                                    <p>Please select the preferred payment method to use on this order.</p>
-                                                    <div className="radio">
-                                                        <input type="radio" checked="" value="shipping-method" />Cash On Delivery
-                                                    </div>
-                                                    <p> <strong> Add Comments About Your Order</strong></p>
-                                                    <p> <textarea name="comment" rows="8"></textarea> </p>
-                                                    <div className="privacy-policy">
-                                                        I have read and agree to the
-                                                        <a href="#">Privacy Policy</a>
-                                                        <input type="checkbox" name="agree" />
-                                                        <button type="submit" value="Continue" className="check-button">Continue</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="panel panel-default">
-                                        <div className="panel-heading" role="tab" id="headingSix">
-                                            <h4 className="panel-title">
-                                                <a className="collapsed" role="button" data-bs-toggle="collapse" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                                                    Step 6: Confirm Order
-                                                    <i className="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseSix" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix" data-bs-parent="#accordion">
-                                            <div className="panel-body">
-                                                <div className="confirm-order">
-                                                    <div className="table-responsive">
-                                                        <table className="table table-bordered table-hover">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Product Name</th>
-                                                                    <th>Model</th>
-                                                                    <th>Quantity</th>
-                                                                    <th>Unit Price</th>
-                                                                    <th>Total</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <a href="#">More-Or-Less</a>
-                                                                    </td>
-                                                                    <td>Product 14</td>
-                                                                    <td>2</td>
-                                                                    <td>$100.00</td>
-                                                                    <td>$200.00</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <a href="#">Aliquam Consequat</a>
-                                                                    </td>
-                                                                    <td>Product 14</td>
-                                                                    <td>1</td>
-                                                                    <td>$90.00</td>
-                                                                    <td>$90.00</td>
-                                                                </tr>
-                                                            </tbody>
-                                                            <tfoot>
-                                                                <tr>
-                                                                    <td className="text-right" colSpan="4">
-                                                                        <strong>Sub-Total:</strong>
-                                                                    </td>
-                                                                    <td>$290.00</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td className="text-right" colSpan="4">
-                                                                        <strong>Flat Shipping Rate:</strong>
-                                                                    </td>
-                                                                    <td>$5.00</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td className="text-right" colSpan="4">
-                                                                        <strong>Flat Shipping Rate:</strong>
-                                                                    </td>
-                                                                    <td>$5.00</td>
-                                                                </tr>
-                                                            </tfoot>
-                                                        </table>
-                                                    </div>
-                                                    <button type="submit" value="Continue" className="check-button">Confirm Order</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
     )
 }
+
 
 export default Checkout

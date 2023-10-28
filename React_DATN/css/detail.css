@@ -138,3 +138,9 @@ select option:checked {
   cursor: pointer;
   transition: transform 0.2s;
 }
+
+.select-catagory label{
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+}

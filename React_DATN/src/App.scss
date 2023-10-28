@@ -6,7 +6,7 @@
     z-index: 10;
     top: 0;
     width: 100vw;
-    // background-color: rgba(240, 248, 255, 0.835);
+    background-color: rgba(240, 248, 255, 0.835);
 }
 
 .image-banner,
@@ -70,7 +70,7 @@
     height: 200px;
     background: #efefef;
     top: -300px;
-    right: 72px;
+    right: 100%;
     transition: all 0.6s;
     input{
         border: 1px solid rgb(75, 75, 75);
@@ -98,4 +98,346 @@
 .nav-left{
     background: #000;
     
+}
+
+
+// css checkout page
+
+.checkout_title{
+    text-align: center;
+    margin: 25px 0px 25px;
+}
+
+.box_shadow{
+    width: 707px;
+    margin: 0px auto 20px auto;
+    padding: 20px;
+    box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.12);
+}
+
+.checkout_content{
+    // width: 707px;
+    // margin: 0 auto;
+    // border: 1px solid #ccc;
+    // border-bottom: 1px solid;
+    // padding: 20px;
+}
+
+.checkout_products{
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+}
+
+.product_thumbnail{
+    width: 15%;
+}
+
+.product_thumbnail-img{
+    width: 90px;
+    height: 90px;
+    border: 1px solid #ececec;
+}
+
+.product_thumbnail svg{
+    margin:10px 0px 7px 37px;
+    color: black;
+}
+
+.product_thumbnail svg:hover{
+    cursor: pointer;
+}
+
+.product_name{
+    width: 55%;
+}
+
+.product_name a{
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+}
+
+.product_size{
+    margin-right: 8px;
+}
+
+.product_quantity{
+    width: 30%;
+}
+
+.product_quantity span{
+    display: block;
+    color: #111;
+    font-weight: 700;
+    white-space: nowrap;
+    float: right;
+    margin-bottom: 10px;
+}
+
+.quantity{
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 50%;
+    height: 35px;
+    line-height: 35px;
+    color: black;
+    margin-left: 100px;
+}
+
+.quantity input{
+    width: 40%;
+    outline: none;
+    text-align: center;
+}
+
+.quantity button{
+    width: 30%;
+}
+
+.coupon {
+    margin-top: 10px;
+}
+
+.coupon label{
+    display: flex;
+    color: rgb(0, 204, 255);
+}
+
+.coupon label:hover{
+    cursor: pointer;
+}
+
+.coupon svg{
+    width: 20px;
+    margin-right: 8px;
+    color: rgb(0, 204, 255);
+}
+
+.coupon_inp{
+    width: 100%;
+    border: 1px solid #ccc;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 10px 0px 20px 0px;
+}
+
+.coupon_inp input{
+    outline: none;
+    width: 80%;
+    padding: 10px;
+    color: #363636;
+}
+
+.coupon_inp button{
+    width: 20%;
+    background-color: rgb(0, 204, 255);
+    color: white;
+    font-weight: 500;
+}
+
+.total_review {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.form_checkout{
+    // border: solid #ccc;
+    // border-width: 0px 1px 0px 1px;    
+    // width: 707px;
+    // margin: 0 auto;
+    // padding: 20px;
+}
+
+.form_checkout h3{
+    font-size: 1.3em;
+    font-weight: bolder;
+    overflow: hidden;
+    padding-top: 10px;
+    text-transform: uppercase;
+}
+
+.form_checkout label {
+    font-size: 1em;
+    font-weight: 700;
+    color: #222;
+}
+
+.required {
+    color: red;
+    text-decoration: none;
+    border-bottom: none;
+}
+
+.form_checkout-inp{
+    display: block;
+    width: 100%;
+    height: 40px;
+    padding: 0px 12px;
+    outline: none;
+    border: 1px solid #b3b3b3;
+    border-radius: 5px;
+    color: #333333;
+    margin: 10px 0px 25px 0px;
+    transition: all 0.3s;
+}
+
+.form_checkout-inp:focus{
+    border: none;
+    box-shadow: 0 0 5px #ccc;   
+}
+
+.selections{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.selection{
+    width: 47.5%;
+}
+
+.selection label{
+    margin-bottom: 10px;
+}
+
+.form_checkout textarea{
+    display: block;
+    width: 100%;
+    height: 94px;
+    min-height: auto;
+    outline: none;
+    border: 1px solid #b3b3b3;
+    border-radius: 5px;
+    color: #333333;
+    padding: 12px;
+    margin: 10px 0px 25px 0px;
+}
+
+.form_checkout textarea:focus{
+    border: none;
+    box-shadow: 0 0 5px #ccc;
+}
+
+.order_reviews {
+    // width: 707px;
+    // margin: 0 auto;
+    // padding: 0px 20px 20px 20px;
+    // border: solid #ccc;
+    // border-width: 0px 1px 1px 1px;
+    color: #666666;
+}
+
+.order_reviews p{
+    display: flex;
+    justify-content: space-between;
+}
+
+.order_cart-shipping span:nth-child(1){
+    font-weight: 700;
+}
+
+.order_cart-subtotal {
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+}
+
+.order_cart-total span{
+    font-weight: 700;
+}
+
+.order_cart-total span:nth-child(2){
+    color: #f30c28;
+}
+
+
+.select_payment{
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+
+.select_payment li:nth-child(1){
+    padding-bottom: 10px;
+}
+
+.select_payment li:nth-child(2){
+    border-top: 1px solid #ececec;
+    padding-top: 10px;
+}
+
+.select_payment-inp{
+    color: red;
+}
+
+.select_payment label{
+    font-weight: 700;
+    margin-left: 15px;
+}
+
+.qr_code{
+    background-image: url('../img/qr-frame.jpg');
+    background-position: 50% 50%;
+    width: 224px;
+    height: 238px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    max-width: 100%;
+    float: right;
+    min-height: 100%;
+}
+.qr_code img{
+    width: 90%;
+    display: block;
+    margin: 0 auto;
+    padding-top: 12%;
+}
+
+.transfer_extend{
+    height: 250px;
+}
+
+.order_reviews button{
+    display: block;
+    margin: 15px auto 0px auto;
+    width: 240px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: rgb(0, 204, 255);
+    color: white;
+    font-size: 16px;
+}
+
+.order_reviews button:hover{
+    box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.2);
+    transition: ease-in-out 0.3s;
+}
+.imgUserSelector:hover ~ .formSelectUser{
+    z-index: 102;
+    top: 80%;
+}
+.formSelectUser{
+    position: absolute;
+    z-index: -1;
+    top: -500px;
+    background: #898989;
+    text-align: center;
+    border-radius: 5px;
+    li{
+        width: 160px;
+        padding: 4px 0;
+        color: #d4d4d4;
+        &:hover{
+            color: rgb(230, 230, 230);
+        }
+    }
+    &:hover{
+        z-index: 102;
+        top: 80%;
+    }
 }

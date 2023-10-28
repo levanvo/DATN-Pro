@@ -8,7 +8,7 @@ const Footer = () => {
                     <div className="row">
                         <div className="col-lg-3 col-md-6">
                             <div className="footer-contact">
-                                <img src="img/Logo DATN.png" className='w-[200px]' />
+                                <img src="../../../img/logo_DATN.png" className='w-[200px]' />
                                 <p>Hệ thống giày sneaker tại Hà Nội</p>
                                 <ul className="address">
                                     <li>
@@ -53,7 +53,7 @@ const Footer = () => {
                                         <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
                                         <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
                                         <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
-                                        
+
                                     </ul>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@ const Footer = () => {
                         </div>
                     </div>
                 </div>
-                
+
             </div>
             <footer className="footer-area">
                 <div className="container">
@@ -86,7 +86,7 @@ const Footer = () => {
                                 <p>Copyright © 2022 <a href="#"> Bootexperts</a>. All Rights Reserved</p>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
                 <a href="#" id="scrollUp"><i className="fa fa fa-arrow-up" /></a>
