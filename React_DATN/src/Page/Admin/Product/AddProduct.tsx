@@ -40,6 +40,7 @@ const AddProduct = () => {
   const [isLoadingScreen, setIsLoadingScreen] = useState(false);
   const [messageApi,contextHolder] = message.useMessage()
   const { data } = useGetColorsQuery(undefined)
+  const [price, setPrice] = useState<number | string>("");
 
   const handleCancel = () => setPreviewOpen(false)
 
@@ -131,7 +132,14 @@ const AddProduct = () => {
     }
   }
 
-
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/,/g, ""); // Remove commas
+    if (!isNaN(Number(rawValue))) {
+      setPrice(Number(rawValue)); // Convert and set the value as a number
+    } else {
+      setPrice(rawValue); // If not a valid number, keep it as a string
+    }
+  };
 
   return (
     <div>
@@ -230,7 +238,10 @@ const AddProduct = () => {
             }}
           ]}
         >
-          <Input />
+         <Input
+        value={price === "" ? "" : price.toLocaleString()} // Format the value with commas
+        onChange={handlePriceChange}
+      />
         </Form.Item>
 
         <Form.Item
