@@ -23,10 +23,10 @@ const deleteDataSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "Category",
     },
-    size_id: {
+    size_id: [{
       type: Schema.Types.ObjectId,
       ref: "Size",
-    },
+    }],
     color_id: [
       {
         type: Schema.Types.ObjectId,
@@ -41,8 +41,6 @@ const deleteDataSchema = new mongoose.Schema(
     },
     inventory_number: Number, // số lượng tồn kho
     quantity_sold: Number, // số lượng đã bán
-  },
-  { timestamps: true, versionKey: false }
-)
+  },{timestamps: true, versionKey: false})
 
 export default mongoose.model("DeletedProduct", deleteDataSchema)

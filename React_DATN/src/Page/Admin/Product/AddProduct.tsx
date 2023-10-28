@@ -47,6 +47,7 @@ const AddProduct = () => {
   const [isLoadingScreen, setIsLoadingScreen] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
   const { data } = useGetColorsQuery(undefined)
+  const [price, setPrice] = useState<number | string>("");
 
   const handleCancel = () => setPreviewOpen(false)
 
@@ -266,7 +267,7 @@ const AddProduct = () => {
             },
           ]}
         >
-          <Input />
+         <Input/>
         </Form.Item>
 
         <Form.Item

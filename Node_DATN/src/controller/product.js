@@ -5,6 +5,7 @@ import { productSchema } from "../schema/product.js"
 import mongoose from "mongoose"
 import Color from "../models/color.js"
 import Size from "../models/size.js"
+import Cart from "../models/cart.js"
 
 export const getProduct = async (req, res) => {
   try {
@@ -94,6 +95,10 @@ export const removeProduct = async (req, res) => {
       })
     }
 
+    await Cart.updateMany(
+      { "products.productId": productToBeDeleted._id },
+      { $pull: { products: { productId: productToBeDeleted._id } } }
+    ).exec();
     // Tạo một bản sao của sản phẩm trước khi xóa nó tạm thời
     
     const deletedProduct = new DeletedProduct(productToBeDeleted.toJSON());
