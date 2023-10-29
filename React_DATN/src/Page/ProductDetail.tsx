@@ -6,47 +6,61 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs, Pagination } from "swiper/modules";
 import { useParams } from "react-router-dom";
-import { useGetOneProductQuery, useGetAllProductQuery } from "../Services/Api_Product";
+import {
+  useGetOneProductQuery,
+  useGetAllProductQuery,
+} from "../Services/Api_Product";
 import { useGetColorsQuery, useGetOneColorQuery } from "../Services/api_Color";
 import { useGetAllSizeQuery, useGetOneSizeQuery } from "../Services/Api_Size";
-import {
-  PlusOutlined,
-  MinusOutlined,
-} from "@ant-design/icons"
+import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+
+
 
 const ProductDetail = () => {
   // state Swiper
   const [thumbsSwiper, setThumbsSwiper]: any = useState(null);
-  const [getColor, setColor]: any = useState([]);
-  const [getSize, setSize]: any = useState([]);
+  const [getQuantityBuy, setQuantityBuy]: any = useState(1);
+  const [getColor, setColor]: any = useState("");
+  const [getSize, setSize]: any = useState("");
   const { id } = useParams();
-  const { data: productData, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
+  const { data: allProducts }: any = useGetAllProductQuery();
+  const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
   const { data: colorData, isLoading: loadingColor }: any = useGetColorsQuery();
   const { data: sizeData, isLoading: loadingSize }: any = useGetAllSizeQuery();
 
-  // const {data} = useGetOneColorQuery(productData?.color_id);
-  // console.log("getColor: ", productData?.color_id?.unicode);
-  console.log("getColor===========: ", productData);
-
+  let arrayPR: any = [];
+  const arrayRelate = productDataOne?.categoryId.products;
+  if (arrayRelate) {
+    for (let i = 0; i < arrayRelate.length; i++) {
+      allProducts.map((product: any) => {
+        if (product._id == arrayRelate[i]) {
+          arrayPR.push(product);
+        };
+      });
+    };
+  };
+  arrayPR = arrayPR.filter((item: any) => item._id != id);
 
   const ChooseColor = (color: any) => {
     console.log(color);
-
-  }
+    setColor(color);
+  };
   const ChooseSize = (size: any) => {
     console.log(size);
-
-  }
+    setSize(size);
+  };
 
   const Minus = () => {
-    const valueQuantity = document.getElementById("quanityBuy");
-
-  }
+    getQuantityBuy > 1 && setQuantityBuy(getQuantityBuy - 1)
+  };
   const Plus = () => {
-    const valueQuantity = document.getElementById("quanityBuy");
-  }
+    setQuantityBuy(getQuantityBuy + 1)
+  };
+
+
   return (
-    <div className="w-[90vw] mx-auto mt-36">
+    <div className="w-[90vw] mx-auto mt-36 relative">
       <div className="Single-product-location home2">
         <div className="container">
           <div className="row">
@@ -59,7 +73,7 @@ const ProductDetail = () => {
                     </a>{" "}
                   </li>
                   <li>
-                    <strong>{productData?.name}</strong>
+                    <strong>{productDataOne?.name}</strong>
                   </li>
                 </ul>
               </div>
@@ -86,7 +100,11 @@ const ProductDetail = () => {
                   modules={[FreeMode, Navigation, Thumbs]}
                   className="mySwiper2"
                 >
-                  {productData?.imgUrl.map((itemImg: any, index: any) => <SwiperSlide key={index}><img src={productData?.imgUrl[index]} /></SwiperSlide>)}
+                  {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
+                    <SwiperSlide key={index}>
+                      <img src={productDataOne?.imgUrl[index]} />
+                    </SwiperSlide>
+                  ))}
                 </Swiper>
               </div>
               <div className="nav product-page-slider">
@@ -99,7 +117,11 @@ const ProductDetail = () => {
                   modules={[FreeMode, Navigation, Thumbs]}
                   className="mySwiper"
                 >
-                  {productData?.imgUrl.map((itemImg: any, index: any) => <SwiperSlide key={index}><img src={productData?.imgUrl[index]} /></SwiperSlide>)}
+                  {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
+                    <SwiperSlide key={index}>
+                      <img src={productDataOne?.imgUrl[index]} />
+                    </SwiperSlide>
+                  ))}
                 </Swiper>
                 <div className="single-product-slider">
                   <a
@@ -134,9 +156,7 @@ const ProductDetail = () => {
             </div>
             <div className="col-lg-6">
               <div className="single-product-details">
-                <p className="product-name">
-                  {productData?.name}
-                </p>
+                <p className="product-name">{productDataOne?.name}</p>
                 <div className="list-product-info">
                   <div className="price-rating">
                     <div className="ratings">
@@ -156,19 +176,36 @@ const ProductDetail = () => {
                 </div>
                 <div className="avalable">
                   <p>
-                    Availability:<span> In stock</span>
+                    Tình trạng: <span> {productDataOne?.quantity > 0 ? "còn hàng" : "hết hàng"}</span>
+                  </p>
+                  <p>
+                    Số lượng: <span className="text-gray-600"> {productDataOne?.quantity}</span>
                   </p>
                 </div>
-                <div className="item-price">
-                  <span>{productData?.original_price.toLocaleString()} (VND)</span>
+                <div className="item-price flex space-x-2">
+                  <span>{productDataOne?.price.toLocaleString()} (VND)</span>
+                  <p className="text-red-500 text-xs">{productDataOne?.original_price > productDataOne?.price && productDataOne?.original_price > 0 ? "Đại hạ giá" : "Sản phẩm đang hot"}</p>
+                  {productDataOne?.original_price > 0 && <p className="text-xs"><del>{productDataOne?.original_price.toLocaleString()} (VND)</del></p>}
                 </div>
                 <div className="single-product-info">
-                  <p>{productData?.description}</p>
+                  <p>{productDataOne?.description}</p>
                   <div className="share">
                     <img src="img/product/share.png" alt="" />
                   </div>
                 </div>
-                <div className="action">
+                <h3 className="-mt-4">Chọn màu:</h3>
+                <div className="flex space-x-2 my-4">
+                  {colorData?.map((itemColor: any) => {
+                    return (
+                      <button
+                        onClick={() => ChooseColor(itemColor.unicode)}
+                        className={`w-8 h-8 rounded-full  ${getColor == itemColor.unicode ? "border-4 border-gray-200" : ""}`}
+                        style={{ background: itemColor.unicode }}
+                      ></button>
+                    );
+                  })}
+                </div>
+                {/* <div className="action">
                   <ul className="add-to-links">
                     <li>
                       <a href="#">
@@ -186,32 +223,31 @@ const ProductDetail = () => {
                       </a>
                     </li>
                   </ul>
-                </div>
+                </div> */}
                 <div className="select-catagory">
                   <div>
-                    <h3>Chọn màu:</h3>
-                    <div className="flex space-x-2 my-4">
-                      {colorData?.map((itemColor: any) => {
-                        return (
-                          <button onClick={() => ChooseColor(itemColor.unicode)} className="w-8 h-8 rounded-full" style={{ background: itemColor.unicode }}></button>
-                        )
-                      })}
+                      <h3 className="mt-3">Chọn kích cỡ:</h3>
+                    <div className="flex mb-3 space-x-3">
+                      {sizeData?.map((itemSize: any) => (
+                        <div onClick={() => ChooseSize(itemSize.name)} className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${getSize == itemSize.name ? "border-green-600" : ""}`}>
+                          <p>{itemSize.name}</p>
+                          {getSize == itemSize.name && <img className="absolute top-[-7px] right-[-5px] w-3 h-3" src="../../img/icons/correct.png" alt="" />}
+                        </div>
+                      ))}
                     </div>
-                    <h3>Chọn kích cỡ:</h3>
-                    <div className="flex space-x-5">
-                      {sizeData?.map((itemSize: any) => {
-                        return (
-                          <label className="cursor-pointer p-2" onClick={() => ChooseSize(itemSize.name)}>
-                            <input type="radio" name="a" />
-                            <p>{itemSize.name}</p>
-                          </label>
-                        )
-                      })}
+                    <div className="mt-5 w-0 h-0">
+                      <input type="checkbox" id="guide_shoe" hidden />
+                      <label htmlFor="guide_shoe"><p className="cursor-pointer hover:text-sky-500 w-96">Bảng Quy Đổi Kích Cỡ</p></label>
+                      <div className="w-[800px] h-96 bg-white flex space-x-20 guide-shoes-board">
+                        <img className="w-96 h-96 p-4" src="../../img/guide_sizeShoe.png" alt="" />
+                        <div className="">
+                          <p className="text-center text-xl mt-5 text-gray-500">Bảng đo size giày</p>
+                          <img className="w-64 h-64 p-4" src="../../img/guide_size.png" alt="" />
+                        </div>
+                        <label htmlFor="guide_shoe"><CloseOutlined className="absolute right-0 p-3 scale-150 cursor-pointer hover:rotate-90 duration-200" /></label>
+                      </div>
+                      <label htmlFor="guide_shoe" className="fixed top-0 left-0 display-guide-shoe -z-10"></label>
                     </div>
-
-                    {/* <!-- input ẩn để lưu trữ giá trị được chọn --> */}
-                    <input type="hidden" id="selected-color" />
-                    <input type="hidden" id="selected-size" />
                   </div>
                 </div>
                 <div className="cart-item">
@@ -225,11 +261,22 @@ const ProductDetail = () => {
                       <div className="d-flex align-items-center">
                         <span style={{ fontSize: "20px" }}>Qty: </span>
                         <div className="inp_group">
-                          <button><MinusOutlined onChange={() => Minus()} /></button>
-                          <input className="cart-plus-minus-box outline-0" type="text"
-                            name="qtybutton" readOnly id="quanityBuy" value={1} max={productData?.quantity} min={1}
+                          <button>
+                            <MinusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Minus()} />
+                          </button>
+                          <input
+                            className="cart-plus-minus-box outline-0 h-10"
+                            type="text"
+                            name="qtybutton"
+                            readOnly
+                            id="quanityBuy"
+                            value={getQuantityBuy}
+                            max={productDataOne?.quantity}
+                            min={1}
                           />
-                          <button><PlusOutlined onChange={() => Plus()} /></button>
+                          <button>
+                            <PlusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Plus()} />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -562,10 +609,28 @@ const ProductDetail = () => {
         </div>
       </div>
       {/* ============================================ khu SP liên quan */}
-      <div className="container productsRelative">
+      <div className="container mb-20 productsRelative text-black">
         <h3>Sản phẩm liên quan</h3>
-        <div className="productShow mt-4 flex flex-wrap ">
+        <div className={`productShow mt-4 flex flex-wrap space-x-5 ${arrayPR.length > 3 ? "justify-center" : ""}`}>
+          {arrayPR.length ? arrayPR?.map((items: any) => {
+            return (
+              <div className="border rounded-2xl w-56 m-2 relative" key={items._id}>
 
+                <Link to={`/product/${items._id}`}><img className="w-56 h-48 rounded-lg hover:scale-110 duration-200" src={items.imgUrl[0]} alt="" /></Link>
+                <p className="ml-2  text-gray-500">{items.name} <span className="float-right mr-2 text-gray-400 text-xs mt-2">SL: {items.quantity}</span></p>
+                <div className="flex space-x-2">
+                  <p className="text-xs ml-2">{items.price.toLocaleString()} (VND)</p>
+                  {items.original_price > 0 && <p className="text-xs"><del>{items.original_price.toLocaleString()}</del></p>}
+                  {
+                    items.original_price > items.price ?
+                      <img className=" absolute w-10 top-2" src="../../img/IMAGE_CREATED/sale.png" alt="" />
+                      :
+                      ""
+                  }
+                </div>
+              </div>
+            )
+          }) : arrayPR.length > 0 ? "...loading" : <p className="text-center text-red-500">Hiện chưa có sản phẩm cùng loại !</p>}
         </div>
       </div>
     </div>
