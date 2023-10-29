@@ -12,7 +12,7 @@ import {
 } from "../Services/Api_Product";
 import { useGetColorsQuery, useGetOneColorQuery } from "../Services/api_Color";
 import { useGetAllSizeQuery, useGetOneSizeQuery } from "../Services/Api_Size";
-import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
+import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 
@@ -20,7 +20,7 @@ import { Link } from "react-router-dom";
 const ProductDetail = () => {
   // state Swiper
   const [thumbsSwiper, setThumbsSwiper]: any = useState(null);
-  const [getProductRelate, setProductRelate]: any = useState([]);
+  const [getQuantityBuy, setQuantityBuy]: any = useState(1);
   const [getColor, setColor]: any = useState("");
   const [getSize, setSize]: any = useState("");
   const { id } = useParams();
@@ -52,16 +52,15 @@ const ProductDetail = () => {
   };
 
   const Minus = () => {
-    const valueQuantity = document.getElementById("quanityBuy");
+    getQuantityBuy > 1 && setQuantityBuy(getQuantityBuy - 1)
   };
   const Plus = () => {
-    let valueQuantity: any = document.getElementById("quanityBuy");
-    valueQuantity += 1;
+    setQuantityBuy(getQuantityBuy + 1)
   };
 
 
   return (
-    <div className="w-[90vw] mx-auto mt-36">
+    <div className="w-[90vw] mx-auto mt-36 relative">
       <div className="Single-product-location home2">
         <div className="container">
           <div className="row">
@@ -179,6 +178,9 @@ const ProductDetail = () => {
                   <p>
                     Tình trạng: <span> {productDataOne?.quantity > 0 ? "còn hàng" : "hết hàng"}</span>
                   </p>
+                  <p>
+                    Số lượng: <span className="text-gray-600"> {productDataOne?.quantity}</span>
+                  </p>
                 </div>
                 <div className="item-price flex space-x-2">
                   <span>{productDataOne?.price.toLocaleString()} (VND)</span>
@@ -191,7 +193,19 @@ const ProductDetail = () => {
                     <img src="img/product/share.png" alt="" />
                   </div>
                 </div>
-                <div className="action">
+                <h3 className="-mt-4">Chọn màu:</h3>
+                <div className="flex space-x-2 my-4">
+                  {colorData?.map((itemColor: any) => {
+                    return (
+                      <button
+                        onClick={() => ChooseColor(itemColor.unicode)}
+                        className={`w-8 h-8 rounded-full  ${getColor == itemColor.unicode ? "border-4 border-gray-200" : ""}`}
+                        style={{ background: itemColor.unicode }}
+                      ></button>
+                    );
+                  })}
+                </div>
+                {/* <div className="action">
                   <ul className="add-to-links">
                     <li>
                       <a href="#">
@@ -209,39 +223,31 @@ const ProductDetail = () => {
                       </a>
                     </li>
                   </ul>
-                </div>
+                </div> */}
                 <div className="select-catagory">
                   <div>
-                    <h3>Chọn màu:</h3>
-                    <div className="flex space-x-2 my-4">
-                      {colorData?.map((itemColor: any) => {
-                        return (
-                          <button
-                            onClick={() => ChooseColor(itemColor.unicode)}
-                            className={`w-8 h-8 rounded-full  ${getColor == itemColor.unicode ? "border-4 border-gray-200" : ""}`}
-                            style={{ background: itemColor.unicode }}
-                          ></button>
-                        );
-                      })}
-                    </div>
-                    <h3>Chọn kích cỡ:</h3>
-                    <div className="flex space-x-5 mb-3">
+                      <h3 className="mt-3">Chọn kích cỡ:</h3>
+                    <div className="flex mb-3 space-x-3">
                       {sizeData?.map((itemSize: any) => (
-                        <label
-                          key={itemSize.name}
-                          className="cursor-pointer p-2"
-                          onClick={() => ChooseSize(itemSize.name)}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={getSize === itemSize.name}
-                            readOnly
-                          />
+                        <div onClick={() => ChooseSize(itemSize.name)} className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${getSize == itemSize.name ? "border-green-600" : ""}`}>
                           <p>{itemSize.name}</p>
-                        </label>
+                          {getSize == itemSize.name && <img className="absolute top-[-7px] right-[-5px] w-3 h-3" src="../../img/icons/correct.png" alt="" />}
+                        </div>
                       ))}
                     </div>
-
+                    <div className="mt-5 w-0 h-0">
+                      <input type="checkbox" id="guide_shoe" hidden />
+                      <label htmlFor="guide_shoe"><p className="cursor-pointer hover:text-sky-500 w-96">Bảng Quy Đổi Kích Cỡ</p></label>
+                      <div className="w-[800px] h-96 bg-white flex space-x-20 guide-shoes-board">
+                        <img className="w-96 h-96 p-4" src="../../img/guide_sizeShoe.png" alt="" />
+                        <div className="">
+                          <p className="text-center text-xl mt-5 text-gray-500">Bảng đo size giày</p>
+                          <img className="w-64 h-64 p-4" src="../../img/guide_size.png" alt="" />
+                        </div>
+                        <label htmlFor="guide_shoe"><CloseOutlined className="absolute right-0 p-3 scale-150 cursor-pointer hover:rotate-90 duration-200" /></label>
+                      </div>
+                      <label htmlFor="guide_shoe" className="fixed top-0 left-0 display-guide-shoe -z-10"></label>
+                    </div>
                   </div>
                 </div>
                 <div className="cart-item">
@@ -256,20 +262,20 @@ const ProductDetail = () => {
                         <span style={{ fontSize: "20px" }}>Qty: </span>
                         <div className="inp_group">
                           <button>
-                            <MinusOutlined onClick={() => Minus()} />
+                            <MinusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Minus()} />
                           </button>
                           <input
-                            className="cart-plus-minus-box outline-0"
+                            className="cart-plus-minus-box outline-0 h-10"
                             type="text"
                             name="qtybutton"
                             readOnly
                             id="quanityBuy"
-                            value={1}
+                            value={getQuantityBuy}
                             max={productDataOne?.quantity}
                             min={1}
                           />
                           <button>
-                            <PlusOutlined onClick={() => Plus()} />
+                            <PlusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Plus()} />
                           </button>
                         </div>
                       </div>
