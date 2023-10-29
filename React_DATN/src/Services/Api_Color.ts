@@ -4,7 +4,7 @@ import { IColor } from "../Models/interfaces"
 export const colorApi = createApi({
   reducerPath: "colorApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/api",
+    baseUrl: "http://localhost:8080",
     prepareHeaders(headers, api) {
       const token = localStorage.getItem("token")
       if (token) {
@@ -15,17 +15,17 @@ export const colorApi = createApi({
   }),
   tagTypes: ["Color"],
   endpoints: (builder) => ({
-    getColors: builder.query({
-      query: () => "/colors",
+    getColors: builder.query<IColor[],void>({
+      query: () => "/api/colors",
       providesTags: ["Color"],
     }),
     getOneColor: builder.query({
-      query: (id) => `/color/${id}`,
+      query: (id) => `/api/color/${id}`,
       providesTags: ["Color"],
     }),
     createColor: builder.mutation({
       query: (color: IColor) => ({
-        url: "/color",
+        url: "/api/color",
         method: "POST",
         body: color,
       }),
@@ -33,14 +33,14 @@ export const colorApi = createApi({
     }),
     removeColor: builder.mutation({
       query: (id) => ({
-        url: `/color/${id}`,
+        url: `/api/color/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Color"],
     }),
     updateColor: builder.mutation({
       query: (color: IColor) => ({
-        url: `/color/${color._id}`,
+        url: `/api/color/${color._id}`,
         method: "PATCH",
         body: color,
       }),

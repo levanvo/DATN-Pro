@@ -7,6 +7,8 @@ import Loading from '../../../Component/Loading';
 import { DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
+import { useGetColorsQuery } from '../../../Services/api_Color';
+import { useGetAllSizeQuery } from '../../../Services/Api_Size';
 
 
 const { Search } = Input;
@@ -27,6 +29,8 @@ const ProductList = () => {
   const [isResetClicked, setIsResetClicked] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
+  const { data:getAllColor } = useGetColorsQuery()
+  const {data: getAllSize} = useGetAllSizeQuery()
 
 
   const rowSelection = {
@@ -36,6 +40,7 @@ const ProductList = () => {
     },
   };
 
+  // Xóa sản phẩm đã chọn
   const deleteMultipleProducts = async () => {
     try {
       setIsLoadingDelete(true)
@@ -52,15 +57,19 @@ const ProductList = () => {
     setIsLoadingDelete(false)
   }
 
-  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId }: IProduct) => ({
+  //data trả về
+  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId,color_id,size_id }: IProduct) => ({
     key: _id,
     name,
     original_price,
     price,
     imgUrl,
-    categoryId
+    categoryId,
+    color_id,
+    size_id
   }))
 
+  // hàm thực hiện đóng và mở chức năng lọc theo giá
   const handleFilterVisibleChange = (visible: any) => {
     setFilterVisible(visible);
   };
@@ -182,14 +191,72 @@ const ProductList = () => {
       align: 'center',
     },
     {
+      title: 'Màu xắc',
+      dataIndex: 'color_id',
+      key: 'color_id',
+      render: (colorIds: string[]) => {
+        if (getAllColor) {       
+          const colorElements = colorIds?.map(colorId => {
+            const color = getAllColor.find(c => c._id === colorId);
+            return color ? (
+              <span
+                key={color._id}
+                style={{
+                  background: color.unicode,
+                  width: "25px",
+                  height: "25px",
+                  borderRadius: "50%",
+                  marginRight:5
+                }}
+              ></span>
+            ) : null;
+          });
+          return (
+            <div style={{ display: 'flex',justifyContent: "center",alignItems: "center" }}>
+              {colorElements}
+            </div>
+          );
+        }
+        return "Không xác định";
+      },
+      align: 'center',
+    },
+    
+    {
+      title: 'Kích thước',
+      dataIndex: 'size_id',
+      key: 'size_id',
+      render: (sizeIds: string[]) => {
+       if(getAllSize){
+          const sizeElements = sizeIds.map(sizeID => {
+            const size = getAllSize.find(s => s._id === sizeID)
+            return size ? size.name : ""
+          })
+          if(sizeElements){
+            return sizeElements.join(", ")
+          }    
+      }
+        return "Không xác định"
+      },
+      align: 'center',
+    },
+    
+    {
       title: 'Giá hiện tại',
       dataIndex: 'price',
       align: 'center',
+      render: (price: number) => (
+        <span>{price.toLocaleString('vi-VN',{style: "currency", currency: "VND"})}</span>
+      )
     },
+    
     {
       title: 'Giá gốc',
       dataIndex: 'original_price',
       align: 'center',
+      render: (original_price: number) => (
+        <span>{original_price.toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</span>
+      )
     },
 
     {

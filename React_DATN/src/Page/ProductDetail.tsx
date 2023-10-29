@@ -259,7 +259,7 @@ const ProductDetail = () => {
                   <div className="single-cart d-flex align-items-center">
                     <div className="cart-plus-minus">
                       <div className="d-flex align-items-center">
-                        <span style={{ fontSize: "20px" }}>Qty: </span>
+                        <span style={{ fontSize: "16px" }}>Số lượng: </span>
                         <div className="inp_group">
                           <button>
                             <MinusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Minus()} />
