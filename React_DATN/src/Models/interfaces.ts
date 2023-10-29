@@ -1,4 +1,4 @@
-import { Schema } from "mongoose"
+
 export interface IProduct {
   _id?: string | number
   name: string
@@ -7,8 +7,8 @@ export interface IProduct {
   description?: string
   imgUrl: string[]
   categoryId: string
-  size_id: string
-  color_id: Schema.Types.ObjectId[]
+  size_id: string[]
+  color_id: string[]
   quantity?: number
   discount_code_id?: string
   poinId?: string
