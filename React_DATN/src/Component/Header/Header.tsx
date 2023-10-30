@@ -90,7 +90,7 @@ const Header = ({ onSearch }: any) => {
                           {
                             user.role == "admin" || user.role == "staff" ?
                               <div className="relative">
-                                <Link className='w-10 h-10' to={`/admin`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
+                                <Link className='w-10 h-10 imgUserSelector' to={`/admin`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
                                 <ul className="formSelectUser">
                                   <Link to={`/admin`}><li>Quản trị</li></Link>
                                   <Link to={``}><li onClick={()=>handleLogout()}>Đăng xuất</li></Link>
@@ -102,7 +102,7 @@ const Header = ({ onSearch }: any) => {
                               <div className="relative">
                                 <Link className='w-10 h-10 imgUserSelector' to={`/client`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
                                 <ul className="formSelectUser">
-                                  <Link to={`/admin`}><li>Quản trị</li></Link>
+                                  <Link to={`/client`}><li>Trang cá nhân</li></Link>
                                   <Link to={``}><li onClick={()=>handleLogout()}>Đăng xuất</li></Link>
                                   <Link to={``}><li>Cài đặt</li></Link>
                                 </ul>

@@ -23,7 +23,14 @@ const ListColor = () => {
   if (error) return <div>Error...</div>
 
   if (!data || !Array.isArray(data)) {
-    return <div>No data available.</div>
+    return (
+      <div>
+        No data available.
+        <Link to={`/admin/color/create`}>
+          <Button style={{ margin: "0 0 0 8px" }}>Tạo Màu Mới</Button>
+        </Link>
+      </div>
+    )
   }
 
   const dataSource = data?.map((item: IColor, index) => ({
