@@ -28,6 +28,7 @@ const ProductDetail = () => {
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
   const { data: colorData, isLoading: loadingColor }: any = useGetColorsQuery();
   const { data: sizeData, isLoading: loadingSize }: any = useGetAllSizeQuery();
+console.log("detail: ",productDataOne);
 
   let arrayPR: any = [];
   const arrayRelate = productDataOne?.categoryId.products;
@@ -101,7 +102,7 @@ const ProductDetail = () => {
                   className="mySwiper2"
                 >
                   {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
-                    <SwiperSlide key={index}>
+                    <SwiperSlide key={index} >
                       <img src={productDataOne?.imgUrl[index]} />
                     </SwiperSlide>
                   ))}
@@ -195,7 +196,7 @@ const ProductDetail = () => {
                 </div>
                 <h3 className="-mt-4">Chọn màu:</h3>
                 <div className="flex space-x-2 my-4">
-                  {colorData?.map((itemColor: any) => {
+                  {productDataOne?.color_id?.map((itemColor: any) => {
                     return (
                       <button
                         onClick={() => ChooseColor(itemColor.unicode)}
@@ -228,7 +229,7 @@ const ProductDetail = () => {
                   <div>
                       <h3 className="mt-3">Chọn kích cỡ:</h3>
                     <div className="flex mb-3 space-x-3">
-                      {sizeData?.map((itemSize: any) => (
+                      {productDataOne?.size_id?.map((itemSize: any) => (
                         <div onClick={() => ChooseSize(itemSize.name)} className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${getSize == itemSize.name ? "border-green-600" : ""}`}>
                           <p>{itemSize.name}</p>
                           {getSize == itemSize.name && <img className="absolute top-[-7px] right-[-5px] w-3 h-3" src="../../img/icons/correct.png" alt="" />}
