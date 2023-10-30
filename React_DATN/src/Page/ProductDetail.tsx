@@ -28,6 +28,7 @@ const ProductDetail = () => {
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
   const { data: colorData, isLoading: loadingColor }: any = useGetColorsQuery();
   const { data: sizeData, isLoading: loadingSize }: any = useGetAllSizeQuery();
+console.log("detail: ",productDataOne);
 
   // const {data} = useGetOneColorQuery(productData?.color_id);
   // console.log("getColor: ", productData?.color_id?.unicode);
@@ -161,8 +162,12 @@ return (
                   href="#pro-large-img-1"
                   data-bs-toggle="tab"
                 >
-                  <img src="" alt="" />
-                </a>
+                  {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
+                    <SwiperSlide key={index} >
+                      <img src={productDataOne?.imgUrl[index]} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
               <div className="single-product-slider">
                 <a href="#pro-large-img-2" data-bs-toggle="tab">
@@ -224,20 +229,30 @@ return (
                 <div className="share">
                   <img src="img/product/share.png" alt="" />
                 </div>
-              </div>
-              <h3 className="-mt-4">Chọn màu:</h3>
-              <div className="flex space-x-2 my-4">
-                {colorData?.map((itemColor: any) => {
-                  return (
-                    <button
-                      onClick={() => ChooseColor(itemColor.unicode)}
-                      className={`w-8 h-8 rounded-full  ${getColor == itemColor.unicode ? "border-4 border-gray-200" : ""}`}
-                      style={{ background: itemColor.unicode }}
-                    ></button>
-                  );
-                })}
-              </div>
-              <div className="action">
+                <div className="item-price flex space-x-2">
+                  <span>{productDataOne?.price.toLocaleString()} (VND)</span>
+                  <p className="text-red-500 text-xs">{productDataOne?.original_price > productDataOne?.price && productDataOne?.original_price > 0 ? "Đại hạ giá" : "Sản phẩm đang hot"}</p>
+                  {productDataOne?.original_price > 0 && <p className="text-xs"><del>{productDataOne?.original_price.toLocaleString()} (VND)</del></p>}
+                </div>
+                <div className="single-product-info">
+                  <p>{productDataOne?.description}</p>
+                  <div className="share">
+                    <img src="img/product/share.png" alt="" />
+                  </div>
+                </div>
+                <h3 className="-mt-4">Chọn màu:</h3>
+                <div className="flex space-x-2 my-4">
+                  {productDataOne?.color_id?.map((itemColor: any) => {
+                    return (
+                      <button
+                        onClick={() => ChooseColor(itemColor.unicode)}
+                        className={`w-8 h-8 rounded-full  ${getColor == itemColor.unicode ? "border-4 border-gray-200" : ""}`}
+                        style={{ background: itemColor.unicode }}
+                      ></button>
+                    );
+                  })}
+                </div>
+                {/* <div className="action">
                   <ul className="add-to-links">
                     <li>
                       <a href="#">
@@ -255,15 +270,28 @@ return (
                       </a>
                     </li>
                   </ul>
-                </div>
-              <div className="select-catagory">
-                <div>
-                  <h3 className="mt-3">Chọn kích cỡ:</h3>
-                  <div className="flex mb-3 space-x-3">
-                    {sizeData?.map((itemSize: any) => (
-                      <div onClick={() => ChooseSize(itemSize.name)} className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${getSize == itemSize.name ? "border-green-600" : ""}`}>
-                        <p>{itemSize.name}</p>
-                        {getSize == itemSize.name && <img className="absolute top-[-7px] right-[-5px] w-3 h-3" src="../../img/icons/correct.png" alt="" />}
+                </div> */}
+                <div className="select-catagory">
+                  <div>
+                      <h3 className="mt-3">Chọn kích cỡ:</h3>
+                    <div className="flex mb-3 space-x-3">
+                      {productDataOne?.size_id?.map((itemSize: any) => (
+                        <div onClick={() => ChooseSize(itemSize.name)} className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${getSize == itemSize.name ? "border-green-600" : ""}`}>
+                          <p>{itemSize.name}</p>
+                          {getSize == itemSize.name && <img className="absolute top-[-7px] right-[-5px] w-3 h-3" src="../../img/icons/correct.png" alt="" />}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-5 w-0 h-0">
+                      <input type="checkbox" id="guide_shoe" hidden />
+                      <label htmlFor="guide_shoe"><p className="cursor-pointer hover:text-sky-500 w-96">Bảng Quy Đổi Kích Cỡ</p></label>
+                      <div className="w-[800px] h-96 bg-white flex space-x-20 guide-shoes-board">
+                        <img className="w-96 h-96 p-4" src="../../img/guide_sizeShoe.png" alt="" />
+                        <div className="">
+                          <p className="text-center text-xl mt-5 text-gray-500">Bảng đo size giày</p>
+                          <img className="w-64 h-64 p-4" src="../../img/guide_size.png" alt="" />
+                        </div>
+                        <label htmlFor="guide_shoe"><CloseOutlined className="absolute right-0 p-3 scale-150 cursor-pointer hover:rotate-90 duration-200" /></label>
                       </div>
                     ))}
                   </div>
