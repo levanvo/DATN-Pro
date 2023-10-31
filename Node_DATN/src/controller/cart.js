@@ -49,7 +49,14 @@ export const addToCart = async(req,res) => {
             cart = new Cart({ userId, products: [] });
         } 
 
+        if (!Array.isArray(products)) {
+          return res.status(400).json({ message: "Dữ liệu sản phẩm là mảng" });
+      }
+
         for (const product of products) {
+          if (!product.productId || !product.quantity) {
+            return res.status(400).json({ message: "Dữ liệu sản phẩm không hợp lệ." });
+        }
             const existingProductIndex = cart.products.findIndex(
               (item) => item.productId && item.productId.equals(product.productId)
             );

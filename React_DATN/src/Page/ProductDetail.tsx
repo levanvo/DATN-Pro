@@ -10,10 +10,9 @@ import {
   useGetOneProductQuery,
   useGetAllProductQuery,
 } from "../Services/Api_Product";
-import { useGetColorsQuery, useGetOneColorQuery } from "../Services/api_Color";
-import { useGetAllSizeQuery, useGetOneSizeQuery } from "../Services/Api_Size";
 import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useAddToCartMutation } from "../Services/Api_cart";
 
 
 
@@ -26,9 +25,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { data: allProducts }: any = useGetAllProductQuery();
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
-  const { data: colorData, isLoading: loadingColor }: any = useGetColorsQuery();
-  const { data: sizeData, isLoading: loadingSize }: any = useGetAllSizeQuery();
-console.log("detail: ",productDataOne);
+  const [addToCart] = useAddToCartMutation()
 
   let arrayPR: any = [];
   const arrayRelate = productDataOne?.categoryId.products;
@@ -44,7 +41,6 @@ console.log("detail: ",productDataOne);
   arrayPR = arrayPR.filter((item: any) => item._id != id);
 
   const ChooseColor = (color: any) => {
-    console.log(color);
     setColor(color);
   };
   const ChooseSize = (size: any) => {
@@ -57,6 +53,28 @@ console.log("detail: ",productDataOne);
   };
   const Plus = () => {
     setQuantityBuy(getQuantityBuy + 1)
+  };
+
+
+  const handleAddToCart = () => {
+    // Tạo một đối tượng sản phẩm để đẩy vào giỏ hàng
+
+    
+    const productsToAdd = {
+      products: [
+        {
+          productId: productDataOne?._id, // ID sản phẩm
+          quantity: getQuantityBuy, // Số lượng
+        },
+      ],
+    };
+    
+    
+      console.log(productsToAdd);
+      
+    // Gọi hàm addToCart để thêm sản phẩm vào giỏ hàng
+    addToCart(productsToAdd);
+    
   };
 
 
@@ -281,7 +299,7 @@ console.log("detail: ",productDataOne);
                         </div>
                       </div>
                     </div>
-                    <button className="cart-btn">Thêm vào giỏ</button>
+                    <button className="cart-btn" onClick={handleAddToCart}>Thêm vào giỏ</button>
                   </div>
                 </div>
               </div>

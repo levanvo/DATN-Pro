@@ -39,12 +39,17 @@ export interface ISize {
 }
 
 export interface ICart {
-  _id?: string | number;
-  products: ICartItem[];
-  userId: string | number;
+  _id?: string;
+  products: [
+    {
+        productId: {
+          type: string;
+        };
+        quantity: {
+          type: number;
+        };
+    }
+  ];
+  userId?: string;
 }
 
-export interface ICartItem {
-  id: string;
-  quantity: number;
-}
