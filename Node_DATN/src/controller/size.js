@@ -124,7 +124,7 @@ export const getProductsBysize = async (req, res) => {
     // Kiểm tra trong mongoose nếu id không phải là một ObjectId thì trả về message
     if (!mongoose.Types.ObjectId.isValid(sizeId)) {
       return res.status(401).json({
-        message: "Không tìm thấy ID danh mục"
+        message: "Không tìm thấy ID size"
       });
     }
 
@@ -133,7 +133,7 @@ export const getProductsBysize = async (req, res) => {
 
     if (!size) {
       return res.status(400).json({
-        message: "Không tồn tại danh mục bạn đang tìm"
+        message: "Không tồn tại size bạn đang tìm"
       });
     }
 
