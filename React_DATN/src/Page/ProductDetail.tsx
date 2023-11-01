@@ -13,6 +13,7 @@ import {
 import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useAddToCartMutation } from "../Services/Api_cart";
+import { Cart } from "../Models/interfaces";
 
 
 
@@ -57,25 +58,47 @@ const ProductDetail = () => {
 
 
   const handleAddToCart = () => {
-    // Tạo một đối tượng sản phẩm để đẩy vào giỏ hàng
+    if (!productDataOne || getQuantityBuy < 1 || !getColor || !getSize) {
+      // Kiểm tra các điều kiện trước khi thêm vào giỏ hàng
+      // Ví dụ: sản phẩm đã tải, số lượng mua lớn hơn 0, đã chọn màu và kích cỡ
+      console.log("Vui lòng chọn sản phẩm và cung cấp đầy đủ thông tin.");
+      return;
+    }
+  
+
+    // Tạo đối tượng sản phẩm để đẩy vào giỏ hàng
+    const productToAdd= {
+      product: {
+        productId: productDataOne._id,
+        quantity: getQuantityBuy,
+        color: getColor,
+        size: getSize,
+      }
+    }
+    
+    
+    addToCart(productToAdd)
+    .unwrap()
+    .then((response) => {
+      // Xử lý khi thêm sản phẩm thành công, ví dụ: hiển thị thông báo
+      console.log("Sản phẩm đã được thêm vào giỏ hàng:", response);
+      // Hoặc cập nhật giao diện người dùng
+    })
+    .catch((error) => {
+      // Xử lý khi có lỗi xảy ra, ví dụ: hiển thị thông báo lỗi
+      console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+    });
+};
+    
+    
 
     
-    const productsToAdd = {
-      products: [
-        {
-          productId: productDataOne?._id, // ID sản phẩm
-          quantity: getQuantityBuy, // Số lượng
-        },
-      ],
-    };
     
     
-      console.log(productsToAdd);
-      
-    // Gọi hàm addToCart để thêm sản phẩm vào giỏ hàng
-    addToCart(productsToAdd);
+  
     
-  };
+
+  
 
 
   return (
