@@ -10,10 +10,10 @@ import {
   useGetOneProductQuery,
   useGetAllProductQuery,
 } from "../Services/Api_Product";
-import { useGetColorsQuery, useGetOneColorQuery } from "../Services/api_Color";
-import { useGetAllSizeQuery, useGetOneSizeQuery } from "../Services/Api_Size";
 import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useAddToCartMutation } from "../Services/Api_cart";
+import { Cart } from "../Models/interfaces";
 
 
 
@@ -26,9 +26,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { data: allProducts }: any = useGetAllProductQuery();
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
-  const { data: colorData, isLoading: loadingColor }: any = useGetColorsQuery();
-  const { data: sizeData, isLoading: loadingSize }: any = useGetAllSizeQuery();
-console.log("detail: ",productDataOne);
+  const [addToCart] = useAddToCartMutation()
 
   let arrayPR: any = [];
   const arrayRelate = productDataOne?.categoryId.products;
@@ -44,7 +42,6 @@ console.log("detail: ",productDataOne);
   arrayPR = arrayPR.filter((item: any) => item._id != id);
 
   const ChooseColor = (color: any) => {
-    console.log(color);
     setColor(color);
   };
   const ChooseSize = (size: any) => {
@@ -58,6 +55,50 @@ console.log("detail: ",productDataOne);
   const Plus = () => {
     setQuantityBuy(getQuantityBuy + 1)
   };
+
+
+  const handleAddToCart = () => {
+    if (!productDataOne || getQuantityBuy < 1 || !getColor || !getSize) {
+      // Kiểm tra các điều kiện trước khi thêm vào giỏ hàng
+      // Ví dụ: sản phẩm đã tải, số lượng mua lớn hơn 0, đã chọn màu và kích cỡ
+      console.log("Vui lòng chọn sản phẩm và cung cấp đầy đủ thông tin.");
+      return;
+    }
+  
+
+    // Tạo đối tượng sản phẩm để đẩy vào giỏ hàng
+    const productToAdd= {
+      product: {
+        productId: productDataOne._id,
+        quantity: getQuantityBuy,
+        color: getColor,
+        size: getSize,
+      }
+    }
+    
+    
+    addToCart(productToAdd)
+    .unwrap()
+    .then((response) => {
+      // Xử lý khi thêm sản phẩm thành công, ví dụ: hiển thị thông báo
+      console.log("Sản phẩm đã được thêm vào giỏ hàng:", response);
+      // Hoặc cập nhật giao diện người dùng
+    })
+    .catch((error) => {
+      // Xử lý khi có lỗi xảy ra, ví dụ: hiển thị thông báo lỗi
+      console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+    });
+};
+    
+    
+
+    
+    
+    
+  
+    
+
+  
 
 
   return (
@@ -281,7 +322,7 @@ console.log("detail: ",productDataOne);
                         </div>
                       </div>
                     </div>
-                    <button className="cart-btn">Thêm vào giỏ</button>
+                    <button className="cart-btn" onClick={handleAddToCart}>Thêm vào giỏ</button>
                   </div>
                 </div>
               </div>

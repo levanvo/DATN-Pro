@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { ICart, ICartItem } from "../Models/interfaces";
+import { Cart } from "../Models/interfaces";
 import { pause } from "../utils/pause";
 
 const cartApi = createApi({
@@ -18,22 +18,22 @@ const cartApi = createApi({
         )
     }),
     endpoints: (builder) => ({
-        getCart: builder.query<ICart, void>({
+        getCart: builder.query<any,void>({
             query: () => "/api/cart",
             providesTags: ["Cart"]
         }),
 
-        addToCart: builder.mutation<ICart, ICartItem[]>({
-            query: (products) => ({
+        addToCart: builder.mutation<Cart,Cart>({
+            query: (product) => ({
                 url: "/api/cart",
                 method: "POST",
-                body: { products },
+                body: product
             }),
             invalidatesTags: ["Cart"]
 
         }),
 
-        deleteFromCart: builder.mutation<ICart, string>({
+        deleteFromCart: builder.mutation<void, string>({
             query: (productId) => ({
                 url: `/api/cart/${productId}`,
                 method: "DELETE",

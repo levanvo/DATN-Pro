@@ -1,4 +1,4 @@
-// import React from 'react'
+import {useEffect} from 'react'
 import { message } from 'antd';
 import { useDeleteFromCartMutation, useGetCartQuery } from '../Services/Api_cart';
 // import { ICart } from '../Models/interfaces';
@@ -10,6 +10,15 @@ const Cart = () => {
 
     const [deleteCart] = useDeleteFromCartMutation();
 
+    useEffect(() => {
+        if(error && "data" in error){
+            const errDetails = error.data as {message: string}
+            messageApi.open({
+                type: "error",
+                content: errDetails.message
+            })
+        }
+    },[error])
     const confirm = (productId: string) => {
         deleteCart(productId)
             .unwrap()
@@ -24,8 +33,6 @@ const Cart = () => {
             });
     };
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error</div>;
     return (
         <div className='w-[90vw] mx-auto mt-44'>
             {contextHolder}

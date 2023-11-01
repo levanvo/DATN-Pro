@@ -7,6 +7,7 @@ import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
 import { ICategory, IProduct } from '../../../Models/interfaces';
 
 const { Option } = Select;
+const { TextArea } = Input
 
 const layout = {
   labelCol: { span: 8 },
@@ -26,6 +27,17 @@ const UpdateProduct = () => {
     const [updateProduct,{error}] = useUpdateProductMutation()
     const [isLoadingScreen, setIsLoadingScreen] = useState(false);
 
+    useEffect(() => {
+      if(error){
+        if("data" in error){
+          const errDetails = error.data as {message: string}
+          messageApi.open({
+            type: "error",
+            content: errDetails.message
+          })
+        }
+      }
+    },[error])
 
   const [form] = Form.useForm();
     useEffect(() => {
@@ -34,7 +46,9 @@ const UpdateProduct = () => {
             name: productData?.name,
             original_price: productData?.original_price,
             price: productData?.price,
-            categoryId: (productData?.categoryId as any)?._id
+            categoryId: (productData?.categoryId as any)?._id,
+            quantity: productData?.quantity,
+            description: productData?.description
         })
     },[productData])
     
@@ -47,12 +61,13 @@ const UpdateProduct = () => {
                 type: "success",
                 content: "Cập nhật thành công"
             })
+            setIsLoadingScreen(false)
             setTimeout(()=> {
                 navigate("/admin/product/list")
-            },2000)
+            },1500)
         })
-        setIsLoadingScreen(false)
     } catch (error) {
+      message.error("Đã xảy ra lỗi xin vui lòng thử lại sau")
         setIsLoadingScreen(false)
     }
     
@@ -127,10 +142,30 @@ const UpdateProduct = () => {
         ]}>
         <Input />
       </Form.Item>
+
+      <Form.Item name="quantity" label="Số lượng" 
+        rules={[
+          { required: true , message: "Số lượng không được để trống"},
+          {
+            validator: (_,values) => {
+              if(!isNaN(values)){
+                return Promise.resolve()
+              }else{
+                return Promise.reject(new Error("Số lượng phải là số"))
+              }
+            }
+          }
+        ]}>
+        <Input />
+      </Form.Item>
+
+      <Form.Item label="Mô tả sản phẩm" name="description">
+          <TextArea rows={4} />
+        </Form.Item>
    
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit" danger style={{marginRight:20}}>
-          Submit
+            Cập nhật
         </Button>
         <Button htmlType="button" onClick={() => navigate("/admin/product/list")}>
           Quay lại
