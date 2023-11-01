@@ -13,7 +13,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const onFinish = async (values: any) => {
-        setIsLoadingSeen(true); 
+        setIsLoadingSeen(true);
         try {
             const { data }: any = await sigin(values);
             localStorage.setItem("token", `"${data.accessToken}"`);
@@ -23,12 +23,19 @@ const Login = () => {
                 type: "success",
                 content: "Đăng nhập thành công"
             });
-            setTimeout(()=>{
-                window.location.href=window.location.origin;
-            },2000);
+            // setTimeout(()=>{
+            //     window.location.href=window.location.origin;
+            // },2000);
+            const { role } = data.user;
+
+            if (role === "admin" || role === "staff") {
+                window.location.href = '/admin';
+            } else {
+                window.location.href = '/';
+            }
         } catch (error) {
         }
-        setIsLoadingSeen(false); 
+        setIsLoadingSeen(false);
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -86,17 +93,17 @@ const Login = () => {
                         <Input.Password style={{ height: 40, width: 500 }} />
                     </Form.Item>
 
-                        <Form.Item valuePropName="checked" wrapperCol={{ offset: 6, span: 17 }}>
-                            <Checkbox>Remember me</Checkbox>
-                        </Form.Item>
+                    <Form.Item valuePropName="checked" wrapperCol={{ offset: 6, span: 17 }}>
+                        <Checkbox>Remember me</Checkbox>
+                    </Form.Item>
                     <Form.Item wrapperCol={{ offset: 6, span: 11 }}>
                         <Button type="primary" htmlType="submit" style={{ width: '30%', display: 'block', border: '1px solid green', background: 'none', color: 'green' }}>
                             Đăng nhập
                         </Button>
                     </Form.Item>
                     <div className="flex justify-around">
-                    <Link to={`/forgot-password`}>Quên mật khẩu ?</Link>
-                    <p className=''>Bạn chưa có tài khoản, <Link to={`/register`}>đăng kí</Link> ngay !</p>
+                        <Link to={`/forgot-password`}>Quên mật khẩu ?</Link>
+                        <p className=''>Bạn chưa có tài khoản, <Link to={`/register`}>đăng kí</Link> ngay !</p>
                     </div>
                 </Form>
             </div>
