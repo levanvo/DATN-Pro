@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IProduct, ISize } from "../Models/interfaces";
+import { ISize } from "../Models/interfaces";
 import { pause } from "../utils/pause";
 
 const sizeApi = createApi({

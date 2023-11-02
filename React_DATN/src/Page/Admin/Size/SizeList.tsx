@@ -104,7 +104,15 @@ const SizeList = () => {
     <div>
       {contextHolder}
       <div>
-        <Button type="primary" style={{ background: "blue" }}>
+        <Button
+          type="primary"
+          danger
+          onClick={deleteSelectedSizes}
+          disabled={selectedSizes.length === 0}
+        >
+          Xóa các size đã chọn
+        </Button>
+        <Button type="primary" style={{ background: "blue", marginLeft: 20 }}>
           <Link to={`/admin/size/add`}>Thêm mới</Link>
         </Button>
         <Search
@@ -127,14 +135,7 @@ const SizeList = () => {
         />
       }
 
-      <Button
-        type="primary"
-        danger
-        onClick={deleteSelectedSizes}
-        disabled={selectedSizes.length === 0}
-      >
-        Xóa các size đã chọn
-      </Button>
+
     </div>
   );
 };

@@ -38,6 +38,7 @@ import CreateColor from "./Page/Admin/colorProduct/createColor"
 import UpdateColor from "./Page/Admin/colorProduct/updateColor"
 import Dashboard from "./Page/Admin/Dashboard";
 import GetAllDeletedProducts from "./Page/Admin/Product/getAllDeletedProducts";
+import PrivateRouter from "./Component/PrivateRouter";
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -48,7 +49,7 @@ function App() {
     setSearchKeyword(keyword);
   };
 
-  
+
   Config();
   return (
     <Routes>
@@ -71,7 +72,7 @@ function App() {
         <Route path="size/:id/products" element={<ProductsSize />} />
       </Route>
 
-      <Route path="/admin" element={<Layout_Admin />}>
+      <Route path="/admin" element={<PrivateRouter><Layout_Admin /></PrivateRouter>}>
         <Route index element={<Dashboard />} />
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
@@ -91,7 +92,7 @@ function App() {
         <Route path="size/list" element={<SizeList />} />
         <Route path="size/add" element={<AdminSizeAdd />} />
         <Route path="size/:id/update" element={<AdminSizeUpdate />} />
-        <Route  path="restore-product-data" element={<GetAllDeletedProducts />}/>
+        <Route path="restore-product-data" element={<GetAllDeletedProducts />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

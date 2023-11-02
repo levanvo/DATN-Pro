@@ -1,16 +1,49 @@
-import React from 'react'
+import {useEffect} from 'react'
+import { message } from 'antd';
+import { useDeleteFromCartMutation, useGetCartQuery } from '../Services/Api_cart';
+// import { ICart } from '../Models/interfaces';
 
 const Cart = () => {
+    const { data: cartData, isLoading, error } = useGetCartQuery();
+    console.log(cartData);
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const [deleteCart] = useDeleteFromCartMutation();
+
+    useEffect(() => {
+        if(error && "data" in error){
+            const errDetails = error.data as {message: string}
+            messageApi.open({
+                type: "error",
+                content: errDetails.message
+            })
+        }
+    },[error])
+    const confirm = (productId: string) => {
+        deleteCart(productId)
+            .unwrap()
+            .then(() => {
+                messageApi.open({
+                    type: 'success',
+                    content: 'Xóa sản phẩm thành công'
+                });
+            })
+            .catch((error) => {
+                messageApi.error('Đã xảy ra lỗi khi xóa sản phẩm');
+            });
+    };
+
     return (
         <div className='w-[90vw] mx-auto mt-44'>
+            {contextHolder}
             <div className="shopping-cart">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
                             <div className="location">
                                 <ul>
-                                    <li><a href="index.html" title="go to homepage">Home<span>/</span></a>  </li>
-                                    <li><strong> Shopping cart</strong></li>
+                                    <li><a href="index.html" title="go to homepage">Trang chủ<span>/</span></a>  </li>
+                                    <li><strong> Giỏ hàng</strong></li>
                                 </ul>
                             </div>
                         </div>
@@ -22,106 +55,48 @@ const Cart = () => {
                                     <thead>
                                         <tr>
                                             <th className="cart-item-img"></th>
-                                            <th className="cart-product-name">Product Name</th>
+                                            <th className="cart-product-name">Tên sản phẩm</th>
                                             <th className="edit"></th>
-                                            <th className="move-wishlist">Move to Wishlist</th>
-                                            <th className="unit-price">Unit Price</th>
-                                            <th className="quantity">Qty</th>
-                                            <th className="subtotal">Subtotal</th>
+                                            <th className="move-wishlist">Chuyển đến danh sách yêu thích</th>
+                                            <th className="unit-price">Giá</th>
+                                            <th className="quantity">Số lượng</th>
+                                            <th className="subtotal">Tổng tiền</th>
                                             <th className="remove-icon"></th>
                                         </tr>
                                     </thead>
                                     <tbody className="text-center">
-                                        <tr>
-                                            <td className="cart-item-img">
-                                                <a href="single-product.html">
-                                                    <img src="img/cart/3.png" alt="" />
-                                                </a>
-                                            </td>
-                                            <td className="cart-product-name">
-                                                <a href="single-product.html">Cras neque metus</a>
-                                            </td>
-                                            <td className="edit">
-                                                <a href="#">Edit</a>
-                                            </td>
-                                            <td className="move-wishlist">
-                                                <a href="#">Move</a>
-                                            </td>
-                                            <td className="unit-price">
-                                                <span>$174.00</span>
-                                            </td>
-                                            <td className="quantity">
-                                                <span>1</span>
-                                            </td>
-                                            <td className="subtotal">
-                                                <span>$174.00</span>
-                                            </td>
-                                            <td className="remove-icon">
-                                                <a href="#">
-                                                    <img src="img/cart/btn_remove.png" alt="" />
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="cart-item-img">
-                                                <a href="single-product.html">
-                                                    <img src="img/cart/4.png" alt="" />
-                                                </a>
-                                            </td>
-                                            <td className="cart-product-name">
-                                                <a href="single-product.html">Cras neque metus</a>
-                                            </td>
-                                            <td className="edit">
-                                                <a href="#">Edit</a>
-                                            </td>
-                                            <td className="move-wishlist">
-                                                <a href="#">Move</a>
-                                            </td>
-                                            <td className="unit-price">
-                                                <span>$174.00</span>
-                                            </td>
-                                            <td className="quantity">
-                                                <span>1</span>
-                                            </td>
-                                            <td className="subtotal">
-                                                <span>$174.00</span>
-                                            </td>
-                                            <td className="remove-icon">
-                                                <a href="#">
-                                                    <img src="img/cart/btn_remove.png" alt="" />
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="cart-item-img">
-                                                <a href="single-product.html">
-                                                    <img src="img/cart/5.png" alt="" />
-                                                </a>
-                                            </td>
-                                            <td className="cart-product-name">
-                                                <a href="single-product.html">Cras neque metus</a>
-                                            </td>
-                                            <td className="edit">
-                                                <a href="#">Edit</a>
-                                            </td>
-                                            <td className="move-wishlist">
-                                                <a href="#">Move</a>
-                                            </td>
-                                            <td className="unit-price">
-                                                <span>$275.00</span>
-                                            </td>
-                                            <td className="quantity">
-                                                <span>2</span>
-                                            </td>
-                                            <td className="subtotal">
-                                                <span>$350.00</span>
-                                            </td>
-                                            <td className="remove-icon">
-                                                <a href="#">
-                                                    <img src="img/cart/btn_remove.png" alt="" />
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        {cartData?.products.map((product: any) => (
+                                            <tr key={product._id}>
+                                                <td className="cart-item-img">
+                                                    <a href="single-product.html">
+                                                        <img src={product.productId.imgUrl[0]} alt="" width={100} style={{ margin: 'auto' }} />
+                                                    </a>
+                                                </td>
+                                                <td className="cart-product-name">
+                                                    <a href="single-product.html">{product.productId.name}</a>
+                                                </td>
+                                                <td className="edit">
+                                                    <a href="#">Edit</a>
+                                                </td>
+                                                <td className="move-wishlist">
+                                                    <a href="#">Move</a>
+                                                </td>
+                                                <td className="unit-price">
+                                                    <span>{product.productId.original_price}đ</span>
+                                                </td>
+                                                <td className="quantity">
+                                                    <span>{product.quantity}</span>
+                                                </td>
+                                                <td className="subtotal">
+                                                    <span>{product.quantity * product.productId.price}đ</span>
+                                                </td>
+                                                <td className="remove-icon">
+                                                    <a href="#" onClick={() => confirm(product._id)}>
+                                                        <img src="img/cart/btn_remove.png" alt="" style={{ margin: 'auto', marginTop: 43 }} />
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                                 <div className="shopping-button">
