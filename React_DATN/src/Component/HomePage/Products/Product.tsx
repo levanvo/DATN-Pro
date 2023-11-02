@@ -88,7 +88,7 @@ const Product = () => {
                                             return (
                                                 <ul className="nav tab-navigation" role="tablist" key={category._id}>
                                                     <li role="presentation">
-                                                        <Link to={`/category/${category._id}/products`}>{category.name}</Link>
+                                                        <Link to={`/products`}>{category.name}</Link>
                                                     </li>
                                                 </ul>
                                             )

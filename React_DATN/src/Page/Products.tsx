@@ -4,7 +4,7 @@
   import ReactPaginate from "react-paginate";
   import { useGetAllCategoryQuery } from "../Services/Api_Category";
   import { useGetAllSizeQuery } from "../Services/Api_Size";
-  import { useGetColorsQuery } from "../Services/api_Color";
+  import { useGetColorsQuery } from "../Services/Api_Color";
   import { Button } from "antd";
 
   const Products = ({ searchKeyword }: { searchKeyword: string }) => {
