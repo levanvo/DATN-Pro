@@ -38,17 +38,15 @@ export interface ISize {
   name: string
 }
 
-
+export interface ProductItem {
+  productId: string; 
+  quantity: number;
+  color: string,
+  size: number
+}
 
 export interface Cart {
-  products: [
-     {
-      productId: string,
-      quantity: number,
-      size: string,
-      color: string
-     }
-  ];
+  products: ProductItem[];
   userId?: string;
 }
 
