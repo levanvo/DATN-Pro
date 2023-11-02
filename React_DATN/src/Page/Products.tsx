@@ -6,13 +6,15 @@
   import { useGetAllSizeQuery } from "../Services/Api_Size";
   import { useGetColorsQuery } from "../Services/api_Color";
   import { Button } from "antd";
+import Loading from "../Component/Loading";
 
   const Products = ({ searchKeyword }: { searchKeyword: string }) => {
-    const { data: producData, isLoading, error } = useGetAllProductQuery();
+    const { data: producData, isLoading: isLoadingData, error } = useGetAllProductQuery();
     const { data: categoryData, isLoading: isLoadingCategory, error: errorCategory } = useGetAllCategoryQuery();
     const { data: sizeData, isLoading: isLoadingSize, error: errorSize } = useGetAllSizeQuery();
     const { data: colorData, isLoading: isLoadingColor, error: errorColor } = useGetColorsQuery();
-  
+
+
     //Lọc sản phẩm theo bộ lọc
     const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
     const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
@@ -114,19 +116,11 @@
         currency: "VND",
       }).format(value);
 
-    if (isLoadingCategory) return <div>Loading...Category</div>;
-    if (errorCategory) return <div>Error: Category</div>;
 
-    if (isLoadingSize) return <div>Loading...Size</div>;
-    if (errorSize) return <div>Error: Size</div>;
 
-    if (isLoadingColor) return <div>Loading...Color</div>;
-    if (errorColor) return <div>Error: Color</div>;
-
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error</div>;
     return (
       <div className="w-[90vw] mx-auto">
+        {isLoadingData && <Loading />}
         <div className="product-banner">
           <img src="img/product/banner.jpg" alt="" />
         </div>
