@@ -6,20 +6,22 @@ import {
     useUpdateProductMutation
 } from '../../../Services/Api_Product'
 import { Link } from "react-router-dom"
-import Skeleton from '@mui/material/Skeleton';
-import Box from '@mui/material/Box';
+// import Skeleton from '@mui/material/Skeleton';
+// import Box from '@mui/material/Box';
 import Loading from '../../Loading';
+import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
+import { ICategory } from '../../../Models/interfaces';
 
 
 const Product = () => {
     const [getId, setId]: any = useState("");
     const { data: productData, isLoading }: any = useGetAllProductQuery();
     const [UpdatesProduct] = useUpdateProductMutation();
-    const { data: dataOne }:any = useGetOneProductQuery(getId)
+    const { data: dataOne }: any = useGetOneProductQuery(getId)
     if (dataOne) {
         // console.log("view: ",dataOne.view);
-        const {view,...dataGetOne}:any=dataOne
-        console.log("view: ",view);
+        const { view, ...dataGetOne }: any = dataOne
+        console.log("view: ", view);
         // const objecOne: any = {
         //     dataGetOne,
         //     data
@@ -65,6 +67,10 @@ const Product = () => {
     const dataProducts = arrayLimitProducts.length ? arrayLimitProducts : productData;
     // console.log("product: ", productData);
 
+    const {
+        data: categoryData
+    } = useGetAllCategoryQuery();
+
     return (
         <div className='w-[90vw] mx-auto'>
             <div className="products-area">
@@ -78,7 +84,19 @@ const Product = () => {
                                         <h2>Best seller <strong>Các Mẫu Giày</strong></h2>
                                     </div>
                                     <div className="side-menu">
-                                        <ul className="nav tab-navigation" role="tablist">
+                                        {categoryData?.map((category: ICategory) => {
+                                            return (
+                                                <ul className="nav tab-navigation" role="tablist" key={category._id}>
+                                                    <li role="presentation">
+                                                        <Link to={`/category/${category._id}/products`}>{category.name}</Link>
+                                                    </li>
+                                                </ul>
+                                            )
+                                        })}
+                                        <div>
+                                            <img src="img/banner/banner-5.jpg" />
+                                        </div>
+                                        {/* <ul className="nav tab-navigation" role="tablist">
                                             <li role="presentation">
                                                 <a href="#tab5" aria-controls="tab5" role="tab" data-bs-toggle="tab">NIKE</a>
                                             </li>
@@ -91,8 +109,8 @@ const Product = () => {
                                             <li role="presentation">
                                                 <a href="#tab8" aria-controls="tab8" role="tab" data-bs-toggle="tab">VANS</a>
                                             </li>
-                                            <li><img src="img/banner/banner-5.jpg" /></li>
-                                        </ul>
+                                            <li></li>
+                                        </ul> */}
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +128,7 @@ const Product = () => {
                                             return (
                                                 <div className="w-[220px] h-[280px] mx-2 mb-5 " key={items._id}>
                                                     <div className="imgPr h-[250px] w-[220px] overflow-hidden">
-                                                    <Link to={`/product/${items._id}`}><img onClick={() => HandleView(items._id)} className='h-[250px] w-[220px] hover:scale-125 duration-200' src={items.imgUrl[0]} alt="" /></Link>
+                                                        <Link to={`/product/${items._id}`}><img onClick={() => HandleView(items._id)} className='h-[250px] w-[220px] hover:scale-125 duration-200' src={items.imgUrl[0]} alt="" /></Link>
                                                     </div>
                                                     <div className="content">
                                                         <p className='text-center border-y border-gray-200 mt-1'>{items.name}</p>

@@ -10,10 +10,10 @@ import {
   useGetOneProductQuery,
   useGetAllProductQuery,
 } from "../Services/Api_Product";
-import { useGetColorsQuery, useGetOneColorQuery } from "../Services/api_Color";
-import { useGetAllSizeQuery, useGetOneSizeQuery } from "../Services/Api_Size";
 import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useAddToCartMutation } from "../Services/Api_cart";
+import { Cart } from "../Models/interfaces";
 
 
 
@@ -26,8 +26,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { data: allProducts }: any = useGetAllProductQuery();
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
-  const { data: colorData, isLoading: loadingColor }: any = useGetColorsQuery();
-  const { data: sizeData, isLoading: loadingSize }: any = useGetAllSizeQuery();
+  const [addToCart] = useAddToCartMutation()
 
   let arrayPR: any = [];
   const arrayRelate = productDataOne?.categoryId.products;
@@ -43,7 +42,6 @@ const ProductDetail = () => {
   arrayPR = arrayPR.filter((item: any) => item._id != id);
 
   const ChooseColor = (color: any) => {
-    console.log(color);
     setColor(color);
   };
   const ChooseSize = (size: any) => {
@@ -57,6 +55,50 @@ const ProductDetail = () => {
   const Plus = () => {
     setQuantityBuy(getQuantityBuy + 1)
   };
+
+
+  const handleAddToCart = () => {
+    if (!productDataOne || getQuantityBuy < 1 || !getColor || !getSize) {
+      // Kiểm tra các điều kiện trước khi thêm vào giỏ hàng
+      // Ví dụ: sản phẩm đã tải, số lượng mua lớn hơn 0, đã chọn màu và kích cỡ
+      console.log("Vui lòng chọn sản phẩm và cung cấp đầy đủ thông tin.");
+      return;
+    }
+  
+
+    // Tạo đối tượng sản phẩm để đẩy vào giỏ hàng
+    const productToAdd= {
+      product: {
+        productId: productDataOne._id,
+        quantity: getQuantityBuy,
+        color: getColor,
+        size: getSize,
+      }
+    }
+    
+    
+    addToCart(productToAdd)
+    .unwrap()
+    .then((response) => {
+      // Xử lý khi thêm sản phẩm thành công, ví dụ: hiển thị thông báo
+      console.log("Sản phẩm đã được thêm vào giỏ hàng:", response);
+      // Hoặc cập nhật giao diện người dùng
+    })
+    .catch((error) => {
+      // Xử lý khi có lỗi xảy ra, ví dụ: hiển thị thông báo lỗi
+      console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+    });
+};
+    
+    
+
+    
+    
+    
+  
+    
+
+  
 
 
   return (
@@ -101,7 +143,7 @@ const ProductDetail = () => {
                   className="mySwiper2"
                 >
                   {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
-                    <SwiperSlide key={index}>
+                    <SwiperSlide key={index} >
                       <img src={productDataOne?.imgUrl[index]} />
                     </SwiperSlide>
                   ))}
@@ -195,7 +237,7 @@ const ProductDetail = () => {
                 </div>
                 <h3 className="-mt-4">Chọn màu:</h3>
                 <div className="flex space-x-2 my-4">
-                  {colorData?.map((itemColor: any) => {
+                  {productDataOne?.color_id?.map((itemColor: any) => {
                     return (
                       <button
                         onClick={() => ChooseColor(itemColor.unicode)}
@@ -228,7 +270,7 @@ const ProductDetail = () => {
                   <div>
                       <h3 className="mt-3">Chọn kích cỡ:</h3>
                     <div className="flex mb-3 space-x-3">
-                      {sizeData?.map((itemSize: any) => (
+                      {productDataOne?.size_id?.map((itemSize: any) => (
                         <div onClick={() => ChooseSize(itemSize.name)} className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${getSize == itemSize.name ? "border-green-600" : ""}`}>
                           <p>{itemSize.name}</p>
                           {getSize == itemSize.name && <img className="absolute top-[-7px] right-[-5px] w-3 h-3" src="../../img/icons/correct.png" alt="" />}
@@ -259,7 +301,7 @@ const ProductDetail = () => {
                   <div className="single-cart d-flex align-items-center">
                     <div className="cart-plus-minus">
                       <div className="d-flex align-items-center">
-                        <span style={{ fontSize: "20px" }}>Qty: </span>
+                        <span style={{ fontSize: "16px" }}>Số lượng: </span>
                         <div className="inp_group">
                           <button>
                             <MinusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Minus()} />
@@ -280,7 +322,7 @@ const ProductDetail = () => {
                         </div>
                       </div>
                     </div>
-                    <button className="cart-btn">Thêm vào giỏ</button>
+                    <button className="cart-btn" onClick={handleAddToCart}>Thêm vào giỏ</button>
                   </div>
                 </div>
               </div>

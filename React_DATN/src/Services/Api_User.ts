@@ -7,6 +7,9 @@ const userApi = createApi({
   tagTypes: ["User"],
   baseQuery: fetchBaseQuery({
     baseUrl: `http://localhost:8080`,
+    headers: {
+      
+    },
     fetchFn: async (...args) => (
       await pause(1000),
       fetch(...args)

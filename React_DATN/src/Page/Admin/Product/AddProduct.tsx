@@ -46,8 +46,7 @@ const AddProduct = () => {
   const [previewTitle, setPreviewTitle] = useState("")
   const [isLoadingScreen, setIsLoadingScreen] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
-  const { data } = useGetColorsQuery(undefined)
-  const [price, setPrice] = useState<number | string>("");
+  const { data:getAllColor } = useGetColorsQuery()
 
   const handleCancel = () => setPreviewOpen(false)
 
@@ -182,54 +181,9 @@ const AddProduct = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item
-          label="Color"
-          name="color_id"
-          rules={[
-            {
-              required: true,
-              message: "Color không được để trống",
-            },
-          ]}
-        >
-          <Select style={{ width: 200 }} loading={isLoading}>
-            {getAllCategory ? (
-              getAllCategory?.map((category: any) => (
-                <Select.Option key={category._id} value={category._id}>
-                  {category.name}
-                </Select.Option>
-              ))
-            ) : (
-              <p>Loading...</p>
-            )}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label="Size"
-          name="size_id"
-          rules={[
-            {
-              required: true,
-              message: "Size không được để trống",
-            },
-          ]}
-        >
-          <Select style={{ width: 200 }} loading={isLoadingSize}>
-            {getAllSize ? (
-              getAllSize?.map((size: any) => (
-                <Select.Option key={size._id} value={size._id}>
-                  {size.name}
-                </Select.Option>
-              ))
-            ) : (
-              <p>Loading...</p>
-            )}
-          </Select>
-        </Form.Item>
-
         <Form.Item label="Color" name="color_id" rules={[{ required: true }]}>
           <Select mode="multiple" style={{ width: 200 }} loading={isLoading}>
-            {data?.map((color: IColor) => (
+            {getAllColor?.map((color: IColor) => (
               <Select.Option key={color._id} value={color._id}>
                 {color.name}
               </Select.Option>
@@ -238,7 +192,7 @@ const AddProduct = () => {
         </Form.Item>
 
         <Form.Item label="Size" name="size_id" rules={[{ required: true }]}>
-          <Select style={{ width: 200 }} loading={isLoadingSize}>
+          <Select mode="multiple" style={{ width: 200 }} loading={isLoadingSize}>
             {getAllSize ? (
               getAllSize?.map((size: any) => (
                 <Select.Option key={size._id} value={size._id}>
