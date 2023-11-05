@@ -33,7 +33,7 @@ const ProductDetail = () => {
   const arrayRelate = productDataOne?.categoryId.products;
   if (arrayRelate) {
     for (let i = 0; i < arrayRelate.length; i++) {
-      allProducts.map((product: any) => {
+      allProducts?.map((product: any) => {
         if (product._id == arrayRelate[i]) {
           arrayPR.push(product);
         };
