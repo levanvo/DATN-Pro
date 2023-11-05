@@ -27,19 +27,28 @@ const slideApi = createApi({
     }),
 
     addSlide: builder.mutation<ISlider, ISlider>({
-      query: (user) => ({
+      query: (slide) => ({
         url: `/api/slider`,
         method: "POST",
-        body: user,
+        body: slide,
       }),
       invalidatesTags: ["Slide"]
     }),
 
     updateSlide: builder.mutation<ISlider, ISlider>({
-      query: (user:ISlider) => ({
-        url: `/api/slider/${user._id}`,
+      query: (slide:ISlider) => ({
+        url: `/api/slider/${slide._id}`,
         method: "PUT",
-        body: user,
+        body: slide,
+      }),
+      invalidatesTags: ["Slide"]
+    }),
+
+    updatePatchSlide: builder.mutation<any, any>({
+      query: (slide:any) => ({
+        url: `/api/slider/${slide._id}`,
+        method: "PATCH",
+        body: slide,
       }),
       invalidatesTags: ["Slide"]
     }),
@@ -61,6 +70,7 @@ export const {
   useAddSlideMutation,
   useUpdateSlideMutation,
   useRemoveSlideMutation,
-  useGetOneSlideQuery
+  useGetOneSlideQuery,
+  useUpdatePatchSlideMutation
 } = slideApi;
 export default slideApi;

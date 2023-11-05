@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, message, Form, Input, Modal, Mentions, Upload } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { UploadFile } from "antd/es/upload/interface"
 import type { RcFile, UploadProps } from "antd/es/upload"
 import { PlusOutlined } from "@ant-design/icons"
@@ -153,6 +153,11 @@ const AddSlide = () => {
           <Button style={{ backgroundColor: "green", color: "white" }} htmlType="submit">
             Thêm mới
           </Button>
+          <Link to={`/admin/slide/list`}>
+            <Button style={{ backgroundColor: "gray", color: "white" }} htmlType="submit">
+              Quay lại
+            </Button>
+          </Link>
         </Form.Item>
       </Form>
 

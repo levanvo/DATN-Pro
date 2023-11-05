@@ -67,14 +67,14 @@ export const updateSlider = async (req, res) => {
             return res.status(400).json("Không tìm thấy slide cần update !");
         };
 
-        const { error } = JoiSlide.validate(req.body, { abortEarly: false });
-        if (error) {
-            const err = error.details[0].message;
-            return res.status(400).json({
-                message: "Lỗi joi ==> ",
-                err
-            });
-        };
+        // const { error } = JoiSlide.validate(req.body, { abortEarly: false });
+        // if (error) {
+        //     const err = error.details[0].message;
+        //     return res.status(400).json({
+        //         message: "Lỗi joi ==> ",
+        //         err
+        //     });
+        // };
 
         const slider = await SliderSchema.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
 

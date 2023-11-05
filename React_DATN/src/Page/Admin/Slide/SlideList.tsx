@@ -4,33 +4,90 @@ import { DeleteFilled, EditOutlined, CheckOutlined, CloseOutlined } from '@ant-d
 import { Link } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import Loading from "../../../Component/Loading";
-import { useGetAllSlideQuery } from '../../../Services/Api_Slide';
+import { useGetAllSlideQuery, useGetOneSlideQuery } from '../../../Services/Api_Slide';
 import { ISlider } from '../../../Models/interfaces';
-import { useRemoveSlideMutation } from '../../../Services/Api_Slide';
+import {
+    useRemoveSlideMutation,
+    useUpdatePatchSlideMutation,
+} from '../../../Services/Api_Slide';
 
 const SlideList = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const { data, isLoading }: any = useGetAllSlideQuery();
     const [removeSlide]: any = useRemoveSlideMutation();
+    const [updatePatchSlide] = useUpdatePatchSlideMutation();
 
-    const RemoveSlide = ({_id}: any) => {
-        // console.log(id);
-        removeSlide(_id)
-        .unwrap()
-        .then(() => {
+
+    const RemoveSlide = async ({ _id }: any) => {
+
+        if (data?.slider.length > 4) {
+            // console.log(data.slider);
+            // let Allowed = false;
+            // data?.slider.map((items: any) => {
+            //     if (items.status != true && items._id != _id) {
+            //         Allowed = true;
+            //     };
+            // });
+            // console.log("Allowed: ", Allowed);
+            removeSlide(_id)
+                .unwrap()
+                .then(() => {
+                    messageApi.open({
+                        type: "success",
+                        content: "Xóa slide thành công",
+                    });
+                });
+        };
+    };
+
+    const ApplySlide = ({ _id }: any) => {
+        let countSlide = 0;
+        data?.slider.map((items: any) => {
+            if (items.status == true) {
+                countSlide += 1;
+            }
+        });
+
+        if (countSlide > 3) {
             messageApi.open({
-                type: "success",
-                content: "Xóa slide thành công",
+                type: "error",
+                content: `Hãy tắt 1 slide khác để dùng slide này !`
             });
-        })
+            return;
+        } else {
+            const dataNew: any = { _id, status: true };
+            updatePatchSlide(dataNew).unwrap().then(() => {
+                messageApi.open({
+                    type: "success",
+                    content: `Cập nhật thành công`
+                });
+            });
+        };
     };
 
-    const ApplySlide = (id: any) => {
+    const UnApplySlide = ({ _id }: any) => {
+        let countSlide = 0;
+        data?.slider.map((items: any) => {
+            if (items.status == true) {
+                countSlide += 1;
+            }
+        });
 
-    };
-
-    const FindListName = (event: any) => {
-
+        if (countSlide != 4) {
+            messageApi.open({
+                type: "error",
+                content: `Tối thiểu là 3 slide, không thể vô hiệu hóa thêm nữa !`
+            });
+            return;
+        } else {
+            const dataNew: any = { _id, status: false };
+            updatePatchSlide(dataNew).unwrap().then(() => {
+                messageApi.open({
+                    type: "success",
+                    content: `Cập nhật thành công`
+                });
+            });
+        };
     };
 
     const dataSlide = data?.slider?.map(({ _id, titleSlider, contentSlider, imgSlider, status }: any) => ({
@@ -93,7 +150,7 @@ const SlideList = () => {
                             :
                             <Popconfirm
                                 title={`Bạn muốn ngưng dùng slide này chứ ?`}
-                                onConfirm={() => ApplySlide(_id)}
+                                onConfirm={() => UnApplySlide(_id)}
                                 okText={
                                     <span style={{ color: 'black' }}>có</span>
                                 }
@@ -119,11 +176,11 @@ const SlideList = () => {
                     <Link to={`/admin/slide/add`}><Button className='hover:scale-110' type="primary" style={{ background: "green", color: "white" }}>
                         Thêm slide mới
                     </Button></Link>
-                    <Input name='nameUser' onChange={() => FindListName(event)} placeholder="tìm theo tên .." allowClear style={{ width: 350, marginLeft: 50 }} />
+                    {/* <Input name='nameUser' onChange={() => FindListName(event)} placeholder="tìm theo tên .." allowClear style={{ width: 350, marginLeft: 50 }} /> */}
                 </div>
             </div>
             <Divider />
-            {isLoading ? <Loading /> : <Table columns={columns} dataSource={dataSlide} pagination={{ pageSize: 5 }}/>}
+            {isLoading ? <Loading /> : <Table columns={columns} dataSource={dataSlide} pagination={{ pageSize: 5 }} />}
         </div>
     )
 }

@@ -8,6 +8,7 @@ router.get("/slider", getAllSlider);
 router.delete("/slider/:id", removeSlider);
 router.post("/slider", createSlider);
 router.put("/slider/:id", updateSlider);
+router.patch("/slider/:id", updateSlider);
 router.get("/slider/:id", getOneSlider);
 
 

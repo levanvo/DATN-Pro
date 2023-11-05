@@ -1,8 +1,9 @@
 import joi from "joi"
 
 export const JoiSlide=joi.object({
-    imgSlider:joi.string().required(),
-    titleSlider:joi.string().required(),
-    contentSlider:joi.string().required(),
+    imgSlider:joi.string(),
+    titleSlider:joi.string(),
+    contentSlider:joi.string(),
     status:joi.boolean(),
+    _id:joi.any()
 })
