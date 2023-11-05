@@ -1,17 +1,20 @@
 import {useEffect, useState} from 'react'
 import { message,Popconfirm, Table } from 'antd';
 import {QuestionCircleOutlined ,DeleteFilled} from "@ant-design/icons"
-import { useDeleteFromCartMutation, useGetCartQuery } from '../Services/Api_cart';
+import { useAddToCartMutation, useDeleteFromCartMutation, useGetCartQuery } from '../Services/Api_cart';
 import { ProductItem } from '../Models/interfaces';
-import { InputNumber } from 'antd';
+import { Input,Button } from 'antd';
 import Loading from '../Component/Loading';
+import "../App.scss"
 
 const Cart = () => {
     const { data: cartData, isLoading, error } = useGetCartQuery();
     const [messageApi, contextHolder] = message.useMessage();
     const [deleteCart] = useDeleteFromCartMutation();
-  const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
-
+    const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
+    const [addToCart] = useAddToCartMutation()
+    const cart= JSON.parse(localStorage.getItem('cart') || "");
+    const token = localStorage.getItem('token');
 
     const rowSelection = {
         selectedRowKeys: selectedProductId,
@@ -20,7 +23,12 @@ const Cart = () => {
         },
       };
       
-    useEffect(() => {
+
+    // Khai báo biến dataSource
+    let dataSource: any[] = [];
+
+    if(token){
+      useEffect(() => {
         if(error && "data" in error){
             const errDetails = error.data as {message: string}
             messageApi.open({
@@ -29,22 +37,50 @@ const Cart = () => {
             })
         }
     },[error])
-
-
-    const dataSource = cartData?.products.map((product:any) => {
-      
+      dataSource = cartData?.products.map((product: any) => {
+            return {
+                key: product._id,
+                name: product.productId.name,
+                price: product.productId.price,
+                imgUrl: product.productId.imgUrl[0],
+                color: product.color,
+                size: product.size,
+                quantity: product.quantity
+            };
+        });
+    }else{  
+      dataSource = cart.map((product: any) => {
         return {
-          key: product._id,
-          name: product.productId.name,
-          price: product.productId.price,
-          imgUrl: product.productId.imgUrl[0],
-          color: product.color,
-          size: product.size,
-          quantity: product.quantity
+            key: product.productId,
+            name: product.name,
+            price: product.price,
+            imgUrl: product.imgUrl,
+            color: product.color,
+            size: product.size,
+            quantity: product.quantity
         };
-      });
-      console.log(dataSource);
+    });
+    
+    }
+
       
+      const handleIncrease = (productId: string) => {
+        console.log(productId);
+        
+        // Find the product in the cartData based on productId and get its current quantity
+        const productToUpdate = cartData?.products.find((product:any) => product._id === productId);
+        
+        if (productToUpdate) {
+          
+          // Call the addToCart function to update the quantity
+          addToCart({
+            productId: productToUpdate.productId._id,
+            color: productToUpdate.color,  
+            size: productToUpdate.size,
+            quantity: productToUpdate.quantity,
+          })
+        }
+      };
       
       
 
@@ -75,10 +111,10 @@ const Cart = () => {
           title: 'Hình ảnh',
           dataIndex: "imgUrl",
           key: "imgUrl",
-          render: (imgUrl: string[]) => (
+          render: (imgUrl: string) => (
             imgUrl && imgUrl.length > 0 ? (
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <img src={imgUrl[0]} style={{ width: 100 }} />
+                <img src={imgUrl} style={{ width: 100 }} />
               </div>
             ) : null
           ),
@@ -90,7 +126,7 @@ const Cart = () => {
           key: 'color',
           align: 'center',
           render: (color: string) => (
-            <div style={{ backgroundColor: color, width: '20%', height: '20px',borderRadius: "50%" }}></div>
+            <div style={{ backgroundColor: color, width: '25%', height: '20px',borderRadius: "50%",marginLeft:25}}></div>
           ),
         },
         
@@ -100,13 +136,46 @@ const Cart = () => {
           key: 'size',
           align: 'center',
         },
+
+        {
+          title: 'Số lượng',
+          dataIndex: 'quantity',
+          key: 'quantity',
+          align: 'center',
+          render: (quantity:number,record: any) => (
+            <div className="quantity-container">
+        <button
+          className="quantity-button"
+          onClick={() => {
+            // Xử lý logic giảm số lượng ở đây, có thể truy cập record để lấy dữ liệu từ hàng hiện tại
+          }}
+        >
+          -
+        </button>
+        <Input 
+        style={{borderTop: "1px solid #dbd4d4", borderRadius:0, borderBottom: "1px solid #dbd4d4"}}
+          defaultValue={quantity}
+          className="quantity-input"
+          readOnly
+        />
+        <button
+          className="quantity-button"
+          onClick={() => handleIncrease(record.key)}
+        >
+          +
+        </button>
+      </div>
+          )
+        },
         
         {
           title: 'Giá',
           dataIndex: 'price',
           align: 'center',
           render: (price: number) => (
-            <span>{price.toLocaleString('vi-VN',{style: "currency", currency: "VND"})}</span>
+            <span>
+              {price ? price.toLocaleString('vi-VN', { style: "currency", currency: "VND" }) : 'Giá không xác định'}
+            </span>
           )
         },
     

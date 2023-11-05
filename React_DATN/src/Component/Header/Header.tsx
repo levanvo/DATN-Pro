@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ImCancelCircle } from "react-icons/im"
 import { UserOutlined } from "@ant-design/icons"
 import { message, Modal  } from "antd"
@@ -16,6 +16,7 @@ const Header = ({ onSearch }: any) => {
   const userString = localStorage.getItem("user");
   const VerifyAccount = localStorage.getItem("token");
   const [searchKeyword, setSearchKeyword] = useState('');
+  const navigate = useNavigate()
 
   const handleSearch = (e: any) => {
     e.preventDefault();
@@ -32,17 +33,19 @@ const Header = ({ onSearch }: any) => {
 
   const handleLogout =  () => {
     setIsLoggingOut(true); // Show loading animation
+    // Xóa token và user khỏi localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsLoggingOut(false); // Hide loading animation
+    messageApi.open({
+      type: 'success',
+      content: 'Đăng xuất tài khoản thành công',
+    });
 
     setTimeout(() => {
-      // Xóa token và user khỏi localStorage
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      setIsLoggingOut(false); // Hide loading animation
-      messageApi.open({
-        type: 'success',
-        content: 'Đăng xuất tài khoản thành công',
-      });
-    }, 1000);
+      navigate("/")
+      window.location.reload()
+    }, 2000);
    
   };
 
@@ -108,9 +111,8 @@ const Header = ({ onSearch }: any) => {
                               <div className="relative">
                                 <Link className='w-10 h-10 imgUserSelector' to={`/admin`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
                                 <ul className="formSelectUser">
-                                  <Link to={`/admin`}><li>Quản trị</li></Link>
-                                  <Link to={``}><li onClick={showLogoutConfirmationModal}>Đăng xuất</li></Link>
-                                  <Link to={``}><li>Cài đặt</li></Link>
+                                  <li style={{cursor: "pointer"}}>Quản trị</li>
+                                  <li style={{cursor: "pointer"}} onClick={showLogoutConfirmationModal}>Đăng xuất</li>
                                 </ul>
                               </div>
 
@@ -118,9 +120,8 @@ const Header = ({ onSearch }: any) => {
                               <div className="relative">
                                 <Link className='w-10 h-10 imgUserSelector' to={`/client`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
                                 <ul className="formSelectUser">
-                                  <Link to={`/client`}><li>Trang cá nhân</li></Link>
-                                  <Link to={``}><li onClick={showLogoutConfirmationModal}>Đăng xuất</li></Link>
-                                  <Link to={``}><li>Cài đặt</li></Link>
+                                  <li style={{cursor: "pointer"}}>Trang cá nhân</li>
+                                  <li style={{cursor: "pointer"}} onClick={showLogoutConfirmationModal}>Đăng xuất</li>
                                 </ul>
                               </div>
                           }

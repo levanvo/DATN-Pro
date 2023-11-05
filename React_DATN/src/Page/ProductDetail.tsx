@@ -12,9 +12,10 @@ import {
 } from "../Services/Api_Product";
 import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { useAddToCartMutation } from "../Services/Api_cart";
-import { Cart, ProductItem } from "../Models/interfaces";
+import { useAddToCartMutation, useGetCartQuery } from "../Services/Api_cart";
+import {ProductItem } from "../Models/interfaces";
 import {message} from "antd"
+import Loading from "../Component/Loading";
 
 
 
@@ -28,6 +29,8 @@ const ProductDetail = () => {
   const { data: allProducts }: any = useGetAllProductQuery();
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
   const [addToCart] = useAddToCartMutation()
+  const {data:cartData} = useGetCartQuery()
+
 
   let arrayPR: any = [];
   const arrayRelate = productDataOne?.categoryId.products;
@@ -60,36 +63,76 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!productDataOne || getQuantityBuy < 1 || !getColor || !getSize) {
-      // Kiểm tra các điều kiện trước khi thêm vào giỏ hàng
-      // Ví dụ: sản phẩm đã tải, số lượng mua lớn hơn 0, đã chọn màu và kích cỡ
-      console.log("Vui lòng chọn sản phẩm và cung cấp đầy đủ thông tin.");
+      message.error("Vui lòng chọn đầy đủ thông tin sản phẩm");
       return;
     }
   
-
-    // Tạo đối tượng sản phẩm để đẩy vào giỏ hàng
-    const productToAdd:ProductItem = {
+    const isAuthenticated = localStorage.getItem("token");
+  
+    if (isAuthenticated) {
+      const productItemIndex = cartData.products.findIndex((product:any)=>product.productId._id === productDataOne._id);
+      const productItem = cartData.products[productItemIndex];   
+      if (productItemIndex !== -1) {
+        const updatedProductItem = { ...productItem }; // Tạo bản sao của productItem
+        addToCart({
+          productId: updatedProductItem.productId._id,
+          color: updatedProductItem.color,  
+          size: updatedProductItem.size,
+          quantity: getQuantityBuy
+        });
+        message.success("Đã thêm sản phẩm vào giỏ hàng")
+      } else{
+        addToCart({
           productId: productDataOne._id,
+          color: getColor,  
+          size: getSize,
+          quantity: getQuantityBuy,
+        })
+      message.success("Đã thêm sản phẩm vào giỏ hàng")
+      }
+      } else {
+      // Xử lý khi chưa đăng nhập, tương tự như trước
+      const existingCartJSON = localStorage.getItem('cart');
+      const existingCart = existingCartJSON ? JSON.parse(existingCartJSON) : [];
+      console.log(existingCart);
+      
+  
+      // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
+      const existingProductIndex = existingCart.findIndex(
+        (item:any) =>
+          item.productId === productDataOne._id &&
+          item.color === getColor &&
+          item.size === getSize
+      );
+  
+      if (existingProductIndex !== -1) {
+        // Sản phẩm đã tồn tại trong giỏ hàng với cùng productId, color và size
+        // Chỉ cập nhật giá trị quantity cho sản phẩm này
+        existingCart[existingProductIndex].quantity += getQuantityBuy;
+      } else {
+        // Nếu sản phẩm không tồn tại trong giỏ hàng, tạo sản phẩm mới và thêm vào mảng giỏ hàng
+        existingCart.push({
+          productId: productDataOne._id,
+          name: productDataOne.name,
+          imgUrl: productDataOne.imgUrl[0],
           quantity: getQuantityBuy,
           color: getColor,
           size: getSize,
-    };
-    
-    
-    addToCart(productToAdd)
-    .unwrap()
-    .then(() => {
-        message.success("Bạn đã thêm sản phẩm vào giỏ")
-    })
-    .catch((error) => {
-      // Xử lý khi có lỗi xảy ra, ví dụ: hiển thị thông báo lỗi
-      console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
-    });
-};
+          price: productDataOne.price,
+        });
+      }
+  
+      // Cập nhật localStorage với giỏ hàng mới
+      localStorage.setItem('cart', JSON.stringify(existingCart));
+      message.success("Sản phẩm đã được thêm vào giỏ hàng của bạn (chưa đăng nhập).");
+    }
+  };
+  
     
     
   return (
-    <div className="w-[90vw] mx-auto mt-36 relative">
+    <div>
+      {isLoadingProduct ? <Loading /> : <div className="w-[90vw] mx-auto mt-36 relative"> 
       <div className="Single-product-location home2">
         <div className="container">
           <div className="row">
@@ -662,7 +705,9 @@ const ProductDetail = () => {
           }) : arrayPR.length > 0 ? "...loading" : <p className="text-center text-red-500">Hiện chưa có sản phẩm cùng loại !</p>}
         </div>
       </div>
+    </div>}
     </div>
+    
   );
 };
 

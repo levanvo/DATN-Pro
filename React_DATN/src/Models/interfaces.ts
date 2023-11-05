@@ -45,8 +45,4 @@ export interface ProductItem {
   size: number
 }
 
-export interface Cart {
-  products: ProductItem[];
-  userId?: string;
-}
 
