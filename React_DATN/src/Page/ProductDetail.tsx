@@ -195,10 +195,7 @@ const ProductDetail = () => {
                       <i className="fa fa-star"></i>
                       <i className="fa fa-star-half-o"></i>
                       <a href="#" className="review">
-                        1 Review(s)
-                      </a>
-                      <a href="#" className="add-review">
-                        Add Your Review
+                       <p>Số lượt truy cập: {productDataOne.views}</p>
                       </a>
                     </div>
                   </div>
