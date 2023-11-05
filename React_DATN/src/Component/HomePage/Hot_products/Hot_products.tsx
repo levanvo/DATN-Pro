@@ -3,7 +3,7 @@ import {  useGetHotProductsQuery } from '../../../Services/Api_Product'
 import { IProduct } from '../../../Models/interfaces';
 
 const Hot_products = () => {
-    const { data: productData, isError, isLoading } = useGetHotProductsQuery()
+    const { data: productData, isError, isLoading }:any = useGetHotProductsQuery()
     const [currentIndex, setCurrentIndex] = useState(0);
 
     if (isLoading) {
@@ -14,7 +14,7 @@ const Hot_products = () => {
         return <div>Error.....Sản Phẩm HOT</div>;
     }
     // Sắp xếp sản phẩm theo lượt xem giảm dần (giả sử views là thuộc tính trong đối tượng sản phẩm)
-    const hotProducts = productData.slice().sort((a, b) => b.views - a.views).slice(0, 8); 
+    const hotProducts = productData.slice().sort((a:any, b:any) => b.views - a.views).slice(0, 8); 
     // Số lượng sản phẩm hiển thị mỗi lần
     const itemsPerPage = 4;
 
