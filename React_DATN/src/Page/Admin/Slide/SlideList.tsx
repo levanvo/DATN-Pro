@@ -1,6 +1,6 @@
 import React from 'react'
 import { Divider, Table, Popconfirm, message, Button, Input, Image } from 'antd';
-import { DeleteFilled, EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { DeleteFilled, EditOutlined, CheckOutlined, CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import Loading from "../../../Component/Loading";
@@ -37,6 +37,11 @@ const SlideList = () => {
                         content: "Xóa slide thành công",
                     });
                 });
+        }else{
+            messageApi.open({
+                type: "error",
+                content: "Chỉ có thể xóa khi số lượng slide hơn 4 !",
+            });
         };
     };
 
@@ -103,13 +108,16 @@ const SlideList = () => {
             title: 'Tiêu đề',
             dataIndex: 'titleSlider',
             align: 'center',
+            render: (titleSlider: string) => {
+                return <p>{titleSlider!=" "?titleSlider:"null"}</p>
+            },
         },
         {
             title: 'Hình ảnh',
             dataIndex: "imgSlider",
             key: "imgSlider",
             render: (imgUrl: string) => {
-                return <Image className='rounded-lg' width={100} src={imgUrl} />
+                return <Image className='rounded-lg' width={100} height={50} src={imgUrl} />
             },
             align: 'center',
         },
@@ -177,6 +185,7 @@ const SlideList = () => {
                         Thêm slide mới
                     </Button></Link>
                     {/* <Input name='nameUser' onChange={() => FindListName(event)} placeholder="tìm theo tên .." allowClear style={{ width: 350, marginLeft: 50 }} /> */}
+                    <p className='-mb-5 text-sky-500'> <ExclamationCircleOutlined /> lưu ý: tối đa dùng được 4 slide và tối thiểu 3 slide.</p>
                 </div>
             </div>
             <Divider />

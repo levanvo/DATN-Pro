@@ -31,7 +31,7 @@ const Slider = () => {
                                         <img className='w-[100vw] h-[70vh]' src={itemSlide?.imgSlider} alt="" />
                                         <div className="absolute top-44 left-44 ">
                                             <h1 className='text-yellow-500'>{itemSlide.titleSlider}</h1>
-                                            <p className='mt-2'>{itemSlide.contentSlider}</p>
+                                            <p className='mt-2 w-96'>{itemSlide.contentSlider}</p>
                                         </div>
                                     </div>
                                 )

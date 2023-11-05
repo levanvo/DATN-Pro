@@ -52,7 +52,7 @@ const AddSlide = () => {
       setLoading(true);
       values.titleSlider.trim();
       values.titleSlider.trim();
-      if (!isNaN(values.titleSlider) && /[a-zA-Z]/.test(values.titleSlider) == false) { messageApi.open({ type: "error", content: "Hãy nhập tên tiêu đề và tiêu đề phải có ít nhất 1 chữ cái !" }); setLoading(false); return }
+      // if (!isNaN(values.titleSlider) && /[a-zA-Z]/.test(values.titleSlider) == false) { messageApi.open({ type: "error", content: "Hãy nhập tên tiêu đề và tiêu đề phải có ít nhất 1 chữ cái !" }); setLoading(false); return }
       if (!isNaN(values.contentSlider) && /[a-zA-Z]/.test(values.contentSlider) == false) { messageApi.open({ type: "error", content: "Hãy nhập nội dung tiêu đề và nội dung phải có ít nhất 1 chữ cái !" }); setLoading(false); return }
       if (!fileList[0]) { messageApi.open({ type: "error", content: "Hãy chọn ảnh cho slide !" }); setLoading(false); return }
 
@@ -98,6 +98,7 @@ const AddSlide = () => {
     <div>
       {contextHolder}
       <h1 className='text-center text-2xl mb-2'>Thêm slide mới</h1><hr />
+      <p className='text-gray-400'>(!) có thể để dấu cách khi không muốn dùng tiêu đề.</p>
       {loading && <Loading />}
       <Form
         name="basic"
