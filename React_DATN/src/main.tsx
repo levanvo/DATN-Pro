@@ -20,11 +20,9 @@ import "../css/owl.theme.css"
 import "../css/owl.transitions.css"
 import "../css/responsive.css"
 import "./App.scss"
-import Config from "./Page/Layout/Config.tsx"
 // show banner
 import "../lib/css/nivo-slider.css"
 import "../lib/css/preview.css"
-Config()
 
 
 
