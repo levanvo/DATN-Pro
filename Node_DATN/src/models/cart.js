@@ -15,17 +15,16 @@ const cartSchema = new mongoose.Schema({
         },
         quantity: {
           type: Number,
-          required: true
         },
         size: {
-          type: String
+          type: Number
         },
         color: {
           type: String
         }
       }
     ]
-  });
+  },{timestamps: true, versionKey: false});
   
 
 export default mongoose.model("Cart",cartSchema)

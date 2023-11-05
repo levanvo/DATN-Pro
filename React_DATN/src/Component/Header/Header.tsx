@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ImCancelCircle } from "react-icons/im"
 import { UserOutlined } from "@ant-design/icons"
-import { message } from "antd"
+import { message, Modal  } from "antd"
+import Loading from '../Loading'
 interface User {
   username: string;
   // Các thuộc tính khác của người dùng (nếu có)
@@ -10,38 +11,56 @@ interface User {
 const Header = ({ onSearch }: any) => {
   const [messageApi, contexHolder] = message.useMessage()
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   let user: User | any = null;
   const userString = localStorage.getItem("user");
   const VerifyAccount = localStorage.getItem("token");
-
-  if (userString) {
-    user = JSON.parse(userString);
-  }
-
-  const handleLogout = () => {
-    setIsLoggingOut(true);
-
-    messageApi.open({
-      type: "success",
-      content: "Đăng xuất tài khoản thành công"
-    })
-    setTimeout(() => {
-      // Xóa token và user khỏi localStorage
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      setIsLoggingOut(false); // Tắt loading sau khi hoàn thành logout
-    }, 1500);
-  };
   const [searchKeyword, setSearchKeyword] = useState('');
+  const navigate = useNavigate()
 
   const handleSearch = (e: any) => {
     e.preventDefault();
     onSearch(searchKeyword);
   };
 
+
+  if (userString) {
+    user = JSON.parse(userString);
+  }
+  const showLogoutConfirmationModal = () => {
+    setIsLogoutModalVisible(true);
+  };
+
+  const handleLogout =  () => {
+    setIsLoggingOut(true); // Show loading animation
+    // Xóa token và user khỏi localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsLoggingOut(false); // Hide loading animation
+    messageApi.open({
+      type: 'success',
+      content: 'Đăng xuất tài khoản thành công',
+    });
+
+    setTimeout(() => {
+      navigate("/")
+      window.location.reload()
+    }, 2000);
+   
+  };
+
+  const handleLogoutConfirmation = (confirmed:any) => {
+    if (confirmed) {
+      handleLogout();
+    }
+    setIsLogoutModalVisible(false);
+  };
+  
+
   return (
     <header className='_header-web'>
       {contexHolder}
+      {isLoggingOut && <Loading />}
       <div className="top-link">
         <div className="container">
           <div className="row">
@@ -92,9 +111,8 @@ const Header = ({ onSearch }: any) => {
                               <div className="relative">
                                 <Link className='w-10 h-10 imgUserSelector' to={`/admin`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
                                 <ul className="formSelectUser">
-                                  <Link to={`/admin`}><li>Quản trị</li></Link>
-                                  <Link to={``}><li onClick={()=>handleLogout()}>Đăng xuất</li></Link>
-                                  <Link to={``}><li>Cài đặt</li></Link>
+                                  <li style={{cursor: "pointer"}}>Quản trị</li>
+                                  <li style={{cursor: "pointer"}} onClick={showLogoutConfirmationModal}>Đăng xuất</li>
                                 </ul>
                               </div>
 
@@ -102,9 +120,8 @@ const Header = ({ onSearch }: any) => {
                               <div className="relative">
                                 <Link className='w-10 h-10 imgUserSelector' to={`/client`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
                                 <ul className="formSelectUser">
-                                  <Link to={`/client`}><li>Trang cá nhân</li></Link>
-                                  <Link to={``}><li onClick={()=>handleLogout()}>Đăng xuất</li></Link>
-                                  <Link to={``}><li>Cài đặt</li></Link>
+                                  <li style={{cursor: "pointer"}}>Trang cá nhân</li>
+                                  <li style={{cursor: "pointer"}} onClick={showLogoutConfirmationModal}>Đăng xuất</li>
                                 </ul>
                               </div>
                           }
@@ -207,6 +224,17 @@ const Header = ({ onSearch }: any) => {
           </div>
         </div>
       </div>
+      <Modal
+        title="Xác nhận đăng xuất"
+        visible={isLogoutModalVisible}
+        onOk={() => handleLogoutConfirmation(true)}
+        onCancel={() => handleLogoutConfirmation(false)}
+        okText="Đăng xuất"
+        cancelText="Hủy"
+        okButtonProps={{ style: { backgroundColor: 'red' } }}
+      >
+        Bạn có chắc chắn muốn đăng xuất không?
+      </Modal>
     </header>
 
   )
