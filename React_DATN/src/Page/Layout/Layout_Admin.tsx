@@ -9,7 +9,8 @@ import {
   BarChartOutlined,
   EditOutlined,
   HomeOutlined,
-  ContainerOutlined
+  ContainerOutlined,
+  PicCenterOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
@@ -45,6 +46,7 @@ const items: MenuItem[] = [
   getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
   getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
   getItem('Users', '7', <UserOutlined />, undefined, 'user/list'),
+  getItem('Slide', '8', <PicCenterOutlined />, undefined, 'slide/list'),
 ];
 
 const Layout_Admin: React.FC = () => {

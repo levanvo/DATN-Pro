@@ -52,3 +52,10 @@ export interface Cart {
   userId?: string;
 }
 
+export interface ISlider{
+  _id?:string,
+  id?:string,
+  titleSlider:string,
+  contentSlider:string,
+  imgSlider:string,
+}
