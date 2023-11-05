@@ -13,7 +13,8 @@ import {
 import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useAddToCartMutation } from "../Services/Api_cart";
-import { Cart } from "../Models/interfaces";
+import { Cart, ProductItem } from "../Models/interfaces";
+import {message} from "antd"
 
 
 
@@ -67,22 +68,18 @@ const ProductDetail = () => {
   
 
     // Tạo đối tượng sản phẩm để đẩy vào giỏ hàng
-    const productToAdd= {
-      product: {
-        productId: productDataOne._id,
-        quantity: getQuantityBuy,
-        color: getColor,
-        size: getSize,
-      }
-    }
+    const productToAdd:ProductItem = {
+          productId: productDataOne._id,
+          quantity: getQuantityBuy,
+          color: getColor,
+          size: getSize,
+    };
     
     
     addToCart(productToAdd)
     .unwrap()
-    .then((response) => {
-      // Xử lý khi thêm sản phẩm thành công, ví dụ: hiển thị thông báo
-      console.log("Sản phẩm đã được thêm vào giỏ hàng:", response);
-      // Hoặc cập nhật giao diện người dùng
+    .then(() => {
+        message.success("Bạn đã thêm sản phẩm vào giỏ")
     })
     .catch((error) => {
       // Xử lý khi có lỗi xảy ra, ví dụ: hiển thị thông báo lỗi
@@ -91,16 +88,6 @@ const ProductDetail = () => {
 };
     
     
-
-    
-    
-    
-  
-    
-
-  
-
-
   return (
     <div className="w-[90vw] mx-auto mt-36 relative">
       <div className="Single-product-location home2">

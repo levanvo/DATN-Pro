@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { ImCancelCircle } from "react-icons/im"
 import { UserOutlined } from "@ant-design/icons"
-import { message } from "antd"
+import { message, Modal } from "antd"
+import Loading from "../Loading"
 interface User {
   username: string
   // Các thuộc tính khác của người dùng (nếu có)
@@ -10,28 +11,10 @@ interface User {
 const Header = ({ onSearch }: any) => {
   const [messageApi, contexHolder] = message.useMessage()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false)
   let user: User | any = null
   const userString = localStorage.getItem("user")
   const VerifyAccount = localStorage.getItem("token")
-
-  if (userString) {
-    user = JSON.parse(userString)
-  }
-
-  const handleLogout = () => {
-    setIsLoggingOut(true)
-
-    messageApi.open({
-      type: "success",
-      content: "Đăng xuất tài khoản thành công",
-    })
-    setTimeout(() => {
-      // Xóa token và user khỏi localStorage
-      localStorage.removeItem("token")
-      localStorage.removeItem("user")
-      setIsLoggingOut(false) // Tắt loading sau khi hoàn thành logout
-    }, 1500)
-  }
   const [searchKeyword, setSearchKeyword] = useState("")
 
   const handleSearch = (e: any) => {
@@ -39,9 +22,39 @@ const Header = ({ onSearch }: any) => {
     onSearch(searchKeyword)
   }
 
+  if (userString) {
+    user = JSON.parse(userString)
+  }
+  const showLogoutConfirmationModal = () => {
+    setIsLogoutModalVisible(true)
+  }
+
+  const handleLogout = () => {
+    setIsLoggingOut(true) // Show loading animation
+
+    setTimeout(() => {
+      // Xóa token và user khỏi localStorage
+      localStorage.removeItem("token")
+      localStorage.removeItem("user")
+      setIsLoggingOut(false) // Hide loading animation
+      messageApi.open({
+        type: "success",
+        content: "Đăng xuất tài khoản thành công",
+      })
+    }, 1000)
+  }
+
+  const handleLogoutConfirmation = (confirmed: any) => {
+    if (confirmed) {
+      handleLogout()
+    }
+    setIsLogoutModalVisible(false)
+  }
+
   return (
     <header className="_header-web">
       {contexHolder}
+      {isLoggingOut && <Loading />}
       <div className="top-link">
         <div className="container">
           <div className="row">
@@ -132,7 +145,7 @@ const Header = ({ onSearch }: any) => {
                                 <li>Quản trị</li>
                               </Link>
                               <Link to={``}>
-                                <li onClick={() => handleLogout()}>
+                                <li onClick={showLogoutConfirmationModal}>
                                   Đăng xuất
                                 </li>
                               </Link>
@@ -158,7 +171,7 @@ const Header = ({ onSearch }: any) => {
                                 <li>Trang cá nhân</li>
                               </Link>
                               <Link to={``}>
-                                <li onClick={() => handleLogout()}>
+                                <li onClick={showLogoutConfirmationModal}>
                                   Đăng xuất
                                 </li>
                               </Link>
@@ -172,6 +185,7 @@ const Header = ({ onSearch }: any) => {
                       </div>
                       <p>{user.username}</p>
                     </div>
+                    <p>{user.username}</p>
                   </div>
                 ) : (
                   <div className="account-menu">
@@ -260,6 +274,17 @@ const Header = ({ onSearch }: any) => {
           </div>
         </div>
       </div>
+      <Modal
+        title="Xác nhận đăng xuất"
+        visible={isLogoutModalVisible}
+        onOk={() => handleLogoutConfirmation(true)}
+        onCancel={() => handleLogoutConfirmation(false)}
+        okText="Đăng xuất"
+        cancelText="Hủy"
+        okButtonProps={{ style: { backgroundColor: "red" } }}
+      >
+        Bạn có chắc chắn muốn đăng xuất không?
+      </Modal>
     </header>
   )
 }
