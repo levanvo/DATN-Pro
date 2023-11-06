@@ -111,7 +111,7 @@ const Header = ({ onSearch }: any) => {
                               <div className="relative">
                                 <Link className='w-10 h-10 imgUserSelector' to={`/admin`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
                                 <ul className="formSelectUser">
-                                  <li style={{cursor: "pointer"}}>Quản trị</li>
+                                  <Link to={`/admin`}><li style={{cursor: "pointer"}}>Quản trị</li></Link>
                                   <li style={{cursor: "pointer"}} onClick={showLogoutConfirmationModal}>Đăng xuất</li>
                                 </ul>
                               </div>
@@ -120,7 +120,7 @@ const Header = ({ onSearch }: any) => {
                               <div className="relative">
                                 <Link className='w-10 h-10 imgUserSelector' to={`/client`}><img className='w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector' src={user.imgUrl} alt="" /></Link>
                                 <ul className="formSelectUser">
-                                  <li style={{cursor: "pointer"}}>Trang cá nhân</li>
+                                <Link to={`/admin`}><li style={{cursor: "pointer"}}>Trang cá nhân</li></Link>
                                   <li style={{cursor: "pointer"}} onClick={showLogoutConfirmationModal}>Đăng xuất</li>
                                 </ul>
                               </div>
