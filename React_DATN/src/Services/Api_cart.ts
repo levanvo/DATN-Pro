@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Cart } from "../Models/interfaces";
+import { ProductItem } from "../Models/interfaces";
 import { pause } from "../utils/pause";
 
 const cartApi = createApi({
@@ -8,8 +8,11 @@ const cartApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8080",
         prepareHeaders: (headers) => {
-            headers.set("Content-type", "appliation/json"),
-                headers.set("authorization", "Bearer " + JSON.parse(localStorage.getItem("token") || ""))
+            headers.set("Content-Type", "application/json");
+            const token = localStorage.getItem("token") || "";
+            if (token) {
+                headers.set("Authorization", `Bearer ${JSON.parse(token)}`);
+            }
             return headers;
         },
         fetchFn: async (...args) => (
@@ -23,7 +26,7 @@ const cartApi = createApi({
             providesTags: ["Cart"]
         }),
 
-        addToCart: builder.mutation<Cart,Cart>({
+        addToCart: builder.mutation<ProductItem,ProductItem>({
             query: (product) => ({
                 url: "/api/cart",
                 method: "POST",

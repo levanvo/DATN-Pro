@@ -1,16 +1,34 @@
-import {useEffect} from 'react'
-import { message } from 'antd';
-import { useDeleteFromCartMutation, useGetCartQuery } from '../Services/Api_cart';
-// import { ICart } from '../Models/interfaces';
+import {useEffect, useState} from 'react'
+import { message,Popconfirm, Table } from 'antd';
+import {QuestionCircleOutlined ,DeleteFilled} from "@ant-design/icons"
+import { useAddToCartMutation, useDeleteFromCartMutation, useGetCartQuery } from '../Services/Api_cart';
+import { ProductItem } from '../Models/interfaces';
+import { Input,Button } from 'antd';
+import Loading from '../Component/Loading';
+import "../App.scss"
 
 const Cart = () => {
     const { data: cartData, isLoading, error } = useGetCartQuery();
-    console.log(cartData);
     const [messageApi, contextHolder] = message.useMessage();
-
     const [deleteCart] = useDeleteFromCartMutation();
+    const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
+    const [addToCart] = useAddToCartMutation()
+    const cart= JSON.parse(localStorage.getItem('cart') || "");
+    const token = localStorage.getItem('token');
 
-    useEffect(() => {
+    const rowSelection = {
+        selectedRowKeys: selectedProductId,
+        onChange: (selectedRowKeys: React.Key[]) => {
+          setSelectedProductId(selectedRowKeys)
+        },
+      };
+      
+
+    // Khai báo biến dataSource
+    let dataSource: any[] = [];
+
+    if(token){
+      useEffect(() => {
         if(error && "data" in error){
             const errDetails = error.data as {message: string}
             messageApi.open({
@@ -19,13 +37,62 @@ const Cart = () => {
             })
         }
     },[error])
+      dataSource = cartData?.products.map((product: any) => {
+            return {
+                key: product._id,
+                name: product.productId.name,
+                price: product.productId.price,
+                imgUrl: product.productId.imgUrl[0],
+                color: product.color,
+                size: product.size,
+                quantity: product.quantity
+            };
+        });
+    }else{  
+      dataSource = cart.map((product: any) => {
+        return {
+            key: product.productId,
+            name: product.name,
+            price: product.price,
+            imgUrl: product.imgUrl,
+            color: product.color,
+            size: product.size,
+            quantity: product.quantity
+        };
+    });
+    
+    }
+
+      
+      const handleIncrease = (productId: string) => {
+        console.log(productId);
+        
+        // Find the product in the cartData based on productId and get its current quantity
+        const productToUpdate = cartData?.products.find((product:any) => product._id === productId);
+        
+        if (productToUpdate) {
+          
+          // Call the addToCart function to update the quantity
+          addToCart({
+            productId: productToUpdate.productId._id,
+            color: productToUpdate.color,  
+            size: productToUpdate.size,
+            quantity: productToUpdate.quantity,
+          })
+        }
+      };
+      
+      
+
+    
     const confirm = (productId: string) => {
+        
         deleteCart(productId)
             .unwrap()
             .then(() => {
                 messageApi.open({
                     type: 'success',
-                    content: 'Xóa sản phẩm thành công'
+                    content: 'Xóa sản phẩm khỏi giỏ hàng thành công'
                 });
             })
             .catch((error) => {
@@ -33,8 +100,111 @@ const Cart = () => {
             });
     };
 
+    const columns: any[] = [
+        {
+          title: 'Tên sản phẩm',
+          dataIndex: 'name',
+          render: (text: string) => (<a>{text}</a>),
+          align: 'center',
+        },
+        {
+          title: 'Hình ảnh',
+          dataIndex: "imgUrl",
+          key: "imgUrl",
+          render: (imgUrl: string) => (
+            imgUrl && imgUrl.length > 0 ? (
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <img src={imgUrl} style={{ width: 100 }} />
+              </div>
+            ) : null
+          ),
+          align: 'center',
+        },
+        {
+          title: 'Màu xắc',
+          dataIndex: 'color',
+          key: 'color',
+          align: 'center',
+          render: (color: string) => (
+            <div style={{ backgroundColor: color, width: '25%', height: '20px',borderRadius: "50%",marginLeft:25}}></div>
+          ),
+        },
+        
+        {
+          title: 'Kích thước',
+          dataIndex: 'size',
+          key: 'size',
+          align: 'center',
+        },
+
+        {
+          title: 'Số lượng',
+          dataIndex: 'quantity',
+          key: 'quantity',
+          align: 'center',
+          render: (quantity:number,record: any) => (
+            <div className="quantity-container">
+        <button
+          className="quantity-button"
+          onClick={() => {
+            // Xử lý logic giảm số lượng ở đây, có thể truy cập record để lấy dữ liệu từ hàng hiện tại
+          }}
+        >
+          -
+        </button>
+        <Input 
+        style={{borderTop: "1px solid #dbd4d4", borderRadius:0, borderBottom: "1px solid #dbd4d4"}}
+          defaultValue={quantity}
+          className="quantity-input"
+          readOnly
+        />
+        <button
+          className="quantity-button"
+          onClick={() => handleIncrease(record.key)}
+        >
+          +
+        </button>
+      </div>
+          )
+        },
+        
+        {
+          title: 'Giá',
+          dataIndex: 'price',
+          align: 'center',
+          render: (price: number) => (
+            <span>
+              {price ? price.toLocaleString('vi-VN', { style: "currency", currency: "VND" }) : 'Giá không xác định'}
+            </span>
+          )
+        },
+    
+        {
+          title: 'Action',
+          key: 'action',
+          render: ({ key: id }: any) => (
+            <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
+              <Popconfirm
+                title="Bạn có chắc chắn muốn xóa không?"
+                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                onConfirm={() => confirm(id)}
+                okText={
+                  <span style={{ color: 'black' }}>Yes</span>
+                }
+                cancelText="No"
+              >
+                <DeleteFilled style={{ color: '#FF0000', fontSize: "20px" }} />
+              </Popconfirm>
+            </div>
+          ),
+          align: 'center',
+        },
+      ];
+
     return (
+      
         <div className='w-[90vw] mx-auto mt-44'>
+            {isLoading && <Loading />}
             {contextHolder}
             <div className="shopping-cart">
                 <div className="container">
@@ -51,63 +221,7 @@ const Cart = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="table-responsive">
-                                <table className="table-bordered table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th className="cart-item-img"></th>
-                                            <th className="cart-product-name">Tên sản phẩm</th>
-                                            <th className="edit"></th>
-                                            <th className="move-wishlist">Chuyển đến danh sách yêu thích</th>
-                                            <th className="unit-price">Giá</th>
-                                            <th className="quantity">Số lượng</th>
-                                            <th className="subtotal">Tổng tiền</th>
-                                            <th className="remove-icon"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="text-center">
-                                        {cartData?.products.map((product: any) => (
-                                            <tr key={product._id}>
-                                                <td className="cart-item-img">
-                                                    <a href="single-product.html">
-                                                        <img src={product.productId.imgUrl[0]} alt="" width={100} style={{ margin: 'auto' }} />
-                                                    </a>
-                                                </td>
-                                                <td className="cart-product-name">
-                                                    <a href="single-product.html">{product.productId.name}</a>
-                                                </td>
-                                                <td className="edit">
-                                                    <a href="#">Edit</a>
-                                                </td>
-                                                <td className="move-wishlist">
-                                                    <a href="#">Move</a>
-                                                </td>
-                                                <td className="unit-price">
-                                                    <span>{product.productId.original_price}đ</span>
-                                                </td>
-                                                <td className="quantity">
-                                                    <span>{product.quantity}</span>
-                                                </td>
-                                                <td className="subtotal">
-                                                    <span>{product.quantity * product.productId.price}đ</span>
-                                                </td>
-                                                <td className="remove-icon">
-                                                    <a href="#" onClick={() => confirm(product._id)}>
-                                                        <img src="img/cart/btn_remove.png" alt="" style={{ margin: 'auto', marginTop: 43 }} />
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <div className="shopping-button">
-                                    <div className="continue-shopping">
-                                        <button type="submit">continue shopping</button>
-                                    </div>
-                                    <div className="shopping-cart-left">
-                                        <button type="submit">Clear Shopping Cart</button>
-                                        <button type="submit">Update Shopping Cart</button>
-                                    </div>
-                                </div>
+                                <Table rowSelection={{ ...rowSelection, }} columns={columns} dataSource={dataSource} />
                             </div>
                         </div>
                     </div>
