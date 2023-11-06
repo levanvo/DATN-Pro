@@ -1,62 +1,66 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import Layout_Web from "./Page/Layout/Layout_Web";
-import Contact from "./Page/Contact";
-import Bill from "./Page/Bill";
-import Cart from "./Page/Cart";
-import ProductDetail from "./Page/ProductDetail";
-import Checkout from "./Page/Checkout";
-import Config from "./Page/Layout/Config";
-import HomePage from "./Page";
-import Blog from "./Page/Blog";
-import Login from "./Page/Login";
-import Products from "./Page/Products";
-import Blog_details from "./Page/Blog_details";
-import Register from "./Page/Register";
-import AddProduct from "./Page/Admin/Product/AddProduct";
-import Layout_Admin from "./Page/Layout/Layout_Admin";
-import ProductList from "./Page/Admin/Product/ProductList";
-import UpdateProduct from "./Page/Admin/Product/UpdateProduct";
+import { Routes, Route, Navigate } from "react-router-dom"
+import Layout_Web from "./Page/Layout/Layout_Web"
+import Contact from "./Page/Contact"
+import Bill from "./Page/Bill"
+import Cart from "./Page/Cart"
+import ProductDetail from "./Page/ProductDetail"
+import Checkout from "./Page/Checkout"
+import Config from "./Page/Layout/Config"
+import HomePage from "./Page"
+import Blog from "./Page/Blog"
+import Login from "./Page/Login"
+import Products from "./Page/Products"
+import Blog_details from "./Page/Blog_details"
+import Register from "./Page/Register"
+import AddProduct from "./Page/Admin/Product/AddProduct"
+import Layout_Admin from "./Page/Layout/Layout_Admin"
+import ProductList from "./Page/Admin/Product/ProductList"
+import UpdateProduct from "./Page/Admin/Product/UpdateProduct"
 import { useState } from "react"
-import AdminLogin from "./Page/Login/AdminLogin";
-import UserList from "./Page/Admin/User/UserList";
-import AddUser from "./Page/Admin/User/AddUser";
-import UpdateUser from "./Page/Admin/User/UpdateUser";
-import SizeList from "./Page/Admin/Size/SizeList";
-import AdminSizeAdd from "./Page/Admin/Size/AddSize";
-import AdminSizeUpdate from "./Page/Admin/Size/UpdateSize";
-import ForgotPassword from "./Page/ForgotPassword";
-import VerificationCodes from "./Page/VerificationCodes";
-import ChangePassword from "./Page/ChangePassword";
-import ProductsCategory from "./Page/CategoryProducts";
-import CategoryList from "./Page/Admin/Category/CategoryList";
-import AddCategory from "./Page/Admin/Category/CategoryAdd";
-import UpdateCategory from "./Page/Admin/Category/CategoryUpdate";
+import AdminLogin from "./Page/Login/AdminLogin"
+import UserList from "./Page/Admin/User/UserList"
+import AddUser from "./Page/Admin/User/AddUser"
+import UpdateUser from "./Page/Admin/User/UpdateUser"
+import SizeList from "./Page/Admin/Size/SizeList"
+import AdminSizeAdd from "./Page/Admin/Size/AddSize"
+import AdminSizeUpdate from "./Page/Admin/Size/UpdateSize"
+import ForgotPassword from "./Page/ForgotPassword"
+import VerificationCodes from "./Page/VerificationCodes"
+import ChangePassword from "./Page/ChangePassword"
+import ProductsCategory from "./Page/CategoryProducts"
+import CategoryList from "./Page/Admin/Category/CategoryList"
+import AddCategory from "./Page/Admin/Category/CategoryAdd"
+import UpdateCategory from "./Page/Admin/Category/CategoryUpdate"
 
-import ProductsSize from "./Page/SizeProduct";
+import ProductsSize from "./Page/SizeProduct"
 import ListColor from "./Page/Admin/colorProduct/listColor"
 import CreateColor from "./Page/Admin/colorProduct/createColor"
 import UpdateColor from "./Page/Admin/colorProduct/updateColor"
-import Dashboard from "./Page/Admin/Dashboard";
-import GetAllDeletedProducts from "./Page/Admin/Product/getAllDeletedProducts";
-import PrivateRouter from "./Component/PrivateRouter";
+import Dashboard from "./Page/Admin/Dashboard"
+import GetAllDeletedProducts from "./Page/Admin/Product/getAllDeletedProducts"
+import PrivateRouter from "./Component/PrivateRouter"
+import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
+import EmailForm from "./Page/Admin/NewSletter/EmailForm"
 
 function App() {
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
 
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState("")
 
   const handleSearch = (keyword: string) => {
-    setSearchKeyword(keyword);
-  };
+    setSearchKeyword(keyword)
+  }
 
-
-  Config();
+  Config()
   return (
     <Routes>
       <Route path="/" element={<Layout_Web onSearch={handleSearch} />}>
         <Route index element={<HomePage />} />
         <Route path="cart" element={<Cart />} />
-        <Route path="products" element={<Products searchKeyword={searchKeyword} />} />
+        <Route
+          path="products"
+          element={<Products searchKeyword={searchKeyword} />}
+        />
         <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetail />} />
@@ -72,7 +76,14 @@ function App() {
         <Route path="size/:id/products" element={<ProductsSize />} />
       </Route>
 
-      <Route path="/admin" element={<PrivateRouter><Layout_Admin /></PrivateRouter>}>
+      <Route
+        path="/admin"
+        element={
+          <PrivateRouter>
+            <Layout_Admin />
+          </PrivateRouter>
+        }
+      >
         <Route index element={<Dashboard />} />
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
@@ -92,7 +103,11 @@ function App() {
         <Route path="size/list" element={<SizeList />} />
         <Route path="size/add" element={<AdminSizeAdd />} />
         <Route path="size/:id/update" element={<AdminSizeUpdate />} />
-        <Route path="restore-product-data" element={<GetAllDeletedProducts />} />
+        <Route
+          path="restore-product-data"
+          element={<GetAllDeletedProducts />}
+        />
+        <Route path="new-sletter/list" element={<ListNewSletter />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
