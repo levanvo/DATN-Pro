@@ -35,6 +35,17 @@ export const readProduct = async (req, res) => {
       })
     }
 
+     // Tăng lượt truy cập của sản phẩm
+     try {
+      const product = await Product.findById({ _id: req.params.id }).exec();
+      if (product) {
+        product.views += 1;
+        await product.save();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
     return res.status(200).json(data)
   } catch (error) {
     return res.status(404).json({
@@ -235,3 +246,24 @@ export const deleteProduct = async (req,res) => {
 }
 
 
+//lấy sản phẩm hot
+export const getHotProducts = async (req, res) => {
+  try {
+    const hotProducts = await Product.find()
+      .sort({ views: -1 })
+      .limit(8)
+      .exec();
+
+    if (hotProducts.length === 0) {
+      return res.status(404).json({
+        message: "Không có sản phẩm nào",
+      });
+    }
+
+    return res.status(200).json(hotProducts);
+  } catch (error) {
+    return res.status(500).json({
+      message: error,
+    });
+  }
+}

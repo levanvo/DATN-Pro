@@ -9,6 +9,7 @@ import productRouter from "./router/product.js"
 import uploadRouter from "./router/upload.js"
 import connectDB from "../configs/database.js"
 import cartRouter from "./router/cart.js"
+import newSletterRouter from "./router/newSletter.js"
 import slideRouter from "./router/slider.js"
 
 dotenv.config()
@@ -27,6 +28,7 @@ app.use("/api", categoryRouter)
 app.use("/api", productRouter)
 app.use("/api", uploadRouter)
 app.use("/api", cartRouter)
+app.use("/api", newSletterRouter)
 app.use("/api", slideRouter)
 
 

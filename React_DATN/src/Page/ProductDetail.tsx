@@ -36,7 +36,7 @@ const ProductDetail = () => {
   const arrayRelate = productDataOne?.categoryId.products;
   if (arrayRelate) {
     for (let i = 0; i < arrayRelate.length; i++) {
-      allProducts.map((product: any) => {
+      allProducts?.map((product: any) => {
         if (product._id == arrayRelate[i]) {
           arrayPR.push(product);
         };
@@ -240,10 +240,7 @@ const ProductDetail = () => {
                       <i className="fa fa-star"></i>
                       <i className="fa fa-star-half-o"></i>
                       <a href="#" className="review">
-                        1 Review(s)
-                      </a>
-                      <a href="#" className="add-review">
-                        Add Your Review
+                       <p>Số lượt truy cập: {productDataOne?.views}</p>
                       </a>
                     </div>
                   </div>

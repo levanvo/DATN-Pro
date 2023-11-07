@@ -6,6 +6,7 @@ import sizeApi from "./Services/Api_Size";
 import {colorApi} from "./Services/api_Color"
 import cartApi from "./Services/Api_cart";
 import slideApi from "./Services/Api_Slide";
+import newSletterApi from "./Services/Api_newSletter"
 
 export const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
         colorApi: colorApi.reducer,
         "cart": cartApi.reducer,
         "slide": slideApi.reducer,
+        "newSletterApi": newSletterApi.reducer,
 
     },
     middleware: defaultMiddleware => defaultMiddleware()
@@ -26,6 +28,7 @@ export const store = configureStore({
     .concat(colorApi.middleware)
     .concat(cartApi.middleware)
     .concat(slideApi.middleware)
+    .concat(newSletterApi.middleware),
 })
 
 export type RootState = ReturnType<typeof store.getState>
