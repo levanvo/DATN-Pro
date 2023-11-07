@@ -71,7 +71,6 @@ export const addToCart = async (req, res) => {
       cart.products.unshift({ productId, color, size, quantity });
     }
 
-    // Lưu giỏ hàng
     await cart.save();
 
     res.status(200).json({
@@ -79,7 +78,6 @@ export const addToCart = async (req, res) => {
       cart
     });
 
-    // if (existingProduct) {
     //   // Sản phẩm đã tồn tại trong giỏ hàng với cùng productId, color và size
     //   // Chỉ cập nhật giá trị quantity cho sản phẩm này
     //   existingProduct.quantity += quantity;
