@@ -104,6 +104,8 @@ const ProductDetail = () => {
           item.color === getColor &&
           item.size === getSize
       );
+      
+      
   
       if (existingProductIndex !== -1) {
         // Sản phẩm đã tồn tại trong giỏ hàng với cùng productId, color và size

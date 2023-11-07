@@ -15,6 +15,9 @@ const Cart = () => {
     const [addToCart] = useAddToCartMutation()
     const cart= JSON.parse(localStorage.getItem('cart') || "");
     const token = localStorage.getItem('token');
+    const [productQuantities, setProductQuantities] = useState<any>({});
+    const [quantitys,setQuantitys] = useState(1)
+
 
     const rowSelection = {
         selectedRowKeys: selectedProductId,
@@ -27,62 +30,141 @@ const Cart = () => {
     // Khai báo biến dataSource
     let dataSource: any[] = [];
 
-    if(token){
-      useEffect(() => {
-        if(error && "data" in error){
-            const errDetails = error.data as {message: string}
-            messageApi.open({
-                type: "error",
-                content: errDetails.message
-            })
-        }
-    },[error])
-      dataSource = cartData?.products.map((product: any) => {
-            return {
-                key: product._id,
-                name: product.productId.name,
-                price: product.productId.price,
-                imgUrl: product.productId.imgUrl[0],
-                color: product.color,
-                size: product.size,
-                quantity: product.quantity
-            };
-        });
-    }else{  
-      dataSource = cart.map((product: any) => {
-        return {
-            key: product.productId,
-            name: product.name,
-            price: product.price,
-            imgUrl: product.imgUrl,
-            color: product.color,
-            size: product.size,
-            quantity: product.quantity
-        };
-    });
+    // if(token){
+    //   useEffect(() => {
+    //     if(error && "data" in error){
+    //         const errDetails = error.data as {message: string}
+    //         messageApi.open({
+    //             type: "error",
+    //             content: errDetails.message
+    //         })
+    //     }
+    // },[error])
+    //   dataSource = cartData?.products.map((product: any) => {
+    //         return {
+    //             key: product._id,
+    //             name: product.productId.name,
+    //             price: product.productId.price,
+    //             imgUrl: product.productId.imgUrl[0],
+    //             color: product.color,
+    //             size: product.size,
+    //             quantity: product.quantity
+    //         };
+    //     });
+    // }else{  
+    //   dataSource = cart.map((product: any) => {
+    //     return {
+    //         key: product.productId,
+    //         name: product.name,
+    //         price: product.price,
+    //         imgUrl: product.imgUrl,
+    //         color: product.color,
+    //         size: product.size,
+    //         quantity: product.quantity
+    //     };
+    // });
     
-    }
+    // }
 
       
-      const handleIncrease = (productId: string) => {
-        console.log(productId);
+      // const handleIncrease = (productId: string) => {
+      //   console.log(productId);
         
-        // Find the product in the cartData based on productId and get its current quantity
-        const productToUpdate = cartData?.products.find((product:any) => product._id === productId);
+      //   // Find the product in the cartData based on productId and get its current quantity
+      //   const productToUpdate = cartData?.products.find((product:any) => product._id === productId);
         
-        if (productToUpdate) {
+      //   if (productToUpdate) {
           
-          // Call the addToCart function to update the quantity
-          addToCart({
-            productId: productToUpdate.productId._id,
-            color: productToUpdate.color,  
-            size: productToUpdate.size,
-            quantity: productToUpdate.quantity,
-          })
+      //     // Call the addToCart function to update the quantity
+      //     addToCart({
+      //       productId: productToUpdate.productId._id,
+      //       color: productToUpdate.color,  
+      //       size: productToUpdate.size,
+      //       quantity: productToUpdate.quantity,
+      //     })
+      //   }
+      // };
+      
+      
+      
+      const updatedDataSource = cartData?.products.map((product: any) => {
+        return {
+          key: product._id,
+          name: product.productId.name,
+          price: product.productId.price,
+          imgUrl: product.productId.imgUrl[0],
+          color: product.color,
+          size: product.size,
+          quantity: productQuantities[product._id] || product.quantity,
+        };
+      });
+
+      dataSource = updatedDataSource
+      
+      if(token){
+        dataSource
+        var handleIncrease = (productId: string) => {
+          const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
+      
+          if (productToUpdate) {
+            const updatedProductQuantities = {
+              ...productQuantities,
+              [productId]: (productToUpdate.quantity) + quantitys,
+            };
+      
+            setProductQuantities(updatedProductQuantities);
+      
+            addToCart({
+              productId: productToUpdate.productId._id,
+              color: productToUpdate.color,
+              size: productToUpdate.size,
+              quantity: quantitys,
+            });
+          }
+        };
+      }else{  
+          dataSource = cart.map((product: any) => {
+            return {
+                key: product.productId,
+                name: product.name,
+                price: product.price,
+                imgUrl: product.imgUrl,
+                color: product.color,
+                size: product.size,
+                quantity: productQuantities[product._id] || product.quantity,
+            };
+
+        });
+
+        var handleIncrease = (productId: string) => {
+          const productToUpdate = cart.find((product: any) => product.productId === productId);
+          console.log(productToUpdate);
+          
+          if (productToUpdate) {
+            const updatedProductQuantities = {
+              ...productQuantities,
+              [productId]: (productToUpdate.quantity) + quantitys,
+            };
+            console.log(updatedProductQuantities);
+            
+      
+            setProductQuantities(updatedProductQuantities);
+
+            cart.push({
+              productId: productToUpdate._id,
+              name: productToUpdate.name,
+              imgUrl: productToUpdate.imgUrl[0],
+              quantity: productToUpdate.quantity + 1,
+              color: productToUpdate.color,
+              size: productToUpdate.size,
+              price: productToUpdate.price,
+            })
+            
+          }
+        };
+        
         }
-      };
-      
-      
+
 
     
     const confirm = (productId: string) => {
@@ -154,7 +236,7 @@ const Cart = () => {
         </button>
         <Input 
         style={{borderTop: "1px solid #dbd4d4", borderRadius:0, borderBottom: "1px solid #dbd4d4"}}
-          defaultValue={quantity}
+        value={productQuantities[record.key] || quantity}
           className="quantity-input"
           readOnly
         />
