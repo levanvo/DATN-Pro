@@ -55,9 +55,6 @@ const GetAllDeletedProducts = () => {
       message.success("Xóa thành công")
       setIsLoadingScreen(false)
 
-      setTimeout(() => {
-        window.location.reload()
-      },2500)
     } catch (error) {
       message.error("Đã có lỗi xảy ra vui lòng thử lại")
       setIsLoadingScreen(false)
@@ -77,10 +74,6 @@ const GetAllDeletedProducts = () => {
       await Promise.all(productIdAll.map((productId) => restore(productId)))
       message.success("Khôi phục sản phẩm thành công")
       setIsLoadingScreen(false)
-
-      setTimeout(() => {
-        window.location.reload()
-      },2500)
       
     } catch (error) {
       message.error("Đã có lỗi xảy ra vui lòng thử lại")

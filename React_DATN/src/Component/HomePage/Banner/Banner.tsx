@@ -3,45 +3,27 @@ import React from 'react'
 
 const Banner = () => {
     return (
-        <div className='w-[90vw] mx-auto'>
-            <div className="banner-area">
-                <div className="single-banner">
-                    <div className="part-1">
-                        <div className="box-1 box">
-                            <h4>nike ari max 2015</h4>
-                            <h2>air superiority</h2>
-                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                            <a href="#">shopping now</a>
-                        </div>
-                        <div className="box-2">
-                            <a href="#">
-                                <img src="img/banner/banner-2.jpg" />
-                            </a>
-                        </div>
-                    </div>
-                    <div className="part-2">
-                        <div className="box-3">
-                            <a href="#">
-                                <img src="img/banner/banner-1.jpg" />
-                            </a>
-                        </div>
-                        <div className="box-4 box">
-                            <h4>nike ari max 2015</h4>
-                            <h2>air superiority</h2>
-                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                            <a href="#">shopping now</a>
-                        </div>
-                        <div className="box-5">
-                            <a href="#">
-                                <img src="img/banner/banner-3.jpg" />
-                            </a>
-                        </div>
-                        <div className="box-6">
-                            <a href="#">
-                                <img src="img/banner/banner-4.jpg" />
-                            </a>
-                        </div>
-                    </div>
+        <div className='w-[100vw] mx-auto'>
+            <div className="flex justify-center flex-wrap space-x-5">
+                <div className="flex justify-center space-x-2 my-auto w-[250px] h-14 bg-gray-100 hover:bg-gray-50 m-2">
+                    <img className='w-7 h-7 mt-3' src="../../../../img/icons/support.png" alt="" />
+                    <p className='my-auto text-xl'>Dịch vụ</p>
+                </div>
+                <div className="flex justify-center space-x-2 my-auto w-[250px] h-14 bg-gray-100 hover:bg-gray-50 m-2">
+                    <img className='w-7 h-7 mt-3' src="../../../../img/icons/badge.png" alt="" />
+                    <p className='my-auto text-xl'>Chất lượng</p>
+                </div>
+                <div className="flex justify-center space-x-2 my-auto w-[250px] h-14 bg-gray-100 hover:bg-gray-50 m-2">
+                    <img className='w-7 h-7 mt-3' src="../../../../img/icons/advice.png" alt="" />
+                    <p className='my-auto text-xl'>Tư vấn & Thiết kế</p>
+                </div>
+                <div className="flex justify-center space-x-2 my-auto w-[250px] h-14 bg-gray-100 hover:bg-gray-50 m-2">
+                    <img className='w-7 h-7 mt-3' src="../../../../img/icons/gift.png" alt="" />
+                    <p className='my-auto text-xl'>Sản phẩm</p>
+                </div>
+                <div className="flex justify-center space-x-2 my-auto w-[250px] h-14 bg-gray-100 hover:bg-gray-50 m-2">
+                    <img className='w-7 h-7 mt-3' src="../../../../img/icons/hot-line.png" alt="" />
+                    <p className='my-auto text-xl'>Liên hệ</p>
                 </div>
             </div>
         </div>

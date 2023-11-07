@@ -4,15 +4,16 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useGetAllCategoryQuery } from "../Services/Api_Category";
 import { useGetAllSizeQuery } from "../Services/Api_Size";
-import { useGetColorsQuery } from "../Services/api_Color";
+import { useGetColorsQuery } from "../Services/Api_Color";
 import { Button } from "antd";
 import { useLocation } from "react-router-dom";
+import Loading from "../Component/Loading";
 
 const Products = () => {
-  const { data: producData, isLoading, error } = useGetAllProductQuery();
-  const { data: categoryData, isLoading: isLoadingCategory, error: errorCategory } = useGetAllCategoryQuery();
-  const { data: sizeData, isLoading: isLoadingSize, error: errorSize } = useGetAllSizeQuery();
-  const { data: colorData, isLoading: isLoadingColor, error: errorColor } = useGetColorsQuery();
+  const { data: producData, isLoadingData, error } = useGetAllProductQuery();
+  const { data: categoryData, error: errorCategory } = useGetAllCategoryQuery();
+  const { data: sizeData, error: errorSize } = useGetAllSizeQuery();
+  const { data: colorData, error: errorColor } = useGetColorsQuery();
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -107,15 +108,13 @@ const Products = () => {
       currency: "VND",
     }).format(value);
 
-  if (isLoadingCategory || isLoadingSize || isLoadingColor || isLoading) {
-    return <div>Loading...</div>;
-  }
 
   if (errorCategory || errorSize || errorColor || error) {
     return <div>Error</div>;
   }
   return (
     <div className="w-[90vw] mx-auto">
+      {isLoadingData && <Loading />}
       <div className="product-banner">
         <img src="img/product/banner.jpg" alt="" />
       </div>

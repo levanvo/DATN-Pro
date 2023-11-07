@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { ICart, ICartItem } from "../Models/interfaces";
+import { ProductItem } from "../Models/interfaces";
 import { pause } from "../utils/pause";
 
 const cartApi = createApi({
@@ -8,8 +8,11 @@ const cartApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8080",
         prepareHeaders: (headers) => {
-            headers.set("Content-type", "appliation/json"),
-                headers.set("authorization", "Bearer " + JSON.parse(localStorage.getItem("token") || ""))
+            headers.set("Content-Type", "application/json");
+            const token = localStorage.getItem("token") || "";
+            if (token) {
+                headers.set("Authorization", `Bearer ${JSON.parse(token)}`);
+            }
             return headers;
         },
         fetchFn: async (...args) => (
@@ -18,22 +21,22 @@ const cartApi = createApi({
         )
     }),
     endpoints: (builder) => ({
-        getCart: builder.query<ICart, void>({
+        getCart: builder.query<any,void>({
             query: () => "/api/cart",
             providesTags: ["Cart"]
         }),
 
-        addToCart: builder.mutation<ICart, ICartItem[]>({
-            query: (products) => ({
+        addToCart: builder.mutation<ProductItem,ProductItem>({
+            query: (product) => ({
                 url: "/api/cart",
                 method: "POST",
-                body: { products },
+                body: product
             }),
             invalidatesTags: ["Cart"]
 
         }),
 
-        deleteFromCart: builder.mutation<ICart, string>({
+        deleteFromCart: builder.mutation<void, string>({
             query: (productId) => ({
                 url: `/api/cart/${productId}`,
                 method: "DELETE",
