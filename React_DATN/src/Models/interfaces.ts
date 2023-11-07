@@ -11,6 +11,7 @@ export interface IProduct {
   quantity?: number
   discount_code_id?: string
   poinId?: string
+  views: number; 
 }
 
 export interface ICategory {

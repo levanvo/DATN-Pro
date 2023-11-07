@@ -39,6 +39,10 @@ const productSchema = new mongoose.Schema(
     discount_code_id: {
       type: String,
     },
+    views: {
+      type: Number,
+      default: 0,
+    },
     inventory_number: Number, // số lượng tồn kho
     quantity_sold: Number, // số lượng đã bán
   },
