@@ -10,7 +10,8 @@ import {
   EditOutlined,
   HomeOutlined,
   ContainerOutlined,
-  PicCenterOutlined
+  PicCenterOutlined,
+  CalendarOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
@@ -47,6 +48,7 @@ const items: MenuItem[] = [
   getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
   getItem('Users', '7', <UserOutlined />, undefined, 'user/list'),
   getItem('Slide', '8', <PicCenterOutlined />, undefined, 'slide/list'),
+  getItem('Blog', '9', <CalendarOutlined />, undefined, 'blog/list'),
 ];
 
 const Layout_Admin: React.FC = () => {
@@ -61,7 +63,7 @@ const Layout_Admin: React.FC = () => {
         <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
           <div className="demo-logo-vertical" />
           <div className="flex justify-center">
-            <a href={`/`}><HomeOutlined className="scale-125 hover:scale-150 mx-auto mt-3"/></a>
+            <a href={`/`}><HomeOutlined className="scale-125 hover:scale-150 mx-auto mt-3" /></a>
           </div>
           <hr />
           <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={items} />
