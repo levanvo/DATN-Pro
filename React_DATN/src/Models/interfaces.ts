@@ -45,4 +45,10 @@ export interface ProductItem {
   size: number
 }
 
-
+export interface ISlider{
+  _id?:string,
+  id?:string,
+  titleSlider:string,
+  contentSlider:string,
+  imgSlider:string,
+}
