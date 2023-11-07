@@ -2,12 +2,12 @@ import { Outlet } from "react-router-dom"
 import Header from "../../Component/Header/Header"
 import Footer from "../../Component/Footer/Footer"
 
-const Layout_Web = ({ onSearch }) => {
+const Layout_Web = () => {
 
   return (
     <div>
 
-      <Header onSearch={onSearch} />
+      <Header />
 
       <main><Outlet /></main>
 

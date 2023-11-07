@@ -43,20 +43,13 @@ import PrivateRouter from "./Component/PrivateRouter";
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
-  const [searchKeyword, setSearchKeyword] = useState('');
-
-  const handleSearch = (keyword: string) => {
-    setSearchKeyword(keyword);
-  };
-
-
   Config();
   return (
     <Routes>
-      <Route path="/" element={<Layout_Web onSearch={handleSearch} />}>
+      <Route path="/" element={<Layout_Web />}>
         <Route index element={<HomePage />} />
         <Route path="cart" element={<Cart />} />
-        <Route path="products" element={<Products searchKeyword={searchKeyword} />} />
+        <Route path="products" element={<Products />} />
         <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetail />} />
