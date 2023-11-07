@@ -58,6 +58,16 @@ export const addToCart = async (req, res) => {
       );
       if(existingProduct){
       existingProduct.quantity += quantity;
+      }else{
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+          return res.status(400).json({ message: "Địa chỉ sản phẩm không hợp lệ." });
+        }
+        const productDocument = await Product.findById(productId);
+        if (!productDocument) {
+          return res.status(404).json({ message: "Không tìm thấy sản phẩm." });
+        }
+  
+        cart.products.unshift({ productId, color, size, quantity });
       }
     }else{
       if (!mongoose.Types.ObjectId.isValid(productId)) {
