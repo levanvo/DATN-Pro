@@ -29,7 +29,7 @@ const ProductDetail = () => {
   const { data: allProducts }: any = useGetAllProductQuery();
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
   const [addToCart] = useAddToCartMutation()
-  const {data:cartData} = useGetCartQuery()
+  const {data:cartData,error} = useGetCartQuery()
 
 
   let arrayPR: any = [];
@@ -59,7 +59,7 @@ const ProductDetail = () => {
   const Plus = () => {
     setQuantityBuy(getQuantityBuy + 1)
   };
-
+  
 
   const handleAddToCart = () => {
     if (!productDataOne || getQuantityBuy < 1 || !getColor || !getSize) {
@@ -68,27 +68,39 @@ const ProductDetail = () => {
     }
   
     const isAuthenticated = localStorage.getItem("token");
-  
+    
     if (isAuthenticated) {
-      const productItemIndex = cartData.products.findIndex((product:any)=>product.productId._id === productDataOne._id);
-      const productItem = cartData.products[productItemIndex];   
-      if (productItemIndex !== -1) {
-        const updatedProductItem = { ...productItem }; // Tạo bản sao của productItem
-        addToCart({
-          productId: updatedProductItem.productId._id,
-          color: updatedProductItem.color,  
-          size: updatedProductItem.size,
-          quantity: getQuantityBuy
-        });
-        message.success("Đã thêm sản phẩm vào giỏ hàng")
-      } else{
+      if(cartData===undefined || cartData?.products.length === 0){
         addToCart({
           productId: productDataOne._id,
           color: getColor,  
           size: getSize,
           quantity: getQuantityBuy,
         })
-      message.success("Đã thêm sản phẩm vào giỏ hàng")
+        message.success("Đã thêm sản phẩm vào giỏ hàng")
+      }else{
+        const productItemIndex = cartData.products.findIndex((product:any)=>product.productId._id == productDataOne._id && product.color == getColor && product.size == getSize);
+        console.log(productItemIndex);
+        
+        const productItem = cartData.products[productItemIndex];   
+        if (productItemIndex !== -1) {
+          const updatedProductItem = { ...productItem }; // Tạo bản sao của productItem
+          addToCart({
+            productId: updatedProductItem.productId._id,
+            color: updatedProductItem.color,  
+            size: updatedProductItem.size,
+            quantity: getQuantityBuy
+          });
+          message.success("Đã thêm sản phẩm vào giỏ hàng")
+        } else{
+          addToCart({
+            productId: productDataOne._id,
+            color: getColor,  
+            size: getSize,
+            quantity: getQuantityBuy,
+          })
+        message.success("Đã thêm sản phẩm vào giỏ hàng")
+        }
       }
       } else {
       // Xử lý khi chưa đăng nhập, tương tự như trước
