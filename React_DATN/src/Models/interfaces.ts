@@ -1,4 +1,3 @@
-
 export interface IProduct {
   _id?: string | number
   name: string
@@ -39,12 +38,21 @@ export interface ISize {
 }
 
 export interface ProductItem {
-  productId: string; 
-  quantity: number;
-  color: string,
+  productId: string
+  quantity: number
+  color: string
   size: number
 }
 
+export interface Cart {
+  products: ProductItem[]
+  userId?: string
+}
+
+export interface INewSletter {
+  _id?: string
+  email: string
+}
 export interface ISlider{
   _id?:string,
   id?:string,
