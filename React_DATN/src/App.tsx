@@ -36,11 +36,12 @@ import ProductsSize from "./Page/SizeProduct"
 import ListColor from "./Page/Admin/colorProduct/listColor"
 import CreateColor from "./Page/Admin/colorProduct/createColor"
 import UpdateColor from "./Page/Admin/colorProduct/updateColor"
-import Dashboard from "./Page/Admin/Dashboard"
-import GetAllDeletedProducts from "./Page/Admin/Product/getAllDeletedProducts"
-import PrivateRouter from "./Component/PrivateRouter"
+import Dashboard from "./Page/Admin/Dashboard";
+import GetAllDeletedProducts from "./Page/Admin/Product/getAllDeletedProducts";
+import PrivateRouter from "./Component/PrivateRouter";
+import SlideList from "./Page/Admin/Slide/SlideList";
+import AddSlide from "./Page/Admin/Slide/AddSlide";
 import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
-import EmailForm from "./Page/Admin/NewSletter/EmailForm"
 
 function App() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
@@ -103,10 +104,9 @@ function App() {
         <Route path="size/list" element={<SizeList />} />
         <Route path="size/add" element={<AdminSizeAdd />} />
         <Route path="size/:id/update" element={<AdminSizeUpdate />} />
-        <Route
-          path="restore-product-data"
-          element={<GetAllDeletedProducts />}
-        />
+        <Route path="slide/list" element={<SlideList />} />
+        <Route path="slide/add" element={<AddSlide />} />
+        <Route path="restore-product-data" element={<GetAllDeletedProducts />} />
         <Route path="new-sletter/list" element={<ListNewSletter />} />
       </Route>
       <Route path="*" element={<NotFound />} />

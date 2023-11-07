@@ -6,7 +6,8 @@ import mongoose from "mongoose"
 export const getCart = async(req,res) =>{
     try {
         // Lấy giỏ hàng dựa trên userId
-        const cart = await Cart.findOne({ userId: req.user._id }).populate({
+        const cart = await Cart.findOne({ userId: req.user._id })
+        .populate({
           path: "products.productId",
           model: "Product",
           populate: [

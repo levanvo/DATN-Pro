@@ -10,11 +10,12 @@ import {
   EditOutlined,
   HomeOutlined,
   ContainerOutlined,
-  MailOutlined,
-} from "@ant-design/icons"
-import type { MenuProps } from "antd"
-import { Breadcrumb, Layout, Menu, theme } from "antd"
-import { Outlet, Link } from "react-router-dom"
+MailOutlined,
+  PicCenterOutlined
+} from '@ant-design/icons';
+import type { MenuProps } from 'antd';
+import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Outlet, Link } from 'react-router-dom';
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -55,11 +56,12 @@ const items: MenuItem[] = [
       "restore-product-data"
     ),
   ]),
-  getItem("Bình luận", "5", <EditOutlined />, undefined, "comment/list"),
-  getItem("Danh mục", "6", <GoldOutlined />, undefined, "category/list"),
-  getItem("Users", "7", <UserOutlined />, undefined, "user/list"),
-  getItem("New Sletter", "8", <MailOutlined />, undefined, "new-sletter/list"),
-]
+  getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
+  getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
+  getItem('Users', '7', <UserOutlined />, undefined, 'user/list'),
+  getItem('Slide', '8', <PicCenterOutlined />, undefined, 'slide/list'),
+  getItem("New Sletter", "9", <MailOutlined />, undefined, "new-sletter/list"),
+];
 
 const Layout_Admin: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false)

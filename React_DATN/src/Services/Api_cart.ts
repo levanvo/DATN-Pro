@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Cart, ProductItem } from "../Models/interfaces";
+import { ProductItem } from "../Models/interfaces";
 import { pause } from "../utils/pause";
 
 const cartApi = createApi({
@@ -26,7 +26,7 @@ const cartApi = createApi({
             providesTags: ["Cart"]
         }),
 
-        addToCart: builder.mutation<Cart,ProductItem>({
+        addToCart: builder.mutation<ProductItem,ProductItem>({
             query: (product) => ({
                 url: "/api/cart",
                 method: "POST",

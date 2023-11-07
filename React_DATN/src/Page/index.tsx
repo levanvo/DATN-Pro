@@ -8,9 +8,11 @@ import New_products from '../Component/HomePage/New_products/New_products'
 import Testimonial from '../Component/HomePage/Testimonial/Testimonial'
 import Blog from '../Component/HomePage/Blog/Blog'
 import Newsleter from '../Component/HomePage/Newsleter/Newsleter'
+import Header from '../Component/Header/Header'
 const HomePage = () => {
     return (
         <>
+            <Header />
             <Slider />
             <Banner />
             <Product />

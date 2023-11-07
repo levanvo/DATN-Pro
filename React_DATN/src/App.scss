@@ -421,3 +421,38 @@
     margin-right: calc(-.5 * var(--bs-gutter-x));
     margin-left: calc(-.5 * var(--bs-gutter-x));
 }
+
+
+/* App.css */
+.quantity-container {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    width: 120px;
+    margin-left: 30px;
+  }
+  
+  .quantity-button {
+    background-color: #f4f4f4;
+    border: none;
+    color: #000;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 0px 8px 2px;
+    transition: background-color 0.2s;
+    border: 1px solid #dbd4d4;
+    height: 36px;
+  }
+  
+  .quantity-button:hover {
+    background-color: #e6e6e6;
+  }
+
+  .quantity-input {
+    border: none;
+    text-align: center;
+    width: 50px;
+    font-size: 16px;
+  }
+
+  

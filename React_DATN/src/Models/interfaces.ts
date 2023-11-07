@@ -53,3 +53,10 @@ export interface INewSletter {
   _id?: string
   email: string
 }
+export interface ISlider{
+  _id?:string,
+  id?:string,
+  titleSlider:string,
+  contentSlider:string,
+  imgSlider:string,
+}
