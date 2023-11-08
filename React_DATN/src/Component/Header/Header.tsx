@@ -165,7 +165,6 @@ const Header = () => {
                       </div>
                       <p>{user.username}</p>
                     </div>
-                    <p>{user.username}</p>
                   </div>
                 ) : (
                   <div className="account-menu">

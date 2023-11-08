@@ -10,8 +10,9 @@ import {
   EditOutlined,
   HomeOutlined,
   ContainerOutlined,
-MailOutlined,
-  PicCenterOutlined
+  PicCenterOutlined,
+  CalendarOutlined,
+  MailOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
@@ -88,7 +89,7 @@ const Layout_Admin: React.FC = () => {
           </div>
           <hr />
           {/* <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={items} /> */}
-          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter(item => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items} />
+          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter((item:any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items} />
         </Sider>
         <Layout>
           <Header style={{ padding: 0, background: colorBgContainer }} />

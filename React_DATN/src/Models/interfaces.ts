@@ -39,6 +39,18 @@ export interface ISize {
 }
 
 export interface ProductItem {
+  productId: string;
+  quantity: number;
+  color: string,
+  size: number
+}
+
+export interface ISlider {
+  _id?: string,
+  id?: string,
+  titleSlider: string,
+  contentSlider: string,
+  imgSlider: string,
   productId: string
   quantity: number
   color: string
@@ -60,4 +72,13 @@ export interface ISlider{
   titleSlider:string,
   contentSlider:string,
   imgSlider:string,
+}
+export interface IBlog {
+  _id?: number | string,
+  title: string,
+  imgUrl: any[],
+  description: string,
+  author: string,
+  createdAt?: string,
+  updatedAt?:string
 }
