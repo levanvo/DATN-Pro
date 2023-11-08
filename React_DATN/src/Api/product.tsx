@@ -38,7 +38,7 @@ const productApi = createApi({
     }),
     updateProduct: builder.mutation<IProduct, IProduct>({
       query: (product) => ({
-        url: `products/${product.id}`,
+        url: `products/${product._id}`,
         method: "PUT",
         body: product,
       }),

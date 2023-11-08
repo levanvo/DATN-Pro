@@ -52,15 +52,24 @@ export const addToCart = async (req, res) => {
       return res.status(400).json({ message: "Dữ liệu sản phẩm không hợp lệ." });
     }
 
-    const existingProduct = cart.products.find(
-      (item) => item.productId.equals(productId) && item.color === color && item.size === size
-    );
-
-    if (existingProduct) {
-      // Sản phẩm đã tồn tại trong giỏ hàng với cùng productId, color và size
-      // Chỉ cập nhật giá trị quantity cho sản phẩm này
+    if(cart.products.length != 0 ){
+      const existingProduct = cart.products.find(
+        (item) => item.productId.equals(productId) && item.color === color && item.size === size
+      );
+      if(existingProduct){
       existingProduct.quantity += quantity;
-    } else {
+      }else{
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+          return res.status(400).json({ message: "Địa chỉ sản phẩm không hợp lệ." });
+        }
+        const productDocument = await Product.findById(productId);
+        if (!productDocument) {
+          return res.status(404).json({ message: "Không tìm thấy sản phẩm." });
+        }
+  
+        cart.products.unshift({ productId, color, size, quantity });
+      }
+    }else{
       if (!mongoose.Types.ObjectId.isValid(productId)) {
         return res.status(400).json({ message: "Địa chỉ sản phẩm không hợp lệ." });
       }
@@ -72,13 +81,35 @@ export const addToCart = async (req, res) => {
       cart.products.unshift({ productId, color, size, quantity });
     }
 
-    // Lưu giỏ hàng
     await cart.save();
 
     res.status(200).json({
       message: 'Sản phẩm đã được thêm vào giỏ hàng',
       cart
     });
+
+    //   // Sản phẩm đã tồn tại trong giỏ hàng với cùng productId, color và size
+    //   // Chỉ cập nhật giá trị quantity cho sản phẩm này
+    //   existingProduct.quantity += quantity;
+    // } else {
+    //   if (!mongoose.Types.ObjectId.isValid(productId)) {
+    //     return res.status(400).json({ message: "Địa chỉ sản phẩm không hợp lệ." });
+    //   }
+    //   const productDocument = await Product.findById(productId);
+    //   if (!productDocument) {
+    //     return res.status(404).json({ message: "Không tìm thấy sản phẩm." });
+    //   }
+
+    //   cart.products.unshift({ productId, color, size, quantity });
+    // }
+
+    // // Lưu giỏ hàng
+    // await cart.save();
+
+    // res.status(200).json({
+    //   message: 'Sản phẩm đã được thêm vào giỏ hàng',
+    //   cart
+    // });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
