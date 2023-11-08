@@ -32,7 +32,7 @@ const AddBlog = () => {
     const [previewImage, setPreviewImage] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
     const [isLoadingScreen, setIsLoadingScreen] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage()
+    const [messageApi, contextHolder] = message.useMessage();
 
 
     const handleCancel = () => setPreviewOpen(false);
@@ -67,20 +67,18 @@ const AddBlog = () => {
         try {
             setIsLoadingScreen(true);
             const formData = new FormData();
-            fileList.forEach((file) => {
+            fileList.map((file) => {
                 if (file.originFileObj) {
-                    formData.append("images", file.originFileObj);
+                    formData.append("images", file.originFileObj)
                 }
             });
 
             const response = await axios.post(
-                "http://localhost:8080/api/images/upload", // Your Cloudinary upload endpoint
+                "http://localhost:8080/api/images/upload",
                 formData
-            );
+            )
+            console.log("result-images: ", response);
 
-            console.log(response);
-
-            // Assuming response.data contains the uploaded image URLs
             const imageUrls = response.data.urls.map((urls: urlObject) => urls.url);
 
             if (response.status === 200) {
@@ -100,14 +98,17 @@ const AddBlog = () => {
                         navigate("/admin/blog/list")
                     }, 2000)
                 });
-
-                console.log("dữ liệu", newBlog);
             }
             setIsLoadingScreen(false);
+
+
         } catch (error) {
-            console.error("Error uploading images:", error);
             setIsLoadingScreen(false);
-        }
+            messageApi.open({
+                type: "error",
+                content: "Ảnh không tương thích để thêm, hãy chọn ảnh khác !.",
+            });
+        };
     };
 
     const modules = {
@@ -125,7 +126,6 @@ const AddBlog = () => {
             ['clean'],
         ],
         clipboard: {
-            // toggle to add extra line breaks when pasting HTML:
             matchVisual: false,
         },
     }
@@ -156,11 +156,12 @@ const AddBlog = () => {
                         fileList={fileList}
                         onPreview={handlePreview}
                         onChange={handleChange}
-                        beforeUpload={beforeUpload} // Prevent automatic uploading
+                        beforeUpload={beforeUpload}
                         multiple
                     >
                         {fileList.length >= 8 ? null : uploadButton}
                     </Upload>
+                    <p className='text-xs text-red-500'>(*) lưu ý một số ảnh không thể tải lên, ưu tiên dùng (.png, .jpg, .jpeg)</p>
                 </Form.Item>
                 <Form.Item name="description" label="Mô tả chi tiết" rules={[{ required: true, message: 'Bạn chưa nhập mô tả' },
                 { whitespace: true, message: 'Không được để trống mô tả' }]}>

@@ -55,8 +55,9 @@ export interface ISlider {
 export interface IBlog {
   _id?: number | string,
   title: string,
-  imgUrl: string[],
+  imgUrl: any[],
   description: string,
   author: string,
-  createdAt: string
+  createdAt?: string,
+  updatedAt?:string
 }

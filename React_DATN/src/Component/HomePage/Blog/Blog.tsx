@@ -1,13 +1,12 @@
 import React from 'react'
 import { useGetAllBlogsQuery } from '../../../Services/Api_Blogs'
 import { IBlog } from '../../../Models/interfaces'
-// import { Fragment } from 'react';
 import parse from 'html-react-parser';
 
 
 
 const Blog = () => {
-    const { data: blogData } = useGetAllBlogsQuery()
+    const { data: blogData }:any = useGetAllBlogsQuery()
 
     return (
         <div className='w-[90vw] mx-auto'>
