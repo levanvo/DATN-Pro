@@ -36,6 +36,10 @@ function getItem(
   } as MenuItem
 }
 
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+const isStaff = user?.role === "staff";
+
 const items: MenuItem[] = [
   getItem("Thống kê", "0", <BarChartOutlined />, undefined, "/admin"),
   getItem("Kho", "sub1", <HddOutlined />, [
@@ -59,8 +63,9 @@ const items: MenuItem[] = [
   getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
   getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
   getItem('Users', '7', <UserOutlined />, undefined, 'user/list'),
-  getItem('Slide', '8', <PicCenterOutlined />, undefined, 'slide/list'),
-  getItem("New Sletter", "9", <MailOutlined />, undefined, "new-sletter/list"),
+  getItem('Bill', '8', <HddOutlined />, undefined, 'bill/list'),
+  getItem('Slide', '9', <PicCenterOutlined />, undefined, 'slide/list'),
+  getItem("New Sletter", "10", <MailOutlined />, undefined, "new-sletter/list"),
 ];
 
 const Layout_Admin: React.FC = () => {
@@ -79,17 +84,11 @@ const Layout_Admin: React.FC = () => {
         >
           <div className="demo-logo-vertical" />
           <div className="flex justify-center">
-            <a href={`/`}>
-              <HomeOutlined className="scale-125 hover:scale-150 mx-auto mt-3" />
-            </a>
+            <a href={`/`}><HomeOutlined className="scale-125 hover:scale-150 mx-auto mt-3" /></a>
           </div>
           <hr />
-          <Menu
-            theme="dark"
-            defaultSelectedKeys={["0"]}
-            mode="inline"
-            items={items}
-          />
+          {/* <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={items} /> */}
+          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter(item => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items} />
         </Sider>
         <Layout>
           <Header style={{ padding: 0, background: colorBgContainer }} />
