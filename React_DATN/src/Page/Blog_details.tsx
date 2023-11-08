@@ -9,7 +9,7 @@ const Blog_details = () => {
 
 
     return (
-        <div className='w-[90vw] mx-auto'>
+        <div className='w-[90vw] mx-auto mt-36'>
             <div className="blog-details-main">
                 <div className="container">
                     <div className="row">
@@ -23,63 +23,10 @@ const Blog_details = () => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-lg-3">
-                            {/* <div className="product-sidebar">
-                                <div className="sidebar-title">
-                                    <h2>Shopping Options</h2>
-                                </div>
-                                <div className="single-sidebar">
-                                    <div className="single-sidebar-title">
-                                        <h3>Category</h3>
-                                    </div>
-                                    <div className="single-sidebar-content">
-                                        <ul>
-                                            <li><a href="#">Dresses (4)</a></li>
-                                            <li><a href="#">shoes (6)</a></li>
-                                            <li><a href="#">Handbags (1)</a></li>
-                                            <li><a href="#">Clothing (3)</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="single-sidebar">
-                                    <div className="single-sidebar-title">
-                                        <h3>Color</h3>
-                                    </div>
-                                    <div className="single-sidebar-content">
-                                        <ul>
-                                            <li><a href="#">Black (2)</a></li>
-                                            <li><a href="#">Blue (2)</a></li>
-                                            <li><a href="#">Green (4)</a></li>
-                                            <li><a href="#">Grey (2)</a></li>
-                                            <li><a href="#">Red (2)</a></li>
-                                            <li><a href="#">White (2)</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="single-sidebar">
-                                    <div className="single-sidebar-title">
-                                        <h3>Manufacturer</h3>
-                                    </div>
-                                    <div className="single-sidebar-content">
-                                        <ul>
-                                            <li><a href="#">Calvin Klein (2)</a></li>
-                                            <li><a href="#">Diesel (2)</a></li>
-                                            <li><a href="#">option value (1)</a></li>
-                                            <li><a href="#">Polo (2)</a></li>
-                                            <li><a href="#">store view (4)</a></li>
-                                            <li><a href="#">Tommy Hilfiger (2)</a></li>
-                                            <li><a href="#">will be used (1)</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="banner-left">
-                                    <a href="#">
-                                        <img src="img/product/banner_left.jpg" alt="" />
-                                    </a>
-                                </div>
-                            </div> */}
-                        </div>
-                        <div className="col-lg-9">
+                        {/* <div className="col-lg-2">
+                            
+                        </div> */}
+                        <div className="">
                             <div className="row">
                                 <div className="col-md-12">
                                     <div className="sidebar-title">
@@ -88,9 +35,9 @@ const Blog_details = () => {
                                     <div className="blog-area">
                                         <div className="blog-post-details">
                                             <div className="blog-img">
-                                                <a href="#">
-                                                    <img className="w-[500px] h-[500px] object-cover" src={blogData?.imgUrl[0]} alt="" />
-                                                </a>
+                                                {/* <a href="#"> */}
+                                                    <img className="w-[600px] h-[500px] object-contain" src={blogData?.imgUrl[0]} alt="" />
+                                                {/* </a> */}
                                             </div>
                                             <div className="blog-content">
                                                 <a href="#" className="blog-title">{blogData?.title}</a>

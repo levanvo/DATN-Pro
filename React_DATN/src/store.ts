@@ -3,10 +3,11 @@ import productApi from "./Services/Api_Product";
 import categoryApi from "./Services/Api_Category";
 import userApi from "./Services/Api_User";
 import sizeApi from "./Services/Api_Size";
-import { colorApi } from "./Services/api_Color"
+import { colorApi } from "./Services/Api_Color"
 import cartApi from "./Services/Api_cart";
 import slideApi from "./Services/Api_Slide";
 import blogApi from "./Services/Api_Blogs";
+import newSletterApi from "./Services/Api_newSletter"
 
 export const store = configureStore({
     reducer: {
@@ -18,17 +19,19 @@ export const store = configureStore({
         "cart": cartApi.reducer,
         "slide": slideApi.reducer,
         "blogs": blogApi.reducer,
+        "newSletterApi": newSletterApi.reducer,
 
     },
     middleware: defaultMiddleware => defaultMiddleware()
-        .concat(productApi.middleware)
-        .concat(categoryApi.middleware)
-        .concat(userApi.middleware)
-        .concat(sizeApi.middleware)
-        .concat(colorApi.middleware)
-        .concat(cartApi.middleware)
-        .concat(slideApi.middleware)
-        .concat(blogApi.middleware)
+    .concat(productApi.middleware)
+    .concat(categoryApi.middleware)
+    .concat(userApi.middleware)
+    .concat(sizeApi.middleware)
+    .concat(colorApi.middleware)
+    .concat(cartApi.middleware)
+    .concat(slideApi.middleware)
+    .concat(newSletterApi.middleware)
+    .concat(blogApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>
