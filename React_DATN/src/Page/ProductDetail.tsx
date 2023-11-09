@@ -117,7 +117,8 @@ const ProductDetail = () => {
           item.size === getSize
       );
       
-      
+      const maxId = existingCart.reduce((max:any, item:any) => (item.id > max ? item.id : max), 0);
+      const newId = maxId + 1;
   
       if (existingProductIndex !== -1) {
         // Sản phẩm đã tồn tại trong giỏ hàng với cùng productId, color và size
@@ -126,6 +127,7 @@ const ProductDetail = () => {
       } else {
         // Nếu sản phẩm không tồn tại trong giỏ hàng, tạo sản phẩm mới và thêm vào mảng giỏ hàng
         existingCart.push({
+          id: newId,
           productId: productDataOne._id,
           name: productDataOne.name,
           imgUrl: productDataOne.imgUrl[0],
