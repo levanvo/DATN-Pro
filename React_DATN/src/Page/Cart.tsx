@@ -13,19 +13,24 @@ const Cart = () => {
     const [deleteCart] = useDeleteFromCartMutation();
     const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
     const [addToCart] = useAddToCartMutation()
-    const cart= JSON.parse(localStorage.getItem('cart') || "");
+    const [localCart, setLocalCart] = useState<any[]>(JSON.parse(localStorage.getItem('cart') || '[]'));
     const token = localStorage.getItem('token');
     const [productQuantities, setProductQuantities] = useState<any>({});
-    const [isPlus, setIsPlus] = useState(false);
-    const [isMinus, setIsMinus] = useState(false);
     const [updateQuantity] = useUpdateCartMutation()
+    const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
+
 
     const rowSelection = {
-        selectedRowKeys: selectedProductId,
-        onChange: (selectedRowKeys: React.Key[]) => {
-          setSelectedProductId(selectedRowKeys)
-        },
-      };
+      selectedRowKeys: selectedProductId,
+      onChange: (selectedRowKeys: React.Key[]) => {
+        setSelectedProductId(selectedRowKeys);
+    
+        // Lấy danh sách sản phẩm được chọn
+        const selectedProducts = dataSource.filter((product) => selectedRowKeys.includes(product.key));
+        setSelectedProducts(selectedProducts);
+      },
+    };
+    
       
 
     // Khai báo biến dataSource
@@ -46,6 +51,44 @@ const Cart = () => {
       });
 
       dataSource = updatedDataSource
+      console.log(selectedProducts);
+      
+
+      // thực hiện tính tổng tiền với người dùng k có tài khoản
+      const calculateTotal = () => {
+        if (token) {
+          let total = 0;
+
+          selectedProducts.forEach((product) => {
+            total += product.price * (product.quantity);
+          });
+
+          return total;
+        } else {
+          // Nếu không có token, thực hiện tính tổng tiền từ localCart
+          let total = 0;
+
+          selectedProducts.forEach((product) => {
+            total += product.price * (product.quantity);
+          });
+
+          return total;
+        }
+      };
+
+
+    const [totalAmount, setTotalAmount] = useState<number>(calculateTotal());
+      
+      useEffect(() => {
+        // Gọi hàm updateTotalAmount khi selectedProducts thay đổi
+        updateTotalAmount();
+      }, [selectedProducts]);
+
+      //Cập nhật tổng tiền mỗi khi thực hiện chọn sản phẩm
+      const updateTotalAmount = () => {
+        const total = calculateTotal();
+        setTotalAmount(total);
+      };
       
 
       const handleIncrease = (productId: string) => {
@@ -104,45 +147,52 @@ const Cart = () => {
         }
       };
 
+      // Hàm giảm số lượng khi người dùng không có tài khoản
       const handleTru = (productId: string) => {
-          const productToUpdate = cart.find((product: any) => product.id === productId);
-          console.log(productToUpdate);
-          
-          if (productToUpdate) {
-            const updatedProductQuantities = {
-              ...productQuantities,
-              [productId]: (productToUpdate.quantity) - 1,
-            };
-            console.log(productQuantities);
-            
-            
-            setProductQuantities(updatedProductQuantities);
-        
-            cart.push({
-              id: productToUpdate._id,
-              productId: productToUpdate.productId,
-              name: productToUpdate.name,
-              imgUrl: productToUpdate.imgUrl,
-              quantity: productToUpdate.quantity - 1,
-              color: productToUpdate.color,
-              size: productToUpdate.size,
-              price: productToUpdate.price,
-            })
-            
-          }
-        };
+        const productToUpdate = localCart.find((product: any) => product.id === productId);
+      
+        if (productToUpdate && productToUpdate.quantity > 1) {
+          const updatedLocalCart = localCart.map((product) =>
+            product.id === productId
+              ? {
+                  ...product,
+                  quantity: product.quantity - 1,
+                }
+              : product
+          );
+          setLocalCart(updatedLocalCart);
+          localStorage.setItem('cart', JSON.stringify(updatedLocalCart));
+        }else{
+          message.error("Số lượng không thể giảm thêm")
+        }
+      };
+
+       // Hàm tăng số lượng khi người dùng có tài khoản
+       const handleCong = (productId: string) => {
+        const productToUpdate = localCart.find((product: any) => product.id === productId);
+      
+        if (productToUpdate && productToUpdate.quantity < 10) {
+          const updatedLocalCart = localCart.map((product) =>
+            product.id === productId
+              ? {
+                  ...product,
+                  quantity: product.quantity + 1,
+                }
+              : product
+          );
+                
+          setLocalCart(updatedLocalCart);
+          localStorage.setItem('cart', JSON.stringify(updatedLocalCart));
+        }else{
+          message.error("Số lượng không thể tăng thêm")
+        }
+      };
+      
 
       if(token){
         dataSource
-        if(isPlus){
-          handleIncrease(cartData.products.productId);
-        }
-
-        if(isMinus){
-          handleMinus(cartData.products.productId)
-        }
       }else{  
-          dataSource = cart.map((product: any) => {
+          dataSource = localCart.map((product: any) => {
             return {
                 key: product.id,
                 name: product.name,
@@ -156,9 +206,23 @@ const Cart = () => {
         });
         
       }
+      
 
+      // Hàm thực hiện xóa sản phẩm của người dùng không có tài khoản
+      const confirmCart = (productId: string) => {
+      
+        // Thực hiện xóa sản phẩm khỏi localStorage khi không có token
+        const deleteCart = localCart.filter((product: any) => product.id !== productId);
+        localStorage.setItem('cart', JSON.stringify(deleteCart));
+        setLocalCart(deleteCart);
+        messageApi.open({
+          type: 'success',
+          content: 'Xóa sản phẩm khỏi giỏ hàng thành công',
+        });
+      };
+      
 
-    
+    // Hàm thực hiện xóa sản phẩm của người dùng có tài khoản
     const confirm = (productId: string) => {
         
         deleteCart(productId)
@@ -226,7 +290,6 @@ const Cart = () => {
             } else {
               handleTru(record.key); // Thực hiện handleTru nếu không có token
             }
-            setIsMinus(true);
           }}
         >
           -
@@ -240,8 +303,11 @@ const Cart = () => {
         <button
           className="quantity-button"
           onClick={() => {
-            handleIncrease(record.key);
-            setIsPlus(true); // Đánh dấu người dùng đã click
+            if (token) {
+              handleIncrease(record.key); // Thực hiện handleIncrease nếu có token
+            } else {
+              handleCong(record.key); // Thực hiện handleCong nếu không có token
+            }
           }}
         >
           +
@@ -265,22 +331,27 @@ const Cart = () => {
           title: 'Action',
           key: 'action',
           render: ({ key: id }: any) => (
-            <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
+            <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: 'center' }}>
               <Popconfirm
                 title="Bạn có chắc chắn muốn xóa không?"
                 icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                onConfirm={() => confirm(id)}
-                okText={
-                  <span style={{ color: 'black' }}>Yes</span>
-                }
+                onConfirm={() => {
+                  if (token) {
+                    confirm(id); // Thực hiện confirm nếu có token
+                  } else {
+                    confirmCart(id); // Thực hiện confirmCart nếu không có token
+                  }
+                }}
+                okText={<span style={{ color: 'black' }}>Yes</span>}
                 cancelText="No"
               >
-                <DeleteFilled style={{ color: '#FF0000', fontSize: "20px" }} />
+                <DeleteFilled style={{ color: '#FF0000', fontSize: '20px' }} />
               </Popconfirm>
             </div>
           ),
           align: 'center',
         },
+        
       ];
 
     return (
@@ -308,84 +379,16 @@ const Cart = () => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-md-4">
-                            <div className="discount-code">
-                                <h3>Discount Codes</h3>
-                                <p>Enter your coupon code if you have one.</p>
-                                <input type="text" />
-                                <div className="shopping-button">
-                                    <button type="submit">apply coupon</button>
-                                </div>
-                            </div>
+                      <div className="col-md-4">
+                        <div className="totals">
+                          {/* <p>Subtotal <span>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></p> */}
+                          <h3>Tổng tiền <span>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></h3>
+                          <div className="shopping-button">
+                            <button type="submit">Checkout</button>
+                          </div>
                         </div>
-                        <div className="col-md-4">
-                            <div className="estimate-shipping">
-                                <h3>Estimate Shipping and Tax</h3>
-                                <p>Enter your destination to get a shipping estimate.</p>
-                                <form action="#">
-                                    <div className="form-box">
-                                        <div className="form-name">
-                                            <label> country <em>*</em> </label>
-                                            <select>
-                                                <option value="1">Afghanistan</option>
-                                                <option value="1">Algeria</option>
-                                                <option value="1">American Samoa</option>
-                                                <option value="1">Australia</option>
-                                                <option value="1">Bangladesh</option>
-                                                <option value="1">Belgium</option>
-                                                <option value="1">Bosnia and Herzegovina</option>
-                                                <option value="1">Chile</option>
-                                                <option value="1">China</option>
-                                                <option value="1">Egypt</option>
-                                                <option value="1">Finland</option>
-                                                <option value="1">France</option>
-                                                <option value="1">United State</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="form-box">
-                                        <div className="form-name">
-                                            <label> State/Province </label>
-                                            <select>
-                                                <option value="1">Please select region, state or province</option>
-                                                <option value="1">Arizona</option>
-                                                <option value="1">Armed Forces Africa</option>
-                                                <option value="1">California</option>
-                                                <option value="1">Florida</option>
-                                                <option value="1">Indiana</option>
-                                                <option value="1">Marshall Islands</option>
-                                                <option value="1">Minnesota</option>
-                                                <option value="1">New Mexico</option>
-                                                <option value="1">Utah</option>
-                                                <option value="1">Virgin Islands</option>
-                                                <option value="1">West Virginia</option>
-                                                <option value="1">Wyoming</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="form-box">
-                                        <div className="form-name">
-                                            <label> Zip/Postal Code </label>
-                                            <input type="text" />
-                                        </div>
-                                    </div>
-                                    <div className="shopping-button">
-                                        <button type="submit">get a quote</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div className="col-md-4">
-                            <div className="totals">
-                                <p>subtotal <span>$1,540.00</span> </p>
-                                <h3>Grand Total <span>$1,540.00</span></h3>
-                                <div className="shopping-button">
-                                    <button type="submit">proceed to checkout</button>
-                                </div>
-                                <a href="#">Checkout with Multiple Addresses</a>
-                            </div>
-                        </div>
-                    </div>
+                      </div>
+                      </div>
                 </div>
             </div>
         </div>
