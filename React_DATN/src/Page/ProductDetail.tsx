@@ -126,7 +126,7 @@ const ProductDetail = () => {
         existingCart[existingProductIndex].quantity += getQuantityBuy;
       } else {
         // Nếu sản phẩm không tồn tại trong giỏ hàng, tạo sản phẩm mới và thêm vào mảng giỏ hàng
-        existingCart.push({
+        existingCart.unshift({
           id: newId,
           productId: productDataOne._id,
           name: productDataOne.name,

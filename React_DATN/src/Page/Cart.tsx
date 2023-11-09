@@ -13,7 +13,7 @@ const Cart = () => {
     const [deleteCart] = useDeleteFromCartMutation();
     const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
     const [addToCart] = useAddToCartMutation()
-    const cart= JSON.parse(localStorage.getItem('cart') || "");
+    const [localCart, setLocalCart] = useState<any[]>(JSON.parse(localStorage.getItem('cart') || '[]'));
     const token = localStorage.getItem('token');
     const [productQuantities, setProductQuantities] = useState<any>({});
     const [isPlus, setIsPlus] = useState(false);
@@ -104,33 +104,48 @@ const Cart = () => {
         }
       };
 
+      // Hàm giảm số lượng khi người dùng không có tài khoản
       const handleTru = (productId: string) => {
-          const productToUpdate = cart.find((product: any) => product.id === productId);
-          console.log(productToUpdate);
-          
-          if (productToUpdate) {
-            const updatedProductQuantities = {
-              ...productQuantities,
-              [productId]: (productToUpdate.quantity) - 1,
-            };
-            console.log(productQuantities);
-            
-            
-            setProductQuantities(updatedProductQuantities);
-        
-            cart.push({
-              id: productToUpdate._id,
-              productId: productToUpdate.productId,
-              name: productToUpdate.name,
-              imgUrl: productToUpdate.imgUrl,
-              quantity: productToUpdate.quantity - 1,
-              color: productToUpdate.color,
-              size: productToUpdate.size,
-              price: productToUpdate.price,
-            })
-            
-          }
-        };
+        const productToUpdate = localCart.find((product: any) => product.id === productId);
+      
+        if (productToUpdate && productToUpdate.quantity > 1) {
+          const updatedLocalCart = localCart.map((product) =>
+            product.id === productId
+              ? {
+                  ...product,
+                  quantity: product.quantity - 1,
+                }
+              : product
+          );
+      
+          setLocalCart(updatedLocalCart);
+          localStorage.setItem('cart', JSON.stringify(updatedLocalCart));
+        }else{
+          message.error("Số lượng không thể giảm thêm")
+        }
+      };
+
+       // Hàm tăng số lượng khi người dùng có tài khoản
+       const handleCong = (productId: string) => {
+        const productToUpdate = localCart.find((product: any) => product.id === productId);
+      
+        if (productToUpdate && productToUpdate.quantity < 10) {
+          const updatedLocalCart = localCart.map((product) =>
+            product.id === productId
+              ? {
+                  ...product,
+                  quantity: product.quantity + 1,
+                }
+              : product
+          );
+      
+          setLocalCart(updatedLocalCart);
+          localStorage.setItem('cart', JSON.stringify(updatedLocalCart));
+        }else{
+          message.error("Số lượng không thể tăng thêm")
+        }
+      };
+      
 
       if(token){
         dataSource
@@ -142,7 +157,7 @@ const Cart = () => {
           handleMinus(cartData.products.productId)
         }
       }else{  
-          dataSource = cart.map((product: any) => {
+          dataSource = localCart.map((product: any) => {
             return {
                 key: product.id,
                 name: product.name,
@@ -156,9 +171,24 @@ const Cart = () => {
         });
         
       }
+      console.log(dataSource);
+      
 
+      // Hàm thực hiện xóa sản phẩm của người dùng không có tài khoản
+      const confirmCart = (productId: string) => {
+      
+        // Thực hiện xóa sản phẩm khỏi localStorage khi không có token
+        const deleteCart = localCart.filter((product: any) => product.id !== productId);
+        localStorage.setItem('cart', JSON.stringify(deleteCart));
+        setLocalCart(deleteCart);
+        messageApi.open({
+          type: 'success',
+          content: 'Xóa sản phẩm khỏi giỏ hàng thành công',
+        });
+      };
+      
 
-    
+    // Hàm thực hiện xóa sản phẩm của người dùng có tài khoản
     const confirm = (productId: string) => {
         
         deleteCart(productId)
@@ -240,8 +270,12 @@ const Cart = () => {
         <button
           className="quantity-button"
           onClick={() => {
-            handleIncrease(record.key);
-            setIsPlus(true); // Đánh dấu người dùng đã click
+            if (token) {
+              handleIncrease(record.key); // Thực hiện handleIncrease nếu có token
+            } else {
+              handleCong(record.key); // Thực hiện handleCong nếu không có token
+            }
+            setIsMinus(true);
           }}
         >
           +
@@ -265,22 +299,27 @@ const Cart = () => {
           title: 'Action',
           key: 'action',
           render: ({ key: id }: any) => (
-            <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
+            <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: 'center' }}>
               <Popconfirm
                 title="Bạn có chắc chắn muốn xóa không?"
                 icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                onConfirm={() => confirm(id)}
-                okText={
-                  <span style={{ color: 'black' }}>Yes</span>
-                }
+                onConfirm={() => {
+                  if (token) {
+                    confirm(id); // Thực hiện confirm nếu có token
+                  } else {
+                    confirmCart(id); // Thực hiện confirmCart nếu không có token
+                  }
+                }}
+                okText={<span style={{ color: 'black' }}>Yes</span>}
                 cancelText="No"
               >
-                <DeleteFilled style={{ color: '#FF0000', fontSize: "20px" }} />
+                <DeleteFilled style={{ color: '#FF0000', fontSize: '20px' }} />
               </Popconfirm>
             </div>
           ),
           align: 'center',
         },
+        
       ];
 
     return (
