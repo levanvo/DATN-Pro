@@ -79,7 +79,7 @@ const Cart = () => {
               ...productQuantities,
               [productId]: (productToUpdate.quantity) - 1,
             };
-            setProductQuantities(updatedProductQuantities)
+
             updateQuantity({
               productId: productToUpdate.productId._id,
               color: productToUpdate.color,
