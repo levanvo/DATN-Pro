@@ -1,27 +1,24 @@
-import React, { useEffect, useState } from "react"
+import { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { ImCancelCircle } from "react-icons/im"
 import { UserOutlined } from "@ant-design/icons"
 import { message, Modal } from "antd"
+import useSearch from '../UseSearch'
 import Loading from "../Loading"
+
 interface User {
   username: string
   // Các thuộc tính khác của người dùng (nếu có)
 }
-const Header = ({ onSearch }: any) => {
+const Header = () => {
   const [messageApi, contexHolder] = message.useMessage()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false)
   let user: User | any = null
   const userString = localStorage.getItem("user")
   const VerifyAccount = localStorage.getItem("token")
-  const [searchKeyword, setSearchKeyword] = useState("")
   const navigate = useNavigate()
 
-  const handleSearch = (e: any) => {
-    e.preventDefault()
-    onSearch(searchKeyword)
-  }
 
   if (userString) {
     user = JSON.parse(userString)
@@ -46,13 +43,14 @@ const Header = ({ onSearch }: any) => {
       window.location.reload()
     }, 2000)
   }
-
   const handleLogoutConfirmation = (confirmed: any) => {
     if (confirmed) {
       handleLogout()
     }
     setIsLogoutModalVisible(false)
   }
+
+  const { searchInputRef, handleKeyDown } = useSearch();
 
   return (
     <header className="_header-web">
@@ -68,46 +66,27 @@ const Header = ({ onSearch }: any) => {
                   Liên hệ chúng tôi: <span> (+84) 96 155 6666</span>
                 </p>
               </div>
-            </div>
+            </div >
             <div className="col-lg-3 col-md-3 position-relative">
               <div className="flex space-x-3 mt-3">
                 {/* Thanh tìm kiếm */}
-                {window.location.href == "http://localhost:5173/" ? (
+                {
+
                   <div className="account-menu relative">
-                    <input type="checkbox" hidden id="search-webSite" />
-                    <label htmlFor="search-webSite">
-                      <img
-                        className="w-7 active:scale-90 cursor-pointer"
-                        src="../../../img/search-main-web.png"
-                        alt=""
-                      />
-                    </label>
-                    <form
-                      className="form-webSite"
-                      action=""
-                      onSubmit={handleSearch}
-                    >
-                      <label htmlFor="search-webSite" className=" float-right">
-                        <ImCancelCircle className="w-5 h-5 m-1 hover:rotate-90 duration-200 cursor-pointer" />
-                      </label>
-                      <h1 className="text-center text-2xl mt-3 text-gray-500 font-bold">
-                        Tìm Kiếm
-                      </h1>
-                      <input
-                        type="text"
-                        placeholder=" Bạn đang tìm kiếm gì ?"
-                        value={searchKeyword}
-                        onChange={(e) => setSearchKeyword(e.target.value)}
+                    <input type="checkbox" hidden id='search-webSite' />
+                    <label htmlFor="search-webSite"><img className='w-7 active:scale-90 cursor-pointer' src="../../../img/search-main-web.png" alt="" /></label>
+                    <form className='form-webSite' action="" >
+                      <label htmlFor="search-webSite" className=' float-right'><ImCancelCircle className="w-5 h-5 m-1 hover:rotate-90 duration-200 cursor-pointer" /></label>
+                      <h1 className='text-center text-2xl mt-3 text-gray-500 font-bold'>Tìm Kiếm</h1>
+                      <input type="text" placeholder=' Bạn đang tìm kiếm gì ?'
+                        onKeyDown={handleKeyDown}
+                        ref={searchInputRef}
                       />
                     </form>
-                    <label
-                      htmlFor="search-webSite"
-                      className="display-website-search"
-                    ></label>
+                    <label htmlFor="search-webSite" className='display-website-search'></label>
                   </div>
-                ) : (
-                  ""
-                )}
+
+                }
                 <div className="cart-img">
                   {VerifyAccount ? (
                     <a href="/cart">
@@ -186,7 +165,6 @@ const Header = ({ onSearch }: any) => {
                       </div>
                       <p>{user.username}</p>
                     </div>
-                    <p>{user.username}</p>
                   </div>
                 ) : (
                   <div className="account-menu">
@@ -199,9 +177,9 @@ const Header = ({ onSearch }: any) => {
                 )}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </div >
+        </div >
+      </div >
       <div className="mainmenu-area product-items">
         <div className="container">
           <div className="row">
@@ -286,7 +264,7 @@ const Header = ({ onSearch }: any) => {
       >
         Bạn có chắc chắn muốn đăng xuất không?
       </Modal>
-    </header>
+    </header >
   )
 }
 

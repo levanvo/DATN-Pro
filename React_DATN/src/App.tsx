@@ -16,8 +16,6 @@ import AddProduct from "./Page/Admin/Product/AddProduct"
 import Layout_Admin from "./Page/Layout/Layout_Admin"
 import ProductList from "./Page/Admin/Product/ProductList"
 import UpdateProduct from "./Page/Admin/Product/UpdateProduct"
-import { useState } from "react"
-import AdminLogin from "./Page/Login/AdminLogin"
 import UserList from "./Page/Admin/User/UserList"
 import AddUser from "./Page/Admin/User/AddUser"
 import UpdateUser from "./Page/Admin/User/UpdateUser"
@@ -41,27 +39,20 @@ import GetAllDeletedProducts from "./Page/Admin/Product/getAllDeletedProducts";
 import PrivateRouter from "./Component/PrivateRouter";
 import SlideList from "./Page/Admin/Slide/SlideList";
 import AddSlide from "./Page/Admin/Slide/AddSlide";
+import AddBlog from "./Page/Admin/Blog/AddBlog";
+import BlogList from "./Page/Admin/Blog/BlogList";
+import UpdateBlog from "./Page/Admin/Blog/UpdateBlog";
 import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
 
 function App() {
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
 
-  const [searchKeyword, setSearchKeyword] = useState("")
-
-  const handleSearch = (keyword: string) => {
-    setSearchKeyword(keyword)
-  }
-
-  Config()
+  Config();
   return (
     <Routes>
-      <Route path="/" element={<Layout_Web onSearch={handleSearch} />}>
+      <Route path="/" element={<Layout_Web />}>
         <Route index element={<HomePage />} />
         <Route path="cart" element={<Cart />} />
-        <Route
-          path="products"
-          element={<Products searchKeyword={searchKeyword} />}
-        />
+        <Route path="products" element={<Products />} />
         <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetail />} />
@@ -71,11 +62,13 @@ function App() {
         <Route path="verification-codes" element={<VerificationCodes />} />
         <Route path="change-password" element={<ChangePassword />} />
         <Route path="login" element={<Login />} />
-        <Route path="blog-detail" element={<Blog_details />} />
+        {/* <Route path="blog-detail" element={<Blog_details />} /> */}
+        <Route path="blog/:id/detail" element={<Blog_details />} />
+        <Route path="blog" element={<Blog />} />
         <Route path="blog" element={<Blog />} />
         <Route path="category/:id/products" element={<ProductsCategory />} />
         <Route path="size/:id/products" element={<ProductsSize />} />
-      </Route>
+      </Route >
 
       <Route
         path="/admin"
@@ -107,10 +100,13 @@ function App() {
         <Route path="slide/list" element={<SlideList />} />
         <Route path="slide/add" element={<AddSlide />} />
         <Route path="restore-product-data" element={<GetAllDeletedProducts />} />
+        <Route path="blog/add" element={<AddBlog />} />
+        <Route path="blog/list" element={<BlogList />} />
+        <Route path="blog/:id/update" element={<UpdateBlog />} />
         <Route path="new-sletter/list" element={<ListNewSletter />} />
       </Route>
       <Route path="*" element={<NotFound />} />
-    </Routes>
+    </Routes >
   )
 }
 
