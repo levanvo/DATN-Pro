@@ -79,7 +79,7 @@ const Cart = () => {
               ...productQuantities,
               [productId]: (productToUpdate.quantity) - 1,
             };
-
+            setProductQuantities(updatedProductQuantities)
             updateQuantity({
               productId: productToUpdate.productId._id,
               color: productToUpdate.color,
@@ -231,7 +231,7 @@ const Cart = () => {
         >
           -
         </button>
-        <Input 
+        <Input max={10} min={1} 
         style={{borderTop: "1px solid #dbd4d4", borderRadius:0, borderBottom: "1px solid #dbd4d4"}}
         value={productQuantities[record.key] || quantity}
           className="quantity-input"

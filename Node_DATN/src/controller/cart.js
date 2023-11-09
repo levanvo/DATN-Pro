@@ -44,15 +44,15 @@ export const addToCart = async (req, res) => {
   try {
     let cart = await Cart.findOne({ userId });
 
-    if (!cart) {
-      cart = new Cart({ userId, products: [{ productId, color, size, quantity }] });
-    }
-
     if (!productId || !quantity || !size || !color) {
       return res.status(400).json({ message: "Dữ liệu sản phẩm không hợp lệ." });
     }
 
-    if(cart.products.length != 0 ){
+
+    if (!cart) {
+      cart = new Cart({ userId, products: [{ productId, color, size, quantity }] });
+    }
+
       const existingProduct = cart.products.find(
         (item) => item.productId.equals(productId) && item.color === color && item.size === size
       );
@@ -69,17 +69,6 @@ export const addToCart = async (req, res) => {
   
         cart.products.unshift({ productId, color, size, quantity });
       }
-    }else{
-      if (!mongoose.Types.ObjectId.isValid(productId)) {
-        return res.status(400).json({ message: "Địa chỉ sản phẩm không hợp lệ." });
-      }
-      const productDocument = await Product.findById(productId);
-      if (!productDocument) {
-        return res.status(404).json({ message: "Không tìm thấy sản phẩm." });
-      }
-
-      cart.products.unshift({ productId, color, size, quantity });
-    }
 
     await cart.save();
 
