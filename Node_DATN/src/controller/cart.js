@@ -51,8 +51,7 @@ export const addToCart = async (req, res) => {
 
     if (!cart) {
       cart = new Cart({ userId, products: [{ productId, color, size, quantity }] });
-    }
-
+    }else{
       const existingProduct = cart.products.find(
         (item) => item.productId.equals(productId) && item.color === color && item.size === size
       );
@@ -66,9 +65,10 @@ export const addToCart = async (req, res) => {
         if (!productDocument) {
           return res.status(404).json({ message: "Không tìm thấy sản phẩm." });
         }
-  
         cart.products.unshift({ productId, color, size, quantity });
       }
+    }
+
 
     await cart.save();
 
