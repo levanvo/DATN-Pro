@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import { message,Popconfirm, Table } from 'antd';
 import {QuestionCircleOutlined ,DeleteFilled} from "@ant-design/icons"
-import { useAddToCartMutation, useDeleteFromCartMutation, useGetCartQuery } from '../Services/Api_cart';
+import { useAddToCartMutation, useDeleteFromCartMutation, useGetCartQuery, useUpdateCartMutation } from '../Services/Api_cart';
 import { ProductItem } from '../Models/interfaces';
 import { Input,Button } from 'antd';
 import Loading from '../Component/Loading';
@@ -16,8 +16,9 @@ const Cart = () => {
     const cart= JSON.parse(localStorage.getItem('cart') || "");
     const token = localStorage.getItem('token');
     const [productQuantities, setProductQuantities] = useState<any>({});
-    const [quantitys,setQuantitys] = useState(1)
-
+    const [isPlus, setIsPlus] = useState(false);
+    const [isMinus, setIsMinus] = useState(false);
+    const [updateQuantity] = useUpdateCartMutation()
 
     const rowSelection = {
         selectedRowKeys: selectedProductId,
@@ -29,61 +30,6 @@ const Cart = () => {
 
     // Khai báo biến dataSource
     let dataSource: any[] = [];
-
-    // if(token){
-    //   useEffect(() => {
-    //     if(error && "data" in error){
-    //         const errDetails = error.data as {message: string}
-    //         messageApi.open({
-    //             type: "error",
-    //             content: errDetails.message
-    //         })
-    //     }
-    // },[error])
-    //   dataSource = cartData?.products.map((product: any) => {
-    //         return {
-    //             key: product._id,
-    //             name: product.productId.name,
-    //             price: product.productId.price,
-    //             imgUrl: product.productId.imgUrl[0],
-    //             color: product.color,
-    //             size: product.size,
-    //             quantity: product.quantity
-    //         };
-    //     });
-    // }else{  
-    //   dataSource = cart.map((product: any) => {
-    //     return {
-    //         key: product.productId,
-    //         name: product.name,
-    //         price: product.price,
-    //         imgUrl: product.imgUrl,
-    //         color: product.color,
-    //         size: product.size,
-    //         quantity: product.quantity
-    //     };
-    // });
-    
-    // }
-
-      
-      // const handleIncrease = (productId: string) => {
-      //   console.log(productId);
-        
-      //   // Find the product in the cartData based on productId and get its current quantity
-      //   const productToUpdate = cartData?.products.find((product:any) => product._id === productId);
-        
-      //   if (productToUpdate) {
-          
-      //     // Call the addToCart function to update the quantity
-      //     addToCart({
-      //       productId: productToUpdate.productId._id,
-      //       color: productToUpdate.color,  
-      //       size: productToUpdate.size,
-      //       quantity: productToUpdate.quantity,
-      //     })
-      //   }
-      // };
       
       
       
@@ -101,60 +47,83 @@ const Cart = () => {
 
       dataSource = updatedDataSource
       
-      if(token){
-        dataSource
-        var handleIncrease = (productId: string) => {
-          const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
+
+      const handleIncrease = (productId: string) => {
+        const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
+    
+        if (productToUpdate) {
+          const updatedProductQuantities = {
+            ...productQuantities,
+            [productId]: (productToUpdate.quantity) + 1,
+          };
+    
+          setProductQuantities(updatedProductQuantities);
+    
+          addToCart({
+            productId: productToUpdate.productId._id,
+            color: productToUpdate.color,
+            size: productToUpdate.size,
+            quantity: 1,
+          });
+        }
+      };
+    
       
-          if (productToUpdate) {
+      const handleMinus = (productId: string) => {
+        const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
+    
+        if (productToUpdate) {
+
+          if(productToUpdate.quantity==0){
             const updatedProductQuantities = {
               ...productQuantities,
-              [productId]: (productToUpdate.quantity) + quantitys,
+              [productId]: (productToUpdate.quantity) - 1,
             };
-      
-            setProductQuantities(updatedProductQuantities);
-      
-            addToCart({
+
+            updateQuantity({
               productId: productToUpdate.productId._id,
               color: productToUpdate.color,
               size: productToUpdate.size,
-              quantity: quantitys,
+              quantity: 1,
+            });
+          }else{
+            const updatedProductQuantities = {
+              ...productQuantities,
+              [productId]: (productToUpdate.quantity) - 1,
+            };
+            setProductQuantities(updatedProductQuantities);
+      
+            updateQuantity({
+              productId: productToUpdate.productId._id,
+              color: productToUpdate.color,
+              size: productToUpdate.size,
+              quantity: 1,
             });
           }
-        };
-      }else{  
-          dataSource = cart.map((product: any) => {
-            return {
-                key: product.productId,
-                name: product.name,
-                price: product.price,
-                imgUrl: product.imgUrl,
-                color: product.color,
-                size: product.size,
-                quantity: productQuantities[product._id] || product.quantity,
-            };
+          
+        }
+      };
 
-        });
-
-        var handleIncrease = (productId: string) => {
-          const productToUpdate = cart.find((product: any) => product.productId === productId);
+      const handleTru = (productId: string) => {
+          const productToUpdate = cart.find((product: any) => product.id === productId);
           console.log(productToUpdate);
           
           if (productToUpdate) {
             const updatedProductQuantities = {
               ...productQuantities,
-              [productId]: (productToUpdate.quantity) + quantitys,
+              [productId]: (productToUpdate.quantity) - 1,
             };
-            console.log(updatedProductQuantities);
+            console.log(productQuantities);
             
-      
+            
             setProductQuantities(updatedProductQuantities);
-
+        
             cart.push({
-              productId: productToUpdate._id,
+              id: productToUpdate._id,
+              productId: productToUpdate.productId,
               name: productToUpdate.name,
-              imgUrl: productToUpdate.imgUrl[0],
-              quantity: productToUpdate.quantity + 1,
+              imgUrl: productToUpdate.imgUrl,
+              quantity: productToUpdate.quantity - 1,
               color: productToUpdate.color,
               size: productToUpdate.size,
               price: productToUpdate.price,
@@ -162,8 +131,31 @@ const Cart = () => {
             
           }
         };
-        
+
+      if(token){
+        dataSource
+        if(isPlus){
+          handleIncrease(cartData.products.productId);
         }
+
+        if(isMinus){
+          handleMinus(cartData.products.productId)
+        }
+      }else{  
+          dataSource = cart.map((product: any) => {
+            return {
+                key: product.id,
+                name: product.name,
+                price: product.price,
+                imgUrl: product.imgUrl,
+                color: product.color,
+                size: product.size,
+                quantity: productQuantities[product.productId] || product.quantity,
+            };
+
+        });
+        
+      }
 
 
     
@@ -229,7 +221,12 @@ const Cart = () => {
         <button
           className="quantity-button"
           onClick={() => {
-            // Xử lý logic giảm số lượng ở đây, có thể truy cập record để lấy dữ liệu từ hàng hiện tại
+            if (token) {
+              handleMinus(record.key); // Thực hiện handleMinus nếu có token
+            } else {
+              handleTru(record.key); // Thực hiện handleTru nếu không có token
+            }
+            setIsMinus(true);
           }}
         >
           -
@@ -242,7 +239,10 @@ const Cart = () => {
         />
         <button
           className="quantity-button"
-          onClick={() => handleIncrease(record.key)}
+          onClick={() => {
+            handleIncrease(record.key);
+            setIsPlus(true); // Đánh dấu người dùng đã click
+          }}
         >
           +
         </button>
