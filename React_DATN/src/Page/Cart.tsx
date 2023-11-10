@@ -6,6 +6,7 @@ import { ProductItem } from '../Models/interfaces';
 import { Input,Button } from 'antd';
 import Loading from '../Component/Loading';
 import "../App.scss"
+import {Link, useNavigate} from "react-router-dom"
 
 const Cart = () => {
     const { data: cartData, isLoading, error } = useGetCartQuery();
@@ -18,7 +19,7 @@ const Cart = () => {
     const [productQuantities, setProductQuantities] = useState<any>({});
     const [updateQuantity] = useUpdateCartMutation()
     const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
-
+    const navigate = useNavigate()
 
     const rowSelection = {
       selectedRowKeys: selectedProductId,
@@ -51,9 +52,7 @@ const Cart = () => {
       });
 
       dataSource = updatedDataSource
-      console.log(selectedProducts);
       
-
       // thực hiện tính tổng tiền với người dùng k có tài khoản
       const calculateTotal = () => {
         if (token) {
@@ -354,8 +353,12 @@ const Cart = () => {
         
       ];
 
+      const handleCheckout = () => {
+        navigate('/checkout', { state: { selectedProducts } });
+    };
+    // console.log(selectedProducts);
+    
     return (
-      
         <div className='w-[90vw] mx-auto mt-44'>
             {isLoading && <Loading />}
             {contextHolder}
@@ -383,8 +386,8 @@ const Cart = () => {
                         <div className="totals">
                           {/* <p>Subtotal <span>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></p> */}
                           <h3>Tổng tiền <span>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></h3>
-                          <div className="shopping-button">
-                            <button type="submit">Checkout</button>
+                          <div className="shopping-button"> 
+                            <button type="submit" onClick={handleCheckout}>Checkout</button>
                           </div>
                         </div>
                       </div>

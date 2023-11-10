@@ -104,7 +104,7 @@
   width: 55%;
 }
 
-.product_name a {
+.product_name p {
   font-size: 14px;
   font-weight: 700;
   color: #333;
@@ -116,6 +116,7 @@
 
 .product_quantity {
   width: 30%;
+  line-height: 100px;
 }
 
 .product_quantity span {
@@ -137,16 +138,6 @@
     // line-height: 35px;
     color: black;
     // margin-left: 100px;
-}
-
-.quantity input {
-  width: 40%;
-  outline: none;
-  text-align: center;
-}
-
-.quantity button {
-  width: 30%;
 }
 
 .coupon {

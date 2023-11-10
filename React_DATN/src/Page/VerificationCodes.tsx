@@ -9,6 +9,9 @@ const VerificationCodes = () => {
     const [verificationCode, { error }] = useVerificationCodesMutation()
     const [messageApi, contexHolder] = message.useMessage()
     const [isLoadingSeen, setIsLoadingSeen] = useState(false)
+    const [countdown, setCountdown] = useState(179);
+
+    
 
     useEffect(() => {
         if (error && "data" in error) {
@@ -19,6 +22,24 @@ const VerificationCodes = () => {
             })
         }
     }, [error])
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+
+        if (!isLoadingSeen && countdown > 0) {
+            interval = setInterval(() => {
+                setCountdown(prevCountdown => prevCountdown - 1);
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [isLoadingSeen, countdown]);
+
+    const formatTime = (timeInSeconds:number) => {
+        const minutes = Math.floor(timeInSeconds / 60);
+        const seconds = timeInSeconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    };
 
     const onFinish = async (values: any) => {
         setIsLoadingSeen(true)
@@ -88,6 +109,12 @@ const VerificationCodes = () => {
                         <Input style={{ height: 40, width: 500 }} placeholder='nhập mã code' />
                     </Form.Item>
 
+
+                    <Form.Item wrapperCol={{ offset: 5, span: 11 }}>
+                        <div style={{ textAlign: 'center', marginTop: '10px',marginLeft: 25 }}>
+                            <p>Mã xác thực chỉ có hiệu lực trong vòng 2 phút: {formatTime(countdown)}</p>
+                        </div>
+                    </Form.Item>
                     <Form.Item wrapperCol={{ offset: 6, span: 11 }}>
                         <Button type="primary" htmlType="submit" style={{ width: '30%', display: 'block', border: '1px solid red', background: 'none', color: 'red' }}>
                             Gửi
