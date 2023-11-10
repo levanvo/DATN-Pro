@@ -106,7 +106,11 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: `${EMAIL}`,
     pass: `${PASSWORD_EMAIL}`
-  }
+  },
+  //rejectUnauthorized = false để bỏ qua thao tác SSL của gmail
+  tls: {
+    rejectUnauthorized: false,
+  },
 })
 
 
