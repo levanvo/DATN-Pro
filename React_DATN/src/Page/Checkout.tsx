@@ -1,18 +1,43 @@
-import React, { useState } from "react"
+import { useState,useEffect } from "react"
 import Select from 'react-select';
 import vietnamData from '../Services/vietnamData'
 import {
     LeftCircleOutlined
 } from "@ant-design/icons"
 import { Link } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+import { message } from "antd";
 
 const Checkout = () => {
+    
     // kiểm tra ng dùng có chọn sử dụng mã giảm giá không
     const [isVisible, setIsVisible] = useState(false);
+    const location = useLocation();
+    const { selectedProducts } = location.state || {};
+    console.log("location",location);
+    
+    useEffect(() => {
+        if (!selectedProducts) {
+            // message.error("Đã có lỗi sảy ra vui lòng thử lại")
+        }
+    }, [selectedProducts]);
 
+    const subtotal = Array.isArray(selectedProducts)
+    ? selectedProducts.reduce((acc, product) => acc + (product.quantity), 0)
+    : 0;
+
+    // Calculate total price
+    const totalPrice = Array.isArray(selectedProducts)
+    ? selectedProducts.reduce((acc, product) => acc + (product.price * product.quantity), 0)
+    : 0;
+    console.log(selectedProducts);
+
+    
     const handleLabelClick = () => {
         setIsVisible(!isVisible);
+
     };
+
 
     // lựa chọn tỉnh thành 
     const [selectedCity, setSelectedCity]: any = useState(null);
@@ -82,8 +107,8 @@ const Checkout = () => {
                                     <button type="submit">Áp dụng</button>
                                 </div>}
                                 <div className="total_review">
-                                    <span>Tạm tính (1 sản phẩm): </span>
-                                    <span>896.000&#8363;</span>
+                                    <span>Tạm tính ({subtotal} sản phẩm)</span>
+                                    <span>Tổng tiền: {totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
                                 </div>
                             </div>
                         </div>
