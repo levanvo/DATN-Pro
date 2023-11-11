@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react'
 import { message,Popconfirm, Table } from 'antd';
+import { Link } from 'react-router-dom';
 import {QuestionCircleOutlined ,DeleteFilled} from "@ant-design/icons"
 import { useAddToCartMutation, useDeleteFromCartMutation, useGetCartQuery, useUpdateCartMutation } from '../Services/Api_cart';
 import { ProductItem } from '../Models/interfaces';
@@ -384,7 +385,7 @@ const Cart = () => {
                           {/* <p>Subtotal <span>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></p> */}
                           <h3>Tổng tiền <span>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></h3>
                           <div className="shopping-button">
-                            <button type="submit">Checkout</button>
+                            <Link to={`/checkout/${cartData?._id}`}><button type="submit">Checkout</button></Link>
                           </div>
                         </div>
                       </div>

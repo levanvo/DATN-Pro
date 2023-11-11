@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-  user-select: none;
+  // user-select: none;
 }
 ._header-web {
   position: fixed;
@@ -63,13 +63,13 @@
 
 // css checkout page
 
-.checkout_title {
-  text-align: center;
-  margin: 25px 0px 25px;
-}
+// .checkout_title {
+//   text-align: center;
+//   margin: 25px 0px 25px;
+// }
 
 .box_shadow {
-  width: 707px;
+  width: 1100px;
   margin: 0px auto 20px auto;
   padding: 20px;
   box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.12);
@@ -110,8 +110,8 @@
   color: #333;
 }
 
-.product_size {
-  margin-right: 8px;
+.product_color {
+  margin: 0 17px;
 }
 
 .product_quantity {
@@ -127,27 +127,6 @@
   margin-bottom: 10px;
 }
 
-.quantity{
-    display: flex;
-    align-items: center;
-    border: 1px solid #ddd;
-    // border-radius: 5px;
-    // width: 50%;
-    // height: 35px;
-    // line-height: 35px;
-    color: black;
-    // margin-left: 100px;
-}
-
-.quantity input {
-  width: 40%;
-  outline: none;
-  text-align: center;
-}
-
-.quantity button {
-  width: 30%;
-}
 
 .coupon {
   margin-top: 10px;

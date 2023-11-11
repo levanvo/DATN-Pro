@@ -1,6 +1,10 @@
 import React, { useState } from "react"
 import Select from 'react-select';
 import vietnamData from '../Services/vietnamData'
+import {
+    LeftCircleOutlined
+} from "@ant-design/icons"
+import { Link } from "react-router-dom";
 
 const Checkout = () => {
     // kiểm tra ng dùng có chọn sử dụng mã giảm giá không
@@ -8,32 +12,18 @@ const Checkout = () => {
 
     const handleLabelClick = () => {
         setIsVisible(!isVisible);
-
-    };
-
-    // tăng giảm số lượng
-    const [quantity, setQuantity] = useState(1);
-
-    const decreaseQuantity = () => {
-        if (quantity > 1) {
-            setQuantity(quantity - 1);
-        }
-    };
-
-    const increaseQuantity = () => {
-        setQuantity(quantity + 1);
     };
 
     // lựa chọn tỉnh thành 
-    const [selectedCity, setSelectedCity] = useState(null);
+    const [selectedCity, setSelectedCity]: any = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
 
-    const handleCityChange = (selectedOption) => {
+    const handleCityChange = (selectedOption: any) => {
         setSelectedCity(selectedOption);
         setSelectedDistrict(null); // Reset lựa chọn quận/huyện khi thay đổi tỉnh/thành phố
     };
 
-    const handleDistrictChange = (selectedOption) => {
+    const handleDistrictChange = (selectedOption: any) => {
         setSelectedDistrict(selectedOption);
     };
 
@@ -50,50 +40,36 @@ const Checkout = () => {
     // lựa chọn hình thức tt
     const [selectedMethod, setSelectedMethod] = useState('cod');
 
-    const handlePaymentMethodChange = (event) => {
+    const handlePaymentMethodChange = (event: any) => {
         setSelectedMethod(event.target.value);
     };
 
 
     return (
         <div className='w-[90vw] mx-auto mt-44'>
-            <div className="checkout-area">
-                <div className="container">
-                    <h2 className="checkout_title">Checkout</h2>
-                    <div className="box_shadow">
+                <h2 className="text-center mb-3 text-gray-500">Checkout</h2>
+                <div className=" mb-3 scale-150 mx-auto w-[800px]">
+                    <Link to={`/cart`}><LeftCircleOutlined className="scale-150 text-gray-500 duration-100 hover:-ml-[2px] cursor-pointer w-6 " /></Link>
+                </div>
+                <div className="flex justify-center space-x-14 box_shadow">
+                    <div className="w-[600px]">
                         <div className="checkout_content">
                             <div className="checkout_products">
                                 <div className="product_thumbnail">
                                     <a href="#">
-                                        <img className="product_thumbnail-img" src="../../img/product/13.png" alt="product_name" />
+                                        <img className="w-14" src="../../img/product/13.png" alt="product_name" />
                                     </a>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
-                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-                                    </svg>
                                 </div>
                                 <div className="product_name">
                                     <a href="#">Nike KD VII 7 GS Boys Girls</a>
                                     <div className="prduct_variation">
-                                        <span className="product_size">Size: 39</span>
-                                        <span className="product_color">Color: Black</span>
+                                        <span className="">kích cỡ: 39</span>
+                                        <span className="product_color">màu: Black</span>
+                                        <span className="">số lượng: 2</span>
                                     </div>
                                 </div>
                                 <div className="product_quantity">
                                     <span>896.000&#8363;</span>
-                                    <div className="quantity">
-                                        <button onClick={decreaseQuantity}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" style={{ margin: "0 auto" }} width="16" height="16" fill="currentColor" className="bi bi-dash" viewBox="0 0 16 16">
-                                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
-                                            </svg>
-                                        </button>
-                                        <input type="text" inputMode="numeric" value={quantity} />
-                                        <button onClick={increaseQuantity}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16">
-                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                                            </svg>
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                             <div className="coupon">
@@ -143,62 +119,63 @@ const Checkout = () => {
                             <label htmlFor="note">Ghi chú đơn hàng (tuỳ chọn)</label>
                             <textarea name="note" id="" cols={5} rows={2} placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
                         </form>
-                        <div className="order_reviews">
-                            <p className="order_cart-subtotal">
-                                <span>Tạm tính (1 sản phẩm):</span>
-                                <span>896.000&#8363;</span>
-                            </p>
-                            <p className="order_cart-shipping">
-                                <span>Giao hàng</span>
-                                <span>Giao hàng miễn phí</span>
-                            </p>
-                            <p className="order_cart-total">
-                                <span>Tổng:</span>
-                                <span>896.000&#8363;</span>
-                            </p>
-                            <div className="select_payment">
-                                <ul>
-                                    <li>
-                                        <input
-                                            id="cod"
-                                            type="radio"
-                                            className="select_payment-inp"
-                                            name="payment_method-cod"
-                                            value="cod"
-                                            checked={selectedMethod === 'cod'}
-                                            onChange={handlePaymentMethodChange}
-                                        />
-                                        <label htmlFor="cod">Nhận hàng thanh toán (COD)</label>
-                                        <div className="cod_extend" style={{ display: selectedMethod === 'cod' ? 'block' : 'none' }}>
-                                            Nhận hàng rồi thanh toán (COD)
+
+                    </div>
+                    <div className="order_reviews w-[400px]">
+                        <p className="order_cart-subtotal">
+                            <span>Tạm tính (1 sản phẩm):</span>
+                            <span>896.000&#8363;</span>
+                        </p>
+                        <p className="order_cart-shipping">
+                            <span>Giao hàng</span>
+                            <span>Giao hàng miễn phí</span>
+                        </p>
+                        <p className="order_cart-total">
+                            <span>Tổng:</span>
+                            <span>896.000&#8363;</span>
+                        </p>
+                        <div className="select_payment">
+                            <ul>
+                                <li>
+                                    <input
+                                        id="cod"
+                                        type="radio"
+                                        className="select_payment-inp"
+                                        name="payment_method-cod"
+                                        value="cod"
+                                        checked={selectedMethod === 'cod'}
+                                        onChange={handlePaymentMethodChange}
+                                    />
+                                    <label htmlFor="cod">Nhận hàng thanh toán (COD)</label>
+                                    <div className="cod_extend" style={{ display: selectedMethod === 'cod' ? 'block' : 'none' }}>
+                                        Nhận hàng rồi thanh toán (COD)
+                                    </div>
+                                </li>
+                                <li>
+                                    <input
+                                        id="transfer"
+                                        type="radio"
+                                        className="select_payment-inp"
+                                        name="payment_method-transfer"
+                                        value="transfer"
+                                        checked={selectedMethod === 'transfer'}
+                                        onChange={handlePaymentMethodChange}
+                                    />
+                                    <label htmlFor="transfer">Chuyển khoản ngân hàng</label>
+                                    <div className="transfer_extend" style={{ display: selectedMethod === 'transfer' ? 'block' : 'none' }}>
+                                        <span>Quét mã qua ứng dụng Ngân hàng/ Ví điện tử</span>
+                                        <div className="qr_code">
+                                            <img src="../../img/codeqr_.png" alt="" />
                                         </div>
-                                    </li>
-                                    <li>
-                                        <input
-                                            id="transfer"
-                                            type="radio"
-                                            className="select_payment-inp"
-                                            name="payment_method-transfer"
-                                            value="transfer"
-                                            checked={selectedMethod === 'transfer'}
-                                            onChange={handlePaymentMethodChange}
-                                        />
-                                        <label htmlFor="transfer">Chuyển khoản ngân hàng</label>
-                                        <div className="transfer_extend" style={{ display: selectedMethod === 'transfer' ? 'block' : 'none' }}>
-                                            <span>Quét mã qua ứng dụng Ngân hàng/ Ví điện tử</span>
-                                            <div className="qr_code">
-                                                <img src="../../img/codeqr_.png" alt="" />
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="flex justify-center mt-10">
                             <button>Đặt hàng</button>
                         </div>
                     </div>
-
                 </div>
-            </div>
         </div>
     )
 }

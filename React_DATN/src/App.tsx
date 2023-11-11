@@ -56,7 +56,7 @@ function App() {
         <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetail />} />
-        <Route path="checkout" element={<Checkout />} />
+        <Route path="checkout/:id" element={<Checkout />} />
         <Route path="register" element={<Register />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="verification-codes" element={<VerificationCodes />} />
