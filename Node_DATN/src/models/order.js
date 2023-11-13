@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const sizeSchema = new mongoose.Schema({
+const orderSchema = new mongoose.Schema({
     phone:String,
     note:String,
     status:String,
@@ -10,7 +10,8 @@ const sizeSchema = new mongoose.Schema({
     totalPrice:Number,
 
     address:Object,
-    cartID:String
+    userID:String,
+    codeID:String,
 }, { timestamps: true, versionKey: false });
 
-export default mongoose.model("Size", sizeSchema);
+export default mongoose.model("Order", orderSchema);

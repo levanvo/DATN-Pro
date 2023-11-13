@@ -7,7 +7,8 @@ import { colorApi } from "./Services/Api_Color"
 import cartApi from "./Services/Api_cart";
 import slideApi from "./Services/Api_Slide";
 import blogApi from "./Services/Api_Blogs";
-import newSletterApi from "./Services/Api_newSletter"
+import newSletterApi from "./Services/Api_newSletter";
+import orderApi from "./Services/Api_Order";
 
 export const store = configureStore({
     reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
         colorApi: colorApi.reducer,
         "cart": cartApi.reducer,
         "slide": slideApi.reducer,
+        "order": orderApi.reducer,
         "blogs": blogApi.reducer,
         "newSletterApi": newSletterApi.reducer,
 
@@ -30,6 +32,7 @@ export const store = configureStore({
     .concat(colorApi.middleware)
     .concat(cartApi.middleware)
     .concat(slideApi.middleware)
+    .concat(orderApi.middleware)
     .concat(newSletterApi.middleware)
     .concat(blogApi.middleware)
 })

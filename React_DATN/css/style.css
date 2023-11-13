@@ -1,9 +1,3 @@
-/* mainmenu-area home2 product-items */
-
-
-
-
-
 html,
 body {
     height: 100%;
@@ -319,7 +313,7 @@ body {
 }
 
 .cart-img {
-    background-color: #fff;
+    background-color: #f0f8ff;
     float: left;
 }
 
@@ -2074,7 +2068,7 @@ ul.address li span {
 /*----------------------------------------*/
 
 .mainmenu-area.product-items {
-    background-color: #ebebeb;
+    background-color: #f3f3f3;
 }
 
 /*----------------------------------------*/
@@ -2976,7 +2970,7 @@ p.tag-rules {
     line-height: 100px;
 }
 
-.shopping-button {
+.shopping-button,.shopping-btn {
     border-bottom: 1px solid #f2f2f2;
     border-left: 1px solid #f2f2f2;
     border-right: 1px solid #f2f2f2;
@@ -2994,6 +2988,24 @@ p.tag-rules {
 
 .shopping-cart-left button {
     margin-left: 5px;
+}
+
+.shopping-btn{
+    background-color: gray;
+    border: 1px solid #eee;
+    color: #dadada;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 34px;
+    padding: 0 15px;
+    text-transform: uppercase;
+    font-family: "Montserrat", sans-serif;
+    transition: all 0.3s ease 0s;
+}
+
+.shopping-btn:hover{
+    color: white;
+    background: #E03550;
 }
 
 .shopping-button button,
