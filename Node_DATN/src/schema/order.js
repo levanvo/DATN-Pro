@@ -1,6 +1,7 @@
 import joi from "joi"
 
 export const JoiOrder=joi.object({
+    nameUser:joi.string().required(),
     phone:joi.string().required(),
     note:joi.string(),
     status:joi.string().required(),

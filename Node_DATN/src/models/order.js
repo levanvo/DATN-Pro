@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
+    nameUser:String,
     phone:String,
     note:String,
     status:String,

@@ -94,7 +94,7 @@ const Checkout = () => {
         const quantity: number = getInfoSPcheckout.reduce((one: any, two: any) => {
             return one += two.quantity;
         }, 0);
-        const user: any = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+        const user: any = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : "null";
 
         if (!getName) { messageApi.open({ type: "error", content: "Nhập tên của bạn !" }); return };
         if (!getPhone) { messageApi.open({ type: "error", content: "Nhập số điện thoại của bạn !" }); return };
@@ -105,8 +105,9 @@ const Checkout = () => {
 
 
         const ObjectOrder: any = {
+            nameUser:getName,
             phone: getPhone,
-            note: getNote?getNote:" ",
+            note: getNote?getNote:"null",
             status: "đang chờ giao hàng",//mặc định
             discount: "20%",
             methodPayment: selectedMethod,
