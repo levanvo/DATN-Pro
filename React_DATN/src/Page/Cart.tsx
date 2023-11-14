@@ -18,7 +18,7 @@ const Cart = () => {
     const token = localStorage.getItem('token');
     const [productQuantities, setProductQuantities] = useState<any>({});
     const [updateQuantity] = useUpdateCartMutation()
-    const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
+    const [selectedProducts, setSelectedProducts]:any = useState<any[]>([]);
     const navigate = useNavigate()
 
     const rowSelection = {
@@ -58,7 +58,7 @@ const Cart = () => {
         if (token) {
           let total = 0;
 
-          selectedProducts.forEach((product) => {
+          selectedProducts.forEach((product:any) => {
             total += product.price * (product.quantity);
           });
 
@@ -67,7 +67,7 @@ const Cart = () => {
           // Nếu không có token, thực hiện tính tổng tiền từ localCart
           let total = 0;
 
-          selectedProducts.forEach((product) => {
+          selectedProducts.forEach((product:any) => {
             total += product.price * (product.quantity);
           });
 
@@ -76,7 +76,7 @@ const Cart = () => {
       };
 
 
-    const [totalAmount, setTotalAmount] = useState<number>(calculateTotal());
+    const [totalAmount, setTotalAmount]:any = useState<number>(calculateTotal());
       
       useEffect(() => {
         // Gọi hàm updateTotalAmount khi selectedProducts thay đổi
@@ -187,6 +187,22 @@ const Cart = () => {
         }
       };
       
+      const checkoutButton=(idCart:string)=>{
+        if(!selectedProducts.length){
+          messageApi.open({
+            type: 'error',
+            content: 'Bạn chưa chọn sản phẩm nào !',
+          });
+        }else{
+          if(window.location.href.includes("cart")){
+            localStorage.setItem("infoOrder.shoe",JSON.stringify(selectedProducts));
+            localStorage.setItem("totalPrice.shoe",totalAmount);
+            navigate(`/checkout/${idCart}`);
+          }else{
+            localStorage.removeItem("infoOrder.shoe");
+          };
+        };
+      };
 
       if(token){
         dataSource
@@ -381,17 +397,14 @@ const Cart = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
-                      <div className="col-md-4">
-                        <div className="totals">
-                          {/* <p>Subtotal <span>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></p> */}
-                          <h3>Tổng tiền <span>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></h3>
-                          <div className="shopping-button"> 
-                            <button type="submit" onClick={handleCheckout}>Checkout</button>
-                          </div>
+                    <div className=" flex justify-between">
+                        <h3 className='text-red-400 text-xl'>Tổng tiền: <span>{totalAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span></h3>
+                      <div className="">
+                        <div className="shopping-btn">
+                          <button onClick={()=>checkoutButton(cartData?._id)} type="submit">Thủ tục thanh toán</button>
                         </div>
                       </div>
-                      </div>
+                    </div>
                 </div>
             </div>
         </div>

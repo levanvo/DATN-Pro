@@ -78,7 +78,7 @@ const Header = () => {
                     <form className='form-webSite' action="" >
                       <label htmlFor="search-webSite" className=' float-right'><ImCancelCircle className="w-5 h-5 m-1 hover:rotate-90 duration-200 cursor-pointer" /></label>
                       <h1 className='text-center text-2xl mt-3 text-gray-500 font-bold'>Tìm Kiếm</h1>
-                      <input type="text" placeholder=' Bạn đang tìm kiếm gì ?'
+<input type="text" placeholder=' Bạn đang tìm kiếm gì ?'
                         onKeyDown={handleKeyDown}
                         ref={searchInputRef}
                       />
@@ -88,7 +88,7 @@ const Header = () => {
 
                 }
                 <div className="cart-img">
-                  {VerifyAccount ? (
+                  {/* {VerifyAccount ? ( */}
                     <a href="/cart">
                       <img
                         className="active:scale-90 "
@@ -96,7 +96,7 @@ const Header = () => {
                         alt=""
                       />
                     </a>
-                  ) : (
+                  {/* ) : (
                     <Link to={`/login`}>
                       <img
                         className="active:scale-90 "
@@ -104,7 +104,7 @@ const Header = () => {
                         alt=""
                       />
                     </Link>
-                  )}
+                  )} */}
                 </div>
                 {user ? (
                   <div className="account-menu">
@@ -147,7 +147,7 @@ const Header = () => {
                               />
                             </Link>
                             <ul className="formSelectUser">
-                              <Link to={`/admin`}>
+<Link to={`/admin`}>
                                 <li style={{ cursor: "pointer" }}>
                                   Trang cá nhân
                                 </li>
@@ -238,7 +238,7 @@ const Header = () => {
                     <li>
                       <a href="#">Khác</a>
                       <div className="sub-menu pages">
-                        <span>
+<span>
                           <a href="/contact">Liên hệ chúng tôi</a>
                         </span>
                         <span>
