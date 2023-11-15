@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-  // user-select: none;
+  user-select: none;
 }
 ._header-web {
   position: fixed;
@@ -63,13 +63,13 @@
 
 // css checkout page
 
-// .checkout_title {
-//   text-align: center;
-//   margin: 25px 0px 25px;
-// }
+.checkout_title {
+  text-align: center;
+  margin: 25px 0px 25px;
+}
 
 .box_shadow {
-  width: 1100px;
+  width: 707px;
   margin: 0px auto 20px auto;
   padding: 20px;
   box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.12);
@@ -79,7 +79,6 @@
   display: flex;
   width: 100%;
   border-bottom: 1px solid #ccc;
-  height: 60px;
 }
 
 .product_thumbnail {
@@ -111,8 +110,8 @@
   color: #333;
 }
 
-.product_color {
-  margin: 0 17px;
+.product_size {
+  margin-right: 8px;
 }
 
 .product_quantity {
@@ -166,13 +165,13 @@
   height: 40px;
   line-height: 40px;
   border-radius: 5px;
-  // overflow: hidden;
+  overflow: hidden;
   margin: 10px 0px 20px 0px;
 }
 
 .coupon_inp input {
   outline: none;
-  width: 100%;
+  width: 80%;
   padding: 10px;
   color: #363636;
 }
@@ -270,6 +269,10 @@
   justify-content: space-between;
 }
 
+.order_cart-shipping span:nth-child(1) {
+  font-weight: 700;
+}
+
 .order_cart-subtotal {
   padding-top: 20px;
   border-top: 1px solid #ccc;
@@ -330,8 +333,8 @@
 
 .order_reviews button {
   display: block;
-  margin: -1px auto 0px auto;
-  width: 138px;
+  margin: 15px auto 0px auto;
+  width: 240px;
   height: 40px;
   border-radius: 5px;
   background-color: rgb(0, 204, 255);

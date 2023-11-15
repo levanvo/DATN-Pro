@@ -5,14 +5,20 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "User"
     },
+    name: String,
     cartId: [{
         type: mongoose.Types.ObjectId,
         ref: "Cart"
     }],
-    productId: [{
-        type: mongoose.Types.ObjectId,
-        ref: "Product"
-    }],
+    products: [
+        {
+          productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Product",
+          },
+          quantity: Number,
+        }
+      ],
     // code_order: String,
     phone:String,
     note: String,

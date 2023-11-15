@@ -5,7 +5,7 @@ export const getUserOrders = async (req, res) => {
     const userId = req.user._id;
 
     try {
-        const orders = await Order.find({ userId }).populate("productId")
+        const orders = await Order.find({ userId }).populate("products.productId");
         if(orders.length === 0){
             return res.status(400).json({
                 message: "Bạn chưa có đơn hàng nào"
@@ -57,13 +57,13 @@ export const createOrder = async (req, res) => {
 
         const productIdsToDelete = req.body.cartId;
 
-        for (const productIdToDelete of productIdsToDelete) {
+        // for (const productIdToDelete of productIdsToDelete) {
             
-            await Cart.updateMany(
-                { userId: req.user._id, 'products._id': productIdToDelete },
-                { $pull: { products: { _id: productIdToDelete } } }
-            );
-        }
+        //     await Cart.updateMany(
+        //         { userId: req.user._id, 'products._id': productIdToDelete },
+        //         { $pull: { products: { _id: productIdToDelete } } }
+        //     );
+        // }
         
 
         return res.status(200).json({
@@ -71,7 +71,7 @@ export const createOrder = async (req, res) => {
             order
         });
     } catch (error) {
-        return res.status(404).json({ mesage: "lỗi thêm 1 order !", error })
+        return res.status(404).json({ mesage: "lỗi thêm 1 order !", err: error.message })
     }
 };
 

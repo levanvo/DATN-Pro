@@ -3,6 +3,7 @@ import Select from 'react-select';
 import vietnamData from '../Services/vietnamData'
 import { useLocation } from 'react-router-dom';
 import { message } from "antd";
+import { useAddOrderMutation } from "../Services/Api_Order";
 
 const Checkout = () => {
     
@@ -10,6 +11,8 @@ const Checkout = () => {
     const [isVisible, setIsVisible] = useState(false);
     const location = useLocation();
     const { selectedProducts } = location.state || {};
+    const [addOrder] = useAddOrderMutation()
+
     
     useEffect(() => {
         if (!selectedProducts) {
@@ -30,13 +33,16 @@ const Checkout = () => {
     
     const handleLabelClick = () => {
         setIsVisible(!isVisible);
-
     };
 
 
     // lựa chọn tỉnh thành 
     const [selectedCity, setSelectedCity] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
+    console.log(selectedCity);
+    console.log(selectedDistrict);
+    
+    
 
     const handleCityChange = (selectedOption) => {
         setSelectedCity(selectedOption);
@@ -56,6 +62,47 @@ const Checkout = () => {
             }
         }
     }
+
+    const handlePlaceOrder = async () => {
+        // Gather data from inputs and prepare the order object
+        const cartId = selectedProducts.map((product:any) => product.key)
+        const productId = selectedProducts.map((product:any) => product.productId)
+        const quantity = selectedProducts.map((product:any) => product.quantity)
+
+        console.log(cartId);
+        
+        const orderData = {
+          cartId: cartId,
+          products: productId.map((id:string, index:number) => ({
+            productId: id,
+            quantity: quantity[index]
+          })),
+          name: (document.getElementById("name") as HTMLInputElement)?.value || '',
+          phone: (document.getElementById("phone") as HTMLInputElement)?.value || '',
+          address: {
+            city: selectedCity?.label || '',
+            district: selectedDistrict?.label || '',
+            location: (document.getElementById("address") as HTMLInputElement)?.value || '',
+          },
+          note: (document.getElementById("note") as HTMLTextAreaElement)?.value || '',
+        //   quantity: 
+        };
+
+        console.log(orderData);
+        
+    
+        try {
+          const response = await addOrder(orderData);
+    
+          // Handle successful order placement
+          console.log("Order placed successfully:", response);
+    
+          // Optionally, you can redirect the user or perform other actions after successful order placement
+        } catch (error) {
+          // Handle error
+          console.error("Error placing order:", error);
+        }
+    };
 
     // lựa chọn hình thức tt
     const [selectedMethod, setSelectedMethod] = useState('cod');
@@ -114,9 +161,9 @@ const Checkout = () => {
                         <form action="" className="form_checkout">
                             <h3>THANH TOÁN VÀ GIAO HÀNG</h3>
                             <label htmlFor="name">Họ và tên <abbr className="required" title="bắt buộc">&#8727;</abbr></label>
-                            <input className="form_checkout-inp" type="text" name="name" placeholder="Họ tên của bạn" />
+                            <input className="form_checkout-inp" type="text" id="name" placeholder="Họ tên của bạn" />
                             <label htmlFor="phone">Số điện thoại <abbr className="required" title="bắt buộc">&#8727;</abbr></label>
-                            <input className="form_checkout-inp" type="text" name="phone" placeholder="Số điện thoại của bạn" />
+                            <input className="form_checkout-inp" type="text" id="phone" placeholder="Số điện thoại của bạn" />
                             <div className="selections">
                                 <div className="selection">
                                     <label htmlFor="">Tỉnh/Thành phố  <abbr className="required" title="bắt buộc">&#8727;</abbr></label>
@@ -139,9 +186,9 @@ const Checkout = () => {
                                 </div>
                             </div>
                             <label htmlFor="address">Địa chỉ <abbr className="required" title="bắt buộc">&#8727;</abbr></label>
-                            <input className="form_checkout-inp" type="text" name="address" placeholder="Ví dụ: Số 20, ngõ 20" />
+                            <input className="form_checkout-inp" type="text" id="address" placeholder="Ví dụ: Số 20, ngõ 20" />
                             <label htmlFor="note">Ghi chú đơn hàng (tuỳ chọn)</label>
-                            <textarea name="note" id="" cols={5} rows={2} placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
+                            <textarea id="note" cols={5} rows={2} placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."></textarea>
                         </form>
                         <div className="order_reviews">
                             <p className="order_cart-subtotal">
@@ -193,7 +240,7 @@ const Checkout = () => {
                                     </li>
                                 </ul>
                             </div>
-                            <button>Đặt hàng</button>
+                            <button onClick={handlePlaceOrder}>Đặt hàng</button>
                         </div>
                     </div>
 
