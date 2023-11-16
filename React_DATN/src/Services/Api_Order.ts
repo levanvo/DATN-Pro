@@ -6,17 +6,18 @@ const orderApi = createApi({
   tagTypes: ["Order"],
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080",
-    prepareHeaders(headers, api) {
-      const token = localStorage.getItem("token")
+    prepareHeaders: (headers) => {
+      headers.set("Content-Type", "application/json");
+      const token = localStorage.getItem("token") || "";
       if (token) {
-        headers.set("authorization", token)
+          headers.set("Authorization", `Bearer ${JSON.parse(token)}`);
       }
-      return headers
-    },
+      return headers;
+  },
   }),
   endpoints: (builder) => ({
-    getAllOrder: builder.query<IOrder[], void>({
-      query: () => `/api/order`,
+    getUserOrders: builder.query<any, void>({
+      query: () => `/api/order/view`,
       providesTags: ["Order"]
     }),
 
@@ -25,7 +26,7 @@ const orderApi = createApi({
       providesTags: ["Order"]
     }),
 
-    addOrder: builder.mutation<IOrder, IOrder>({
+    addOrder: builder.mutation<any, any>({
       query: (order) => ({
         url: `/api/order`,
         method: "POST",
@@ -65,7 +66,7 @@ const orderApi = createApi({
 });
 
 export const {
-  useGetAllOrderQuery,
+  useGetUserOrdersQuery,
   useAddOrderMutation,
   useUpdateOrderMutation,
   useRemoveOrderMutation,

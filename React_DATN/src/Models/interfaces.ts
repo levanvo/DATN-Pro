@@ -85,7 +85,6 @@ export interface IBlog {
 
 export interface IOrder{
   _id?:string|number,
-  id?:string|number,
   phone:string,
   note?:string,
   status:string,
