@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { ImCancelCircle } from "react-icons/im"
 import { UserOutlined } from "@ant-design/icons"
@@ -51,6 +51,27 @@ const Header = () => {
   }
 
   const { searchInputRef, handleKeyDown } = useSearch();
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // Lấy dữ liệu từ localStorage
+    const storedUser = localStorage.getItem('user');
+
+    if (storedUser) {
+      // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
+      const userObj = JSON.parse(storedUser);
+      
+      // Lấy _id từ đối tượng user
+      const { _id } = userObj;
+
+      // Đặt giá trị _id vào state
+      setUserId(_id);
+    }
+  }, []);
+
+  console.log(userId);
+  
 
   return (
     <header className="_header-web">
@@ -126,6 +147,9 @@ const Header = () => {
                               <Link to={`/admin`}>
                                 <li style={{ cursor: "pointer" }}>Quản trị</li>
                               </Link>
+                              <Link to={`/user/${userId}`}>
+                                <li style={{ cursor: "pointer" }}>Tài khoản của tôi</li>
+                              </Link>
                               <li
                                 style={{ cursor: "pointer" }}
                                 onClick={showLogoutConfirmationModal}
@@ -147,9 +171,9 @@ const Header = () => {
                               />
                             </Link>
                             <ul className="formSelectUser">
-<Link to={`/admin`}>
+                              <Link to={`/user/${userId}`}>
                                 <li style={{ cursor: "pointer" }}>
-                                  Trang cá nhân
+                                  Tài khoản của tôi
                                 </li>
                               </Link>
                               <li
