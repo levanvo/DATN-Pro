@@ -88,7 +88,7 @@ const Product = () => {
                                             return (
                                                 <ul className="nav tab-navigation" role="tablist" key={category._id}>
                                                     <li role="presentation">
-                                                        <Link to={`/category/${category._id}/products`}>{category.name}</Link>
+                                                        <Link to={`/products`}>{category.name}</Link>
                                                     </li>
                                                 </ul>
                                             )
@@ -131,11 +131,11 @@ const Product = () => {
                                                         <Link to={`/product/${items._id}`}><img onClick={() => HandleView(items._id)} className='h-[250px] w-[220px] hover:scale-125 duration-200' src={items.imgUrl[0]} alt="" /></Link>
                                                     </div>
                                                     <div className="content">
-                                                        <p className='text-center border-y border-gray-200 mt-1'>{items.name}</p>
+                                                        <p className='text-center border-y border-gray-200 mt-1 text-orange-400 font-bold'>{items.name}</p>
                                                         <div className="flex justify-between -mt-3">
                                                             <div className="flex space-x-1">
-                                                                <span>{items.original_price}</span>
-                                                                <del className='text-xs'> {items.original_price > 0 ? items.price + items.original_price : ""}</del>
+                                                                <span>{items.original_price.toLocaleString()}</span>
+                                                                {/* <del className='text-xs'> {items.original_price > 0 ? (items.price + items.original_price).toLocaleString() : ""}</del> */}
                                                                 <span> VND</span>
                                                             </div>
                                                             <span>SL: {items.quantity}</span>

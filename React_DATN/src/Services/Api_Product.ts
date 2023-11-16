@@ -64,6 +64,11 @@ const productApi = createApi({
       }),
       invalidatesTags: ["Product"]
     }),
+    //Lấy ra các sản phẩm HOT
+    getHotProducts: builder.query<IProduct[], void>({
+      query: () => `/api/hot-product`,
+      providesTags: ["Product"]
+    }),
 
     //API Xóa sản phẩm vĩnh viễn
     removeProduct: builder.mutation({
@@ -84,6 +89,7 @@ export const {
    useUpdateProductMutation,
    useGetAllDeletedProductsQuery,
    useRestoreProductMutation,
-   useRemoveProductMutation
+   useRemoveProductMutation,
+   useGetHotProductsQuery
    } = productApi;
 export default productApi;

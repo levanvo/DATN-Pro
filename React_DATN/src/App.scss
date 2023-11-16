@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-  user-select: none;
+  // user-select: none;
 }
 ._header-web {
   position: fixed;
@@ -20,9 +20,8 @@
 }
 
 #search-webSite:checked ~ .form-webSite {
-  top: 80px;
   z-index: 100;
-  top: 100px;
+  top: 130px;
   right: -90%;
 }
 .form-webSite {
@@ -64,13 +63,13 @@
 
 // css checkout page
 
-.checkout_title {
-  text-align: center;
-  margin: 25px 0px 25px;
-}
+// .checkout_title {
+//   text-align: center;
+//   margin: 25px 0px 25px;
+// }
 
 .box_shadow {
-  width: 707px;
+  width: 1100px;
   margin: 0px auto 20px auto;
   padding: 20px;
   box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.12);
@@ -80,6 +79,7 @@
   display: flex;
   width: 100%;
   border-bottom: 1px solid #ccc;
+  height: 60px;
 }
 
 .product_thumbnail {
@@ -105,18 +105,19 @@
   width: 55%;
 }
 
-.product_name a {
+.product_name p {
   font-size: 14px;
   font-weight: 700;
   color: #333;
 }
 
-.product_size {
-  margin-right: 8px;
+.product_color {
+  margin: 0 17px;
 }
 
 .product_quantity {
   width: 30%;
+  line-height: 100px;
 }
 
 .product_quantity span {
@@ -138,16 +139,6 @@
     // line-height: 35px;
     color: black;
     // margin-left: 100px;
-}
-
-.quantity input {
-  width: 40%;
-  outline: none;
-  text-align: center;
-}
-
-.quantity button {
-  width: 30%;
 }
 
 .coupon {
@@ -175,13 +166,13 @@
   height: 40px;
   line-height: 40px;
   border-radius: 5px;
-  overflow: hidden;
+  // overflow: hidden;
   margin: 10px 0px 20px 0px;
 }
 
 .coupon_inp input {
   outline: none;
-  width: 80%;
+  width: 100%;
   padding: 10px;
   color: #363636;
 }
@@ -279,10 +270,6 @@
   justify-content: space-between;
 }
 
-.order_cart-shipping span:nth-child(1) {
-  font-weight: 700;
-}
-
 .order_cart-subtotal {
   padding-top: 20px;
   border-top: 1px solid #ccc;
@@ -343,8 +330,8 @@
 
 .order_reviews button {
   display: block;
-  margin: 15px auto 0px auto;
-  width: 240px;
+  margin: -1px auto 0px auto;
+  width: 138px;
   height: 40px;
   border-radius: 5px;
   background-color: rgb(0, 204, 255);

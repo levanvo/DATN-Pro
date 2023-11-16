@@ -1,6 +1,13 @@
 import React from 'react'
+import { useParams } from "react-router-dom"
+import { useGetOneBlogQuery } from '../Services/Api_Blogs'
+import parse from 'html-react-parser';
 
 const Blog_details = () => {
+    const { id } = useParams()
+    const { data: blogData, isLoading } = useGetOneBlogQuery(id || "")
+
+
     return (
         <div className='w-[90vw] mx-auto mt-36'>
             <div className="blog-details-main">
@@ -16,63 +23,10 @@ const Blog_details = () => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-lg-3">
-                            <div className="product-sidebar">
-                                <div className="sidebar-title">
-                                    <h2>Shopping Options</h2>
-                                </div>
-                                <div className="single-sidebar">
-                                    <div className="single-sidebar-title">
-                                        <h3>Category</h3>
-                                    </div>
-                                    <div className="single-sidebar-content">
-                                        <ul>
-                                            <li><a href="#">Dresses (4)</a></li>
-                                            <li><a href="#">shoes (6)</a></li>
-                                            <li><a href="#">Handbags (1)</a></li>
-                                            <li><a href="#">Clothing (3)</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="single-sidebar">
-                                    <div className="single-sidebar-title">
-                                        <h3>Color</h3>
-                                    </div>
-                                    <div className="single-sidebar-content">
-                                        <ul>
-                                            <li><a href="#">Black (2)</a></li>
-                                            <li><a href="#">Blue (2)</a></li>
-                                            <li><a href="#">Green (4)</a></li>
-                                            <li><a href="#">Grey (2)</a></li>
-                                            <li><a href="#">Red (2)</a></li>
-                                            <li><a href="#">White (2)</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="single-sidebar">
-                                    <div className="single-sidebar-title">
-                                        <h3>Manufacturer</h3>
-                                    </div>
-                                    <div className="single-sidebar-content">
-                                        <ul>
-                                            <li><a href="#">Calvin Klein (2)</a></li>
-                                            <li><a href="#">Diesel (2)</a></li>
-                                            <li><a href="#">option value (1)</a></li>
-                                            <li><a href="#">Polo (2)</a></li>
-                                            <li><a href="#">store view (4)</a></li>
-                                            <li><a href="#">Tommy Hilfiger (2)</a></li>
-                                            <li><a href="#">will be used (1)</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div className="banner-left">
-                                    <a href="#">
-                                        <img src="img/product/banner_left.jpg" alt="" />
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-9">
+                        {/* <div className="col-lg-2">
+                            
+                        </div> */}
+                        <div className="">
                             <div className="row">
                                 <div className="col-md-12">
                                     <div className="sidebar-title">
@@ -81,18 +35,14 @@ const Blog_details = () => {
                                     <div className="blog-area">
                                         <div className="blog-post-details">
                                             <div className="blog-img">
-                                                <a href="#">
-                                                    <img src="img/blog/5.jpg" alt="" />
-                                                </a>
+                                                {/* <a href="#"> */}
+                                                    <img className="w-[600px] h-[500px] object-contain" src={blogData?.imgUrl[0]} alt="" />
+                                                {/* </a> */}
                                             </div>
                                             <div className="blog-content">
-                                                <a href="#" className="blog-title">Lorem ipsum dolor sit amet</a>
-                                                <span><a href="#">By plaza themes - </a>17 Aug 2015 ( 0 comments )</span>
-                                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna onec vitae hendrerit arcu, sit amet faucibus nisl. Cras pretium arcu ex.</p>
-                                                <p>Aliquam et metus pharetra, bibendum massa nec, fermentum odio. Nunc id leo ultrices, mollis ligula in, finibus tortor. Mauris eu dui ut lectus fermentum eleifend. Pellentesque faucibus sem ante, non malesuada odio varius nec. Suspendisse potenti. Proin consectetur aliquam odio nec fringilla. Sed interdum at justo in efficitur. Vivamus gravida volutpat sodales. Fusce ornare sit amet ligula condimentum sagittis.</p>
-                                                <blockquote>Quisque semper nunc vitae erat pellentesque, ac placerat arcu consectetur. In venenatis elit ac ultrices convallis. Duis est nisi, tincidunt ac urna sed, cursus blandit lectus. In ullamcorper sit amet ligula ut eleifend. Proin dictum tempor ligula, ac feugiat metus. Sed finibus tortor eu scelerisque scelerisque.</blockquote>
-                                                <p>Aenean et tempor eros, vitae sollicitudin velit. Etiam varius enim nec quam tempor, sed efficitur ex ultrices. Phasellus pretium est vel dui vestibulum condimentum. Aenean nec suscipit nibh. Phasellus nec lacus id arcu facilisis elementum. Curabitur lobortis, elit ut elementum congue, erat ex bibendum odio, nec iaculis lacus sem non lorem. Duis suscipit metus ante, sed convallis quam posuere quis. Ut tincidunt eleifend odio, ac fringilla mi vehicula nec. Nunc vitae lacus eget lectus imperdiet tempus sed in dui. Nam molestie magna at risus consectetur, placerat suscipit justo dignissim. Sed vitae fringilla enim, nec ullamcorper arcu.</p>
-                                                <p>Suspendisse turpis ipsum, tempus in nulla eu, posuere pharetra nibh. In dignissim vitae lorem non mollis. Praesent pretium tellus in tortor viverra condimentum. Nullam dignissim facilisis nisl, accumsan placerat justo ultricies vel. Vivamus finibus mi a neque pretium, ut convallis dui lacinia. Morbi a rutrum velit. Curabitur sagittis quam quis consectetur mattis. Aenean sit amet quam vel turpis interdum sagittis et eget neque. Nunc ante quam, luctus et neque a, interdum iaculis metus. Aliquam vel ante mattis, placerat orci id, vehicula quam. Suspendisse quis eros cursus, viverra urna sed, commodo mauris. Cras diam arcu, fringilla a sem condimentum, viverra facilisis nunc. Curabitur vitae orci id nulla maximus maximus. Nunc pulvinar sollicitudin molestie.</p>
+                                                <a href="#" className="blog-title">{blogData?.title}</a>
+                                                <span><a href="#">By {blogData?.author} - </a>{blogData?.createdAt} ( 0 comments )</span>
+                                                {parse(blogData?.description || "")}
                                                 <div className="share-post">
                                                     <div className="share-title">
                                                         <h3>share this post</h3>

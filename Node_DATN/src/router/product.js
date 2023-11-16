@@ -7,7 +7,8 @@ import {
   updateProduct,
   restoreProduct,
   getAllDeletedProducts,
-  deleteProduct
+  deleteProduct,
+  getHotProducts
 } from "../controller/product.js"
 const router = express.Router()
 
@@ -19,5 +20,6 @@ router.patch("/product/:id", updateProduct)
 router.put("/product/restore/:id",restoreProduct) //khôi phục sản phẩm
 router.get("/restore-product-data", getAllDeletedProducts) // in ra tất cả sản phẩm xóa tạm thời
 router.delete("/product/:id/delete", deleteProduct) // xóa sản phẩm vĩnh viễn
+router.get("/hot-product", getHotProducts) //lấy sản phẩm hot
 
 export default router

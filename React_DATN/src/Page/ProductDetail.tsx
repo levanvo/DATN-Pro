@@ -29,14 +29,14 @@ const ProductDetail = () => {
   const { data: allProducts }: any = useGetAllProductQuery();
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
   const [addToCart] = useAddToCartMutation()
-  const {data:cartData} = useGetCartQuery()
+  const {data:cartData,error} = useGetCartQuery()
 
 
   let arrayPR: any = [];
   const arrayRelate = productDataOne?.categoryId.products;
   if (arrayRelate) {
     for (let i = 0; i < arrayRelate.length; i++) {
-      allProducts.map((product: any) => {
+      allProducts?.map((product: any) => {
         if (product._id == arrayRelate[i]) {
           arrayPR.push(product);
         };
@@ -59,7 +59,7 @@ const ProductDetail = () => {
   const Plus = () => {
     setQuantityBuy(getQuantityBuy + 1)
   };
-
+  
 
   const handleAddToCart = () => {
     if (!productDataOne || getQuantityBuy < 1 || !getColor || !getSize) {
@@ -68,27 +68,39 @@ const ProductDetail = () => {
     }
   
     const isAuthenticated = localStorage.getItem("token");
-  
+    
     if (isAuthenticated) {
-      const productItemIndex = cartData.products.findIndex((product:any)=>product.productId._id === productDataOne._id);
-      const productItem = cartData.products[productItemIndex];   
-      if (productItemIndex !== -1) {
-        const updatedProductItem = { ...productItem }; // Tạo bản sao của productItem
-        addToCart({
-          productId: updatedProductItem.productId._id,
-          color: updatedProductItem.color,  
-          size: updatedProductItem.size,
-          quantity: getQuantityBuy
-        });
-        message.success("Đã thêm sản phẩm vào giỏ hàng")
-      } else{
+      if(cartData===undefined || cartData?.products.length === 0){
         addToCart({
           productId: productDataOne._id,
           color: getColor,  
           size: getSize,
           quantity: getQuantityBuy,
         })
-      message.success("Đã thêm sản phẩm vào giỏ hàng")
+        message.success("Đã thêm sản phẩm vào giỏ hàng")
+      }else{
+        const productItemIndex = cartData.products.findIndex((product:any)=>product.productId._id == productDataOne._id && product.color == getColor && product.size == getSize);
+        console.log(productItemIndex);
+        
+        const productItem = cartData.products[productItemIndex];   
+        if (productItemIndex !== -1) {
+          const updatedProductItem = { ...productItem }; // Tạo bản sao của productItem
+          addToCart({
+            productId: updatedProductItem.productId._id,
+            color: updatedProductItem.color,  
+            size: updatedProductItem.size,
+            quantity: getQuantityBuy
+          });
+          message.success("Đã thêm sản phẩm vào giỏ hàng")
+        } else{
+          addToCart({
+            productId: productDataOne._id,
+            color: getColor,  
+            size: getSize,
+            quantity: getQuantityBuy,
+          })
+        message.success("Đã thêm sản phẩm vào giỏ hàng")
+        }
       }
       } else {
       // Xử lý khi chưa đăng nhập, tương tự như trước
@@ -105,7 +117,8 @@ const ProductDetail = () => {
           item.size === getSize
       );
       
-      
+      const maxId = existingCart.reduce((max:any, item:any) => (item.id > max ? item.id : max), 0);
+      const newId = maxId + 1;
   
       if (existingProductIndex !== -1) {
         // Sản phẩm đã tồn tại trong giỏ hàng với cùng productId, color và size
@@ -113,7 +126,8 @@ const ProductDetail = () => {
         existingCart[existingProductIndex].quantity += getQuantityBuy;
       } else {
         // Nếu sản phẩm không tồn tại trong giỏ hàng, tạo sản phẩm mới và thêm vào mảng giỏ hàng
-        existingCart.push({
+        existingCart.unshift({
+          id: newId,
           productId: productDataOne._id,
           name: productDataOne.name,
           imgUrl: productDataOne.imgUrl[0],
@@ -240,10 +254,7 @@ const ProductDetail = () => {
                       <i className="fa fa-star"></i>
                       <i className="fa fa-star-half-o"></i>
                       <a href="#" className="review">
-                        1 Review(s)
-                      </a>
-                      <a href="#" className="add-review">
-                        Add Your Review
+                       <p>Số lượt truy cập: {productDataOne?.views}</p>
                       </a>
                     </div>
                   </div>

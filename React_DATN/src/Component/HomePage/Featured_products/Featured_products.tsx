@@ -72,7 +72,7 @@ const Featured_products = () => {
                                                                     href="#"
                                                                 >
                                                                     {" "}
-                                                                    <i className="fa fa-search"></i>
+                                                                    <a href={`/product/${product._id}`}><i className="fa fa-search"></i></a>
                                                                 </a>
                                                             </li>
                                                             <li>

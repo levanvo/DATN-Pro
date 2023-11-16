@@ -78,7 +78,7 @@ const Footer = () => {
                 </div>
 
             </div>
-            <footer className="footer-area">
+            {/* <footer className="footer-area">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-6">
@@ -90,9 +90,9 @@ const Footer = () => {
                     </div>
                 </div>
                 <a href="#" id="scrollUp"><i className="fa fa fa-arrow-up" /></a>
-            </footer>
-            <div id="quickview-wrapper">
-                {/* Modal */}
+            </footer> */}
+            {/* <div id="quickview-wrapper">
+              
                 <div className="modal fade" id="productModal" tabIndex={-1} role="dialog">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
@@ -143,7 +143,7 @@ const Footer = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
 
     )
