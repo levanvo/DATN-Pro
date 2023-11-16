@@ -1,5 +1,5 @@
 import { useCreateNewSletterMutation } from "../../../Services/Api_newSletter"
-import { CloseCircleOutlined } from "@ant-design/icons"
+import { CloseCircleOutlined, CheckOutlined } from "@ant-design/icons"
 import { notification } from "antd"
 
 const Newsleter = () => {
@@ -28,6 +28,12 @@ const Newsleter = () => {
       return
     }
     createNewSletter({ email })
+    notification.open({
+      message: "Thông Báo",
+      description: "Đăng kí nhận thông tin khuyến mãi thành công",
+      icon: <CheckOutlined style={{ color: "#60f542" }} />,
+      duration: 1,
+    })
   }
 
   return (
