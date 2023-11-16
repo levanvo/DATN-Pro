@@ -28,6 +28,8 @@ const Cart = () => {
     
         // Lấy danh sách sản phẩm được chọn
         const selectedProducts = dataSource.filter((product) => selectedRowKeys.includes(product.key));
+        console.log(selectedProducts);
+        
         setSelectedProducts(selectedProducts);
       },
     };
@@ -42,6 +44,7 @@ const Cart = () => {
       const updatedDataSource = cartData?.products.map((product: any) => {
         return {
           key: product._id,
+          productId: product.productId._id,
           name: product.productId.name,
           price: product.productId.price,
           imgUrl: product.productId.imgUrl[0],

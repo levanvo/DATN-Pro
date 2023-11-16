@@ -86,3 +86,21 @@ export interface IBlog {
   createdAt?: string,
   updatedAt?:string
 }
+
+export interface IOrder{
+  _id?:string|number,
+  phone:string,
+  note?:string,
+  status:string,
+  discount:string,
+  methodPayment:string,
+  quantity:number,
+  totalPrice:number,
+  address:{
+    city:string,
+    location:string,
+    district:string
+  },
+  userID:string,
+  codeID:string,
+}

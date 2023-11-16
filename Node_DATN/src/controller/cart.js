@@ -48,7 +48,6 @@ export const addToCart = async (req, res) => {
       return res.status(400).json({ message: "Dữ liệu sản phẩm không hợp lệ." });
     }
 
-
     if (!cart) {
       cart = new Cart({ userId, products: [{ productId, color, size, quantity }] });
     }else{
