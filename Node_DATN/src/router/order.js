@@ -10,7 +10,7 @@ import { checkPermissionOrder } from "../middleware/checkPermissionOrder.js";
 
 const router = express.Router();
 
-router.get("/order", checkPermissionOrder,getUserOrders);
+router.get("/order/view", checkPermissionOrder,getUserOrders);
 router.get("/order/:id",checkPermissionOrder, getOneOrder);
 router.post("/order",checkPermissionOrder, createOrder);
 router.delete("/order/:id", removeOrder);

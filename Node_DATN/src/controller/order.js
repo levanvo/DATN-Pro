@@ -53,17 +53,17 @@ export const createOrder = async (req, res) => {
             return res.status(400).json("Hãy thêm thông tin order cần tạo !");
         };
 
+
         const order = await Order.create({ ...req.body, userId });
 
         const productIdsToDelete = req.body.cartId;
-
-        // for (const productIdToDelete of productIdsToDelete) {
+        for (const productIdToDelete of productIdsToDelete) {
             
-        //     await Cart.updateMany(
-        //         { userId: req.user._id, 'products._id': productIdToDelete },
-        //         { $pull: { products: { _id: productIdToDelete } } }
-        //     );
-        // }
+            await Cart.updateMany(
+                { userId: req.user._id, 'products._id': productIdToDelete },
+                { $pull: { products: { _id: productIdToDelete } } }
+            );
+        }
         
 
         return res.status(200).json({

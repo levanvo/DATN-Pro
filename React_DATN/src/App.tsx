@@ -43,6 +43,7 @@ import AddBlog from "./Page/Admin/Blog/AddBlog";
 import BlogList from "./Page/Admin/Blog/BlogList";
 import UpdateBlog from "./Page/Admin/Blog/UpdateBlog";
 import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
+// import ViewOrder from "./Page/viewOrders"
 
 function App() {
   !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
@@ -70,6 +71,8 @@ function App() {
         <Route path="blog" element={<Blog />} />
         <Route path="category/:id/products" element={<ProductsCategory />} />
         <Route path="size/:id/products" element={<ProductsSize />} />
+        {/* <Route path="order/view" element={<ViewOrder />} /> */}
+
       </Route >
 
       <Route

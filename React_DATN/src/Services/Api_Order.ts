@@ -16,8 +16,8 @@ const orderApi = createApi({
   },
   }),
   endpoints: (builder) => ({
-    getAllOrder: builder.query<IOrder[], void>({
-      query: () => `/api/order`,
+    getUserOrders: builder.query<any, void>({
+      query: () => `/api/order/view`,
       providesTags: ["Order"]
     }),
 
@@ -66,7 +66,7 @@ const orderApi = createApi({
 });
 
 export const {
-  useGetAllOrderQuery,
+  useGetUserOrdersQuery,
   useAddOrderMutation,
   useUpdateOrderMutation,
   useRemoveOrderMutation,

@@ -11,8 +11,8 @@ const Checkout = () => {
     const [isVisible, setIsVisible] = useState(false);
     const location = useLocation();
     const { selectedProducts } = location.state || {};
-    const [addOrder] = useAddOrderMutation()
-
+    const [addOrder, {error}] = useAddOrderMutation()
+    const [messageApi,contexHolder] = message.useMessage()
     
     useEffect(() => {
         if (!selectedProducts) {
@@ -44,7 +44,7 @@ const Checkout = () => {
     
     
 
-    const handleCityChange = (selectedOption) => {
+    const handleCityChange = (selectedOption:any) => {
         setSelectedCity(selectedOption);
         setSelectedDistrict(null); // Reset lựa chọn quận/huyện khi thay đổi tỉnh/thành phố
     };
@@ -63,46 +63,57 @@ const Checkout = () => {
         }
     }
 
+    // useEffect(() => {
+    //     if (error) {
+    //         if ("data" in error) {
+    //             const errorData = error.data as { message: string };
+    //             messageApi.open({
+    //                 type: "error",
+    //                 content: errorData?.message
+    //             })
+    //         }
+    //     }
+    // }, [error]);
+
+    // Sử lý tạo đơn hàng
     const handlePlaceOrder = async () => {
-        // Gather data from inputs and prepare the order object
-        const cartId = selectedProducts.map((product:any) => product.key)
-        const productId = selectedProducts.map((product:any) => product.productId)
-        const quantity = selectedProducts.map((product:any) => product.quantity)
-
-        console.log(cartId);
-        
-        const orderData = {
-          cartId: cartId,
-          products: productId.map((id:string, index:number) => ({
-            productId: id,
-            quantity: quantity[index]
-          })),
-          name: (document.getElementById("name") as HTMLInputElement)?.value || '',
-          phone: (document.getElementById("phone") as HTMLInputElement)?.value || '',
-          address: {
-            city: selectedCity?.label || '',
-            district: selectedDistrict?.label || '',
-            location: (document.getElementById("address") as HTMLInputElement)?.value || '',
-          },
-          note: (document.getElementById("note") as HTMLTextAreaElement)?.value || '',
-        //   quantity: 
-        };
-
-        console.log(orderData);
-        
-    
+       
         try {
-          const response = await addOrder(orderData);
+            const cartId = selectedProducts.map((product:any) => product.key)
+            const productId = selectedProducts.map((product:any) => product.productId)
+            const quantity = selectedProducts.map((product:any) => product.quantity)
     
-          // Handle successful order placement
-          console.log("Order placed successfully:", response);
+            
+            const orderData = {
+              cartId: cartId,
+              products: productId.map((id:string, index:number) => ({
+                productId: id,
+                quantity: quantity[index],
+                price: selectedProducts[index].price
+              })),
+              name: (document.getElementById("name") as HTMLInputElement)?.value || '',
+              phone: (document.getElementById("phone") as HTMLInputElement)?.value || '',
+              address: {
+                city: selectedCity?.label || '',
+                district: selectedDistrict?.label || '',
+                location: (document.getElementById("address") as HTMLInputElement)?.value || '',
+              },
+              note: (document.getElementById("note") as HTMLTextAreaElement)?.value || '',
+              totalPrice: productId.reduce((total:number, id:string, index:number) => {
+                const productPrice = selectedProducts[index].price;
+                const productQuantity = quantity[index];
+                return total + productPrice * productQuantity;
+              }, 0), 
+            };
     
-          // Optionally, you can redirect the user or perform other actions after successful order placement
+            console.log(orderData);
+            
+            await addOrder(orderData);
+            message.success("Đặt hàng thành công");
         } catch (error) {
-          // Handle error
-          console.error("Error placing order:", error);
+            message.error("Đã có lỗi xảy ra xin vui lòng thử lại");
         }
-    };
+    }
 
     // lựa chọn hình thức tt
     const [selectedMethod, setSelectedMethod] = useState('cod');
@@ -114,6 +125,7 @@ const Checkout = () => {
 
     return (
         <div className='w-[90vw] mx-auto mt-44'>
+            {contexHolder}
             <div className="checkout-area">
                 <div className="container">
                     <h2 className="checkout_title">Checkout</h2>

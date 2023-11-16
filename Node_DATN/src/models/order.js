@@ -17,6 +17,7 @@ const orderSchema = new mongoose.Schema({
             ref: "Product",
           },
           quantity: Number,
+          price: Number
         }
       ],
     // code_order: String,
@@ -28,8 +29,6 @@ const orderSchema = new mongoose.Schema({
     },
 
     // discount:String,
-
-    quantity : Number,
     address: {
         city: String, // tỉnh/thành phố
         location: String, // địa chỉ
