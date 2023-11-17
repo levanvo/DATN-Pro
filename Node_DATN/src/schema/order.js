@@ -5,8 +5,7 @@ export const JoiOrder=joi.object({
     phone:joi.string().required(),
     note:joi.string(),
     status:joi.string().required(),
-    discount:joi.string().required(),
-    methodPayment:joi.string().required(),
+    // discount:joi.string().required(),
     quantity:joi.number().required(),
     totalPrice:joi.number().required(),
     address:joi.object({
@@ -14,6 +13,6 @@ export const JoiOrder=joi.object({
         location:joi.string().required(),
         district:joi.string().required()
     }).required(),
-    userID:joi.string().required(),
+    userId:joi.string().required(),
     codeID:joi.string().required()
 })
