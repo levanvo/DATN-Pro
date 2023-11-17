@@ -43,6 +43,7 @@ import AddBlog from "./Page/Admin/Blog/AddBlog";
 import BlogList from "./Page/Admin/Blog/BlogList";
 import UpdateBlog from "./Page/Admin/Blog/UpdateBlog";
 import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
+import BillList from "./Page/Admin/Bill/BillList"
 
 function App() {
   !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
@@ -106,6 +107,7 @@ function App() {
         <Route path="blog/list" element={<BlogList />} />
         <Route path="blog/:id/update" element={<UpdateBlog />} />
         <Route path="new-sletter/list" element={<ListNewSletter />} />
+        <Route path="bill/list" element={<BillList />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes >
