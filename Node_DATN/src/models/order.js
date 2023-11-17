@@ -17,7 +17,9 @@ const orderSchema = new mongoose.Schema({
             ref: "Product",
           },
           quantity: Number,
-          price: Number
+          price: Number,
+          color: String,
+          size: Number
         }
       ],
     // code_order: String,
