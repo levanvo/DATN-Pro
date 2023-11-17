@@ -89,7 +89,9 @@ const Checkout = () => {
               products: productId.map((id:string, index:number) => ({
                 productId: id,
                 quantity: quantity[index],
-                price: selectedProducts[index].price
+                price: selectedProducts[index].price,
+                color: selectedProducts[index].color,
+                size: selectedProducts[index].size
               })),
               name: (document.getElementById("name") as HTMLInputElement)?.value || '',
               phone: (document.getElementById("phone") as HTMLInputElement)?.value || '',
