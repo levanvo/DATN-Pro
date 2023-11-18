@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-  user-select: none;
+  // user-select: none;
 }
 ._header-web {
   position: fixed;
@@ -445,4 +445,22 @@
     font-size: 16px;
   }
 
+  .scrollDasboard{
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar{
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb{
+      background: #b4b4b4aa;
+      border-radius: 10px;
+    }
+  }
   
+  .selector-Views{
+
+    & h3{
+      font-family: fantasy;
+    }
+  }
