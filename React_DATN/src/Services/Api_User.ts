@@ -38,7 +38,7 @@ const userApi = createApi({
     updateUser: builder.mutation<IUser, IUser>({
       query: (user) => ({
         url: `/api/updateUser/${user._id}`,
-        method: "PUT",
+        method: "PATCH",
         body: user,
       }),
       invalidatesTags: ["User"]

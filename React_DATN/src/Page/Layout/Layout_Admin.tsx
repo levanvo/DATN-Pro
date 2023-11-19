@@ -126,9 +126,9 @@ const Layout_Admin: React.FC = () => {
               <Outlet />
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>
+          {/* <Footer style={{ textAlign: "center" }}>
             Ant Design ©2023 Created by Ant UED
-          </Footer>
+          </Footer> */}
         </Layout>
       </Layout>
     </div>

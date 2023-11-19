@@ -23,6 +23,9 @@ const useSchema = new mongoose.Schema({
     phone: {
         type: String,
     },
+    gender: {
+        type: String
+    },
     address: {
         type: String
     },

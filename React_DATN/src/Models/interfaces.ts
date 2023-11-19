@@ -25,7 +25,11 @@ export interface IUser {
   username: string
   email?: string
   password: string
-  confirmPassword: string
+  confirmPassword?: string
+  gender?: string
+  phone?: string
+  address?: string
+  imgUrl?: string
 }
 export interface IColor {
   _id: string
@@ -82,10 +86,8 @@ export interface IBlog {
   createdAt?: string
   updatedAt?: string
 }
-
 export interface IOrder {
   _id?: string | number
-  id?: string | number
   phone: string
   note?: string
   status: string
@@ -101,7 +103,6 @@ export interface IOrder {
   userID: string
   codeID: string
 }
-
 export interface IDiscount {
   _id?: string
   code: string

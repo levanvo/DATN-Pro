@@ -47,6 +47,7 @@ import EmailSendingForm from "./Page/Admin/NewSletter/EmailSendingForm"
 import ListDiscount from "./Page/Admin/Discount/listDiscount"
 import CreateDiscount from "./Page/Admin/Discount/createDiscount"
 import UpdateDiscount from "./Page/Admin/Discount/updateDiscount"
+import User from "./Page/User"
 
 function App() {
   !window.location.href.includes("checkout") &&
@@ -64,7 +65,7 @@ function App() {
         <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetail />} />
-        <Route path="checkout/:id" element={<Checkout />} />
+        <Route path="checkout" element={<Checkout />} />
         <Route path="register" element={<Register />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="verification-codes" element={<VerificationCodes />} />
@@ -76,6 +77,7 @@ function App() {
         <Route path="blog" element={<Blog />} />
         <Route path="category/:id/products" element={<ProductsCategory />} />
         <Route path="size/:id/products" element={<ProductsSize />} />
+        <Route path="user/:id" element={<User />} />
       </Route>
 
       <Route
