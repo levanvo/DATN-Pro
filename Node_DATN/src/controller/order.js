@@ -46,6 +46,18 @@ export const getOneOrder = async (req, res) => {
 };
 
 
+//generateRandomCode() --> Hàm thực thi tạo ngẫu nhiên mã đơn hàng
+const generateRandomCode = () => {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const digits = '0123456789';
+
+    const randomLetters = Array.from({ length: 3 }, () => letters[Math.floor(Math.random() * letters.length)]);
+    const randomDigits = Array.from({ length: 3 }, () => digits[Math.floor(Math.random() * digits.length)]);
+
+    return randomLetters.join('') + randomDigits.join('');
+};
+
+
 export const createOrder = async (req, res) => {
     const userId = req.user._id;
     try {
@@ -53,8 +65,9 @@ export const createOrder = async (req, res) => {
             return res.status(400).json("Hãy thêm thông tin order cần tạo !");
         };
 
+        const codeOrder = generateRandomCode();
 
-        const order = await Order.create({ ...req.body, userId });
+        const order = await Order.create({ ...req.body, userId, code_order: codeOrder });
 
         const productIdsToDelete = req.body.cartId;
         for (const productIdToDelete of productIdsToDelete) {
