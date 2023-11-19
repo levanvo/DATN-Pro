@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs"
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
-import { signupSchema, signinSchema } from "../schema/user.js";
+import { signupSchema, signinSchema, userSchema } from "../schema/user.js";
 import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
@@ -316,7 +316,7 @@ export const addUser = async (req, res) => {
 // cập nhật 1 user
 export const updateUser = async (req, res) => {
   try {
-    const { error } = signupSchema.validate(req.body, { abortEarly: false })
+    const { error } = userSchema.validate(req.body, { abortEarly: false })
     if (error) {
       const errDetails = error.details.map((err) => err.message)
       return res.status(400).json({
