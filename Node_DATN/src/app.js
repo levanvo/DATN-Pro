@@ -13,6 +13,7 @@ import newSletterRouter from "./router/newSletter.js"
 import slideRouter from "./router/slider.js"
 import blogRouter from "./router/blog.js"
 import orderRouter from "./router/order.js"
+import discountRouter from "./router/discountCode.js"
 
 dotenv.config()
 const app = express()
@@ -34,8 +35,7 @@ app.use("/api", newSletterRouter)
 app.use("/api", slideRouter)
 app.use("/api", blogRouter)
 app.use("/api", orderRouter)
-
-
+app.use("/api", discountRouter)
 
 app.listen(PORT, () => {
   console.log("Server running on port", PORT)

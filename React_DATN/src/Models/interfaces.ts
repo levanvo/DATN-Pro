@@ -11,7 +11,7 @@ export interface IProduct {
   quantity?: number
   discount_code_id?: string
   poinId?: string
-  views: number; 
+  views: number
 }
 
 export interface ICategory {
@@ -39,18 +39,18 @@ export interface ISize {
 }
 
 export interface ProductItem {
-  productId: string;
-  quantity: number;
-  color: string,
+  productId: string
+  quantity: number
+  color: string
   size: number
 }
 
 export interface ISlider {
-  _id?: string,
-  id?: string,
-  titleSlider: string,
-  contentSlider: string,
-  imgSlider: string,
+  _id?: string
+  id?: string
+  titleSlider: string
+  contentSlider: string
+  imgSlider: string
   productId: string
   quantity: number
   color: string
@@ -66,38 +66,46 @@ export interface INewSletter {
   _id?: string
   email: string
 }
-export interface ISlider{
-  _id?:string,
-  id?:string,
-  titleSlider:string,
-  contentSlider:string,
-  imgSlider:string,
+export interface ISlider {
+  _id?: string
+  id?: string
+  titleSlider: string
+  contentSlider: string
+  imgSlider: string
 }
 export interface IBlog {
-  _id?: number | string,
-  title: string,
-  imgUrl: any[],
-  description: string,
-  author: string,
-  createdAt?: string,
-  updatedAt?:string
+  _id?: number | string
+  title: string
+  imgUrl: any[]
+  description: string
+  author: string
+  createdAt?: string
+  updatedAt?: string
 }
 
-export interface IOrder{
-  _id?:string|number,
-  id?:string|number,
-  phone:string,
-  note?:string,
-  status:string,
-  discount:string,
-  methodPayment:string,
-  quantity:number,
-  totalPrice:number,
-  address:{
-    city:string,
-    location:string,
-    district:string
-  },
-  userID:string,
-  codeID:string,
+export interface IOrder {
+  _id?: string | number
+  id?: string | number
+  phone: string
+  note?: string
+  status: string
+  discount: string
+  methodPayment: string
+  quantity: number
+  totalPrice: number
+  address: {
+    city: string
+    location: string
+    district: string
+  }
+  userID: string
+  codeID: string
+}
+
+export interface IDiscount {
+  _id?: string
+  code: string
+  percentage: number
+  quantity: number
+  expiresAt: Date
 }

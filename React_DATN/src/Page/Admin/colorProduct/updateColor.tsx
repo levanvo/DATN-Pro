@@ -5,7 +5,7 @@ import { useState } from "react"
 import {
   useGetOneColorQuery,
   useUpdateColorMutation,
-} from "../../../Services/api_Color"
+} from "../../../Services/Api_Color"
 import Loading from "../../../Component/Loading"
 
 const UpdateColor = () => {

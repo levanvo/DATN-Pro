@@ -4,7 +4,7 @@ import { Button, Table, Popconfirm, message, Input } from "antd"
 import {
   useRemoveColorMutation,
   useGetColorsQuery,
-} from "../../../Services/api_Color"
+} from "../../../Services/Api_Color"
 import { Link } from "react-router-dom"
 import { IColor } from "../../../Models/interfaces"
 import Loading from "../../../Component/Loading"

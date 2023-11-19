@@ -13,10 +13,11 @@ import {
   PicCenterOutlined,
   CalendarOutlined,
   MailOutlined,
-} from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import { Outlet, Link } from 'react-router-dom';
+  MenuOutlined,
+} from "@ant-design/icons"
+import type { MenuProps } from "antd"
+import { Breadcrumb, Layout, Menu, theme } from "antd"
+import { Outlet, Link } from "react-router-dom"
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -37,9 +38,9 @@ function getItem(
   } as MenuItem
 }
 
-const user = JSON.parse(localStorage.getItem('user') || '{}');
+const user = JSON.parse(localStorage.getItem("user") || "{}")
 
-const isStaff = user?.role === "staff";
+const isStaff = user?.role === "staff"
 
 const items: MenuItem[] = [
   getItem("Thống kê", "0", <BarChartOutlined />, undefined, "/admin"),
@@ -61,13 +62,14 @@ const items: MenuItem[] = [
       "restore-product-data"
     ),
   ]),
-  getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
-  getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
-  getItem('Users', '7', <UserOutlined />, undefined, 'user/list'),
-  getItem('Bill', '8', <HddOutlined />, undefined, 'bill/list'),
-  getItem('Slide', '9', <PicCenterOutlined />, undefined, 'slide/list'),
+  getItem("Bình luận", "5", <EditOutlined />, undefined, "comment/list"),
+  getItem("Danh mục", "6", <GoldOutlined />, undefined, "category/list"),
+  getItem("Users", "7", <UserOutlined />, undefined, "user/list"),
+  getItem("Bill", "8", <HddOutlined />, undefined, "bill/list"),
+  getItem("Slide", "9", <PicCenterOutlined />, undefined, "slide/list"),
   getItem("New Sletter", "10", <MailOutlined />, undefined, "new-sletter/list"),
-];
+  getItem("Discount", "11", <MenuOutlined />, undefined, "discount/list"),
+]
 
 const Layout_Admin: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false)
@@ -85,11 +87,27 @@ const Layout_Admin: React.FC = () => {
         >
           <div className="demo-logo-vertical" />
           <div className="flex justify-center">
-            <a href={`/`}><HomeOutlined className="scale-125 hover:scale-150 mx-auto mt-3" /></a>
+            <a href={`/`}>
+              <HomeOutlined className="scale-125 hover:scale-150 mx-auto mt-3" />
+            </a>
           </div>
           <hr />
           {/* <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={items} /> */}
-          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter((item:any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items} />
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={["0"]}
+            mode="inline"
+            items={
+              isStaff
+                ? items.filter(
+                    (item: any) =>
+                      item.key !== "sub1" &&
+                      item.key !== "6" &&
+                      item.key !== "7"
+                  )
+                : items
+            }
+          />
         </Sider>
         <Layout>
           <Header style={{ padding: 0, background: colorBgContainer }} />
