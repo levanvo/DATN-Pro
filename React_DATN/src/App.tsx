@@ -57,7 +57,6 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="cart" element={<Cart />} />
         <Route path="products" element={<Products />} />
-        <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="checkout" element={<Checkout />} />
@@ -73,6 +72,7 @@ function App() {
         <Route path="category/:id/products" element={<ProductsCategory />} />
         <Route path="size/:id/products" element={<ProductsSize />} />
         <Route path="user/:id" element={<User />} />
+        <Route path="order/view" element={<Bill />} />
 
       </Route >
 

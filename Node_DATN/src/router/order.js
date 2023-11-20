@@ -1,6 +1,7 @@
 import express from "express";
 import {
     createOrder,
+    getAllOrders,
     getOneOrder,
     getUserOrders,
     removeOrder,
@@ -11,6 +12,7 @@ import { checkPermissionOrder } from "../middleware/checkPermissionOrder.js";
 const router = express.Router();
 
 router.get("/order/view", checkPermissionOrder,getUserOrders);
+router.get("/order",getAllOrders);
 router.get("/order/:id",checkPermissionOrder, getOneOrder);
 router.post("/order",checkPermissionOrder, createOrder);
 router.delete("/order/:id", removeOrder);

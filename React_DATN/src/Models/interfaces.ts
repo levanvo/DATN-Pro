@@ -87,20 +87,39 @@ export interface IBlog {
   updatedAt?:string
 }
 
-export interface IOrder{
-  _id?:string|number,
-  phone:string,
-  note?:string,
-  status:string,
-  discount:string,
-  methodPayment:string,
-  quantity:number,
-  totalPrice:number,
-  address:{
-    city:string,
-    location:string,
-    district:string
-  },
-  userID:string,
-  codeID:string,
+export interface IOrder {
+  _id?: string;
+  userId: string;
+  name: string;
+  cartId: string[];
+  products: {
+    productId: {
+      _id: string;
+      name: string;
+      original_price: number;
+      price: number;
+      description: string;
+      imgUrl: string[];
+      categoryId: string;
+      size_id: string[];
+      color_id: string[];
+      quantity: number;
+      createdAt: string;
+      updatedAt: string;
+      views: number;
+    };
+    quantity: number;
+    price: number;
+  }[];
+  phone: string;
+  note?: string;
+  status: string;
+  address: {
+    city: string;
+    location: string;
+    district: string;
+  };
+  totalPrice: number;
+  createdAt: string;
+  updatedAt: string;
 }

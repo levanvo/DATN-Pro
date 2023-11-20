@@ -1,131 +1,38 @@
-import React from 'react'
+import React from 'react';
+import { useGetUserOrdersQuery } from '../Services/Api_Order';
+import UserMenu from '../Component/UserMenu';
 
 const Bill = () => {
-    return (
-        <div className='w-[90vw] mx-auto mt-24'>
-            <section className="order_details section_gap">
-                <div className="container">
-                    <h3 className="title_confirmation">Thank you. Your order has been received.</h3>
-                    <div className="row order_d_inner">
-                        <div className="col-lg-4">
-                            <div className="details_item">
-                                <h4>Order Info</h4>
-                                <ul className="list">
-                                    <li><a href="#"><span>Order number</span> : 60235</a></li>
-                                    <li><a href="#"><span>Date</span> : Los Angeles</a></li>
-                                    <li><a href="#"><span>Total</span> : USD 2210</a></li>
-                                    <li><a href="#"><span>Payment method</span> : Check payments</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="col-lg-4">
-                            <div className="details_item">
-                                <h4>Billing Address</h4>
-                                <ul className="list">
-                                    <li><a href="#"><span>Street</span> : 56/8</a></li>
-                                    <li><a href="#"><span>City</span> : Los Angeles</a></li>
-                                    <li><a href="#"><span>Country</span> : United States</a></li>
-                                    <li><a href="#"><span>Postcode </span> : 36952</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="col-lg-4">
-                            <div className="details_item">
-                                <h4>Shipping Address</h4>
-                                <ul className="list">
-                                    <li><a href="#"><span>Street</span> : 56/8</a></li>
-                                    <li><a href="#"><span>City</span> : Los Angeles</a></li>
-                                    <li><a href="#"><span>Country</span> : United States</a></li>
-                                    <li><a href="#"><span>Postcode </span> : 36952</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="order_details_table">
-                        <h2>Order Details</h2>
-                        <div className="table-responsive">
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Product</th>
-                                        <th scope="col">Quantity</th>
-                                        <th scope="col">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <p>Pixelstore fresh Blackberry</p>
-                                        </td>
-                                        <td>
-                                            <h5>x 02</h5>
-                                        </td>
-                                        <td>
-                                            <p>$720.00</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <p>Pixelstore fresh Blackberry</p>
-                                        </td>
-                                        <td>
-                                            <h5>x 02</h5>
-                                        </td>
-                                        <td>
-                                            <p>$720.00</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <p>Pixelstore fresh Blackberry</p>
-                                        </td>
-                                        <td>
-                                            <h5>x 02</h5>
-                                        </td>
-                                        <td>
-                                            <p>$720.00</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h4>Subtotal</h4>
-                                        </td>
-                                        <td>
-                                            <h5></h5>
-                                        </td>
-                                        <td>
-                                            <p>$2160.00</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h4>Shipping</h4>
-                                        </td>
-                                        <td>
-                                            <h5></h5>
-                                        </td>
-                                        <td>
-                                            <p>Flat rate: $50.00</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h4>Total</h4>
-                                        </td>
-                                        <td>
-                                            <h5></h5>
-                                        </td>
-                                        <td>
-                                            <p>$2210.00</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
+  const { data: orders, isLoading, isError } = useGetUserOrdersQuery();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching orders.</div>;
+  }
+
+  return (
+    <div className='container_u'>
+      <UserMenu />
+      <div className='user_profile'>
+        <div className="user_profile-head">
+          <p>Hóa Đơn Của Tôi</p>
+          <p>Quản lý thông tin hóa đơn</p>
         </div>
-    )
-}
-export default Bill
+        <div className="bill_list">
+          {orders.map((order: any) => (
+            <div key={order.id} className="bill_item">
+              <h3>Hóa đơn số: {order.id}</h3>
+              <p>Ngày đặt hàng: {order.date}</p>
+              <p>Tổng giá trị: {order.total}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Bill;

@@ -1,6 +1,20 @@
 import Order from "../models/order.js"
 import Cart from "../models/cart.js"
 
+export const getAllOrders = async (req, res) => {
+    try {
+        const orders = await Order.find().populate("products.productId");
+        if(orders.length === 0){
+            return res.status(400).json({
+                message: "Không lấy được danh sách Order!"
+            })
+        }
+        return res.status(200).json(orders);
+    } catch (error) {
+        return res.status(500).json({ message: "Lỗi khi lấy danh sách đơn hàng", error });
+    }
+};
+
 export const getUserOrders = async (req, res) => {
     const userId = req.user._id;
 
@@ -12,10 +26,7 @@ export const getUserOrders = async (req, res) => {
             })
         }
 
-        return res.status(200).json({
-            message: "Danh sách đơn hàng của bạn",
-            orders
-        });
+        return res.status(200).json(orders);
     } catch (error) {
         return res.status(500).json({ message: "Lỗi khi lấy danh sách đơn hàng", error });
     }
