@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useGetAllOrdersQuery, useGetUserOrdersQuery } from '../Services/Api_Order';
 import { Divider, Table } from 'antd';
-import { useGetAllOrdersQuery } from '../../../Services/Api_Order';
-import { IOrder } from '../../../Models/interfaces';
-import Loading from '../../../Component/Loading';
+import Loading from '../Component/Loading';
 import { Link } from 'react-router-dom';
+import { IOrder } from '../Models/interfaces';
+import '../../css/user.css'
+import UserMenu from '../Component/UserMenu';
 
-const BillList = () => {
-  const { data, isLoading, error } = useGetAllOrdersQuery(undefined);
-  
+const Bill = () => {
+  const { data, isLoading, error } = useGetUserOrdersQuery(undefined);
+
   const dataSource = data?.map((order: IOrder) => ({
     key: order._id,
     code_order: order?.code_order,
@@ -51,7 +53,7 @@ const BillList = () => {
     {
       title: 'Actions',
       render: (record: any) => (
-        <Link to={`/admin/bill/detail/${record.key}`}>Chi tiết</Link>
+        <Link to={`detail/${record.key}`}>Chi tiết</Link>
       ),
       key: 'actions',
     },
@@ -83,20 +85,21 @@ const BillList = () => {
   };
 
   return (
-    <div>
-      <Divider />
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <>
+    <div className='container_u'>
+      <UserMenu />
+      <div className='user_profile'>
+        <div className="user_profile-head">
+          <p>Đơn hàng Của Tôi</p>
+        </div>
+        <div>
           <Table
             columns={columns}
             dataSource={dataSource}
           />
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default BillList;
+export default Bill;

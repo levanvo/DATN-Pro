@@ -89,7 +89,7 @@ export interface IBlog {
 
 export interface IOrder {
   _id?: string;
-  userId: string;
+  userId?: any;
   name: string;
   cartId: string[];
   products: {
@@ -110,6 +110,9 @@ export interface IOrder {
     };
     quantity: number;
     price: number;
+    color: string;
+    size: number;
+    _id: string;
   }[];
   phone: string;
   note?: string;
@@ -120,6 +123,7 @@ export interface IOrder {
     district: string;
   };
   totalPrice: number;
+  code_order: string; 
   createdAt: string;
   updatedAt: string;
 }
