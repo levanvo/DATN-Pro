@@ -1,21 +1,14 @@
 import mongoose from "mongoose";
 
-const orderSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Types.ObjectId,
-        ref: "User"
-    },
+const orderItemSchema = new mongoose.Schema({
     code_order: String, // mã đơn hàng
     cartId: [{
-        type: mongoose.Types.ObjectId,
-        ref: "Cart"
+        type: Number
     }],
     products: [
         {
-          productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Product",
-          },
+          productName: String,
+          imgUrl: String,
           quantity: Number,
           price: Number,
           color: String,
@@ -26,11 +19,10 @@ const orderSchema = new mongoose.Schema({
     phone:String,
     note: String,
     status: {
-        type: String,
-        default: "0"
+        type: Boolean,
+        default: false
     },
 
-    // discount:String,
     address: {
         city: String, // tỉnh/thành phố
         location: String, // địa chỉ
@@ -40,4 +32,4 @@ const orderSchema = new mongoose.Schema({
 
 }, { timestamps: true, versionKey: false });
 
-export default mongoose.model("Order", orderSchema);
+export default mongoose.model("OrderItem", orderItemSchema);
