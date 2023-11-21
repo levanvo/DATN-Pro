@@ -30,13 +30,25 @@ const CreateDiscount = () => {
           label="Mã Giảm Giá"
           rules={[{ required: true, message: "Vui lòng nhập mã giảm giá!" }]}
         >
-          <Input type="text" maxLength={6} />
+          <Input type="text" />
         </Form.Item>
         <Form.Item
           name="percentage"
           label="Phần Trăm Giảm Giá"
           rules={[
             { required: true, message: "Vui lòng nhập phần trăm giảm giá!" },
+          ]}
+        >
+          <Input type="number" />
+        </Form.Item>
+        <Form.Item
+          name="minimumOrderAmount"
+          label="Giá trị tối thiểu"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập giá trị tối thiểu áp dụng mã!",
+            },
           ]}
         >
           <Input type="number" />

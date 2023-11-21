@@ -30,6 +30,7 @@ export interface IUser {
   phone?: string
   address?: string
   imgUrl?: string
+  discountUsed?: any
 }
 export interface IColor {
   _id: string
@@ -105,8 +106,9 @@ export interface IOrder {
 }
 export interface IDiscount {
   _id?: string
-  code: string
+  code?: string
   percentage: number
+  minimumOrderAmount: number
   quantity: number
-  expiresAt: Date
+  expiresAt?: Date
 }

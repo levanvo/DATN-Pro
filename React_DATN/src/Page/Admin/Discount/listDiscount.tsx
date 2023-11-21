@@ -23,16 +23,18 @@ const ListDiscount = () => {
         if (data) {
           const discountsToRemove = data.filter((discount: IDiscount) => {
             return (
-              discount.quantity === 0 ||
+              discount.quantity == 0 ||
               moment(discount.expiresAt).isBefore(moment())
             )
           })
 
           await Promise.all(
-            discountsToRemove.map((discount) => removeDiscount(discount._id))
+            discountsToRemove.map((discount: IDiscount) =>
+              removeDiscount(discount._id)
+            )
           )
           message.success(
-            "Đã xóa thành công các đợt giảm giá đã hết hạn hoặc hết hàng."
+            "Đã xóa thành công các đợt giảm giá đã hết hạn hoặc hết số lượng."
           )
         }
       } catch (error) {
@@ -44,7 +46,7 @@ const ListDiscount = () => {
 
     const intervalId = setInterval(() => {
       removeExpiredOrDepletedDiscounts()
-    }, 5 * 60 * 1000) // Every 5 minutes
+    }, 5 * 60 * 1000) // 5 phút chạy 1 lần
 
     return () => clearInterval(intervalId)
   }, [data, removeDiscount])
@@ -73,6 +75,7 @@ const ListDiscount = () => {
     key: item._id,
     code: item.code,
     percentage: item.percentage,
+    minimumOrderAmount: item.minimumOrderAmount,
     quantity: item.quantity,
     expiresAt: item.expiresAt,
   }))
@@ -83,7 +86,7 @@ const ListDiscount = () => {
   }
 
   const filteredData = dataSource.filter((item) =>
-    item.code.toLowerCase().includes(searchQuery.toLowerCase())
+    item.code?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -130,6 +133,20 @@ const ListDiscount = () => {
       title: "Phần trăm giảm giá",
       dataIndex: "percentage",
       render: (percentage: number) => <p style={{}}>{percentage}%</p>,
+    },
+    {
+      title: "Giá trị tổi thiếu",
+      dataIndex: "minimumOrderAmount",
+      render: (minimumOrderAmount: number) => (
+        <p style={{}}>
+          {minimumOrderAmount
+            ? minimumOrderAmount.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })
+            : "N/A"}
+        </p>
+      ),
     },
     {
       title: "Số lượng",
@@ -189,6 +206,7 @@ const ListDiscount = () => {
         <Button
           type="primary"
           onClick={handleBatchDelete}
+          className="w-[8%]"
           loading={loading}
           danger
         >
@@ -207,7 +225,7 @@ const ListDiscount = () => {
         </Link>
         <Input
           placeholder="Search by discount code"
-          onChange={(e) => handleSearch(e.target.value)} // Use the onChange event to trigger real-time filtering
+          onChange={(e) => handleSearch(e.target.value)}
           style={{ width: 280, marginLeft: 8 }}
         />
       </div>

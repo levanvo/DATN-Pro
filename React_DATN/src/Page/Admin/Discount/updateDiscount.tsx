@@ -40,6 +40,7 @@ const UpdateDiscount = () => {
         initialValues={{
           ["code"]: data.data.code,
           ["percentage"]: data.data.percentage,
+          ["minimumOrderAmount"]: data.data.minimumOrderAmount,
           ["quantity"]: data.data.quantity,
           ["expiresAt"]: moment(data.data.expiresAt).format("YYYY-MM-DD HH:mm"),
         }}
@@ -56,6 +57,18 @@ const UpdateDiscount = () => {
           label="Phần Trăm Giảm Giá"
           rules={[
             { required: true, message: "Vui lòng nhập phần trăm giảm giá!" },
+          ]}
+        >
+          <Input type="number" />
+        </Form.Item>
+        <Form.Item
+          name="minimumOrderAmount"
+          label="Giá trị tối thiểu"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập giá trị tối thiểu áp dụng mã!",
+            },
           ]}
         >
           <Input type="number" />

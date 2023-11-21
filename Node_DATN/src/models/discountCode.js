@@ -12,6 +12,10 @@ const discountCodeSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    minimumOrderAmount: {
+      type: Number,
+      required: true,
+    },
     quantity: {
       type: Number,
       required: true,
