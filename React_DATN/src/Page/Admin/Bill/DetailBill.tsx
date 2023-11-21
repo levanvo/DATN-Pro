@@ -3,13 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useGetOneOrdersQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
 import { useGetOneUserQuery } from '../../../Services/Api_User';
-import { Button } from 'antd';
+import { Button, Popconfirm, message } from 'antd';
 
 const DetailBill = () => {
     const { id } = useParams();
     const { data } = useGetOneOrdersQuery(id || "");
     // const { data: user } = useGetOneUserQuery(data?.userId)
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const [updateOrder] = useUpdateOrderMutation();
 
@@ -17,10 +17,20 @@ const DetailBill = () => {
         try {
             updateOrder({ ...values, _id: id }).unwrap().then(() => {
                 window.location.href = 'http://localhost:5173/admin/bill/list';
-            })
+            });
         } catch (error) {
             console.error("Lỗi khi cập nhật:", error);
         }
+    };
+
+    const handleConfirm = () => {
+        onFinish({ ...data, status: '1' });
+        message.success("Đơn hàng đã được xác nhận thành công");
+    };
+
+    const handleCancel = () => {
+        onFinish({ ...data, status: '2' });
+        message.success("Đơn hàng đã được hủy thành công");
     };
 
     const getStatusText = (status: any) => {
@@ -55,7 +65,7 @@ const DetailBill = () => {
                     <div className='order' style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div style={{ marginRight: 30, marginLeft: 30 }}>
                             <div>
-                                <div style={{marginBottom: 40}}>
+                                <div style={{ marginBottom: 40 }}>
                                     <h2>Thông tin đơn hàng</h2>
                                     <p>Mã đơn hàng: {data?.code_order}</p>
                                     <p>Người tạo: {data?.userId?.username}</p>
@@ -88,7 +98,7 @@ const DetailBill = () => {
                                         <p>Tên sản phẩm: {product?.productId?.name}</p>
                                         <p>Số lượng: {product?.quantity}</p>
                                         <p>Giá: {product?.price}</p>
-                                        <p style={{ display: 'flex' }}>Màu sắc: <div style={{ backgroundColor: product?.color, width: '20px', height: '20px', marginLeft: 20 }}></div></p>
+                                        <p style={{ display: 'flex' }}>Màu sắc: <div style={{backgroundColor: product?.color, width: '20px', height: '20px', marginLeft: 20 }}></div></p>
                                         <p>Size: {product?.size}</p>
                                         {product?.productId?.imgUrl && (
                                             <img src={product?.productId?.imgUrl?.[0]} alt={product?.productId?.name} style={{ width: '100px', height: '100px' }} />
@@ -101,18 +111,44 @@ const DetailBill = () => {
                 )}
             </div>
             <div>
-                <button style={{ borderRadius: 10, height: 40, marginRight: 20, backgroundColor: 'blue', color: 'white' }} onClick={() => onFinish({
-                    ...data,
-                    status: "1"
-                })}>
-                    Xác nhận
-                </button>
-                <button style={{ borderRadius: 10, height: 40, marginRight: 20, backgroundColor: 'red', color: 'white' }} onClick={() => onFinish({
-                    ...data,
-                    status: "2"
-                })}>
-                    Hủy
-                </button>
+                <Popconfirm
+                    title="Bạn có chắc chắn muốn xác nhận đơn hàng này?"
+                    onConfirm={() => handleConfirm()}
+                    okText="Yes"
+                    cancelText="No"
+                    disabled={data?.status === "2"}
+                >
+                    <Button
+                        style={{
+                            borderRadius: 10,
+                            height: 40,
+                            marginRight: 20
+                        }}
+                        disabled={data?.status === "2"}
+                        className={data?.status === "2" ? "disabled-button" : data?.status === "1" ? "disabled-button" : "confirm-button"}
+                    >
+                        Xác nhận
+                    </Button>
+                </Popconfirm>
+                <Popconfirm
+                    title="Bạn có chắc chắn muốn hủy đơn hàng này?"
+                    onConfirm={() => handleCancel()}
+                    okText="Yes"
+                    cancelText="No"
+                    disabled={data?.status === "2"}
+                >
+                    <Button
+                        style={{
+                            borderRadius: 10,
+                            height: 40,
+                            marginRight: 20
+                        }}
+                        disabled={data?.status === "2"}
+                        className={data?.status === "2" ? "disabled-button" : data?.status === "1" ? "disabled-button" : "cancel-button"}
+                    >
+                        Hủy
+                    </Button>
+                </Popconfirm>
                 <Button style={{ height: 40 }} htmlType="button" onClick={() => navigate("/admin/bill/list")}>
                     Quay lại
                 </Button>
