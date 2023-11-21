@@ -4,6 +4,7 @@ import vietnamData from "../Services/vietnamData"
 import { useLocation } from "react-router-dom"
 import { message } from "antd"
 import { useAddOrderMutation } from "../Services/Api_Order"
+import { useAddOrderItemMutation } from "../Services/Api_OrderItem"
 import {
   useGetDiscountsQuery,
   useUpdateDiscountMutation,
@@ -11,26 +12,34 @@ import {
 import Loading from "../Component/Loading"
 import { IDiscount, IUser } from "../Models/interfaces"
 import { useGetAllUserQuery, useUpdateUserMutation } from "../Services/Api_User"
-
 const Checkout = () => {
-  // kiểm tra ng dùng có chọn sử dụng mã giảm giá không
   const { data: discounts, isLoading } = useGetDiscountsQuery()
   const { data: users } = useGetAllUserQuery()
   const [updateUser] = useUpdateUserMutation()
   const [updateDiscount] = useUpdateDiscountMutation()
+  // kiểm tra ng dùng có chọn sử dụng mã giảm giá không
   const [isVisible, setIsVisible] = useState(false)
   const location = useLocation()
   const { selectedProducts } = location.state || {}
-  const [addOrder] = useAddOrderMutation()
+  const [addOrder, { error }] = useAddOrderMutation()
   const [messageApi, contexHolder] = message.useMessage()
+  const [nameError, setNameError] = useState("")
+  const [phoneError, setPhoneError] = useState("")
+  const [cityError, setCityError] = useState("")
+  const [districtError, setDistrictError] = useState("")
+  const [addressError, setAddressError] = useState("")
+  const [selectedCity, setSelectedCity] = useState(null)
+  const [selectedDistrict, setSelectedDistrict] = useState(null)
+  const name = (document.getElementById("name") as HTMLInputElement)?.value
+  const phone = (document.getElementById("phone") as HTMLInputElement)?.value
+  const address = (document.getElementById("address") as HTMLInputElement)
+    ?.value
+  const [addOrderItem] = useAddOrderItemMutation()
+  const [localCart, setLocalCart] = useState<any[]>(
+    JSON.parse(localStorage.getItem("cart") || "[]")
+  )
 
-  useEffect(() => {
-    if (!selectedProducts) {
-      message.error("Đã có lỗi sảy ra vui lòng thử lại")
-    }
-  }, [selectedProducts])
-
-  // Discount
+  //-----  DISCOUNT
 
   const [discountCode, setDiscountCode] = useState("")
   const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null) // Update initial state value
@@ -97,29 +106,8 @@ const Checkout = () => {
     ? selectedProducts.reduce((acc, product) => acc + product.quantity, 0)
     : 0
 
-  // Calculate total price -----------
-  //   const totalPrice = Array.isArray(selectedProducts)
-  //     ? selectedProducts.reduce(
-  //         (acc, product) => acc + product.price * product.quantity,
-  //         0
-  //       )
-  //     : 0
-
   const handleLabelClick = () => {
     setIsVisible(!isVisible)
-  }
-
-  // lựa chọn tỉnh thành
-  const [selectedCity, setSelectedCity] = useState(null)
-  const [selectedDistrict, setSelectedDistrict] = useState(null)
-
-  const handleCityChange = (selectedOption: any) => {
-    setSelectedCity(selectedOption)
-    setSelectedDistrict(null) // Reset lựa chọn quận/huyện khi thay đổi tỉnh/thành phố
-  }
-
-  const handleDistrictChange = (selectedOption) => {
-    setSelectedDistrict(selectedOption)
   }
 
   // Lấy danh sách quận/huyện dựa trên tỉnh/thành phố đã chọn
@@ -132,72 +120,218 @@ const Checkout = () => {
     }
   }
 
-  // useEffect(() => {
-  //     if (error) {
-  //         if ("data" in error) {
-  //             const errorData = error.data as { message: string };
-  //             messageApi.open({
-  //                 type: "error",
-  //                 content: errorData?.message
-  //             })
-  //         }
-  //     }
-  // }, [error]);
+  //validate khi người dùng nhập dữ liệu từ bàn phím
+  const handleInputChange = (field: any, value: any) => {
+    switch (field) {
+      case "name":
+        if (!value) {
+          setNameError("Họ và tên không được để trống.")
+        } else {
+          setNameError("")
+        }
+        break
+      case "phone":
+        if (!value) {
+          setPhoneError("Số điện thoại không để trống")
+        } else if (!validatePhoneNumber(value)) {
+          setPhoneError("Số điện thoại không hợp lệ")
+        } else {
+          setPhoneError("")
+        }
+        break
+      case "address":
+        if (!value) {
+          setAddressError("Địa chỉ không được để trống")
+        } else {
+          setAddressError("")
+        }
+        break
 
-  // Xử lý tạo đơn hàng
+      default:
+        break
+    }
+  }
+
+  const validatePhoneNumber = (phoneNumber: string) => {
+    const phoneRegex = /^0[0-9]{9}$/
+    return phoneRegex.test(phoneNumber)
+  }
+
+  //validate khi người dùng click ra ngoài
+  const handleInputBlur = (field: any, value: any) => {
+    // Validate the field on blur
+    switch (field) {
+      case "name":
+        if (!value) {
+          setNameError("Họ và tên không được để trống.")
+        } else {
+          setNameError("")
+        }
+        break
+      case "phone":
+        if (!value) {
+          setPhoneError("Số điện thoại không để trống")
+        } else {
+          setPhoneError("")
+        }
+        break
+      case "city":
+        if (!value) {
+          setCityError("Vui lòng chọn tỉnh/thành phố")
+        } else {
+          setCityError("")
+        }
+        break
+      case "district":
+        if (!value) {
+          setDistrictError("Vui lòng chọn quận/huyện")
+        } else {
+          setDistrictError("")
+        }
+        break
+      case "address":
+        if (!value) {
+          setAddressError("Địa chỉ không được bỏ trống")
+        } else {
+          setAddressError("")
+        }
+        break
+      default:
+        break
+    }
+  }
+
+  //handleCityChange thực hiện onChange validate kết hợp chọn select
+  const handleCityChange = (selectedOption: any) => {
+    setSelectedCity(selectedOption)
+    setSelectedDistrict(null) // Reset lựa chọn quận/huyện khi thay đổi tỉnh/thành phố
+    handleInputBlur("city", selectedOption)
+  }
+
+  //handleDistrictChange thực hiện onChange validate kết hợp chọn select
+  const handleDistrictChange = (selectedOption: any) => {
+    setSelectedDistrict(selectedOption)
+    handleInputChange("district", selectedOption)
+    handleInputBlur("district", selectedOption)
+  }
+
+  // Sử lý tạo đơn hàng
   const handlePlaceOrder = async () => {
     try {
-      const cartId = selectedProducts.map((product: any) => product.key)
-      const productId = selectedProducts.map(
-        (product: any) => product.productId
-      )
-      const quantity = selectedProducts.map((product: any) => product.quantity)
+      const token = localStorage.getItem("token")
+      if (token) {
+        const cartId = selectedProducts.map((product: any) => product.key)
+        const productId = selectedProducts.map(
+          (product: any) => product.productId
+        )
+        const quantity = selectedProducts.map(
+          (product: any) => product.quantity
+        )
 
-      const orderData = {
-        cartId: cartId,
-        products: productId.map((id: string, index: number) => ({
-          productId: id,
-          quantity: quantity[index],
-          price: selectedProducts[index].price,
-          color: selectedProducts[index].color,
-          size: selectedProducts[index].size,
-        })),
-        name:
-          (document.getElementById("name") as HTMLInputElement)?.value || "",
-        phone:
-          (document.getElementById("phone") as HTMLInputElement)?.value || "",
-        address: {
-          city: selectedCity?.label || "",
-          district: selectedDistrict?.label || "",
-          location:
-            (document.getElementById("address") as HTMLInputElement)?.value ||
+        if (!name || !phone || !selectedCity || !selectedDistrict || !address) {
+          message.error("Vui lòng điền đầy đủ thông tin")
+          return
+        }
+
+        const orderData = {
+          cartId: cartId,
+          products: productId.map((id: string, index: number) => ({
+            productId: id,
+            quantity: quantity[index],
+            price: selectedProducts[index].price,
+            color: selectedProducts[index].color,
+            size: selectedProducts[index].size,
+          })),
+          name:
+            (document.getElementById("name") as HTMLInputElement)?.value || "",
+          phone:
+            (document.getElementById("phone") as HTMLInputElement)?.value || "",
+          address: {
+            city: selectedCity?.label || "",
+            district: selectedDistrict?.label || "",
+            location:
+              (document.getElementById("address") as HTMLInputElement)?.value ||
+              "",
+          },
+          note:
+            (document.getElementById("note") as HTMLTextAreaElement)?.value ||
             "",
-        },
-        note:
-          (document.getElementById("note") as HTMLTextAreaElement)?.value || "",
-        totalPrice: totalPrice,
-      }
+          totalPrice: totalPrice,
+        }
 
-      console.log(orderData)
-      await addOrder(orderData)
-      if (discountCode) {
-        updateUser({
-          _id: currentUser._id,
-          username: currentUser.username,
-          password: currentUser.password,
-          email: currentUser.email,
-          discountUsed: [...currentUser.discountUsed, String(discountCode)],
-        })
+        await addOrder(orderData)
+        if (discountCode) {
+          updateUser({
+            _id: currentUser._id,
+            username: currentUser.username,
+            password: currentUser.password,
+            email: currentUser.email,
+            discountUsed: [...currentUser.discountUsed, String(discountCode)],
+          })
+        }
+        if (enteredDiscount) {
+          await updateDiscount({
+            _id: enteredDiscount._id,
+            percentage: enteredDiscount.percentage,
+            minimumOrderAmount: enteredDiscount.minimumOrderAmount,
+            quantity: enteredDiscount.quantity - 1,
+          })
+        }
+        message.success("Đặt hàng thành công")
+      } else {
+        const cartId = selectedProducts.map((product: any) => product.key)
+        const productId = selectedProducts.map(
+          (product: any) => product.productId
+        )
+        const quantity = selectedProducts.map(
+          (product: any) => product.quantity
+        )
+
+        if (!name || !phone || !selectedCity || !selectedDistrict || !address) {
+          message.error("Vui lòng điền đầy đủ thông tin")
+          return
+        }
+
+        const orderItemData = {
+          cartId: cartId,
+          products: productId.map((id: string, index: number) => ({
+            productName: selectedProducts[index].name,
+            imgUrl: selectedProducts[index].imgUrl,
+            quantity: quantity[index],
+            price: selectedProducts[index].price,
+            color: selectedProducts[index].color,
+            size: selectedProducts[index].size,
+          })),
+          name:
+            (document.getElementById("name") as HTMLInputElement)?.value || "",
+          phone:
+            (document.getElementById("phone") as HTMLInputElement)?.value || "",
+          address: {
+            city: selectedCity?.label || "",
+            district: selectedDistrict?.label || "",
+            location:
+              (document.getElementById("address") as HTMLInputElement)?.value ||
+              "",
+          },
+          note:
+            (document.getElementById("note") as HTMLTextAreaElement)?.value ||
+            "",
+          totalPrice: productId.reduce(
+            (total: number, id: string, index: number) => {
+              const productPrice = selectedProducts[index].price
+              const productQuantity = quantity[index]
+              return total + productPrice * productQuantity
+            },
+            0
+          ),
+        }
+        await addOrderItem(orderItemData)
+        message.success("Đặt hàng thành công")
+        const updatedLocalCart = localCart.filter(
+          (item) => !cartId.includes(item.id)
+        )
+        localStorage.setItem("cart", JSON.stringify(updatedLocalCart))
       }
-      if (enteredDiscount) {
-        await updateDiscount({
-          _id: enteredDiscount._id,
-          percentage: enteredDiscount.percentage,
-          minimumOrderAmount: enteredDiscount.minimumOrderAmount,
-          quantity: enteredDiscount.quantity - 1,
-        })
-      }
-      message.success("Đặt hàng thành công")
     } catch (error) {
       message.error("Đã có lỗi xảy ra xin vui lòng thử lại")
     }
@@ -210,9 +344,6 @@ const Checkout = () => {
     setSelectedMethod(event.target.value)
   }
 
-  if (isLoading) {
-    return <Loading />
-  }
   return (
     <div className="w-[90vw] mx-auto mt-44">
       {contexHolder}
@@ -332,9 +463,13 @@ const Checkout = () => {
               <input
                 className="form_checkout-inp"
                 type="text"
+                onChange={(e) => handleInputChange("name", e.target.value)}
+                onBlur={() => handleInputBlur("name", name)}
                 id="name"
                 placeholder="Họ tên của bạn"
               />
+              <p style={{ color: "red" }}>{nameError}</p>
+
               <label htmlFor="phone">
                 Số điện thoại{" "}
                 <abbr className="required" title="bắt buộc">
@@ -344,9 +479,13 @@ const Checkout = () => {
               <input
                 className="form_checkout-inp"
                 type="text"
+                onChange={(e) => handleInputChange("phone", e.target.value)}
+                onBlur={() => handleInputBlur("phone", phone)}
                 id="phone"
                 placeholder="Số điện thoại của bạn"
               />
+              <p style={{ color: "red" }}>{phoneError}</p>
+
               <div className="selections">
                 <div className="selection">
                   <label htmlFor="">
@@ -360,6 +499,7 @@ const Checkout = () => {
                     onChange={handleCityChange}
                     options={vietnamData}
                     placeholder="Chọn tỉnh thành phố"
+                    onBlur={() => handleInputBlur("city", selectedCity)}
                   />
                 </div>
                 <div className="selection">
@@ -375,9 +515,13 @@ const Checkout = () => {
                     options={getDistricts()}
                     placeholder="Chọn quận huyện"
                     isDisabled={!selectedCity}
+                    onBlur={() => handleInputBlur("district", selectedDistrict)}
                   />
                 </div>
               </div>
+              <p style={{ color: "red" }}>{cityError}</p>
+              <p style={{ color: "red" }}>{districtError}</p>
+
               <label htmlFor="address">
                 Địa chỉ{" "}
                 <abbr className="required" title="bắt buộc">
@@ -387,15 +531,19 @@ const Checkout = () => {
               <input
                 className="form_checkout-inp"
                 type="text"
+                onChange={(e) => handleInputChange("address", e.target.value)}
+                onBlur={() => handleInputBlur("address", address)}
                 id="address"
                 placeholder="Ví dụ: Số 20, ngõ 20"
               />
+              <p style={{ color: "red" }}>{addressError}</p>
+
               <label htmlFor="note">Ghi chú đơn hàng (tuỳ chọn)</label>
               <textarea
                 id="note"
                 cols={5}
                 rows={2}
-                placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."
+                placeholder="Không bắt buộc"
               ></textarea>
             </form>
             <div className="order_reviews">

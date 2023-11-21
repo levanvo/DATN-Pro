@@ -14,6 +14,8 @@ import slideRouter from "./router/slider.js"
 import blogRouter from "./router/blog.js"
 import orderRouter from "./router/order.js"
 import discountRouter from "./router/discountCode.js"
+import orderItemRouter from "./router/orderItem.js"
+
 
 dotenv.config()
 const app = express()
@@ -36,6 +38,10 @@ app.use("/api", slideRouter)
 app.use("/api", blogRouter)
 app.use("/api", orderRouter)
 app.use("/api", discountRouter)
+app.use("/api", orderItemRouter)
+
+
+
 
 app.listen(PORT, () => {
   console.log("Server running on port", PORT)
