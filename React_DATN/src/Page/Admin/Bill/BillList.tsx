@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { Divider, Table } from 'antd';
+import { Divider, Select, Table } from 'antd';
 import { useGetAllOrdersQuery } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
 import Loading from '../../../Component/Loading';
 import { Link } from 'react-router-dom';
+import { Option } from 'antd/es/mentions';
 
 const BillList = () => {
   const { data, isLoading, error } = useGetAllOrdersQuery(undefined);
-  
+
+  const [filterStatus, setFilterStatus] = useState('');
+
   const dataSource = data?.map((order: IOrder) => ({
     key: order._id,
     code_order: order?.code_order,
@@ -82,17 +85,35 @@ const BillList = () => {
     }
   };
 
+  const handleStatusFilter = (value: string) => {
+    setFilterStatus(value);
+  };
+
+  const filteredData = filterStatus ? dataSource?.filter((order: IOrder) => order.status === filterStatus) : dataSource;
+
   return (
     <div>
       <Divider />
+
+      <div style={{ marginBottom: '16px' }}>
+        <span style={{ marginRight: '8px' }}>Lọc theo trạng thái:</span>
+        <Select
+          value={filterStatus}
+          onChange={handleStatusFilter}
+          style={{ width: 150 }}
+        >
+          <Option value="">Tất cả</Option>
+          <Option value="0">Đang chờ xác nhận</Option>
+          <Option value="1">Đã xác nhận</Option>
+          <Option value="2">Đã hủy</Option>
+        </Select>
+      </div>
+
       {isLoading ? (
         <Loading />
       ) : (
         <>
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-          />
+          <Table columns={columns} dataSource={filteredData} />
         </>
       )}
     </div>
