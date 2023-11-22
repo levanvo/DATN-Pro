@@ -41,6 +41,10 @@ const DetailBill = () => {
                 return 'Đã xác nhận';
             case '2':
                 return 'Đã hủy';
+            case '3':
+                return 'Đang giao hàng';
+            case '4':
+                return 'Đã nhận hàng';
             default:
                 return '';
         }
@@ -50,9 +54,13 @@ const DetailBill = () => {
             case '0':
                 return { color: 'orange' };
             case '1':
-                return { color: 'green' };
+                return { color: 'blue' }; 
             case '2':
                 return { color: 'red' };
+            case '3':
+                return { color: 'brown' }; 
+            case '4':
+                return { color: 'blue' };
             default:
                 return {};
         }
@@ -98,7 +106,7 @@ const DetailBill = () => {
                                         <p>Tên sản phẩm: {product?.productId?.name}</p>
                                         <p>Số lượng: {product?.quantity}</p>
                                         <p>Giá: {product?.price}</p>
-                                        <p style={{ display: 'flex' }}>Màu sắc: <div style={{backgroundColor: product?.color, width: '20px', height: '20px', marginLeft: 20 }}></div></p>
+                                        <p style={{ display: 'flex' }}>Màu sắc: <div style={{ backgroundColor: product?.color, width: '20px', height: '20px', marginLeft: 20 }}></div></p>
                                         <p>Size: {product?.size}</p>
                                         {product?.productId?.imgUrl && (
                                             <img src={product?.productId?.imgUrl?.[0]} alt={product?.productId?.name} style={{ width: '100px', height: '100px' }} />
@@ -125,7 +133,7 @@ const DetailBill = () => {
                             marginRight: 20
                         }}
                         disabled={data?.status === "2"}
-                        className={data?.status === "2" ? "disabled-button" : data?.status === "1" ? "disabled-button" : "confirm-button"}
+                        className={data?.status === "0" ? "confirm-button" : "disabled-button"}
                     >
                         Xác nhận
                     </Button>
@@ -144,7 +152,7 @@ const DetailBill = () => {
                             marginRight: 20
                         }}
                         disabled={data?.status === "2"}
-                        className={data?.status === "2" ? "disabled-button" : data?.status === "1" ? "disabled-button" : "cancel-button"}
+                        className={data?.status === "0" ? "cancel-button" : "disabled-button"}
                     >
                         Hủy
                     </Button>

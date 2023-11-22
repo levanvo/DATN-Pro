@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Divider, Select, Table } from 'antd';
-import { useGetAllOrdersQuery } from '../../../Services/Api_Order';
+import { useGetAllOrdersQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
 import Loading from '../../../Component/Loading';
 import { Link } from 'react-router-dom';
@@ -18,6 +18,16 @@ const BillList = () => {
     createdAt: order?.createdAt,
     status: order?.status,
   }));
+
+  const [updateOrder] = useUpdateOrderMutation();
+
+  const handleStatusChange = (value: string, orderId: string) => {
+    updateOrder({ _id: orderId, status: value }).unwrap().then(() => {
+      console.log("Trạng thái đã được cập nhật thành công.");
+    }).catch((error) => {
+      console.error("Lỗi khi cập nhật trạng thái:", error);
+    });
+  };
 
   const columns = [
     {
@@ -45,10 +55,18 @@ const BillList = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: any) => (
-        <span style={{ color: getStatusColor(status) }}>
-          {getStatusText(status)}
-        </span>
+      render: (status: any, record: IOrder) => (
+        <Select
+          value={status}
+          onChange={(value) => handleStatusChange(value, record.key)}
+          style={{ width: 150 }}
+        >
+          <Option value="0">Đang chờ xác nhận</Option>
+          <Option value="1">Đã xác nhận</Option>
+          <Option value="2">Đã hủy</Option>
+          <Option value="3">Đang giao hàng</Option>
+          <Option value="4">Đã nhận hàng</Option>
+        </Select>
       ),
     },
     {
@@ -59,31 +77,6 @@ const BillList = () => {
       key: 'actions',
     },
   ];
-
-  const getStatusText = (status: any) => {
-    switch (status) {
-      case '0':
-        return 'Đang chờ xác nhận';
-      case '1':
-        return 'Đã xác nhận';
-      case '2':
-        return 'Đã hủy';
-      default:
-        return '';
-    }
-  };
-  const getStatusColor = (status: any) => {
-    switch (status) {
-      case '0':
-        return 'orange';
-      case '1':
-        return 'green';
-      case '2':
-        return 'red';
-      default:
-        return '';
-    }
-  };
 
   const handleStatusFilter = (value: string) => {
     setFilterStatus(value);
@@ -106,6 +99,8 @@ const BillList = () => {
           <Option value="0">Đang chờ xác nhận</Option>
           <Option value="1">Đã xác nhận</Option>
           <Option value="2">Đã hủy</Option>
+          <Option value="3">Đang giao hàng</Option>
+          <Option value="4">Đã nhận hàng</Option>
         </Select>
       </div>
 

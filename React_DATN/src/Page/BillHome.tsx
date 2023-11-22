@@ -67,6 +67,10 @@ const Bill = () => {
         return 'Đã xác nhận';
       case '2':
         return 'Đã hủy';
+      case '3':
+        return 'Đang giao hàng';
+      case '4':
+        return 'Đã nhận hàng';
       default:
         return '';
     }
@@ -79,6 +83,10 @@ const Bill = () => {
         return 'green';
       case '2':
         return 'red';
+      case '3':
+        return 'brown';
+      case '4':
+        return 'blue';
       default:
         return '';
     }
