@@ -44,6 +44,7 @@ import UpdateBlog from "./Page/Admin/Blog/UpdateBlog";
 import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
 import User from "./Page/User"
 
+
 function App() {
   !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
   !window.location.href.includes("checkout") && localStorage.removeItem("totalPrice.shoe");
