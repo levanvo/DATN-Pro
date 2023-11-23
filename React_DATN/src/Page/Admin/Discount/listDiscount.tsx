@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Button, Table, Popconfirm, message, Input } from "antd"
-
+import { DeleteFilled, EditOutlined } from "@ant-design/icons"
 import { Link } from "react-router-dom"
 import { IDiscount } from "../../../Models/interfaces"
 import Loading from "../../../Component/Loading"
@@ -75,8 +75,10 @@ const ListDiscount = () => {
     key: item._id,
     code: item.code,
     percentage: item.percentage,
+    amountDiscount: item.amountDiscount,
     minimumOrderAmount: item.minimumOrderAmount,
     quantity: item.quantity,
+    startDate: item.startDate,
     expiresAt: item.expiresAt,
   }))
 
@@ -135,6 +137,21 @@ const ListDiscount = () => {
       render: (percentage: number) => <p style={{}}>{percentage}%</p>,
     },
     {
+      title: "Số tiền giảm giá",
+      dataIndex: "amountDiscount",
+      render: (amountDiscount: number) => (
+        <p style={{}}>
+          {" "}
+          {amountDiscount
+            ? amountDiscount.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })
+            : "0 ₫"}
+        </p>
+      ),
+    },
+    {
       title: "Giá trị tổi thiếu",
       dataIndex: "minimumOrderAmount",
       render: (minimumOrderAmount: number) => (
@@ -144,7 +161,7 @@ const ListDiscount = () => {
                 style: "currency",
                 currency: "VND",
               })
-            : "N/A"}
+            : "0 ₫"}
         </p>
       ),
     },
@@ -152,6 +169,17 @@ const ListDiscount = () => {
       title: "Số lượng",
       dataIndex: "quantity",
       render: (quantity: number) => <p style={{}}>{quantity}</p>,
+    },
+    {
+      title: "Ngày bắt đầu",
+      dataIndex: "startDate",
+      render: (startDate: string) => (
+        <p style={{}}>
+          {moment(startDate)
+            .tz("Asia/Ho_Chi_Minh")
+            .format("YYYY-MM-DD HH:mm A")}
+        </p>
+      ),
     },
     {
       title: "Thời hạn sử dụng",
@@ -169,9 +197,9 @@ const ListDiscount = () => {
       key: "action",
       render: (discount: any) => {
         return (
-          <>
+          <div className="flex">
             <Popconfirm
-              title="Xoá màu"
+              title="Xoá mã giảm giá"
               description="Bạn có chắc muốn xoá mã giảm giá này không?"
               onConfirm={() => {
                 removeDiscount(discount.key)
@@ -180,14 +208,16 @@ const ListDiscount = () => {
               okText={<span style={{ color: "black" }}>Yes</span>}
               cancelText="No"
             >
-              <Button danger>Xoá</Button>
+              <Button>
+                <DeleteFilled style={{ color: "red" }} />
+              </Button>
             </Popconfirm>
             <Link to={`/admin/discount/${discount.key}/update`}>
               <Button type="dashed" style={{ margin: "0 0 0 8px" }}>
-                Cập Nhật
+                <EditOutlined style={{ color: "blue" }} />
               </Button>
             </Link>
-          </>
+          </div>
         )
       },
     },

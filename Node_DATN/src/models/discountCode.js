@@ -1,5 +1,4 @@
 import mongoose from "mongoose"
-import moment from "moment-timezone"
 
 const discountCodeSchema = new mongoose.Schema(
   {
@@ -10,7 +9,9 @@ const discountCodeSchema = new mongoose.Schema(
     },
     percentage: {
       type: Number,
-      required: true,
+    },
+    amountDiscount: {
+      type: Number,
     },
     minimumOrderAmount: {
       type: Number,
@@ -20,6 +21,10 @@ const discountCodeSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    startDate: {
+      type: Date,
+      required: true,
+    },
     expiresAt: {
       type: Date,
       required: true,
@@ -27,11 +32,5 @@ const discountCodeSchema = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false }
 )
-
-// discountCodeSchema.pre("save", function (next) {
-//   this.createdAt = moment().tz("Asia/Ho_Chi_Minh").format()
-//   this.updatedAt = moment().tz("Asia/Ho_Chi_Minh").format()
-//   next()
-// })
 
 export default mongoose.model("DiscountCode", discountCodeSchema)

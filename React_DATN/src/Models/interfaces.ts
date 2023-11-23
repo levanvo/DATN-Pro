@@ -108,7 +108,9 @@ export interface IDiscount {
   _id?: string
   code?: string
   percentage: number
+  amountDiscount: number
   minimumOrderAmount: number
   quantity: number
+  startDate?: Date
   expiresAt?: Date
 }

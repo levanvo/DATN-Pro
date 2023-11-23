@@ -12,8 +12,10 @@ import {
 import Loading from "../Component/Loading"
 import { IDiscount, IUser } from "../Models/interfaces"
 import { useGetAllUserQuery, useUpdateUserMutation } from "../Services/Api_User"
+import moment from "moment"
+
 const Checkout = () => {
-  const { data: discounts, isLoading } = useGetDiscountsQuery()
+  const { data: discounts } = useGetDiscountsQuery()
   const { data: users } = useGetAllUserQuery()
   const [updateUser] = useUpdateUserMutation()
   const [updateDiscount] = useUpdateDiscountMutation()
@@ -51,9 +53,15 @@ const Checkout = () => {
   )
 
   const enteredDiscount = discounts?.find((d) => d.code === discountCode)
+
   const handleApplyDiscount = () => {
     if (discounts && discounts.length > 0) {
       const isDiscountUsed = currentUser.discountUsed.includes(discountCode)
+
+      if (moment().isBefore(enteredDiscount?.startDate)) {
+        message.warning("Mã giảm giá chưa đến thời gian sử dụng!")
+        return
+      }
 
       if (isDiscountUsed) {
         message.warning("Mã giảm giá đã được sử dụng.")
@@ -87,9 +95,24 @@ const Checkout = () => {
         )
       : 0
 
+    let discountType = null
+    let discountValue = 0
+
     if (appliedDiscount) {
-      const promotionAmount = totalPrice * (appliedDiscount.percentage / 100)
+      if (appliedDiscount.percentage > 0) {
+        discountType = "percentage"
+        discountValue = appliedDiscount.percentage
+      } else if (appliedDiscount.amountDiscount > 0) {
+        discountType = "amountDiscount"
+        discountValue = appliedDiscount.amountDiscount
+      }
+    }
+
+    if (discountType === "percentage") {
+      const promotionAmount = totalPrice * (discountValue / 100)
       totalPrice -= promotionAmount
+    } else if (discountType === "amountDiscount") {
+      totalPrice -= discountValue
     }
 
     return totalPrice
@@ -273,6 +296,7 @@ const Checkout = () => {
           await updateDiscount({
             _id: enteredDiscount._id,
             percentage: enteredDiscount.percentage,
+            amountDiscount: enteredDiscount.amountDiscount,
             minimumOrderAmount: enteredDiscount.minimumOrderAmount,
             quantity: enteredDiscount.quantity - 1,
           })
@@ -429,8 +453,19 @@ const Checkout = () => {
                     </div>
                     {appliedDiscount && (
                       <div>
-                        Áp dụng mã giảm giá: {appliedDiscount.code} (
-                        {appliedDiscount.percentage}%)
+                        Mã giảm giá: {appliedDiscount.code} (
+                        {appliedDiscount.percentage > 0
+                          ? `Bạn được giảm ${appliedDiscount.percentage}%`
+                          : appliedDiscount.amountDiscount > 0
+                          ? `Bạn được giảm ${appliedDiscount.amountDiscount.toLocaleString(
+                              "vi-VN",
+                              {
+                                style: "currency",
+                                currency: "VND",
+                              }
+                            )}`
+                          : "Không xác định"}
+                        )
                         <button onClick={handleRemoveDiscount} className="ml-2">
                           Xóa
                         </button>

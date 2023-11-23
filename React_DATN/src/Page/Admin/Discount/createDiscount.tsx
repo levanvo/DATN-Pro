@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"
-import { Button, Form, Input, message } from "antd"
+import { Button, Form, Input, message, Select } from "antd"
 import { useCreateDiscountMutation } from "../../../Services/Api_Discount"
 
 const CreateDiscount = () => {
@@ -16,7 +16,31 @@ const CreateDiscount = () => {
   }
 
   const onFinish = (values: any) => {
-    createDiscount(values)
+    // createDiscount(values)
+    // message.success("Tạo mã giảm giá thành công")
+    // navigate("/admin/discount/list")
+
+    let percentage = 0
+    let amountDiscount = 0
+    if (values.discountType === "percentage") {
+      percentage = values.discountValue
+      amountDiscount = 0
+    } else if (values.discountType === "amount") {
+      percentage = 0
+      amountDiscount = values.discountValue
+    }
+
+    const discountData = {
+      code: values.code,
+      percentage: percentage,
+      amountDiscount: amountDiscount,
+      minimumOrderAmount: values.minimumOrderAmount,
+      quantity: values.quantity,
+      startDate: values.startDate,
+      expiresAt: values.expiresAt,
+    }
+    console.log(discountData)
+    createDiscount(discountData)
     message.success("Tạo mã giảm giá thành công")
     navigate("/admin/discount/list")
   }
@@ -32,7 +56,7 @@ const CreateDiscount = () => {
         >
           <Input type="text" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="percentage"
           label="Phần Trăm Giảm Giá"
           rules={[
@@ -40,7 +64,27 @@ const CreateDiscount = () => {
           ]}
         >
           <Input type="number" />
+        </Form.Item> */}
+
+        {/* Kiểu mã giảm giá */}
+        <Form.Item
+          name="discountType"
+          label="Loại Giảm Giá"
+          rules={[{ required: true, message: "Vui lòng chọn loại giảm giá!" }]}
+        >
+          <Select>
+            <Select.Option value="percentage">Phần Trăm</Select.Option>
+            <Select.Option value="amount">Số Tiền</Select.Option>
+          </Select>
         </Form.Item>
+        <Form.Item
+          name="discountValue"
+          label="Giảm Giá"
+          rules={[{ required: true, message: "Vui lòng nhập giảm giá!" }]}
+        >
+          <Input type="number" />
+        </Form.Item>
+
         <Form.Item
           name="minimumOrderAmount"
           label="Giá trị tối thiểu"
@@ -61,6 +105,18 @@ const CreateDiscount = () => {
           <Input type="number" />
         </Form.Item>
         <Form.Item
+          name="startDate"
+          label="Ngày bắt đầu"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập ngày áp dụng mã giảm giá!",
+            },
+          ]}
+        >
+          <Input type="datetime-local" />
+        </Form.Item>
+        <Form.Item
           name="expiresAt"
           label="Ngày hết hạn"
           rules={[
@@ -71,7 +127,7 @@ const CreateDiscount = () => {
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button htmlType="submit">Submit</Button>
-          <Link to="/admin/color/list">
+          <Link to="/admin/discount/list">
             <Button style={{ margin: "0 0 0 8px" }}>Cancel</Button>
           </Link>
         </Form.Item>
