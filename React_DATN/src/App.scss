@@ -464,3 +464,21 @@
       font-family: fantasy;
     }
   }
+
+  .setSize-1{
+    width: 12%;
+  }
+
+  .setSize-2{
+    width: 40%;
+    background-color: rgb(1, 115, 185);
+  }
+
+  .headerAdmin{
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+    right: 0;
+    background: #ffffff;
+    border-bottom: 1px solid rgb(228, 228, 228);
+  }

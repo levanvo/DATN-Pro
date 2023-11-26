@@ -50,7 +50,7 @@ const Newsleter = () => {
                       name="email"
                       placeholder="Nhập email của bạn"
                     />
-                    <button type="submit" title="Subscribe">
+                    <button className="w-28" type="submit" title="Subscribe">
                       Đăng Kí
                     </button>
                   </form>

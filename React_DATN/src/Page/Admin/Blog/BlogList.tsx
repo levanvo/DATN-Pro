@@ -94,7 +94,7 @@ const BlogList = () => {
         <div>
             {contextHolder}
             <div>
-                <Button type="primary" style={{ background: "blue" }}>
+                <Button className='setSize-1' type="primary" style={{ background: "green" }}>
                     <Link to={`/admin/blog/add`}>Thêm mới</Link>
                 </Button>
                 {/* <Search placeholder="Tìm từ khóa" allowClear style={{ width: 300, marginLeft: 50 }} /> */}

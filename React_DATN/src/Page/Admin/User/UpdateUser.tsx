@@ -13,6 +13,8 @@ const UpdateUser = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { data, isLoading, error }: any = useGetOneUserQuery(id);
   const [updateUser] = useUpdateUserMutation();
+
+
   const onFinish = (values: any) => {
     const dataUser: any = { ...values, role: getList };
     dataUser.username.length < 3 && messageApi.open({ type: "error", content: "Tên tài khoản trên 2 kí tự !" });
@@ -56,7 +58,8 @@ const UpdateUser = () => {
 
   return (
     <div>
-      <h1 className='text-center text-2xl mb-2'>Update User</h1><hr />
+      <h1 className='text-center text-2xl mb-2'>Cập nhật tài khoản</h1><hr />
+      <p className='text-red-400'>(*) lưu ý: Nếu tài khoản là admin và cập nhật lại vai trò khác thì lần tới login bạn sẽ mất quyền của admin.</p>
       {contextHolder}
       {!isLoading ?
         <Form
@@ -138,9 +141,14 @@ const UpdateUser = () => {
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button style={{ backgroundColor: "green", color: "white" }} htmlType="submit">
-              Accept
+            <Button className='mr-2' style={{ backgroundColor: "green", color: "white" }} htmlType="submit">
+              Đồng ý
             </Button>
+            <Link to={`/admin/user/list`}>
+              <Button style={{ backgroundColor: "gray", color: "white" }} htmlType="submit">
+                Quay lại
+              </Button>
+            </Link>
           </Form.Item>
         </Form>
         : <Loading />}
