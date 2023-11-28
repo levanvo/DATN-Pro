@@ -9,13 +9,12 @@ import {
   useGetDiscountsQuery,
   useUpdateDiscountMutation,
 } from "../Services/Api_Discount"
-import Loading from "../Component/Loading"
 import { IDiscount, IUser } from "../Models/interfaces"
 import { useGetAllUserQuery, useUpdateUserMutation } from "../Services/Api_User"
 import moment from "moment"
+import { Modal, Table, Button } from "antd"
 
 const Checkout = () => {
-  const { data: discounts } = useGetDiscountsQuery()
   const { data: users } = useGetAllUserQuery()
   const [updateUser] = useUpdateUserMutation()
   const [updateDiscount] = useUpdateDiscountMutation()
@@ -43,8 +42,19 @@ const Checkout = () => {
 
   //-----  DISCOUNT
 
+  const { data: discounts } = useGetDiscountsQuery()
   const [discountCode, setDiscountCode] = useState("")
   const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null) // Update initial state value
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const enteredDiscount = discounts?.find((d) => d.code === discountCode)
+
+  const showModal = () => {
+    setIsModalVisible(true)
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
 
   const storedUser = localStorage.getItem("user")
   const emailUser = JSON.parse(storedUser).email
@@ -52,20 +62,24 @@ const Checkout = () => {
     (user: IUser) => user.email === emailUser
   )
 
-  const enteredDiscount = discounts?.find((d) => d.code === discountCode)
+  const handleUseDiscount = (selectedDiscount: any) => {
+    // Cập nhật giá trị discountCode
+    setDiscountCode(selectedDiscount.code)
+
+    // Áp dụng mã giảm giá tự động
+    setIsModalVisible(false)
+  }
 
   const handleApplyDiscount = () => {
-    if (discounts && discounts.length > 0) {
-      const isDiscountUsed = currentUser.discountUsed.includes(discountCode)
-
+    if (enteredDiscount) {
       if (moment().isBefore(enteredDiscount?.startDate)) {
         message.warning("Mã giảm giá chưa đến thời gian sử dụng!")
         return
       }
-
+      const isDiscountUsed = currentUser.discountUsed.includes(discountCode)
       if (isDiscountUsed) {
         message.warning("Mã giảm giá đã được sử dụng.")
-      } else if (enteredDiscount && enteredDiscount.quantity > 0) {
+      } else if (enteredDiscount.quantity > 0) {
         if (totalPrice >= enteredDiscount.minimumOrderAmount) {
           setAppliedDiscount(enteredDiscount)
         } else {
@@ -80,9 +94,10 @@ const Checkout = () => {
           )
         }
       } else {
-        message.warning("Mã giảm giá không hợp lệ.")
+        message.warning("Mã giảm giá không hợp lệ!")
       }
     } else {
+      message.warning("Mã giảm giá không tồn tại!")
       setAppliedDiscount(null)
     }
   }
@@ -124,6 +139,100 @@ const Checkout = () => {
     setAppliedDiscount(null)
     setDiscountCode("")
   }
+
+  const columns = [
+    {
+      title: "#",
+      dataIndex: "index",
+    },
+    {
+      title: "Mã Giảm Giá",
+      dataIndex: "code",
+      render: (code: string) => <p style={{}}>{code}</p>,
+    },
+    {
+      title: "Phần trăm giảm giá",
+      dataIndex: "percentage",
+      render: (percentage: number) => <p style={{}}>{percentage}%</p>,
+    },
+    {
+      title: "Số tiền giảm giá",
+      dataIndex: "amountDiscount",
+      render: (amountDiscount: number) => (
+        <p style={{}}>
+          {" "}
+          {amountDiscount
+            ? amountDiscount.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })
+            : "0 ₫"}
+        </p>
+      ),
+    },
+    {
+      title: "Giá trị tổi thiếu",
+      dataIndex: "minimumOrderAmount",
+      render: (minimumOrderAmount: number) => (
+        <p style={{}}>
+          Giá trị đơn hàng tối thiểu có thể áp dụng:{" "}
+          {minimumOrderAmount
+            ? minimumOrderAmount.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })
+            : "0₫"}
+        </p>
+      ),
+    },
+    {
+      title: "Số lượng",
+      dataIndex: "quantity",
+      render: (quantity: number) => <p style={{}}>{quantity}</p>,
+    },
+    {
+      title: "Ngày bắt đầu",
+      dataIndex: "startDate",
+      render: (startDate: string) => (
+        <p style={{}}>
+          {moment(startDate)
+            .tz("Asia/Ho_Chi_Minh")
+            .format("HH:mm A YYYY-MM-DD ")}
+        </p>
+      ),
+    },
+    {
+      title: "Thời hạn sử dụng",
+      dataIndex: "expiresAt",
+      render: (expiresAt: string) => (
+        <p style={{}}>
+          {moment(expiresAt)
+            .tz("Asia/Ho_Chi_Minh")
+            .format("HH:mm A YYYY-MM-DD ")}
+        </p>
+      ),
+    },
+    {
+      title: "Hành Động",
+      key: "action",
+      render: (discount: any) => {
+        return (
+          <div className="">
+            <button
+              className="bg-[#1677ff] text-white w-[60%] h-[30px] rounded"
+              onClick={() => handleUseDiscount(discount)}
+            >
+              Use
+            </button>
+          </div>
+        )
+      },
+    },
+  ]
+
+  const dataDiscounts = discounts
+    ? discounts.filter((item: IDiscount) => moment().isAfter(item.startDate))
+    : []
 
   const subtotal = Array.isArray(selectedProducts)
     ? selectedProducts.reduce((acc, product) => acc + product.quantity, 0)
@@ -451,8 +560,11 @@ const Checkout = () => {
                         Áp dụng
                       </button>
                     </div>
+                    <a onClick={showModal} className="cursor-pointer">
+                      Danh sách mã
+                    </a>
                     {appliedDiscount && (
-                      <div>
+                      <div className="py-1">
                         Mã giảm giá: {appliedDiscount.code} (
                         {appliedDiscount.percentage > 0
                           ? `Bạn được giảm ${appliedDiscount.percentage}%`
@@ -657,6 +769,19 @@ const Checkout = () => {
           </div>
         </div>
       </div>
+      <Modal
+        title="Danh sách mã giảm giá"
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+        width={1920}
+      >
+        <Table
+          columns={columns}
+          dataSource={dataDiscounts}
+          pagination={{ pageSize: 5 }}
+        />
+      </Modal>
     </div>
   )
 }

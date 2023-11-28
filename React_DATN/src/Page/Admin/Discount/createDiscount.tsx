@@ -16,10 +16,6 @@ const CreateDiscount = () => {
   }
 
   const onFinish = (values: any) => {
-    // createDiscount(values)
-    // message.success("Tạo mã giảm giá thành công")
-    // navigate("/admin/discount/list")
-
     let percentage = 0
     let amountDiscount = 0
     if (values.discountType === "percentage") {
@@ -52,19 +48,13 @@ const CreateDiscount = () => {
         <Form.Item
           name="code"
           label="Mã Giảm Giá"
-          rules={[{ required: true, message: "Vui lòng nhập mã giảm giá!" }]}
+          rules={[
+            { required: true, message: "Vui lòng nhập mã giảm giá!" },
+            { min: 6, message: "Mã giảm giá cần ít nhất 6 kí tự!" },
+          ]}
         >
           <Input type="text" />
         </Form.Item>
-        {/* <Form.Item
-          name="percentage"
-          label="Phần Trăm Giảm Giá"
-          rules={[
-            { required: true, message: "Vui lòng nhập phần trăm giảm giá!" },
-          ]}
-        >
-          <Input type="number" />
-        </Form.Item> */}
 
         {/* Kiểu mã giảm giá */}
         <Form.Item
