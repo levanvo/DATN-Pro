@@ -16,10 +16,10 @@ import orderRouter from "./router/order.js"
 import orderItemRouter from "./router/orderItem.js"
 import commentRouter from "./router/comment.js"
 
-
 dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3000
+
 
 // kết nối database
 connectDB()

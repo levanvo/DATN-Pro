@@ -21,7 +21,7 @@ const userApi = createApi({
       providesTags: ["User"]
     }),
 
-    getOneUser: builder.query<IUser[], number | string>({
+    getOneUser: builder.query<IUser, number | string>({
       query: (_id) => `/api/oneUser/${_id}`,
       providesTags: ["User"]
     }),

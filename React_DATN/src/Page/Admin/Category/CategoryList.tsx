@@ -120,6 +120,7 @@ const CategoryList = () => {
       <div style={{ marginBottom: 16 }}>
         <Button
           type="primary"
+          className="setSize-1"
           onClick={handleBatchDelete}
           loading={loading}
           danger
@@ -127,7 +128,7 @@ const CategoryList = () => {
           Xoá Nhiều category
         </Button>
         <Link to={`/admin/category/add`}>
-          <Button style={{ margin: "0 0 0 8px" }}>Tạo category Mới</Button>
+          <Button className="setSize-1" style={{ margin: "0 0 0 8px" }}>Tạo category Mới</Button>
         </Link>
         <Input
           placeholder="Tìm kiếm danh mục"

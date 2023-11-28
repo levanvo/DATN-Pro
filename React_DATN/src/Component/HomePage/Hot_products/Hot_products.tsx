@@ -55,7 +55,7 @@ const Hot_products = () => {
                     <div className="row">
                         <div className="relative">
                             <div className="overflow-hidden">
-                                <div className="flex">
+                                <div className="flex justify-center">
                                     {visibleProducts.map((product: IProduct) => {
                                         return (
                                             <div className='ml-2' key={product._id}>
@@ -139,13 +139,13 @@ const Hot_products = () => {
                             </div>
                             <div className=' text-2xl'>
                                 <button
-                                    className="absolute top-1/2 transform -translate-y-1/2 hover:bg-gray-300 left-0  p-2 rounded-full shadow cursor-pointer"
+                                    className="absolute top-1/2 transform -translate-y-1/2 hover:bg-gray-300 left-[-20px] rounded-full shadow cursor-pointer"
                                     onClick={handlePrevClick}
                                 >
                                     {'<'}
                                 </button>
                                 <button
-                                    className="absolute top-1/2 transform -translate-y-1/2  hover:bg-gray-300 right-0  p-2 rounded-full shadow cursor-pointer"
+                                    className="absolute top-1/2 transform -translate-y-1/2  hover:bg-gray-300 right-[-20px] rounded-full shadow cursor-pointer"
                                     onClick={handleNextClick}
                                 >
                                     {'>'}

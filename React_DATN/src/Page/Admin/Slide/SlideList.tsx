@@ -180,8 +180,8 @@ const SlideList = () => {
             <h1 className='ml-5 text-2xl mb-2'>Danh sách các Slide</h1><hr />
             {contextHolder}
             <div className='mt-3 flex justify-between'>
-                <div className="">
-                    <Link to={`/admin/slide/add`}><Button className='hover:scale-110' type="primary" style={{ background: "green", color: "white" }}>
+                <div className="w-[100%]">
+                    <Link to={`/admin/slide/add`}><Button className='hover:scale-110 setSize-1' type="primary" style={{ background: "green", color: "white" }}>
                         Thêm slide mới
                     </Button></Link>
                     {/* <Input name='nameUser' onChange={() => FindListName(event)} placeholder="tìm theo tên .." allowClear style={{ width: 350, marginLeft: 50 }} /> */}

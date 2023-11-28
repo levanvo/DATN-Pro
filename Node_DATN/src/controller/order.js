@@ -1,21 +1,48 @@
 import Order from "../models/order.js"
 import Cart from "../models/cart.js"
 
+export const getAllOrders = async (req, res) => {
+    try {
+        const orders = await Order.find().populate("products.productId").populate({path: "userId", select: "username"});
+        if(orders.length === 0){
+            return res.status(400).json({
+                message: "Không lấy được danh sách Order!"
+            })
+        }
+        return res.status(200).json(orders);
+    } catch (error) {
+        return res.status(500).json({ message: "Lỗi khi lấy danh sách đơn hàng", error });
+    }
+};
+
+export const getOneOrders = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id).populate("products.productId").populate({path: "userId", select: "username"});
+        if (!order) {
+          return res.json({
+            message: "Không tìm thấy Order!",
+          });
+        }
+        return res.status(200).json(order);
+      } catch (error) {
+        return res.status(400).json({
+          message: error.message,
+        });
+      }
+};
+
 export const getUserOrders = async (req, res) => {
     const userId = req.user._id;
 
     try {
-        const orders = await Order.find({ userId }).populate("products.productId");
+        const orders = await Order.find({ userId }).populate("products.productId").populate({path: "userId", select: "username"});
         if(orders.length === 0){
             return res.status(400).json({
                 message: "Bạn chưa có đơn hàng nào"
             })
         }
 
-        return res.status(200).json({
-            message: "Danh sách đơn hàng của bạn",
-            orders
-        });
+        return res.status(200).json(orders);
     } catch (error) {
         return res.status(500).json({ message: "Lỗi khi lấy danh sách đơn hàng", error });
     }
@@ -102,15 +129,19 @@ export const updateOrder = async (req, res) => {
         //         err
         //     });
         // };
+        console.log('body' , req.body);
 
-        const order = await orderSchema.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
-
+        const order = await Order.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
+        
+        
+        console.log('order', order);
+        
         return res.status(200).json({
             message: "Đã cập nhật xong order",
             order
         });
     } catch (error) {
-        return res.status(404).json({ mesage: "lỗi update order !", error })
+        return res.status(404).json({ mesage: "lỗi update order !", error: error.message })
     }
 };
 
