@@ -291,8 +291,8 @@ const AddProduct = () => {
 
         <Form.Item wrapperCol={{ offset: 4, span: 11 }}>
           <Button
+          className="setSize-2"
             type="primary"
-            danger
             htmlType="submit"
             style={{ marginRight: 20 }}
           >

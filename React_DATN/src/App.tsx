@@ -29,7 +29,6 @@ import ProductsCategory from "./Page/CategoryProducts"
 import CategoryList from "./Page/Admin/Category/CategoryList"
 import AddCategory from "./Page/Admin/Category/CategoryAdd"
 import UpdateCategory from "./Page/Admin/Category/CategoryUpdate"
-
 import ProductsSize from "./Page/SizeProduct"
 import ListColor from "./Page/Admin/colorProduct/listColor"
 import CreateColor from "./Page/Admin/colorProduct/createColor"
@@ -45,10 +44,11 @@ import UpdateBlog from "./Page/Admin/Blog/UpdateBlog";
 import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
 import User from "./Page/User"
 
+
 function App() {
   !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
   !window.location.href.includes("checkout") && localStorage.removeItem("totalPrice.shoe");
-  
+
   Config();
   return (
     <Routes>

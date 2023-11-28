@@ -186,7 +186,7 @@ const AddBlog = () => {
                 </Modal>
 
                 <Form.Item>
-                    <Button type="primary" danger htmlType="submit">
+                    <Button className="setSize-2 mr-2" type="primary" htmlType="submit">
                         Thêm mới
                     </Button>
                     <Button htmlType="button" onClick={() => navigate("/admin/blogs/list")}>Quay lại</Button>

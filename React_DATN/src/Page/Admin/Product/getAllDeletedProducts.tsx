@@ -341,7 +341,7 @@ const GetAllDeletedProducts = () => {
       {isLoadingScreen && <Loading />}
       <div>
         <Button
-         
+         className='setSize-1'
           type="primary"
           onClick={deleteMultipleProducts}
           danger
@@ -351,6 +351,7 @@ const GetAllDeletedProducts = () => {
         </Button>
 
         <Button
+        className='w-[20%]'
           onClick={restoreMultipleProducts}
         >
           Khôi phục sản phẩm đã chọn
