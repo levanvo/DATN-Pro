@@ -53,6 +53,7 @@ const ListNewSletter = () => {
           <>
             <Link to={`/admin/new-sletter/${action.key}/send`}>
               <Button
+              className="setSize-2"
                 type="primary"
                 style={{ margin: "0 0 0 8px", background: "#1677ff" }}
               >
@@ -78,7 +79,7 @@ const ListNewSletter = () => {
   return (
     <div>
       <div style={{ marginBottom: 16 }}>
-        <Button type="primary" loading={loading} danger>
+        <Button className="setSize-1" type="primary" loading={loading} danger>
           Gửi hàng loạt
         </Button>
         <Input

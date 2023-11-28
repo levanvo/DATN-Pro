@@ -21,8 +21,18 @@ const orderApi = createApi({
       providesTags: ["Order"]
     }),
 
+    getAllOrders: builder.query<IOrder[], void>({
+      query: () => `/api/order`,
+      providesTags: ["Order"]
+    }),
+
     getOneOrder: builder.query<IOrder[], number | string>({
       query: (_id) => `/api/order/${_id}`,
+      providesTags: ["Order"]
+    }),
+
+    getOneOrders: builder.query<any, number | string>({
+      query: (_id) => `/api/orders/${_id}`,
       providesTags: ["Order"]
     }),
 
@@ -37,7 +47,7 @@ const orderApi = createApi({
 
     updateOrder: builder.mutation<IOrder, IOrder>({
       query: (order:IOrder) => ({
-        url: `/api/order/${order._id}`,
+        url: `/api/order/${order._id}/update`,
         method: "PUT",
         body: order,
       }),
@@ -46,7 +56,7 @@ const orderApi = createApi({
 
     updatePatchOrder: builder.mutation<any, any>({
       query: (order:any) => ({
-        url: `/api/order/${order._id}`,
+        url: `/api/orders/${order._id}/update`,
         method: "PATCH",
         body: order,
       }),
@@ -67,10 +77,12 @@ const orderApi = createApi({
 
 export const {
   useGetUserOrdersQuery,
+  useGetAllOrdersQuery,
   useAddOrderMutation,
   useUpdateOrderMutation,
   useRemoveOrderMutation,
   useGetOneOrderQuery,
-  useUpdatePatchOrderMutation
+  useUpdatePatchOrderMutation,
+  useGetOneOrdersQuery
 } = orderApi;
 export default orderApi;

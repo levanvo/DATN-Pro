@@ -6783,6 +6783,7 @@ fieldset:disabled .btn {
     display: inline-block;
     width: 2rem;
     height: 2rem;
+    margin-top: 200%;
     background-repeat: no-repeat;
     background-position: 50%;
     background-size: 100% 100%

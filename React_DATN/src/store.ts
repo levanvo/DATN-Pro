@@ -10,6 +10,7 @@ import blogApi from "./Services/Api_Blogs"
 import newSletterApi from "./Services/Api_newSletter"
 import orderApi from "./Services/Api_Order"
 import orderItemApi from "./Services/Api_OrderItem"
+import commentApi from "./Services/Api_Comment"
 import discountApi from "./Services/Api_Discount"
 
 export const store = configureStore({
@@ -25,6 +26,7 @@ export const store = configureStore({
     blogs: blogApi.reducer,
     newSletterApi: newSletterApi.reducer,
     orderItem: orderItemApi.reducer,
+    comments: commentApi.reducer,
     discountApi: discountApi.reducer,
   },
   middleware: (defaultMiddleware) =>
@@ -40,6 +42,7 @@ export const store = configureStore({
       .concat(newSletterApi.middleware)
       .concat(blogApi.middleware)
       .concat(orderItemApi.middleware)
+      .concat(commentApi.middleware)
       .concat(discountApi.middleware),
 })
 

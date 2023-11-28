@@ -74,7 +74,7 @@ const AdminSizeAdd = () => {
                     <Input />
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                    <Button type="primary" danger htmlType="submit">
+                    <Button className="setSize-2" type="primary" htmlType="submit">
                         {isLoading ? (
                             <AiOutlineLoading3Quarters className="animate-spin" />
                         ) : (

@@ -5,6 +5,7 @@
 * {
   // user-select: none;
 }
+
 ._header-web {
   position: fixed;
   z-index: 10;
@@ -19,11 +20,12 @@
   transition: all 0.4s;
 }
 
-#search-webSite:checked ~ .form-webSite {
+#search-webSite:checked~.form-webSite {
   z-index: 100;
   top: 130px;
   right: -90%;
 }
+
 .form-webSite {
   border-radius: 10px;
   position: absolute;
@@ -34,6 +36,7 @@
   top: -300px;
   right: -90%;
   transition: all 0.6s;
+
   input {
     border: 1px solid rgb(75, 75, 75);
     width: 500px;
@@ -43,6 +46,7 @@
     margin: 30px 0 0 151px;
   }
 }
+
 .display-website-search {
   background: #00000070;
   position: fixed;
@@ -52,11 +56,13 @@
   top: 0;
   left: 0;
 }
-#search-webSite:checked ~ .display-website-search {
+
+#search-webSite:checked~.display-website-search {
   width: 100%;
   height: 100%;
   z-index: 99;
 }
+
 .nav-left {
   background: #000;
 }
@@ -329,6 +335,7 @@
   float: right;
   min-height: 100%;
 }
+
 .qr_code img {
   width: 90%;
   display: block;
@@ -355,10 +362,12 @@
   box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.2);
   transition: ease-in-out 0.3s;
 }
-.imgUserSelector:hover ~ .formSelectUser {
+
+.imgUserSelector:hover~.formSelectUser {
   z-index: 102;
   top: 80%;
 }
+
 .formSelectUser {
   position: absolute;
   z-index: -1;
@@ -366,14 +375,17 @@
   background: #898989;
   text-align: center;
   border-radius: 5px;
+
   li {
     width: 160px;
     padding: 4px 0;
     color: #d4d4d4;
+
     &:hover {
       color: rgb(230, 230, 230);
     }
   }
+
   &:hover {
     z-index: 102;
     top: 80%;
@@ -388,7 +400,7 @@
   left: 25vw;
 }
 
-#guide_shoe:checked ~ .guide-shoes-board {
+#guide_shoe:checked~.guide-shoes-board {
   z-index: 11;
   opacity: 1;
   position: fixed;
@@ -397,7 +409,7 @@
   transition: all 0.3s;
 }
 
-#guide_shoe:checked ~ .display-guide-shoe {
+#guide_shoe:checked~.display-guide-shoe {
   width: 100%;
   height: 100%;
   z-index: 10;
@@ -417,8 +429,8 @@
   --bs-gutter-x: 1.5rem;
   --bs-gutter-y: 0;
   margin-top: calc(-1 * var(--bs-gutter-y));
-  margin-right: calc(-0.5 * var(--bs-gutter-x));
-  margin-left: calc(-0.5 * var(--bs-gutter-x));
+  margin-right: calc(-.5 * var(--bs-gutter-x));
+  margin-left: calc(-.5 * var(--bs-gutter-x));
 }
 
 /* App.css */
@@ -467,7 +479,46 @@
 }
 
 .selector-Views {
-  & h3 {
+
+  & h3{
     font-family: fantasy;
   }
 }
+
+.setSize-1{
+  width: 12%;
+}
+
+.setSize-2{
+  width: 40%;
+  background-color: rgb(1, 115, 185);
+}
+
+.headerAdmin{
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+  right: 0;
+  background: #ffffff;
+  border-bottom: 1px solid rgb(228, 228, 228);
+}
+
+.order p {
+  font-size: 20px;
+}
+
+.disabled-button {
+  background-color: gray;
+  color: lightgray;
+}
+
+.confirm-button {
+  background-color: blue;
+  color: white;
+}
+
+.cancel-button {
+  background-color: red;
+  color: white;
+}
+
