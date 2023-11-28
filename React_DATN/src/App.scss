@@ -171,7 +171,7 @@
   height: 40px;
   line-height: 40px;
   border-radius: 5px;
-  overflow: hidden;
+  // overflow: hidden;
   margin: 10px 0px 20px 0px;
 }
 
@@ -189,17 +189,26 @@
   font-weight: 500;
 }
 
+.coupon_inp p {
+  font-size: 14px;
+  color: #777777;
+}
+.coupon_inp span {
+  font-size: 16px;
+  color: #f30c28;
+}
+
 .total_review {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 35px;
 }
 
 .form_checkout h3 {
   font-size: 1.3em;
   font-weight: bolder;
   overflow: hidden;
-  padding-top: 10px;
+  padding-top: 15px;
   text-transform: uppercase;
 }
 
@@ -423,7 +432,6 @@
   margin-right: calc(-.5 * var(--bs-gutter-x));
   margin-left: calc(-.5 * var(--bs-gutter-x));
 }
-
 
 /* App.css */
 .quantity-container {

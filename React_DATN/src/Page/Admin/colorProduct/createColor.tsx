@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button, Form, Input, message } from "antd"
 import { ColorPicker } from "antd"
-import { useCreateColorMutation } from "../../../Services/api_Color"
+import { useCreateColorMutation } from "../../../Services/Api_Color"
 
 const CreateColor = () => {
   const navigate = useNavigate()

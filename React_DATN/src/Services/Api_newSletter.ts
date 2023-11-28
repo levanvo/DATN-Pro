@@ -14,7 +14,10 @@ const newSletterApi = createApi({
       query: () => `/api/newSletter`,
       providesTags: ["newSletter"],
     }),
-
+    getNewSletter: builder.query({
+      query: (id) => `/api/newSletter/${id}`,
+      providesTags: ["newSletter"],
+    }),
     createNewSletter: builder.mutation<INewSletter, INewSletter>({
       query: (newSletter) => ({
         url: `/api/newSletter`,
@@ -26,7 +29,10 @@ const newSletterApi = createApi({
   }),
 })
 
-export const { useGetAllNewSletterQuery, useCreateNewSletterMutation } =
-  newSletterApi
+export const {
+  useGetAllNewSletterQuery,
+  useGetNewSletterQuery,
+  useCreateNewSletterMutation,
+} = newSletterApi
 
 export default newSletterApi
