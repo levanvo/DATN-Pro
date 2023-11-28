@@ -26,8 +26,8 @@ const orderSchema = new mongoose.Schema({
     phone:String,
     note: String,
     status: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: "0"
     },
 
     // discount:String,

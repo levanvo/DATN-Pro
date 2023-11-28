@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom"
 import Layout_Web from "./Page/Layout/Layout_Web"
 import Contact from "./Page/Contact"
-import Bill from "./Page/Bill"
+import Bill from "./Page/BillHome"
 import Cart from "./Page/Cart"
 import ProductDetail from "./Page/ProductDetail"
 import Checkout from "./Page/Checkout"
@@ -42,7 +42,10 @@ import AddBlog from "./Page/Admin/Blog/AddBlog";
 import BlogList from "./Page/Admin/Blog/BlogList";
 import UpdateBlog from "./Page/Admin/Blog/UpdateBlog";
 import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
+import BillList from "./Page/Admin/Bill/BillList"
 import User from "./Page/User"
+import DetailBill from "./Page/Admin/Bill/DetailBill"
+import BillDetailHome from "./Page/detailBillHome"
 
 
 function App() {
@@ -56,7 +59,6 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="cart" element={<Cart />} />
         <Route path="products" element={<Products />} />
-        <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="checkout" element={<Checkout />} />
@@ -72,6 +74,8 @@ function App() {
         <Route path="category/:id/products" element={<ProductsCategory />} />
         <Route path="size/:id/products" element={<ProductsSize />} />
         <Route path="user/:id" element={<User />} />
+        <Route path="order/view" element={<Bill />} />
+        <Route path="order/view/detail/:id" element={<BillDetailHome />} />
 
       </Route >
 
@@ -109,6 +113,8 @@ function App() {
         <Route path="blog/list" element={<BlogList />} />
         <Route path="blog/:id/update" element={<UpdateBlog />} />
         <Route path="new-sletter/list" element={<ListNewSletter />} />
+        <Route path="bill/list" element={<BillList />} />
+        <Route path="bill/detail/:id" element={<DetailBill />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes >

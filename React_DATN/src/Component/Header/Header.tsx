@@ -160,7 +160,7 @@ const Header = () => {
                           <div className="relative">
                             <Link
                               className="w-10 h-10 imgUserSelector"
-                              to={`/client`}
+                              to={`/user/${userId}`}
                             >
                               <img
                                 className="w-10 h-10 rounded-full -mt-2 cursor-pointer imgUserSelector"
