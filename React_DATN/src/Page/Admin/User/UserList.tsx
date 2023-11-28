@@ -18,13 +18,13 @@ const UserList = () => {
 
     const [removeUser] = useRemoveUserMutation();
 
-    const dataUser = data?.data?.map(({ _id, username, password, email, role, imgUrl }: any) => ({
+    const dataUser = data?.data?.map(({ _id, username, password, email, role, imgUrl,phone,address }: any) => ({
         _id,
         username,
         password,
         email,
         role,
-        imgUrl
+        imgUrl,phone,address
     }))
 
     const RemoveUser = (_id: string) => {
@@ -48,24 +48,24 @@ const UserList = () => {
 
     let dataUsers = null;
     if (findName.length > 0) {
-        dataUsers = findName?.map(({ _id, username, email, password, imgUrl, role }: any) => ({
+        dataUsers = findName?.map(({ _id, username, email, password, imgUrl,phone,address, role }: any) => ({
             _id,
             username,
             email,
             password,
-            imgUrl,
+            imgUrl,phone,address,
             role
         }));
         if (getList && getList != "list-0") {
             dataUsers = dataUsers.filter((item: any) => item.role == getList)
         };
     } else {
-        dataUsers = dataUser?.map(({ _id, username, email, password, imgUrl, role }: any) => ({
+        dataUsers = dataUser?.map(({ _id, username, email, password, imgUrl,phone,address, role }: any) => ({
             _id,
             username,
             email,
             password,
-            imgUrl,
+            imgUrl,phone,address,
             role
         }));
         if (getList && getList != "list-0") {
@@ -160,9 +160,9 @@ const UserList = () => {
             <h1 className='ml-5 text-2xl mb-2'>Danh sách các tài khoản</h1><hr />
             {contextHolder}
             <div className='mt-3 flex justify-between'>
-                <div className="">
-                    <Link to={`/admin/user/add`}><Button className='hover:scale-110' type="primary" style={{ background: "green", color: "white" }}>
-                        Thêm tài khoản mới
+                <div className="w-[50%]">
+                    <Link to={`/admin/user/add`}><Button className='hover:scale-110 w-[30%]' type="primary" style={{ background: "green", color: "white" }}>
+                        Thêm tài khoản
                     </Button></Link>
                     <Input name='nameUser' onChange={() => FindUserName(event)} placeholder="tìm theo tên .." allowClear style={{ width: 350, marginLeft: 50 }} />
                 </div>

@@ -29,7 +29,6 @@ import ProductsCategory from "./Page/CategoryProducts"
 import CategoryList from "./Page/Admin/Category/CategoryList"
 import AddCategory from "./Page/Admin/Category/CategoryAdd"
 import UpdateCategory from "./Page/Admin/Category/CategoryUpdate"
-
 import ProductsSize from "./Page/SizeProduct"
 import ListColor from "./Page/Admin/colorProduct/listColor"
 import CreateColor from "./Page/Admin/colorProduct/createColor"
@@ -48,10 +47,11 @@ import User from "./Page/User"
 import DetailBill from "./Page/Admin/Bill/DetailBill"
 import BillDetailHome from "./Page/detailBillHome"
 
+
 function App() {
   !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
   !window.location.href.includes("checkout") && localStorage.removeItem("totalPrice.shoe");
-  
+
   Config();
   return (
     <Routes>

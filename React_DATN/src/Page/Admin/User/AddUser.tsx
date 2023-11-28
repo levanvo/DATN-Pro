@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAddUserMutation } from '../../../Services/Api_User';
 import { Button, Select, message, Form, Input } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 
@@ -44,7 +44,7 @@ const AddUser = () => {
     return (
         <div>
             {contextHolder}
-            <h1 className='text-center text-2xl mb-2'>Add User</h1><hr />
+            <h1 className='text-center text-2xl mb-2'>Thêm tài khoản mới</h1><hr />
 
             <Form
                 name="basic"
@@ -95,9 +95,14 @@ const AddUser = () => {
 
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                    <Button style={{ backgroundColor: "green", color:"white" }} htmlType="submit">
-                        Accept
+                    <Button className='mr-2' style={{ backgroundColor: "green", color: "white" }} htmlType="submit">
+                        Đồng ý
                     </Button>
+                    <Link to={`/admin/user/list`}>
+                        <Button style={{ backgroundColor: "gray", color: "white" }} htmlType="submit">
+                            Quay lại
+                        </Button>
+                    </Link>
                 </Form.Item>
             </Form>
 
