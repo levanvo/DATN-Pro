@@ -183,7 +183,7 @@ const ProductDetail = () => {
 
 
 
-  const hasPurchased = order?.orders.some((order: any) => {
+  const hasPurchased = order?.orders?.some((order: any) => {
     return (
       order.userId === currentUser?._id &&
       order.products.some((product: any) => product.productId?._id === id)
