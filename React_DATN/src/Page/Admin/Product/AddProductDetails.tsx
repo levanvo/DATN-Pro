@@ -14,10 +14,10 @@ import axios from "axios"
 import { IProduct, IColor } from "../../../Models/interfaces"
 import type { UploadFile } from "antd/es/upload/interface"
 import type { RcFile, UploadProps } from "antd/es/upload"
-import { useAddProductMutation } from "../../../Services/Api_Product"
+import { useAddProductDetailsMutation, useAddProductMutation } from "../../../Services/Api_Product"
 import { useGetAllCategoryQuery } from "../../../Services/Api_Category"
 import Loading from "../../../Component/Loading"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useGetAllSizeQuery } from "../../../Services/Api_Size"
 import { useGetColorsQuery } from "../../../Services/api_Color"
 
@@ -35,10 +35,9 @@ type urlObject = {
   url: string
 }
 
-const AddProduct = () => {
+const AddProductDetails = () => {
   const navigate = useNavigate()
-  const [addProduct, { error }] = useAddProductMutation()
-  const { data: getAllCategory, isLoading } = useGetAllCategoryQuery()
+  const [addProduct, { error }] = useAddProductDetailsMutation()
   const { data: getAllSize, isLoading: isLoadingSize } = useGetAllSizeQuery()
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -47,6 +46,8 @@ const AddProduct = () => {
   const [isLoadingScreen, setIsLoadingScreen] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
   const { data:getAllColor } = useGetColorsQuery()
+  const {id} = useParams()
+
 
   const handleCancel = () => setPreviewOpen(false)
 
@@ -106,16 +107,14 @@ const AddProduct = () => {
       const imageUrls = response.data.urls.map((urls: urlObject) => urls.url)
 
       if (response.status === 200) {
-        const newProduct: IProduct = {
-          name: values.name,
-          original_price: values.original_price,
-          price: values.price,
-          imgUrl: imageUrls,
-          categoryId: values.categoryId,
-          description: values.description,
+        const newProduct:any = {
+        imgUrl: imageUrls,
+        color_id: values.color_id,
+        size_id: values.size_id,
+        quantity: values.quantity,  
         }
 
-        await addProduct(newProduct)
+        await addProduct({...newProduct,_id:id})
         messageApi.open({
           type: "success",
           content: "Thêm sản phẩm thành công",
@@ -124,9 +123,9 @@ const AddProduct = () => {
         // đóng loading
         setIsLoadingScreen(false)
 
-        // setTimeout(() => {
-        //   navigate("/admin/product/list")
-        // }, 1500)
+        setTimeout(() => {
+          navigate("/admin/product/list")
+        }, 1500)
       }
     } catch (error) {
       console.error("Error uploading images:", error)
@@ -146,30 +145,23 @@ const AddProduct = () => {
         onFinish={onFinish}
         style={{ maxWidth: 800, margin: "0 auto" }}
       >
-        <Form.Item
-          name="name"
-          label="Tên sản phẩm"
-          rules={[
-            { required: true, message: "Tên sản phẩm không được để trống" },
-          ]}
-        >
-          <Input />
+        
+        <Form.Item label="Color" name="color_id" rules={[{ required: true }]}>
+          <Select mode="multiple" style={{ width: 200 }} >
+            {getAllColor?.map((color: IColor) => (
+              <Select.Option key={color._id} value={color._id}>
+                {color.name}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
-        <Form.Item
-          label="Danh mục"
-          name="categoryId"
-          rules={[
-            {
-              required: true,
-              message: "Danh mục không được để trống",
-            },
-          ]}
-        >
-          <Select style={{ width: 200 }} loading={isLoading}>
-            {getAllCategory ? (
-              getAllCategory?.map((category: any) => (
-                <Select.Option key={category._id} value={category._id}>
-                  {category.name}
+
+        <Form.Item label="Size" name="size_id" rules={[{ required: true }]}>
+          <Select mode="multiple" style={{ width: 200 }} loading={isLoadingSize}>
+            {getAllSize ? (
+              getAllSize?.map((size: any) => (
+                <Select.Option key={size._id} value={size._id}>
+                  {size.name}
                 </Select.Option>
               ))
             ) : (
@@ -180,46 +172,24 @@ const AddProduct = () => {
 
 
         <Form.Item
-          name="original_price"
-          label="Giá gốc"
+          name="quantity"
+          label="Số lượng"
           rules={[
-            { required: true, message: "Giá gốc không được để trống" },
+            { required: true, message: "Số lượng không được để trống" },
             {
               validator: (_, values) => {
                 if (!isNaN(values)) {
                   return Promise.resolve()
                 } else {
-                  return Promise.reject(new Error("Giá gốc phải là số"))
+                  return Promise.reject(new Error("Số lượng phải là số"))
                 }
               },
             },
           ]}
         >
-         <Input/>
+          <InputNumber />
         </Form.Item>
 
-        <Form.Item
-          name="price"
-          label="Giá hiện tại"
-          rules={[
-            { required: true, message: "Giá hiện tại không được để trống" },
-            {
-              validator: (_, values) => {
-                if (!isNaN(values)) {
-                  return Promise.resolve()
-                } else {
-                  return Promise.reject(new Error("Giá hiện tại phải là số"))
-                }
-              },
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Mô tả sản phẩm" name="description">
-          <TextArea rows={4} />
-        </Form.Item>
 
         <Form.Item label="Tải lên">
           <Upload
@@ -246,8 +216,8 @@ const AddProduct = () => {
 
         <Form.Item wrapperCol={{ offset: 4, span: 11 }}>
           <Button
-          className="setSize-2"
             type="primary"
+            danger
             htmlType="submit"
             style={{ marginRight: 20 }}
           >
@@ -265,4 +235,4 @@ const AddProduct = () => {
   )
 }
 
-export default AddProduct
+export default AddProductDetails

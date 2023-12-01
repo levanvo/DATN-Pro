@@ -7,24 +7,11 @@ export const getCart = async(req,res) =>{
     try {
         // Lấy giỏ hàng dựa trên userId
         const cart = await Cart.findOne({ userId: req.user._id })
-        .populate({
-          path: "products.productId",
-          model: "Product",
-          populate: [
-            {
-              path: "size_id",
-              model: "Size"
-            },
-            {
-              path: "color_id",
-              model: "Color"
-            },
-            {
-                path: "categoryId",
-                model: "Category"
-            }
-          ]
-        })
+      .populate({
+        path: 'products.productId',
+        model: 'Product', // Replace 'Product' with the actual model name
+        select: 'name imgUrl price', // Select the fields you want to populate for the product
+      });
     
         if (!cart) {
           return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
@@ -39,7 +26,7 @@ export const getCart = async(req,res) =>{
       }
 }
 export const addToCart = async (req, res) => {
-  const { productId, color, size, quantity } = req.body;
+  const { productId, color, size, quantity,price } = req.body;
   const userId = req.user._id;
   try {
     let cart = await Cart.findOne({ userId });
@@ -49,13 +36,14 @@ export const addToCart = async (req, res) => {
     }
 
     if (!cart) {
-      cart = new Cart({ userId, products: [{ productId, color, size, quantity }] });
+      cart = new Cart({ userId, products: [{ productId, color, size, quantity,price }] });
     }else{
       const existingProduct = cart.products.find(
         (item) => item.productId.equals(productId) && item.color === color && item.size === size
       );
       if(existingProduct){
       existingProduct.quantity += quantity;
+      existingProduct.price += price
       }else{
         if (!mongoose.Types.ObjectId.isValid(productId)) {
           return res.status(400).json({ message: "Địa chỉ sản phẩm không hợp lệ." });
@@ -64,7 +52,7 @@ export const addToCart = async (req, res) => {
         if (!productDocument) {
           return res.status(404).json({ message: "Không tìm thấy sản phẩm." });
         }
-        cart.products.unshift({ productId, color, size, quantity });
+        cart.products.unshift({ productId, color, size, quantity,price });
       }
     }
 
@@ -83,7 +71,7 @@ export const addToCart = async (req, res) => {
 
 
 export const updateCart = async (req, res) => {
-  const { productId, color, size, quantity } = req.body;
+  const { productId, color, size, quantity,price } = req.body;
   const userId = req.user._id;
   try {
     const cart = await Cart.findOne({ userId });
@@ -92,7 +80,7 @@ export const updateCart = async (req, res) => {
       return res.status(404).json({ message: "Giỏ hàng của bạn đang trống." });
     }
 
-    if (!productId || !quantity || !size || !color) {
+    if (!productId || !quantity || !size || !color || !price) {
       return res.status(400).json({ message: "Dữ liệu sản phẩm không hợp lệ." });
     }
 
@@ -107,7 +95,8 @@ export const updateCart = async (req, res) => {
       }
 
       existingProduct.quantity -= quantity;
-
+      existingProduct.price -= price
+      
       if (existingProduct.quantity <= 0) {
         // Nếu số lượng sản phẩm trong giỏ hàng bằng 0, hãy loại bỏ nó khỏi giỏ hàng
         cart.products = cart.products.filter(

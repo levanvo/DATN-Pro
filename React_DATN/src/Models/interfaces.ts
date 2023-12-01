@@ -6,9 +6,13 @@ export interface IProduct {
   description?: string
   imgUrl: string[]
   categoryId: string
-  size_id: string[]
-  color_id: string[]
-  quantity?: number
+  variants: [
+    {
+      size_id: string[],
+      color_id: string[],
+      quantity?: number[]
+    }
+  ]
   discount_code_id?: string
   poinId?: string
   views: number
@@ -44,10 +48,11 @@ export interface ISize {
 }
 
 export interface ProductItem {
-  productId: string
-  quantity: number
-  color: string
-  size: number
+  productId: string;
+  quantity: number;
+  color: string,
+  size: string,
+  price: number
 }
 
 export interface ISlider {

@@ -8,11 +8,13 @@ import {
   restoreProduct,
   getAllDeletedProducts,
   deleteProduct,
-  getHotProducts
+  getHotProducts,
+  createProductVariant
 } from "../controller/product.js"
 const router = express.Router()
 
 router.get("/products", getProduct)
+router.post('/product/:id/variants', createProductVariant);
 router.get("/product/:id", readProduct)
 router.post("/product", createProduct)
 router.delete("/product/:id", removeProduct)

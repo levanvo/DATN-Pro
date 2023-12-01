@@ -2,16 +2,11 @@ import mongoose, { Schema } from "mongoose"
 
 const productSchema = new mongoose.Schema(
   {
+    productDetailsId: {
+      type: Schema.Types.ObjectId,
+      ref: "ProductDetails"
+    },
     name: {
-      type: String,
-    },
-    original_price: {
-      type: Number,
-    },
-    price: {
-      type: Number,
-    },
-    description: {
       type: String,
     },
     imgUrl: [
@@ -19,26 +14,32 @@ const productSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    categoryId: {
-      type: Schema.Types.ObjectId,
-      ref: "Category",
-    },
-    size_id: [{
-      type: Schema.Types.ObjectId,
-      ref: "Size",
-    }],
-    color_id: [
+    
+    variants: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Color",
-      },
+        imgUrl: [
+          {
+            type: String,
+          },
+        ],
+        size_id: {
+          type: Schema.Types.ObjectId,
+          ref: "Size",
+        },
+        color_id: {
+          type: Schema.Types.ObjectId,
+          ref: "Color",
+        },
+        quantity: {
+          type: Number,
+        },
+      }
     ],
-    quantity: {
-      type: Number,
-    },
-    discount_code_id: {
-      type: String,
-    },
+    categoryId: String,
+    price: Number,
+    original_price: Number,
+    description: String,
+    quantity: Number,
     views: {
       type: Number,
       default: 0,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Table, Popconfirm, message, Button, Input, Menu, Dropdown } from 'antd';
+import { Divider, Table, Popconfirm, message, Button, Input, Menu, Dropdown,Modal } from 'antd';
 import { useDeleteProductMutation, useGetAllProductQuery } from '../../../Services/Api_Product';
 import { IProduct } from '../../../Models/interfaces';
 import { QuestionCircleOutlined, FilterOutlined } from '@ant-design/icons';
@@ -33,6 +33,8 @@ const ProductList = () => {
   const {data: getAllSize} = useGetAllSizeQuery()
 
 
+
+
   const rowSelection = {
     selectedRowKeys: selectedProductId,
     onChange: (selectedRowKeys: React.Key[]) => {
@@ -59,16 +61,20 @@ const ProductList = () => {
   }
 
   //data trả về
-  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId,color_id,size_id }: IProduct) => ({
-    key: _id,
-    name,
-    original_price,
-    price,
-    imgUrl,
-    categoryId,
-    color_id,
-    size_id
-  }))
+  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId,variants }: IProduct) => {
+    const colorIds = variants.map((c) => c.color_id).flat()
+    const sizeIds = variants.map((s) => s.size_id).flat()
+    return {
+      key: _id,
+      name,
+      original_price,
+      price,
+      imgUrl,
+      categoryId,
+      color_id: colorIds,
+      size_id: sizeIds
+    }
+  })
 
   // hàm thực hiện đóng và mở chức năng lọc theo giá
   const handleFilterVisibleChange = (visible: any) => {
@@ -159,11 +165,12 @@ const ProductList = () => {
   }) : filteredDataSource;
 
 
+
   const columns: any[] = [
     {
       title: 'Tên sản phẩm',
       dataIndex: 'name',
-      render: (text: string) => (<a>{text}</a>),
+      render: (text: string, record: any) => (<a href={`/admin/product/details/${record.key}`}>{text}</a>),
       align: 'center',
     },
     {
@@ -188,56 +195,6 @@ const ProductList = () => {
           const categoryName = categories.find((c) => c._id === categoryId)
           return categoryName ? categoryName.name : "không xác định"
         }
-      },
-      align: 'center',
-    },
-    {
-      title: 'Màu xắc',
-      dataIndex: 'color_id',
-      key: 'color_id',
-      render: (colorIds: string[]) => {
-        if (getAllColor) {       
-          const colorElements = colorIds?.map(colorId => {
-            const color = getAllColor.find(c => c._id === colorId);
-            return color ? (
-              <span
-                key={color._id}
-                style={{
-                  background: color.unicode,
-                  width: "25px",
-                  height: "25px",
-                  borderRadius: "50%",
-                  marginRight:5
-                }}
-              ></span>
-            ) : null;
-          });
-          return (
-            <div style={{ display: 'flex',justifyContent: "center",alignItems: "center" }}>
-              {colorElements}
-            </div>
-          );
-        }
-        return "Không xác định";
-      },
-      align: 'center',
-    },
-    
-    {
-      title: 'Kích thước',
-      dataIndex: 'size_id',
-      key: 'size_id',
-      render: (sizeIds: string[]) => {
-       if(getAllSize){
-          const sizeElements = sizeIds.map(sizeID => {
-            const size = getAllSize.find(s => s._id === sizeID)
-            return size ? size.name : ""
-          })
-          if(sizeElements){
-            return sizeElements.join(", ")
-          }    
-      }
-        return "Không xác định"
       },
       align: 'center',
     },
@@ -281,6 +238,11 @@ const ProductList = () => {
 
             <EditOutlined style={{ fontSize: "20px" }} />
           </Link>
+
+          <Link to={`/admin/product/${id}/variants`}>
+
+            <EditOutlined style={{ fontSize: "20px" }} />
+          </Link>
         </div>
       ),
       align: 'center',
@@ -318,12 +280,11 @@ const ProductList = () => {
             <FilterOutlined />
           </Button>
         </Dropdown>
-
-
       </div>
       <Divider />
-      {isLoading ? <Loading /> : <Table rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource} />}
-
+      <Table
+        rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource} 
+      />
     </div>
   );
 };

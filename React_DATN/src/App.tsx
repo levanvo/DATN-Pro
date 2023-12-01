@@ -48,6 +48,8 @@ import CreateDiscount from "./Page/Admin/Discount/createDiscount"
 import UpdateDiscount from "./Page/Admin/Discount/updateDiscount"
 import BillList from "./Page/Admin/Bill/BillList"
 import User from "./Page/User"
+import ProductListDetails from "./Page/Admin/Product/ProductListDetails"
+import AddProductDetails from "./Page/Admin/Product/AddProductDetails"
 import DetailBill from "./Page/Admin/Bill/DetailBill"
 import BillDetailHome from "./Page/detailBillHome"
 
@@ -92,7 +94,10 @@ function App() {
       >
         <Route index element={<Dashboard />} />
         <Route path="product/add" element={<AddProduct />} />
+        <Route path="product/add" element={<AddProduct />} />
+        <Route path="product/:id/variants" element={<AddProductDetails />}/>
         <Route path="product/list" element={<ProductList />} />
+        <Route path="product/details/:id" element={<ProductListDetails />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
         <Route path="category/list" element={<CategoryList />} />
         <Route path="category/add" element={<AddCategory />} />
