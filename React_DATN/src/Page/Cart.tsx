@@ -46,7 +46,7 @@ const Cart = () => {
           key: product._id,
           productId: product.productId._id,
           name: product.productId.name,
-          price: product.productId.price,
+          price: product.price,
           imgUrl: product.productId.imgUrl[0],
           color: product.color,
           size: product.size,
@@ -109,6 +109,7 @@ const Cart = () => {
             color: productToUpdate.color,
             size: productToUpdate.size,
             quantity: 1,
+            price: productToUpdate.productId.price
           });
         }
       };
@@ -116,7 +117,8 @@ const Cart = () => {
       
       const handleMinus = (productId: string) => {
         const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
-    
+        console.log(productToUpdate);
+        
         if (productToUpdate) {
 
           if(productToUpdate.quantity==0){
@@ -130,6 +132,7 @@ const Cart = () => {
               color: productToUpdate.color,
               size: productToUpdate.size,
               quantity: 1,
+              price: productToUpdate.productId.price
             });
           }else{
             const updatedProductQuantities = {
@@ -143,6 +146,7 @@ const Cart = () => {
               color: productToUpdate.color,
               size: productToUpdate.size,
               quantity: 1,
+              price: productToUpdate.productId.price
             });
           }
           

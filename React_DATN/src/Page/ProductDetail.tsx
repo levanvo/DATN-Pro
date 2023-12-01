@@ -14,7 +14,7 @@ import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useAddToCartMutation, useGetCartQuery } from "../Services/Api_cart";
 import {ProductItem } from "../Models/interfaces";
-import {message} from "antd"
+import {Button, message} from "antd"
 import Loading from "../Component/Loading";
 
 
@@ -48,6 +48,8 @@ const ProductDetail = () => {
   const ChooseColor = (color: any) => {
     setColor(color);
   };
+  console.log(getColor);
+  
   const ChooseSize = (size: any) => {
     console.log(size);
     setSize(size);
@@ -71,12 +73,16 @@ const ProductDetail = () => {
     
     if (isAuthenticated) {
       if(cartData===undefined || cartData?.products.length === 0){
-        addToCart({
+       const res =  addToCart({
           productId: productDataOne._id,
           color: getColor,  
           size: getSize,
           quantity: getQuantityBuy,
+          price: productDataOne.price*getQuantityBuy
         })
+        console.log(res);
+        
+      
         message.success("Đã thêm sản phẩm vào giỏ hàng")
       }else{
         const productItemIndex = cartData.products.findIndex((product:any)=>product.productId._id == productDataOne._id && product.color == getColor && product.size == getSize);
@@ -89,7 +95,8 @@ const ProductDetail = () => {
             productId: updatedProductItem.productId._id,
             color: updatedProductItem.color,  
             size: updatedProductItem.size,
-            quantity: getQuantityBuy
+            quantity: getQuantityBuy,
+            price: productDataOne.price
           });
           message.success("Đã thêm sản phẩm vào giỏ hàng")
         } else{
@@ -98,6 +105,7 @@ const ProductDetail = () => {
             color: getColor,  
             size: getSize,
             quantity: getQuantityBuy,
+            price: productDataOne.price * getQuantityBuy
           })
         message.success("Đã thêm sản phẩm vào giỏ hàng")
         }
@@ -143,9 +151,32 @@ const ProductDetail = () => {
       message.success("Sản phẩm đã được thêm vào giỏ hàng của bạn (chưa đăng nhập).");
     }
   };
+
+
+  const uniqueColorIds: string[] = [];
+
+const uniqueColorButtons = productDataOne?.variants.reduce(
+  (buttons:any, variant:any) => {
+    const colorId = variant.color_id?.unicode;
+
+    if (colorId && !uniqueColorIds.includes(colorId)) {
+      uniqueColorIds.push(colorId);
+
+      buttons.push(
+        <button
+          key={colorId}
+          onClick={() => ChooseColor(colorId)}
+          className={`w-8 h-8 rounded-full border ${
+            getColor === colorId ? 'border-gray-700' : ''
+          }`}
+          style={{ background: variant.color_id.unicode }}
+        ></button>
+      );
+    }
+
+    return buttons;
+  },[]);
   
-    
-    
   return (
     <div>
       {isLoadingProduct ? <Loading /> : <div className="w-[90vw] mx-auto mt-36 relative"> 
@@ -278,72 +309,55 @@ const ProductDetail = () => {
                     <img src="img/product/share.png" alt="" />
                   </div>
                 </div>
+
+
                 <h3 className="-mt-4">Chọn màu:</h3>
-                <div className="flex space-x-2 my-4">
-                  {productDataOne?.color_id?.map((itemColor: any) => {
-                    return (
-                      <button
-                        onClick={() => ChooseColor(itemColor.unicode)}
-                        className={`w-8 h-8 rounded-full  ${getColor == itemColor.unicode ? "border-4 border-gray-200" : ""}`}
-                        style={{ background: itemColor.unicode }}
-                      ></button>
-                    );
-                  })}
-                </div>
-                {/* <div className="action">
-                  <ul className="add-to-links">
-                    <li>
-                      <a href="#">
-                        <i className="fa fa-heart"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fa fa-refresh"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fa fa-envelope"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div> */}
-                <div className="select-catagory">
-                  <div>
-                      <h3 className="mt-3">Chọn kích cỡ:</h3>
-                    <div className="flex mb-3 space-x-3">
-                      {productDataOne?.size_id?.map((itemSize: any) => (
-                        <div onClick={() => ChooseSize(itemSize.name)} className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${getSize == itemSize.name ? "border-green-600" : ""}`}>
-                          <p>{itemSize.name}</p>
-                          {getSize == itemSize.name && <img className="absolute top-[-7px] right-[-5px] w-3 h-3" src="../../img/icons/correct.png" alt="" />}
+                <div className="flex space-x-2 my-4">{uniqueColorButtons}</div>;
+
+
+              <div className="select-catagory">
+              <div>
+                  <h3 className="mt-3">Chọn kích cỡ:</h3>
+                  <div className="mb-3 space-x-3">
+                    {productDataOne?.variants
+                      .filter((variant: any) => variant.color_id.unicode === getColor)
+                      .map((filteredVariant: any) => (
+                        <div className="flex" key={filteredVariant._id}>
+                          {filteredVariant.size_id._id && (
+                            <div
+                              style={{ marginRight: 10 }}
+                              onClick={() => ChooseSize(filteredVariant.size_id.name)}
+                              className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${
+                                getSize === filteredVariant.size_id.name ? 'border-green-600' : ''
+                              }`}
+                            >
+                              <p>{filteredVariant.size_id.name}</p>
+                              {getSize === filteredVariant.size_id.name && (
+                                <img
+                                  className="absolute top-[-7px] right-[-5px] w-3 h-3"
+                                  src="../../img/icons/correct.png"
+                                  alt=""
+                                />
+                              )}
+                            </div>
+                          )}
                         </div>
                       ))}
-                    </div>
-                    <div className="mt-5 w-0 h-0">
-                      <input type="checkbox" id="guide_shoe" hidden />
-                      <label htmlFor="guide_shoe"><p className="cursor-pointer hover:text-sky-500 w-96">Bảng Quy Đổi Kích Cỡ</p></label>
-                      <div className="w-[800px] h-96 bg-white flex space-x-20 guide-shoes-board">
-                        <img className="w-96 h-96 p-4" src="../../img/guide_sizeShoe.png" alt="" />
-                        <div className="">
-                          <p className="text-center text-xl mt-5 text-gray-500">Bảng đo size giày</p>
-                          <img className="w-64 h-64 p-4" src="../../img/guide_size.png" alt="" />
-                        </div>
-                        <label htmlFor="guide_shoe"><CloseOutlined className="absolute right-0 p-3 scale-150 cursor-pointer hover:rotate-90 duration-200" /></label>
-                      </div>
-                      <label htmlFor="guide_shoe" className="fixed top-0 left-0 display-guide-shoe -z-10"></label>
-                    </div>
                   </div>
                 </div>
+              </div>
+
+
+          
                 <div className="cart-item">
                   <div className="price-box">
                     {/* <span>
                       Price: <span></span>
                     </span> */}
                   </div>
-                  <div className="single-cart d-flex align-items-center">
+                  <div className="single-cart">
                     <div className="cart-plus-minus">
-                      <div className="d-flex align-items-center">
+                      <div className="quantity-cart">
                         <span style={{ fontSize: "16px" }}>Số lượng: </span>
                         <div className="inp_group">
                           <button>

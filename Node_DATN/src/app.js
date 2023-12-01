@@ -14,6 +14,8 @@ import slideRouter from "./router/slider.js"
 import blogRouter from "./router/blog.js"
 import orderRouter from "./router/order.js"
 import orderItemRouter from "./router/orderItem.js"
+import vnpRouter from "./router/vnp.js"
+
 
 
 dotenv.config()
@@ -37,6 +39,7 @@ app.use("/api", slideRouter)
 app.use("/api", blogRouter)
 app.use("/api", orderRouter)
 app.use("/api", orderItemRouter)
+app.use("/api",vnpRouter)
 
 
 

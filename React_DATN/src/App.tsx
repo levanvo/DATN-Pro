@@ -44,6 +44,8 @@ import BlogList from "./Page/Admin/Blog/BlogList";
 import UpdateBlog from "./Page/Admin/Blog/UpdateBlog";
 import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
 import User from "./Page/User"
+import ProductListDetails from "./Page/Admin/Product/ProductListDetails"
+import AddProductDetails from "./Page/Admin/Product/AddProductDetails"
 
 function App() {
   !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
@@ -85,7 +87,10 @@ function App() {
       >
         <Route index element={<Dashboard />} />
         <Route path="product/add" element={<AddProduct />} />
+        <Route path="product/add" element={<AddProduct />} />
+        <Route path="product/:id/variants" element={<AddProductDetails />}/>
         <Route path="product/list" element={<ProductList />} />
+        <Route path="product/details/:id" element={<ProductListDetails />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
         <Route path="category/list" element={<CategoryList />} />
         <Route path="category/add" element={<AddCategory />} />

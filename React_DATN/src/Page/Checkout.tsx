@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { message } from "antd";
 import { useAddOrderMutation } from "../Services/Api_Order";
 import { useAddOrderItemMutation } from "../Services/Api_OrderItem";
+import { useCreatePaymentMutation } from "../Services/Api_VNP";
 
 const Checkout = () => {
     
@@ -26,7 +27,7 @@ const Checkout = () => {
     const address = (document.getElementById("address") as HTMLInputElement)?.value;
     const [addOrderItem] = useAddOrderItemMutation()
     const [localCart, setLocalCart] = useState<any[]>(JSON.parse(localStorage.getItem('cart') || '[]'));
-
+    const [createPayment] = useCreatePaymentMutation();
     
     
 
@@ -192,9 +193,20 @@ const Checkout = () => {
                     return total + productPrice * productQuantity;
                   }, 0), 
                 };
+
+                const vnpResponse = await createPayment(orderData);
+                console.log(vnpResponse);
                 
-                await addOrder(orderData);
-                message.success("Đặt hàng thành công");
+
+                if (vnpResponse.data && vnpResponse.data.vnp_Url) {
+                    // Redirect the user to the VNP payment page
+                    window.location.href = vnpResponse.data.vnp_Url;
+                    // await addOrder(orderData);
+                    // message.success("Đặt hàng thành công");
+                  } else {
+                    message.error("Failed to retrieve VNP payment URL");
+                  }
+               
             }else{
                 const cartId = selectedProducts.map((product:any) => product.key)
                 const productId = selectedProducts.map((product:any) => product.productId)

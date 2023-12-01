@@ -6,6 +6,7 @@ import mongoose from "mongoose"
 import Color from "../models/color.js"
 import Size from "../models/size.js"
 import Cart from "../models/cart.js"
+import ProductDetails from "../models/productDetails.js"
 
 export const getProduct = async (req, res) => {
   try {
@@ -23,10 +24,53 @@ export const getProduct = async (req, res) => {
   }
 }
 
+export const createProductVariant = async (req, res) => {
+  const productId = req.params.id;
+
+  try {
+    // Find the product by ID
+    const product = await Product.findById(productId).exec();
+
+    if (!product) {
+      return res.status(400).json({
+        message: "Không có sản phẩm nào",
+      });
+    }
+
+    // Assuming you have the variant data in the request body
+    const variantData = req.body;
+
+    // Add the variant to the variants array in the product
+    product.variants.push(variantData);
+
+    if (variantData.imgUrl && Array.isArray(variantData.imgUrl)) {
+  product.imgUrl = product.imgUrl.concat(variantData.imgUrl);
+}
+    // Save the updated product
+    await product.save();
+
+    return res.status(201).json({
+      message: "Biến thể sản phẩm đã được thêm thành công",
+      product
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Đã xảy ra lỗi khi thêm biến thể sản phẩm",
+    });
+  }
+};
+
 export const readProduct = async (req, res) => {
   try {
     const data = await Product.findById({ _id: req.params.id })
-      .populate(["categoryId", "size_id", "color_id"])
+    .populate({
+      path: 'variants',
+      populate: [
+        { path: 'size_id', model: 'Size' },
+        { path: 'color_id', model: 'Color' }
+      ]
+    })
       .exec()
 
     if (!data) {
@@ -56,38 +100,26 @@ export const readProduct = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    const { error } = productSchema.validate(req.body)
-    if (error) {
-      return res.status(400).json({
-        message: error.details[0].message,
-      })
-    }
+  
     const newProduct = await Product.create(req.body)
-    if (!newProduct) {
-      return res.json({
-        message: "Không thêm sản phẩm",
-      })
-    }
-    const updateInfo = {
-      products: newProduct._id,
-    }
-    await Promise.all([
-      Category.findByIdAndUpdate(newProduct.categoryId, {
-        $addToSet: updateInfo,
-      }),
-      Color.findByIdAndUpdate(newProduct.color_id, { $addToSet: updateInfo }),
-      Size.findByIdAndUpdate(newProduct.size_id, { $addToSet: updateInfo }),
-    ])
+  
+
     return res.json({
       message: "Thêm sản phẩm thành công",
       data: newProduct,
-    })
+    });
   } catch (error) {
     return res.status(404).json({
       message: error.message,
-    })
+    });
   }
-}
+};
+
+
+
+
+
+
 
 export const removeProduct = async (req, res) => {
   try {

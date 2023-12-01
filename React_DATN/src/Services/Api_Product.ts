@@ -31,6 +31,15 @@ const productApi = createApi({
       }),
       invalidatesTags: ["Product"]
     }),
+    
+    addProductDetails: builder.mutation({
+      query: (product) => ({
+        url: `/api/product/${product._id}/variants`,
+        method: "POST",
+        body: product,
+      }),
+      invalidatesTags: ["Product"]
+    }),
 
     // Xóa sản phẩm tạm thời
     deleteProduct: builder.mutation<void,number | string>({
@@ -82,6 +91,7 @@ const productApi = createApi({
 });
 
 export const { 
+  useAddProductDetailsMutation,
   useGetAllProductQuery,
    useAddProductMutation,
    useDeleteProductMutation, 

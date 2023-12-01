@@ -10,6 +10,7 @@ import blogApi from "./Services/Api_Blogs";
 import newSletterApi from "./Services/Api_newSletter";
 import orderApi from "./Services/Api_Order";
 import orderItemApi from "./Services/Api_OrderItem";
+import vnpApi from "./Services/Api_VNP";
 
 export const store = configureStore({
     reducer: {
@@ -23,7 +24,8 @@ export const store = configureStore({
         "order": orderApi.reducer,
         "blogs": blogApi.reducer,
         "newSletterApi": newSletterApi.reducer,
-        "orderItem": orderItemApi.reducer
+        "orderItem": orderItemApi.reducer,
+        "VNP": vnpApi.reducer
 
     },
     middleware: defaultMiddleware => defaultMiddleware()
@@ -38,6 +40,8 @@ export const store = configureStore({
     .concat(newSletterApi.middleware)
     .concat(blogApi.middleware)
     .concat(orderItemApi.middleware)
+    .concat(vnpApi.middleware)
+
 })
 
 export type RootState = ReturnType<typeof store.getState>
