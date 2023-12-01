@@ -8,7 +8,7 @@ import Loading from "../../../Component/Loading"
 const ListNewSletter = () => {
   const { Search } = Input
   const [searchQuery, setSearchQuery] = useState<string>("")
-  const [selectedColorIds, setSelectedColorIds] = useState<React.Key[]>([])
+  const [selectedEmailIds, setSelectedEmailIds] = useState<React.Key[]>([])
   const [loading, setLoading] = useState(false)
 
   const { data, isLoading, error } = useGetAllNewSletterQuery(undefined)
@@ -51,8 +51,9 @@ const ListNewSletter = () => {
       render: (action: any) => {
         return (
           <>
-            <Link to={`/admin`}>
+            <Link to={`/admin/new-sletter/${action.key}/send`}>
               <Button
+              className="setSize-2"
                 type="primary"
                 style={{ margin: "0 0 0 8px", background: "#1677ff" }}
               >
@@ -67,18 +68,18 @@ const ListNewSletter = () => {
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys)
-    setSelectedColorIds(newSelectedRowKeys)
+    setSelectedEmailIds(newSelectedRowKeys)
   }
 
   const rowSelection = {
-    selectedRowKeys: selectedColorIds,
+    selectedRowKeys: selectedEmailIds,
     onChange: onSelectChange,
   }
 
   return (
     <div>
       <div style={{ marginBottom: 16 }}>
-        <Button type="primary" loading={loading} danger>
+        <Button className="setSize-1" type="primary" loading={loading} danger>
           Gửi hàng loạt
         </Button>
         <Input

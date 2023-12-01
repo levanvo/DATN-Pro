@@ -45,11 +45,12 @@ const ProductList = () => {
   // Xóa sản phẩm đã chọn
   const deleteMultipleProducts = async () => {
     try {
-      setIsLoadingDelete(true)
+      
       if (selectedProductId.length === 0) {
         message.error("Vui lòng chọn các category muốn xoá!")
         return
       }
+      setIsLoadingDelete(true)
       const productIdAll = selectedProductId.map((key) => key.toString());
       await Promise.all(productIdAll.map((productId) => removeProduct(productId)))
       message.success("Xóa thành công")
@@ -254,6 +255,7 @@ const ProductList = () => {
       {isLoadingDelete && <Loading />}
       <div>
         <Button
+        className='setSize-1'
           style={{ marginRight: 20 }}
           type="primary"
           onClick={deleteMultipleProducts}
@@ -262,7 +264,7 @@ const ProductList = () => {
           Xoá mục đã chọn
         </Button>
 
-        <Button type="primary" style={{ background: "blue" }}>
+        <Button className='setSize-1' type="primary" style={{ background: "blue" }}>
           <Link to={`/admin/product/add`}>Thêm mới</Link>
         </Button>
         <Search

@@ -106,13 +106,14 @@ const SizeList = () => {
       <div>
         <Button
           type="primary"
+          className="setSize-1"
           danger
           onClick={deleteSelectedSizes}
           disabled={selectedSizes.length === 0}
         >
           Xóa các size đã chọn
         </Button>
-        <Button type="primary" style={{ background: "blue", marginLeft: 20 }}>
+        <Button className="setSize-1" type="primary" style={{ background: "blue", marginLeft: 20 }}>
           <Link to={`/admin/size/add`}>Thêm mới</Link>
         </Button>
         <Search

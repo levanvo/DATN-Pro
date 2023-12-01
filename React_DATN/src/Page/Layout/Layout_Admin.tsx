@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   GoldOutlined,
   PieChartOutlined,
@@ -13,10 +13,11 @@ import {
   PicCenterOutlined,
   CalendarOutlined,
   MailOutlined,
-} from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import { Outlet, Link } from 'react-router-dom';
+  MenuOutlined,
+} from "@ant-design/icons"
+import type { MenuProps } from "antd"
+import { Breadcrumb, Layout, Menu, theme } from "antd"
+import { Outlet, Link } from "react-router-dom"
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -37,9 +38,9 @@ function getItem(
   } as MenuItem
 }
 
-const user = JSON.parse(localStorage.getItem('user') || '{}');
+const user = JSON.parse(localStorage.getItem("user") || "{}")
 
-const isStaff = user?.role === "staff";
+const isStaff = user?.role === "staff"
 
 const items: MenuItem[] = [
   getItem("Thống kê", "0", <BarChartOutlined />, undefined, "/admin"),
@@ -61,43 +62,52 @@ const items: MenuItem[] = [
       "restore-product-data"
     ),
   ]),
-  getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
+  // getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
   getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
-  getItem('Users', '7', <UserOutlined />, undefined, 'user/list'),
-  getItem('Bill', '8', <HddOutlined />, undefined, 'bill/list'),
+  getItem('Tài khoản', '7', <UserOutlined />, undefined, 'user/list'),
+  getItem('Hóa đơn', '8', <HddOutlined />, undefined, 'bill/list'),
   getItem('Slide', '9', <PicCenterOutlined />, undefined, 'slide/list'),
-  getItem("New Sletter", "10", <MailOutlined />, undefined, "new-sletter/list"),
+  // getItem("New Sletter", "10", <MailOutlined />, undefined, "new-sletter/list"),
+  getItem("Discount", "11", <MenuOutlined />, undefined, "discount/list"),
+  getItem("Bản tin", "12", <MailOutlined />, undefined, "new-sletter/list"),
+  getItem("Nhật ký web", "13", <CalendarOutlined />, undefined, "blog/list"),
 ];
 
 const Layout_Admin: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
   } = theme.useToken()
+
 
   return (
     <div className="nav-left">
       <Layout style={{ minHeight: "100vh" }}>
         <Sider
+        style={{position:"fixed", zIndex:2,height: "100vh"}}
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
         >
           <div className="demo-logo-vertical" />
           <div className="flex justify-center">
-            <a href={`/`}><HomeOutlined className="scale-125 hover:scale-150 mx-auto mt-3" /></a>
+            <a href={`/`}>
+              <HomeOutlined className="scale-125 hover:scale-150 mx-auto mt-3" />
+            </a>
           </div>
           <hr />
-          {/* <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={items} /> */}
-          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter((item:any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items} />
+          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter((item: any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items} />
         </Sider>
         <Layout>
-          <Header style={{ padding: 0, background: colorBgContainer }} />
-          <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
-            </Breadcrumb>
+          <Header className="headerAdmin" style={{ height:80,width:"100%"}} >
+
+          </Header>
+          <div className="h-20"></div>
+          <Content className="" style={{margin:"0 0 0 200px"}}>
+            {/* <Breadcrumb style={{ margin: "16px 0" }}>
+              <Breadcrumb.Item>Bảng</Breadcrumb.Item>
+              <Breadcrumb.Item></Breadcrumb.Item>
+            </Breadcrumb> */}
             <div
               style={{
                 padding: 24,

@@ -90,7 +90,7 @@ const AddCategory = () => {
 
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                    <Button type="primary" danger htmlType="submit">
+                    <Button type="primary" className="setSize-2" htmlType="submit">
                         submit
                     </Button>
                     <Button

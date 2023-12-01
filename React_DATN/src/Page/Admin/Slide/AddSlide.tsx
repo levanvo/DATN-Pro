@@ -151,7 +151,7 @@ const AddSlide = () => {
 
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button style={{ backgroundColor: "green", color: "white" }} htmlType="submit">
+          <Button className='w-28' style={{ backgroundColor: "green", color: "white" }} htmlType="submit">
             Thêm mới
           </Button>
           <Link to={`/admin/slide/list`}>

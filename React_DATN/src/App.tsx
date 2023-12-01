@@ -1,7 +1,7 @@
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import Layout_Web from "./Page/Layout/Layout_Web"
 import Contact from "./Page/Contact"
-import Bill from "./Page/Bill"
+import Bill from "./Page/BillHome"
 import Cart from "./Page/Cart"
 import ProductDetail from "./Page/ProductDetail"
 import Checkout from "./Page/Checkout"
@@ -29,28 +29,35 @@ import ProductsCategory from "./Page/CategoryProducts"
 import CategoryList from "./Page/Admin/Category/CategoryList"
 import AddCategory from "./Page/Admin/Category/CategoryAdd"
 import UpdateCategory from "./Page/Admin/Category/CategoryUpdate"
-
 import ProductsSize from "./Page/SizeProduct"
 import ListColor from "./Page/Admin/colorProduct/listColor"
 import CreateColor from "./Page/Admin/colorProduct/createColor"
 import UpdateColor from "./Page/Admin/colorProduct/updateColor"
-import Dashboard from "./Page/Admin/Dashboard";
-import GetAllDeletedProducts from "./Page/Admin/Product/getAllDeletedProducts";
-import PrivateRouter from "./Component/PrivateRouter";
-import SlideList from "./Page/Admin/Slide/SlideList";
-import AddSlide from "./Page/Admin/Slide/AddSlide";
-import AddBlog from "./Page/Admin/Blog/AddBlog";
-import BlogList from "./Page/Admin/Blog/BlogList";
-import UpdateBlog from "./Page/Admin/Blog/UpdateBlog";
+import Dashboard from "./Page/Admin/Dashboard"
+import GetAllDeletedProducts from "./Page/Admin/Product/getAllDeletedProducts"
+import PrivateRouter from "./Component/PrivateRouter"
+import SlideList from "./Page/Admin/Slide/SlideList"
+import AddSlide from "./Page/Admin/Slide/AddSlide"
+import AddBlog from "./Page/Admin/Blog/AddBlog"
+import BlogList from "./Page/Admin/Blog/BlogList"
+import UpdateBlog from "./Page/Admin/Blog/UpdateBlog"
 import ListNewSletter from "./Page/Admin/NewSletter/listNewSletter"
+import EmailSendingForm from "./Page/Admin/NewSletter/EmailSendingForm"
+import ListDiscount from "./Page/Admin/Discount/listDiscount"
+import CreateDiscount from "./Page/Admin/Discount/createDiscount"
+import UpdateDiscount from "./Page/Admin/Discount/updateDiscount"
+import BillList from "./Page/Admin/Bill/BillList"
 import User from "./Page/User"
 import ProductListDetails from "./Page/Admin/Product/ProductListDetails"
 import AddProductDetails from "./Page/Admin/Product/AddProductDetails"
+import DetailBill from "./Page/Admin/Bill/DetailBill"
+import BillDetailHome from "./Page/detailBillHome"
+
 
 function App() {
   !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
   !window.location.href.includes("checkout") && localStorage.removeItem("totalPrice.shoe");
-  
+
   Config();
   return (
     <Routes>
@@ -58,7 +65,6 @@ function App() {
         <Route index element={<HomePage />} />
         <Route path="cart" element={<Cart />} />
         <Route path="products" element={<Products />} />
-        <Route path="bill" element={<Bill />} />
         <Route path="contact" element={<Contact />} />
         <Route path="product/:id" element={<ProductDetail />} />
         <Route path="checkout" element={<Checkout />} />
@@ -74,7 +80,8 @@ function App() {
         <Route path="category/:id/products" element={<ProductsCategory />} />
         <Route path="size/:id/products" element={<ProductsSize />} />
         <Route path="user/:id" element={<User />} />
-
+        <Route path="order/view" element={<Bill />} />
+        <Route path="order/view/detail/:id" element={<BillDetailHome />} />
       </Route >
 
       <Route
@@ -109,14 +116,23 @@ function App() {
         <Route path="size/:id/update" element={<AdminSizeUpdate />} />
         <Route path="slide/list" element={<SlideList />} />
         <Route path="slide/add" element={<AddSlide />} />
-        <Route path="restore-product-data" element={<GetAllDeletedProducts />} />
+        <Route
+          path="restore-product-data"
+          element={<GetAllDeletedProducts />}
+        />
         <Route path="blog/add" element={<AddBlog />} />
         <Route path="blog/list" element={<BlogList />} />
         <Route path="blog/:id/update" element={<UpdateBlog />} />
         <Route path="new-sletter/list" element={<ListNewSletter />} />
+        <Route path="new-sletter/:id/send" element={<EmailSendingForm />} />
+        <Route path="discount/list" element={<ListDiscount />} />
+        <Route path="discount/create" element={<CreateDiscount />} />
+        <Route path="discount/:id/update" element={<UpdateDiscount />} />
+        <Route path="bill/list" element={<BillList />} />
+        <Route path="bill/detail/:id" element={<DetailBill />} />
       </Route>
       <Route path="*" element={<NotFound />} />
-    </Routes >
+    </Routes>
   )
 }
 
