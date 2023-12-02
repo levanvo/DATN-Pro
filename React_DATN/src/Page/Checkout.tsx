@@ -102,10 +102,11 @@ const Checkout = () => {
     }
   }
 
+  // tổng tiền 
   const calculateTotalPrice = () => {
     let totalPrice = Array.isArray(selectedProducts)
       ? selectedProducts.reduce(
-          (acc, product) => acc + product.price * product.quantity,
+          (acc, product) => acc + product.price,
           0
         )
       : 0
