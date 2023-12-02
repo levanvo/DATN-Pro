@@ -3,7 +3,7 @@ import Cart from "../models/cart.js"
 
 export const getAllOrders = async (req, res) => {
     try {
-        const orders = await Order.find().populate("products.productId").populate({path: "userId", select: "username"});
+        const orders = await Order.find().populate("products.productId").populate({path: "userId", select: "username"}).sort({ createdAt: -1 });
         if(orders.length === 0){
             return res.status(400).json({
                 message: "Không lấy được danh sách Order!"
