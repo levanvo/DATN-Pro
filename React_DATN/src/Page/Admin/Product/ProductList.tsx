@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { Divider, Table, Popconfirm, message, Button, Input, Menu, Dropdown,Modal } from 'antd';
+import { Divider, Table, Popconfirm, message, Button, Input, Menu, Dropdown, Modal , Tag} from 'antd';
 import { useDeleteProductMutation, useGetAllProductQuery } from '../../../Services/Api_Product';
 import { IProduct } from '../../../Models/interfaces';
-import { QuestionCircleOutlined, FilterOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, FilterOutlined, ClusterOutlined } from '@ant-design/icons';
 import Loading from '../../../Component/Loading';
+import { Collapse } from 'antd';
 import { DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
-import { useGetColorsQuery } from '../../../Services/api_Color';
+import { useGetColorsQuery } from '../../../Services/Api_Color';
 import { useGetAllSizeQuery } from '../../../Services/Api_Size';
+import { AnyAction } from 'redux';
 
 
 const { Search } = Input;
+const { Panel } = Collapse;
 
 
 // rowSelection object indicates the need for row selection
@@ -29,11 +32,8 @@ const ProductList = () => {
   const [isResetClicked, setIsResetClicked] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
-  const { data:getAllColor } = useGetColorsQuery()
-  const {data: getAllSize} = useGetAllSizeQuery()
-
-
-
+  const { data: getAllColor } = useGetColorsQuery()
+  const { data: getAllSize } = useGetAllSizeQuery()
 
   const rowSelection = {
     selectedRowKeys: selectedProductId,
@@ -45,7 +45,7 @@ const ProductList = () => {
   // Xóa sản phẩm đã chọn
   const deleteMultipleProducts = async () => {
     try {
-      
+
       if (selectedProductId.length === 0) {
         message.error("Vui lòng chọn các category muốn xoá!")
         return
@@ -61,7 +61,7 @@ const ProductList = () => {
   }
 
   //data trả về
-  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId,variants }: IProduct) => {
+  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId, variants }: IProduct) => {
     const colorIds = variants.map((c) => c.color_id).flat()
     const sizeIds = variants.map((s) => s.size_id).flat()
     return {
@@ -71,6 +71,7 @@ const ProductList = () => {
       price,
       imgUrl,
       categoryId,
+      variants,
       color_id: colorIds,
       size_id: sizeIds
     }
@@ -132,6 +133,85 @@ const ProductList = () => {
     </Menu>
   );
 
+  const getVariant = (record: any) => {
+    var variants = record?.variants?.map((variant: any) => {
+      console.log("Variant Object:", variant);
+      return {
+        key: variant._id,
+        name: record.name,
+        imgUrl: variant.imgUrl[0], // Assuming imgUrl is an array and you want the first element
+        size: variant?.size_id?.name,
+        color: {
+          name: variant.color_id?.name || 'N/A',
+          unicode: variant.color_id?.unicode || 'N/A',
+        },
+        quantity: variant.quantity || 0,
+        inventory: variant.inventory || 0
+      };
+    });
+    
+    return variants;
+  }
+
+  const getCountVariant = (variants : any) => { 
+    let count = 0;   
+    variants.forEach((item: any) => {      
+      count+=item.quantity
+    })
+   
+    return count;
+  }
+
+  const columnVariant: any[] = [
+    {
+      dataIndex: 'name',
+      key: 'name',
+      align: 'center',
+    },
+    {
+      dataIndex: "imgUrl",
+      key: "imgUrl",
+      render: (imgUrl: string) => (
+        imgUrl ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img src={imgUrl} style={{ width: 100 }} alt="Product" />
+          </div>
+        ) : null
+      ),
+      align: 'center',
+    },
+    {
+      dataIndex: 'size',
+      key: 'size',
+      align: 'center',
+      render: (size: any) => (
+          <span>Size: {size}</span>
+      ),
+    },
+    {
+      dataIndex: 'color',
+      key: 'color',
+      align: 'center',
+      render: (color: { name: string, unicode: string }) => (
+        <span>
+          {color ? (
+            <Tag color={color.unicode} key={color.unicode}>
+              {color.name}
+            </Tag>
+          ) : "Không xác định"}
+        </span>
+      ),
+    },
+    {
+      dataIndex: 'inventory',
+      key: 'inventory',
+      align: 'center',
+      render: (inventory: any) => (
+        <span>SL: {inventory}</span>
+      ),
+    },
+  ];
+
 
   const confirm = (id: number | string) => {
 
@@ -142,7 +222,6 @@ const ProductList = () => {
       })
     })
   }
-
 
   //Tìm kiếm theo tên
   const handleSearch = (value: string) => {
@@ -163,7 +242,6 @@ const ProductList = () => {
 
     return true;
   }) : filteredDataSource;
-
 
 
   const columns: any[] = [
@@ -198,27 +276,47 @@ const ProductList = () => {
       },
       align: 'center',
     },
-    
+
     {
       title: 'Giá hiện tại',
       dataIndex: 'price',
       align: 'center',
       render: (price: number) => (
-        <span>{price.toLocaleString('vi-VN',{style: "currency", currency: "VND"})}</span>
+        <span>{price.toLocaleString('vi-VN', { style: "currency", currency: "VND" })}</span>
       )
     },
-    
+
     {
       title: 'Giá gốc',
       dataIndex: 'original_price',
       align: 'center',
       render: (original_price: number) => (
-        <span>{original_price.toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</span>
+        <span>{original_price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span>
       )
     },
 
     {
-      title: 'Action',
+      title: 'Số lượng',
+      dataIndex: 'variants',
+      align: 'center',
+      render: (variants: Object) => (
+        <span>{getCountVariant(variants)}</span>
+      )
+    },
+    {
+      title: 'Tồn kho',
+      dataIndex: 'inventoryTotal',
+      align: 'center'
+    },
+
+    {
+      title: 'Đã bán',
+      dataIndex: 'sell_quantity',
+      align: 'center'
+    },
+
+    {
+      title: 'Hành động',
       key: 'action',
       render: ({ key: id }: any) => (
         <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
@@ -241,7 +339,7 @@ const ProductList = () => {
 
           <Link to={`/admin/product/${id}/variants`}>
 
-            <EditOutlined style={{ fontSize: "20px" }} />
+            <ClusterOutlined style={{ fontSize: "20px" }} />
           </Link>
         </div>
       ),
@@ -255,7 +353,7 @@ const ProductList = () => {
       {isLoadingDelete && <Loading />}
       <div>
         <Button
-        className='setSize-1'
+          className='setSize-1'
           style={{ marginRight: 20 }}
           type="primary"
           onClick={deleteMultipleProducts}
@@ -269,7 +367,6 @@ const ProductList = () => {
         </Button>
         <Search
           onSearch={handleSearch} placeholder="tìm từ khóa" allowClear style={{ width: 300, marginLeft: 50 }} />
-
         <Dropdown
           visible={filterVisible}
           onVisibleChange={handleFilterVisibleChange}
@@ -283,9 +380,21 @@ const ProductList = () => {
       </div>
       <Divider />
       <Table
-        rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource} 
+        rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource}
+        expandedRowRender={(record) => (
+          <div  style={{ marginLeft: 20 }}>
+            <p>Danh sách biến thể : <span>{getVariant(record).length}</span></p>
+            <Table
+              columns={columnVariant}
+              dataSource={getVariant(record)}
+              pagination={false}
+              showHeader={false}
+            />
+          </div>
+        )}
       />
     </div>
+
   );
 };
 

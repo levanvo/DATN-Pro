@@ -440,11 +440,12 @@
 
 /* App.css */
 .quantity-container {
+  
   display: flex;
   align-items: center;
   padding: 4px;
   width: 120px;
-  margin-left: 30px;
+  margin-left: 60px;
 }
 
 .quantity-button {
@@ -456,7 +457,7 @@
   padding: 0px 8px 2px;
   transition: background-color 0.2s;
   border: 1px solid #dbd4d4;
-  height: 36px;
+  height: 35px;
 }
 
 .quantity-button:hover {

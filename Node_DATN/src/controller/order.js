@@ -1,5 +1,11 @@
 import Order from "../models/order.js"
 import Cart from "../models/cart.js"
+import Product from "../models/product.js"
+import mongoose from "mongoose";
+import Color from "../models/color.js"
+import Size from "../models/size.js"
+
+
 
 export const getAllOrders = async (req, res) => {
     try {
@@ -90,30 +96,74 @@ export const createOrder = async (req, res) => {
     try {
         if (!req.body) {
             return res.status(400).json("Hãy thêm thông tin order cần tạo !");
-        };
+        }
 
         const codeOrder = generateRandomCode();
 
         const order = await Order.create({ ...req.body, userId, code_order: codeOrder });
 
-        const productIdsToDelete = req.body.cartId;
-        for (const productIdToDelete of productIdsToDelete) {
-            
-            await Cart.updateMany(
-                { userId: req.user._id, 'products._id': productIdToDelete },
-                { $pull: { products: { _id: productIdToDelete } } }
+        // Update sell_quantity for each product in the order
+        await Promise.all(order.products.map(async (product) => {
+            const colorId = await Color.findOne({ unicode: product.color }).select('_id');
+        const sizeId = await Size.findOne({ name: product.size }).select('_id');
+
+        const filter = {
+            _id: product.productId,
+            'variants.size_id': sizeId,
+            'variants.color_id': colorId
+        };
+
+            // Log filter conditions for debugging
+            console.log('Filter Conditions:', filter);
+
+            const existingProduct = await Product.findOne(filter);
+
+            console.log("existingProduct",existingProduct);
+
+            if (!existingProduct) {
+                console.log('không tìm thấy biến thể sản phẩm. Bỏ qua cập nhật cho:', product);
+                return null; 
+            }
+
+            const updatedProduct = await Product.findOneAndUpdate(
+                {
+                    _id: product.productId,
+                    'variants': {
+                        $elemMatch: {
+                            'size_id': sizeId,
+                            'color_id': colorId
+                        }
+                    }
+                },
+                {
+                    $inc: {
+                        'variants.$.sell_quantity': product.quantity,
+                        'variants.$.inventory': product.quantity - (product.sell_quantity || 0)
+                    }
+                },
+                { new: true }
             );
-        }
-        
+            
+
+            // Log the variant after the update
+            console.log('After Update:', updatedProduct);
+
+            updatedProduct.save();
+        }));
 
         return res.status(200).json({
             message: "Đã thêm 1 order",
             order
         });
     } catch (error) {
-        return res.status(404).json({ mesage: "lỗi thêm 1 order !", err: error.message })
+        console.error("Error creating order:", error);
+        return res.status(404).json({ message: "Lỗi thêm 1 order !", err: error.message });
     }
 };
+
+
+
+
 
 export const updateOrder = async (req, res) => {
     try {
