@@ -6,10 +6,11 @@ const productApi = createApi({
   reducerPath: "products",
   tagTypes: ["Product"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8080`,
+    // baseUrl: `https://server-node-api-bd6916c462f7.herokuapp.com`,
+    baseUrl: "http://localhost:8080",
     fetchFn: async (...args) => (
-        await pause(1000),
-        fetch(...args)
+      await pause(1000),
+      fetch(...args)
     )
   }),
   endpoints: (builder) => ({
@@ -31,7 +32,7 @@ const productApi = createApi({
       }),
       invalidatesTags: ["Product"]
     }),
-    
+
     addProductDetails: builder.mutation({
       query: (product) => ({
         url: `/api/product/${product._id}/variants`,
@@ -42,15 +43,25 @@ const productApi = createApi({
     }),
 
     // Xóa sản phẩm tạm thời
-    deleteProduct: builder.mutation<void,number | string>({
-        query: (id) => ({
-            url: `/api/product/${id}`,
-            method: "DELETE",
-        }),
+    deleteProduct: builder.mutation<void, number | string>({
+      query: (id) => ({
+        url: `/api/product/${id}`,
+        method: "DELETE",
+      }),
       invalidatesTags: ["Product"]
     }),
 
-    updateProduct: builder.mutation<IProduct,IProduct>({
+    // Xóa sản phẩm tạm thời Variant
+    deleteVariant: builder.mutation<void, any>({
+      query: (product) => ({
+        url: `/api/product/variant/delete`,
+        method: "PUT",
+        body: product,
+      }),
+      invalidatesTags: ["Product"]
+    }),
+
+    updateProduct: builder.mutation<IProduct, IProduct>({
       query: (product) => ({
         url: `/api/product/${product._id}`,
         method: "PATCH",
@@ -90,16 +101,17 @@ const productApi = createApi({
   })
 });
 
-export const { 
+export const {
   useAddProductDetailsMutation,
   useGetAllProductQuery,
-   useAddProductMutation,
-   useDeleteProductMutation, 
-   useGetOneProductQuery, 
-   useUpdateProductMutation,
-   useGetAllDeletedProductsQuery,
-   useRestoreProductMutation,
-   useRemoveProductMutation,
-   useGetHotProductsQuery
-   } = productApi;
+  useAddProductMutation,
+  useDeleteProductMutation,
+  useDeleteVariantMutation,
+  useGetOneProductQuery,
+  useUpdateProductMutation,
+  useGetAllDeletedProductsQuery,
+  useRestoreProductMutation,
+  useRemoveProductMutation,
+  useGetHotProductsQuery
+} = productApi;
 export default productApi;

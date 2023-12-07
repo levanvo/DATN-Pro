@@ -19,7 +19,7 @@ import { useGetAllCategoryQuery } from "../../../Services/Api_Category"
 import Loading from "../../../Component/Loading"
 import { useNavigate, useParams } from "react-router-dom"
 import { useGetAllSizeQuery } from "../../../Services/Api_Size"
-import { useGetColorsQuery } from "../../../Services/api_Color"
+import { useGetColorsQuery } from "../../../Services/Api_Color"
 
 const { TextArea } = Input
 
@@ -147,7 +147,7 @@ const AddProductDetails = () => {
       >
         
         <Form.Item label="Color" name="color_id" rules={[{ required: true }]}>
-          <Select mode="multiple" style={{ width: 200 }} >
+          <Select  style={{ width: 200 }} >
             {getAllColor?.map((color: IColor) => (
               <Select.Option key={color._id} value={color._id}>
                 {color.name}
@@ -157,7 +157,7 @@ const AddProductDetails = () => {
         </Form.Item>
 
         <Form.Item label="Size" name="size_id" rules={[{ required: true }]}>
-          <Select mode="multiple" style={{ width: 200 }} loading={isLoadingSize}>
+          <Select style={{ width: 200 }} loading={isLoadingSize}>
             {getAllSize ? (
               getAllSize?.map((size: any) => (
                 <Select.Option key={size._id} value={size._id}>

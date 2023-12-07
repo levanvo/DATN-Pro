@@ -6,7 +6,7 @@ import { QuestionCircleOutlined, FilterOutlined,ReloadOutlined } from '@ant-desi
 import Loading from '../../../Component/Loading';
 import { DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
-import { useGetColorsQuery } from '../../../Services/api_Color';
+import { useGetColorsQuery } from '../../../Services/Api_Color';
 import { useGetAllSizeQuery } from '../../../Services/Api_Size';
 import { useNavigate } from 'react-router';
 
