@@ -19,7 +19,8 @@ const Cart = () => {
     const [productQuantities, setProductQuantities] = useState<any>({});
     const [updateQuantity] = useUpdateCartMutation()
     const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
-    const navigate = useNavigate()
+    const navigate = useNavigate() 
+    const [updatePrice,setUpdatePrice] = useState()
 
     const rowSelection = {
       selectedRowKeys: selectedProductId,
@@ -40,29 +41,13 @@ const Cart = () => {
     let dataSource: any[] = [];
       
       
-      
-      const updatedDataSource = cartData?.products.map((product: any) => {
-        return {
-          key: product._id,
-          productId: product.productId._id,
-          name: product.productId.name,
-          price: product.productId.price,
-          imgUrl: product.productId.imgUrl[0],
-          color: product.color,
-          size: product.size,
-          quantity: productQuantities[product._id] || product.quantity,
-        };
-      });
-
-      dataSource = updatedDataSource
-      
       // thực hiện tính tổng tiền với người dùng k có tài khoản
       const calculateTotal = () => {
         if (token) {
           let total = 0;
 
           selectedProducts.forEach((product) => {
-            total += product.price * (product.quantity);
+            total += product.price;
           });
 
           return total;
@@ -95,7 +80,8 @@ const Cart = () => {
 
       const handleIncrease = (productId: string) => {
         const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
-    
+        console.log(productToUpdate);
+        
         if (productToUpdate) {
           const updatedProductQuantities = {
             ...productQuantities,
@@ -103,12 +89,13 @@ const Cart = () => {
           };
     
           setProductQuantities(updatedProductQuantities);
-    
+          
           addToCart({
             productId: productToUpdate.productId._id,
             color: productToUpdate.color,
             size: productToUpdate.size,
             quantity: 1,
+            price: productToUpdate.productId.price
           });
         }
       };
@@ -116,7 +103,8 @@ const Cart = () => {
       
       const handleMinus = (productId: string) => {
         const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
-    
+        console.log(productToUpdate);
+        
         if (productToUpdate) {
 
           if(productToUpdate.quantity==0){
@@ -130,6 +118,7 @@ const Cart = () => {
               color: productToUpdate.color,
               size: productToUpdate.size,
               quantity: 1,
+              price: productToUpdate.productId.price
             });
           }else{
             const updatedProductQuantities = {
@@ -143,6 +132,7 @@ const Cart = () => {
               color: productToUpdate.color,
               size: productToUpdate.size,
               quantity: 1,
+              price: productToUpdate.productId.price
             });
           }
           
@@ -159,6 +149,7 @@ const Cart = () => {
               ? {
                   ...product,
                   quantity: product.quantity - 1,
+                  price: product.price - product.priceItem
                 }
               : product
           );
@@ -179,6 +170,7 @@ const Cart = () => {
               ? {
                   ...product,
                   quantity: product.quantity + 1,
+                  price: product.price + product.priceItem
                 }
               : product
           );
@@ -191,8 +183,22 @@ const Cart = () => {
       };
       
 
+      // kiểm tra token
       if(token){
-        dataSource
+        dataSource = cartData?.products.map((product: any) => {
+          return {
+            key: product._id,
+            productId: product.productId._id,
+            priceItem: product.productId.price,
+            name: product.productId.name,
+            price: product.price,
+            imgUrl: product.productId.imgUrl[0],
+            color: product.color,
+            size: product.size,
+            quantity: productQuantities[product._id] || product.quantity,
+          };
+        });
+        
       }else{  
           dataSource = localCart.map((product: any) => {
             return {
@@ -239,6 +245,7 @@ const Cart = () => {
                 messageApi.error('Đã xảy ra lỗi khi xóa sản phẩm');
             });
     };
+
 
     const columns: any[] = [
         {
@@ -297,7 +304,7 @@ const Cart = () => {
           -
         </button>
         <Input max={10} min={1} 
-        style={{borderTop: "1px solid #dbd4d4", borderRadius:0, borderBottom: "1px solid #dbd4d4"}}
+        style={{width: 100,borderTop: "1px solid #dbd4d4", borderRadius:0, borderBottom: "1px solid #dbd4d4"}}
         value={productQuantities[record.key] || quantity}
           className="quantity-input"
           readOnly
@@ -330,7 +337,7 @@ const Cart = () => {
         },
     
         {
-          title: 'Action',
+          title: 'Xóa',
           key: 'action',
           render: ({ key: id }: any) => (
             <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: 'center' }}>

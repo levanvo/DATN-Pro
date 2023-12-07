@@ -22,7 +22,7 @@ export const createComment = async (req, res) => {
     // Kiểm tra trạng thái của đơn hàng
     const order = await Order.findById(orderId);
     if (!order || order?.status !== '4') {
-      console.log(order?.status);
+      // console.log(order?.status);
       return res.status(400).json({ message: "Đơn hàng không tồn tại hoặc đã bị hủy." });
     }
 

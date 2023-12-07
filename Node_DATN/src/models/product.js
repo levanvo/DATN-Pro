@@ -5,48 +5,64 @@ const productSchema = new mongoose.Schema(
     name: {
       type: String,
     },
-    original_price: {
-      type: Number,
-    },
-    price: {
-      type: Number,
-    },
-    description: {
-      type: String,
-    },
     imgUrl: [
       {
         type: String,
       },
     ],
-    categoryId: {
-      type: Schema.Types.ObjectId,
-      ref: "Category",
-    },
-    size_id: [{
-      type: Schema.Types.ObjectId,
-      ref: "Size",
-    }],
-    color_id: [
+
+    variants: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Color",
+        imgUrl: [
+          {
+            type: String,
+          },
+        ],
+        size_id: {
+          type: Schema.Types.ObjectId,
+          ref: "Size",
+        },
+        color_id: {
+          type: Schema.Types.ObjectId,
+          ref: "Color",
+        },
+        quantity: {
+          type: Number,
+        },
+        inventory: {
+          type: Number,
+          default: 0
+        },
+        sell_quantity: {
+          type: Number,
+          default: 0
+        },
+        isDeleted: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
-    quantity: {
-      type: Number,
-    },
-    discount_code_id: {
-      type: String,
-    },
+    quantityTotal: Number, // tổng số lượng
+
+    inventoryTotal: Number, // tổng số lượng tồn kho
+    categoryId: String,
+    price: Number,
+    original_price: Number,
+    description: String,
+
     views: {
       type: Number,
       default: 0,
     },
-    inventory_number: Number, // số lượng tồn kho
-    quantity_sold: Number, // số lượng đã bán
+
+    sell_quantity : Number, // lượt bán ra
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true, versionKey: false }
-)
+);
 
-export default mongoose.model("Product", productSchema)
+export default mongoose.model("Product", productSchema);

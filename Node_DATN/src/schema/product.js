@@ -2,8 +2,8 @@ import joi from "joi"
 
 export const productSchema = joi.object({
   name: joi.string().required().messages({
-    "string.empty": "Username không được để trống",
-    "any.required": "Trường username là bắt buộc",
+    "string.empty": "Tên sản phẩm không được để trống",
+    "any.required": "Trường tên sản phẩm là bắt buộc",
   }),
   original_price: joi.number().required().messages({
     "number.empty": "Giá gốc không được để trống",

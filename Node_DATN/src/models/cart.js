@@ -17,11 +17,12 @@ const cartSchema = new mongoose.Schema({
           type: Number,
         },
         size: {
-          type: Number
+          type: String
         },
         color: {
           type: String
-        }
+        },
+        price: Number
       }
     ]
   },{timestamps: true, versionKey: false});

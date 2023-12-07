@@ -13,7 +13,11 @@ import newSletterRouter from "./router/newSletter.js"
 import slideRouter from "./router/slider.js"
 import blogRouter from "./router/blog.js"
 import orderRouter from "./router/order.js"
+import discountRouter from "./router/discountCode.js"
 import orderItemRouter from "./router/orderItem.js"
+import vnpRouter from "./router/vnp.js"
+
+
 import commentRouter from "./router/comment.js"
 
 dotenv.config()
@@ -37,7 +41,9 @@ app.use("/api", newSletterRouter)
 app.use("/api", slideRouter)
 app.use("/api", blogRouter)
 app.use("/api", orderRouter)
+app.use("/api", discountRouter)
 app.use("/api", orderItemRouter)
+app.use("/api",vnpRouter)
 app.use("/api", commentRouter)
 
 
