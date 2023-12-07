@@ -46,6 +46,7 @@ import BillList from "./Page/Admin/Bill/BillList"
 import User from "./Page/User"
 import DetailBill from "./Page/Admin/Bill/DetailBill"
 import BillDetailHome from "./Page/detailBillHome"
+import CommentList from "./Page/Admin/comment"
 
 
 function App() {
@@ -91,6 +92,7 @@ function App() {
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
+        <Route path="comment/list" element={<CommentList />} />
         <Route path="category/list" element={<CategoryList />} />
         <Route path="category/add" element={<AddCategory />} />
         <Route path="category/:id/update" element={<UpdateCategory />} />

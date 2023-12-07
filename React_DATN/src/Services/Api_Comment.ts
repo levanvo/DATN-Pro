@@ -13,6 +13,9 @@ const commentApi = createApi({
         body: comment,
       }),
     }),
+    getAllComments: builder.query({
+      query: () => `/api/comments`,
+    }),
     getCommentsByProductId: builder.query({
       query: (productId) => `/api/comments/${productId}`,
     }),
@@ -38,5 +41,5 @@ const commentApi = createApi({
   }),
 });
 
-export const { useCreateCommentMutation, useGetCommentsByProductIdQuery, useDeleteCommentByAdminMutation, useUpdateCommentByIdMutation, useDeleteCommentByIdUserMutation, } = commentApi;
+export const { useCreateCommentMutation, useGetCommentsByProductIdQuery, useDeleteCommentByAdminMutation, useUpdateCommentByIdMutation, useDeleteCommentByIdUserMutation, useGetAllCommentsQuery} = commentApi;
 export default commentApi;

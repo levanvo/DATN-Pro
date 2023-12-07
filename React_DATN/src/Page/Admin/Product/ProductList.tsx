@@ -247,7 +247,7 @@ const ProductList = () => {
       dataIndex: 'price',
       align: 'center',
       render: (price: number) => (
-        <span>{price.toLocaleString('vi-VN',{style: "currency", currency: "VND"})}</span>
+        <span>{price?.toLocaleString('vi-VN',{style: "currency", currency: "VND"})}</span>
       )
     },
     
@@ -256,7 +256,7 @@ const ProductList = () => {
       dataIndex: 'original_price',
       align: 'center',
       render: (original_price: number) => (
-        <span>{original_price.toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</span>
+        <span>{original_price?.toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</span>
       )
     },
 

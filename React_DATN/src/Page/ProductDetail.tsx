@@ -16,7 +16,7 @@ import { useCreateCommentMutation, useDeleteCommentByAdminMutation, useDeleteCom
 import { useGetUserOrdersQuery } from "../Services/Api_Order";
 import { FaTools } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-import { AnyAction } from "redux";
+import { format } from 'date-fns';
 
 
 const ProductDetail = () => {
@@ -179,13 +179,16 @@ const ProductDetail = () => {
   console.log("comments", comments)
 
   const { data: order } = useGetUserOrdersQuery();
-  console.log("data_", order);
+  console.log("data_order:", order);
+  
 
 
-
-  const hasPurchased = order?.orders.some((order: any) => {
+// kiểm tra người dùng đã mua sản phẩm này chưa
+  const hasPurchased = order?.some((order: any) => {
+    // console.log("order: ", order);
+    
     return (
-      order.userId === currentUser?._id &&
+      order.userId?._id === currentUser?._id &&
       order.products.some((product: any) => product.productId?._id === id)
     );
   });
@@ -194,9 +197,9 @@ const ProductDetail = () => {
     e.preventDefault();
 
     if (hasPurchased) {
-      const purchasedOrder = order?.orders.find((order: any) => {
+      const purchasedOrder = order?.find((order: any) => {
         return (
-          order.userId === currentUser?._id &&
+          order.userId?._id === currentUser?._id &&
           order.products.some((product: any) => product.productId?._id === id)
         );
       });
@@ -204,6 +207,8 @@ const ProductDetail = () => {
       if (purchasedOrder) {
         // setMessagecm('Người dùng đã đặt mua sản phẩm này');
         const orderId = purchasedOrder._id;
+        console.log("purchasedOrder", purchasedOrder);
+        
         // setMessagecm(`OrderId của đơn hàng đã mua: ${orderId}`);
 
         // Gửi yêu cầu tạo bình luận với orderId
@@ -305,6 +310,8 @@ const ProductDetail = () => {
       setIsDeleteCommentUserModalVisible(false);
     }
   };
+  console.log(productDataOne);
+  
 
   const [updatedContent, setUpdatedContent] = useState('');
   return (
@@ -442,6 +449,8 @@ const ProductDetail = () => {
                   <h3 className="-mt-4">Chọn màu:</h3>
                   <div className="flex space-x-2 my-4">
                     {productDataOne?.color_id?.map((itemColor: any) => {
+                      console.log(itemColor);
+                      
                       return (
                         <button
                           onClick={() => ChooseColor(itemColor.unicode)}
@@ -578,7 +587,7 @@ const ProductDetail = () => {
                     <img className="user_cm_avt" src={comment.userId.imgUrl} alt="" />
                     <div className="user_cm_inf">
                       <p className="user_cm_name">@ {comment.userId.username}</p>
-                      <p className="date_created">{comment.createdAt}</p>
+                      <p className="date_created">{format(new Date(comment.createdAt), 'dd/MM/yyyy HH:mm:ss')}</p>
                     </div>
                   </div>
                   {currentUser && currentUser?.role == 'admin' ? (

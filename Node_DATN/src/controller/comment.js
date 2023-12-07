@@ -5,6 +5,14 @@ export const createComment = async (req, res) => {
   try {
     const { userId, productId, orderId, content } = req.body;
 
+    console.log(orderId);
+
+    // Kiểm tra xem người dùng đã bình luận trước đó chưa
+    const existingComment = await Comment.findOne({ userId, productId });
+    if (existingComment) {
+      return res.status(400).json({ message: "Bạn đã bình luận sản phẩm này trước đó." });
+    }
+
     // Kiểm tra người dùng đã mua sản phẩm trong đơn hàng chưa
     const hasBoughtProduct = await Order.exists({ _id: orderId, userId, "products.productId": productId });
     if (!hasBoughtProduct) {
@@ -13,7 +21,8 @@ export const createComment = async (req, res) => {
 
     // Kiểm tra trạng thái của đơn hàng
     const order = await Order.findById(orderId);
-    if (!order || order.status !== true) {
+    if (!order || order?.status !== '4') {
+      console.log(order?.status);
       return res.status(400).json({ message: "Đơn hàng không tồn tại hoặc đã bị hủy." });
     }
 
@@ -24,6 +33,24 @@ export const createComment = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Đã xảy ra lỗi khi tạo bình luận." });
+  }
+};
+
+export const getAllComments = async (req, res) => {
+  try {
+   
+    const comments = await Comment.find()
+      .populate("userId", "-password") // Populate thông tin người dùng, loại bỏ trường password
+      .populate("productId"); // Populate thông tin sản phẩm
+      // Truy cập trường productId trong từng comment
+      // comments.forEach(comment => {
+      //   console.log(comment.productId?._id);
+      // });
+
+    return res.status(200).json(comments);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Đã xảy ra lỗi khi lấy danh sách bình luận." });
   }
 };
 
@@ -43,7 +70,7 @@ export const getCommentsByProductId = async (req, res) => {
 
 export const updateCommentById = async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const { id } = req.params;
     const { content } = req.body;
 

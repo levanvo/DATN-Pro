@@ -134,7 +134,7 @@ const Product = () => {
                                                         <p className='text-center border-y border-gray-200 mt-1 text-orange-400 font-bold'>{items.name}</p>
                                                         <div className="flex justify-between -mt-3">
                                                             <div className="flex space-x-1">
-                                                                <span>{items.original_price.toLocaleString()}</span>
+                                                                <span>{items.original_price?.toLocaleString()}</span>
                                                                 {/* <del className='text-xs'> {items.original_price > 0 ? (items.price + items.original_price).toLocaleString() : ""}</del> */}
                                                                 <span> VND</span>
                                                             </div>
