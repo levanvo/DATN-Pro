@@ -32,7 +32,7 @@ const BillList = () => {
 
   const columns = [
     {
-      title: 'Code_order',
+      title: 'Mã đơn hàng',
       dataIndex: 'code_order',
       key: 'code_order',
     },
@@ -43,17 +43,17 @@ const BillList = () => {
     //   key: 'address',
     // },
     {
-      title: 'Create by',
+      title: 'Người tạo',
       dataIndex: 'userId',
       key: 'userId',
     },
     {
-      title: 'Created At',
+      title: 'Ngày tạo đơn hàng',
       dataIndex: 'createdAt',
       key: 'createdAt',
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (status: any, record: IOrder) => (
@@ -71,7 +71,7 @@ const BillList = () => {
       ),
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       render: (record: any) => (
         <Link to={`/admin/bill/detail/${record.key}`}>Chi tiết</Link>
       ),
