@@ -691,7 +691,7 @@ const ProductDetail = () => {
           <h2 className="cm_title">Comments</h2>
 
           <div className="comments">
-            {comments.map((comment: any) => (
+            {comments?.map((comment: any) => (
               <div className="comment_detail" key={comment._id}>
                 <div className="comment_detail_header">
                   <div className="user_cm">

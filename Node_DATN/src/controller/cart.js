@@ -6,18 +6,20 @@ import mongoose from "mongoose"
 export const getCart = async(req,res) =>{
     try {
         // Lấy giỏ hàng dựa trên userId
-        const cart = await Cart.findOne({ userId: req.user._id })
-      .populate({
-        path: 'products.productId',
-        model: 'Product', // Replace 'Product' with the actual model name
-        select: 'name imgUrl price', // Select the fields you want to populate for the product
-      });
-    
-        if (!cart) {
-          return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
+        if(req.user){
+          const cart = await Cart.findOne({ userId: req.user._id })
+        .populate({
+          path: 'products.productId',
+          model: 'Product', // Replace 'Product' with the actual model name
+          select: 'name imgUrl price', // Select the fields you want to populate for the product
+        });
+      
+          if (!cart) {
+            return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
+          }
+      
+          res.json(cart);
         }
-    
-        res.json(cart);
       } catch (error) {
         res.status(500).json({
           message: "Đã xảy ra lỗi khi lấy giỏ hàng.",
