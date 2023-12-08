@@ -84,15 +84,17 @@ const Product = () => {
                                         <h2>Best seller <strong>Các Mẫu Giày</strong></h2>
                                     </div>
                                     <div className="side-menu">
-                                        {categoryData?.map((category: ICategory) => {
-                                            return (
-                                                <ul className="nav tab-navigation" role="tablist" key={category._id}>
-                                                    <li role="presentation">
-                                                        <Link to={`/products`}>{category.name}</Link>
-                                                    </li>
-                                                </ul>
-                                            )
-                                        })}
+                                    {Array.isArray(categoryData) ? (
+                                        categoryData.map((category: ICategory) => (
+                                        <ul className="nav tab-navigation" role="tablist" key={category._id}>
+                                            <li role="presentation">
+                                            <Link to={`/products`}>{category.name}</Link>
+                                            </li>
+                                        </ul>
+                                        ))
+                                    ) : (
+                                        <div>No categories available</div>
+                                    )}
                                         <div>
                                             <img src="img/banner/banner-5.jpg" />
                                         </div>

@@ -1,26 +1,26 @@
 import {useEffect, useState} from 'react'
 import { message,Popconfirm, Table } from 'antd';
 import {QuestionCircleOutlined ,DeleteFilled} from "@ant-design/icons"
-import { useAddToCartMutation, useDeleteFromCartMutation, useGetCartQuery, useUpdateCartMutation } from '../Services/Api_cart';
+import { useDeleteFromCartMutation, useGetCartQuery, useUpdateIncreaseMutation, useUpdateMinusMutation } from '../Services/Api_cart';
 import { ProductItem } from '../Models/interfaces';
-import { Input,Button } from 'antd';
+import { Input } from 'antd';
 import Loading from '../Component/Loading';
 import "../App.scss"
-import {Link, useNavigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 
 const Cart = () => {
-    const { data: cartData, isLoading, error } = useGetCartQuery();
+  const token = localStorage.getItem('token');
+  const { data: cartData, isLoading, error } = token ? useGetCartQuery() : { data: null, isLoading: false, error: null };
     const [messageApi, contextHolder] = message.useMessage();
     const [deleteCart] = useDeleteFromCartMutation();
     const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
-    const [addToCart] = useAddToCartMutation()
     const [localCart, setLocalCart] = useState<any[]>(JSON.parse(localStorage.getItem('cart') || '[]'));
-    const token = localStorage.getItem('token');
     const [productQuantities, setProductQuantities] = useState<any>({});
-    const [updateQuantity] = useUpdateCartMutation()
     const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
     const navigate = useNavigate() 
     const [updatePrice,setUpdatePrice] = useState()
+    const [updateMinus] = useUpdateMinusMutation()
+    const [updateIncrease] = useUpdateIncreaseMutation()
 
     const rowSelection = {
       selectedRowKeys: selectedProductId,
@@ -34,6 +34,8 @@ const Cart = () => {
         setSelectedProducts(selectedProducts);
       },
     };
+    
+    console.log(selectedProducts);
     
       
 
@@ -78,6 +80,7 @@ const Cart = () => {
       };
       
 
+      //cập nhật tăng số lượng với người dùng có tk
       const handleIncrease = (productId: string) => {
         const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
         console.log(productToUpdate);
@@ -90,7 +93,7 @@ const Cart = () => {
     
           setProductQuantities(updatedProductQuantities);
           
-          addToCart({
+          updateIncrease({
             productId: productToUpdate.productId._id,
             color: productToUpdate.color,
             size: productToUpdate.size,
@@ -100,42 +103,26 @@ const Cart = () => {
         }
       };
     
-      
+
+      //cập nhật giảm số lượng với người dùng có tk
       const handleMinus = (productId: string) => {
         const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
         console.log(productToUpdate);
-        
-        if (productToUpdate) {
-
-          if(productToUpdate.quantity==0){
-            const updatedProductQuantities = {
-              ...productQuantities,
-              [productId]: (productToUpdate.quantity) - 1,
-            };
-            setProductQuantities(updatedProductQuantities)
-            updateQuantity({
-              productId: productToUpdate.productId._id,
-              color: productToUpdate.color,
-              size: productToUpdate.size,
-              quantity: 1,
-              price: productToUpdate.productId.price
-            });
-          }else{
-            const updatedProductQuantities = {
-              ...productQuantities,
-              [productId]: (productToUpdate.quantity) - 1,
-            };
-            setProductQuantities(updatedProductQuantities);
-      
-            updateQuantity({
-              productId: productToUpdate.productId._id,
-              color: productToUpdate.color,
-              size: productToUpdate.size,
-              quantity: 1,
-              price: productToUpdate.productId.price
-            });
-          }
-          
+        if (productToUpdate.quantity === 1) {
+          message.error("Không thể giảm thêm số lượng")
+        }else{
+          const updatedProductQuantities = {
+            ...productQuantities,
+            [productId]: (productToUpdate.quantity) - 1,
+          };
+          setProductQuantities(updatedProductQuantities)
+          updateMinus({
+            productId: productToUpdate.productId._id,
+            color: productToUpdate.color,
+            size: productToUpdate.size,
+            quantity: 1,
+            price: productToUpdate.productId.price
+          });
         }
       };
 
@@ -183,39 +170,23 @@ const Cart = () => {
       };
       
 
-      // kiểm tra token
-      if(token){
-        dataSource = cartData?.products.map((product: any) => {
-          return {
-            key: product._id,
-            productId: product.productId._id,
-            priceItem: product.productId.price,
-            name: product.productId.name,
-            price: product.price,
-            imgUrl: product.productId.imgUrl[0],
-            color: product.color,
-            size: product.size,
-            quantity: productQuantities[product._id] || product.quantity,
-          };
-        });
+              // Hàm thực hiện xóa sản phẩm của người dùng có tài khoản
+    const confirm = (productId: string) => {
         
-      }else{  
-          dataSource = localCart.map((product: any) => {
-            return {
-                key: product.id,
-                name: product.name,
-                price: product.price,
-                imgUrl: product.imgUrl,
-                color: product.color,
-                size: product.size,
-                quantity: productQuantities[product.productId] || product.quantity,
-            };
+      deleteCart(productId)
+          .unwrap()
+          .then(() => {
+              messageApi.open({
+                  type: 'success',
+                  content: 'Xóa sản phẩm khỏi giỏ hàng thành công'
+              });
+          })
+          .catch((error) => {
+              messageApi.error('Đã xảy ra lỗi khi xóa sản phẩm');
+          });
+  };
 
-        });
-        
-      }
-      
-
+  
       // Hàm thực hiện xóa sản phẩm của người dùng không có tài khoản
       const confirmCart = (productId: string) => {
       
@@ -228,24 +199,41 @@ const Cart = () => {
           content: 'Xóa sản phẩm khỏi giỏ hàng thành công',
         });
       };
-      
 
-    // Hàm thực hiện xóa sản phẩm của người dùng có tài khoản
-    const confirm = (productId: string) => {
+      // kiểm tra token
+      if(token){
+        dataSource = cartData?.products.map((product: any) => {
+          return {
+            key: product._id,
+            productId: product.productId._id,
+            priceItem: product.productId.price,
+            name: product.productId.name,
+            price: product.price,
+            imgUrl: product.imgUrl[0],
+            color: product.color,
+            size: product.size,
+            quantity: productQuantities[product._id] || product.quantity,
+          };
+        });
         
-        deleteCart(productId)
-            .unwrap()
-            .then(() => {
-                messageApi.open({
-                    type: 'success',
-                    content: 'Xóa sản phẩm khỏi giỏ hàng thành công'
-                });
-            })
-            .catch((error) => {
-                messageApi.error('Đã xảy ra lỗi khi xóa sản phẩm');
-            });
-    };
+      }else{  
+          dataSource = localCart.map((product: any) => {
+            return {
+                key: product.id,
+                productId: product.productId,
+                priceItem: product.priceItem,
+                name: product.name,
+                price: product.price,
+                imgUrl: product.imgUrl[0],
+                color: product.color,
+                size: product.size,
+                quantity: productQuantities[product.productId] || product.quantity,
+            };
 
+        });
+        
+      }
+      
 
     const columns: any[] = [
         {
@@ -304,7 +292,7 @@ const Cart = () => {
           -
         </button>
         <Input max={10} min={1} 
-        style={{width: 100,borderTop: "1px solid #dbd4d4", borderRadius:0, borderBottom: "1px solid #dbd4d4"}}
+        style={{width: 100,height:35,borderTop: "1px solid #dbd4d4", borderRadius:0, borderBottom: "1px solid #dbd4d4"}}
         value={productQuantities[record.key] || quantity}
           className="quantity-input"
           readOnly
@@ -370,7 +358,7 @@ const Cart = () => {
     
     return (
         <div className='w-[90vw] mx-auto mt-44'>
-            {isLoading && <Loading />}
+           {token && isLoading && <Loading />} 
             {contextHolder}
             <div className="shopping-cart">
                 <div className="container">

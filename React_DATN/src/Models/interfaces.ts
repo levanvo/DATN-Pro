@@ -6,7 +6,7 @@ export interface IProduct {
   description?: string
   imgUrl: string[]
   categoryId: string
-  variants: [
+  variants?: [
     {
       size_id: string[],
       color_id: string[],
@@ -15,7 +15,7 @@ export interface IProduct {
   ]
   discount_code_id?: string
   poinId?: string
-  views: number
+  views?: number
 }
 
 export interface ICategory {
@@ -49,6 +49,7 @@ export interface ISize {
 
 export interface ProductItem {
   productId: string;
+  imgUrl: string[],
   quantity: number;
   color: string,
   size: string,

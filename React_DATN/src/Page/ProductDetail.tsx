@@ -43,7 +43,10 @@ const ProductDetail = () => {
   const [addToCart] = useAddToCartMutation()
   const { data: cartData, error } = useGetCartQuery()
   const { data: getAllSize } = useGetAllSizeQuery()
+  const [imgUrl, setImgUrl] = useState<any[]>([]);
 
+
+  
   useEffect(() => {
     let arrSize = [];
     arrSize = productDataOne?.variants.map((variant: any) => {
@@ -71,13 +74,22 @@ const ProductDetail = () => {
   const ChooseColor = (color: any, indColor: number) => {
     setColor(color);
     setIndexSlider(indColor);
+  
+    // Find the corresponding image URL for the selected color
+    const selectedVariant = productDataOne?.variants.find(
+      (variant: any) => variant.color_id.unicode === color
+    );
+    const selectedImgUrl = selectedVariant ? selectedVariant.imgUrl : "";
+  
+    setImgUrl(selectedImgUrl);
     
     const sizesForColor = productDataOne?.variants
-    .filter((variant: any) => variant.color_id.unicode === color)
-    .map((variant: any) => variant.size_id.name);
-
-  setSizeByColor(sizesForColor);
+      .filter((variant: any) => variant.color_id.unicode === color)
+      .map((variant: any) => variant.size_id.name);
+  
+    setSizeByColor(sizesForColor);
   };
+
 
   const ChooseSize = (size: any) => {
     setSize(size);
@@ -113,12 +125,16 @@ const ProductDetail = () => {
       return;
     }
 
+    //Kiểm tra token
     const isAuthenticated = localStorage.getItem("token");
 
     if (isAuthenticated) {
+
+      // thực hiện lần đầu tiên kiểm tra khi tài khoản chưa thêm vào giỏ hàng thực hiện thêm mới
       if (cartData === undefined || cartData?.products.length === 0) {
-        const res = addToCart({
+         addToCart({
           productId: productDataOne._id,
+          imgUrl: imgUrl,
           color: getColor,
           size: getSize,
           quantity: getQuantityBuy,
@@ -135,6 +151,7 @@ const ProductDetail = () => {
           const updatedProductItem = { ...productItem }; // Tạo bản sao của productItem
           addToCart({
             productId: updatedProductItem.productId._id,
+            imgUrl: imgUrl,
             color: updatedProductItem.color,
             size: updatedProductItem.size,
             quantity: getQuantityBuy,
@@ -144,6 +161,7 @@ const ProductDetail = () => {
         } else {
           addToCart({
             productId: productDataOne._id,
+            imgUrl: imgUrl,
             color: getColor,
             size: getSize,
             quantity: getQuantityBuy,
@@ -174,17 +192,20 @@ const ProductDetail = () => {
         // Sản phẩm đã tồn tại trong giỏ hàng với cùng productId, color và size
         // Chỉ cập nhật giá trị quantity cho sản phẩm này
         existingCart[existingProductIndex].quantity += getQuantityBuy;
+        existingCart[existingProductIndex].price += existingCart[existingProductIndex].priceItem *getQuantityBuy;
+
       } else {
         // Nếu sản phẩm không tồn tại trong giỏ hàng, tạo sản phẩm mới và thêm vào mảng giỏ hàng
         existingCart.unshift({
           id: newId,
           productId: productDataOne._id,
           name: productDataOne.name,
-          imgUrl: productDataOne.imgUrl[0],
+          imgUrl: imgUrl,
           quantity: getQuantityBuy,
           color: getColor,
           size: getSize,
-          price: productDataOne.price,
+          price: productDataOne.price*getQuantityBuy,
+          priceItem: productDataOne.price
         });
       }
 

@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
 import { useGetColorsQuery } from '../../../Services/Api_Color';
 import { useGetAllSizeQuery } from '../../../Services/Api_Size';
-import { AnyAction } from 'redux';
 
 
 const { Search } = Input;
@@ -32,8 +31,9 @@ const ProductList = () => {
   const [isResetClicked, setIsResetClicked] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
-  const { data: getAllColor } = useGetColorsQuery()
-  const { data: getAllSize } = useGetAllSizeQuery()
+
+  console.log("getAllProduct",getAllProduct);
+  
 
   const rowSelection = {
     selectedRowKeys: selectedProductId,
@@ -62,8 +62,8 @@ const ProductList = () => {
 
   //data trả về
   const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId, variants }: IProduct) => {
-    const colorIds = variants.map((c) => c.color_id).flat()
-    const sizeIds = variants.map((s) => s.size_id).flat()
+    const colorIds = variants?.map((c) => c.color_id).flat()
+    const sizeIds = variants?.map((s) => s.size_id).flat()
     return {
       key: _id,
       name,

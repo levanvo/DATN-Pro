@@ -92,7 +92,7 @@ const generateRandomCode = () => {
 
 
 export const createOrder = async (req, res) => {
-    const userId = req.user._id;
+    const userId = req.user ? req.user._id : null;
     try {
         if (!req.body) {
             return res.status(400).json("Hãy thêm thông tin order cần tạo !");
@@ -101,6 +101,16 @@ export const createOrder = async (req, res) => {
         const codeOrder = generateRandomCode();
 
         const order = await Order.create({ ...req.body, userId, code_order: codeOrder });
+        const productIdsToDelete = req.body.cartId;
+
+        if (req.user) {
+            for (const productIdToDelete of productIdsToDelete) {
+                await Cart.updateMany(
+                    { userId: req.user._id, 'products._id': productIdToDelete },
+                    { $pull: { products: { _id: productIdToDelete } } }
+                );
+            }
+        }
 
         // Update sell_quantity for each product in the order
         await Promise.all(order.products.map(async (product) => {

@@ -11,15 +11,13 @@ import {
 } from "antd"
 import { PlusOutlined } from "@ant-design/icons"
 import axios from "axios"
-import { IProduct, IColor } from "../../../Models/interfaces"
+import { IProduct } from "../../../Models/interfaces"
 import type { UploadFile } from "antd/es/upload/interface"
 import type { RcFile, UploadProps } from "antd/es/upload"
 import { useAddProductMutation } from "../../../Services/Api_Product"
 import { useGetAllCategoryQuery } from "../../../Services/Api_Category"
 import Loading from "../../../Component/Loading"
 import { useNavigate } from "react-router-dom"
-import { useGetAllSizeQuery } from "../../../Services/Api_Size"
-import { useGetColorsQuery } from "../../../Services/api_Color"
 
 const { TextArea } = Input
 
@@ -39,14 +37,13 @@ const AddProduct = () => {
   const navigate = useNavigate()
   const [addProduct, { error }] = useAddProductMutation()
   const { data: getAllCategory, isLoading } = useGetAllCategoryQuery()
-  const { data: getAllSize, isLoading: isLoadingSize } = useGetAllSizeQuery()
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewImage, setPreviewImage] = useState("")
   const [previewTitle, setPreviewTitle] = useState("")
   const [isLoadingScreen, setIsLoadingScreen] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
-  const { data:getAllColor } = useGetColorsQuery()
+
 
   const handleCancel = () => setPreviewOpen(false)
 
@@ -166,7 +163,7 @@ const AddProduct = () => {
           ]}
         >
           <Select style={{ width: 200 }} loading={isLoading}>
-            {getAllCategory ? (
+            {Array.isArray(getAllCategory) ? (
               getAllCategory?.map((category: any) => (
                 <Select.Option key={category._id} value={category._id}>
                   {category.name}

@@ -3,6 +3,11 @@ import User from "../models/user.js";
 
 export const checkPermissionOrder= async (req, res, next) => {
   try {
+    if (!req.headers.authorization) {
+      // Không có mã thông báo nào được cung cấp, hãy chuyển sang phần mềm trung gian hoặc tuyến đường tiếp theo
+      return next();
+  }
+
     // lấy jwt token từ header
     const token = req.headers.authorization.split(" ")[1];
     jwt.verify(token, "sneakers", async (err, payload) => {
