@@ -58,7 +58,6 @@ import CommentList from "./Page/Admin/comment"
 function App() {
   !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
   !window.location.href.includes("checkout") && localStorage.removeItem("totalPrice.shoe");
-
   
   Config();
   return (
