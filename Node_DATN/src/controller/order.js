@@ -38,17 +38,19 @@ export const getOneOrders = async (req, res) => {
 };
 
 export const getUserOrders = async (req, res) => {
-    const userId = req.user._id;
+    const userId = req.user ? req.user._id : null;
 
     try {
-        const orders = await Order.find({ userId }).populate("products.productId").populate({path: "userId", select: "username"});
-        if(orders.length === 0){
-            return res.status(400).json({
-                message: "Bạn chưa có đơn hàng nào"
-            })
+        if(req.user){
+            const orders = await Order.find({ userId }).populate("products.productId").populate({path: "userId", select: "username"});
+            if(orders.length === 0){
+                return res.status(400).json({
+                    message: "Bạn chưa có đơn hàng nào"
+                })
+            }
+            return res.status(200).json(orders);
         }
 
-        return res.status(200).json(orders);
     } catch (error) {
         return res.status(500).json({ message: "Lỗi khi lấy danh sách đơn hàng", error });
     }
@@ -57,7 +59,7 @@ export const getUserOrders = async (req, res) => {
 
 
 export const getOneOrder = async (req, res) => {
-    const userId = req.user._id;
+    const userId = req.user ? req.user._id : null;
     const orderId = req.params.id;
 
     try {
