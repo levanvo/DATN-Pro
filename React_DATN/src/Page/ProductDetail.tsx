@@ -15,8 +15,12 @@ import { Link } from "react-router-dom";
 import { useAddToCartMutation, useGetCartQuery } from "../Services/Api_cart";
 import { ProductItem } from "../Models/interfaces";
 import { useGetAllSizeQuery } from "./../Services/Api_Size"
-import { Button, message } from "antd"
+import { Button, Modal, message } from "antd"
 import Loading from "../Component/Loading";
+import { useCreateCommentMutation, useDeleteCommentByAdminMutation, useDeleteCommentByIdUserMutation, useGetCommentsByProductIdQuery, useUpdateCommentByIdMutation } from "../Services/Api_Comment";
+import { useGetUserOrdersQuery } from "../Services/Api_Order";
+import { MdDeleteForever } from "react-icons/md";
+import { FaTools } from "react-icons/fa";
 
 
 type Variant = {
@@ -251,6 +255,171 @@ const ProductDetail = () => {
       }
     };
 
+
+     // comment
+  // console.log("productId", id);
+
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    // Lấy dữ liệu từ localStorage
+    const storedUser = localStorage.getItem('user');
+
+    if (storedUser) {
+      // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
+      const userObj = JSON.parse(storedUser);
+
+      setCurrentUser(userObj)
+    }
+  }, []);
+
+  // console.log("currentUser", currentUser);
+
+
+
+
+
+  const [content, setContent] = useState("");
+  const [createComment] = useCreateCommentMutation();
+  const [messagecm, setMessagecm] = useState('');
+  const [isLoadingcm, setIsLoadingcm] = useState(false);
+  const { data: comments, refetch } = useGetCommentsByProductIdQuery(id);
+  const [deleteCommentById] = useDeleteCommentByAdminMutation(); //delete của admin
+
+  // console.log("comments", comments)
+
+  const { data: order } = useGetUserOrdersQuery();
+  // console.log("data_", order);
+
+  
+
+  const hasPurchased = order?.some((order: any) => {
+    
+    return (
+      order.userId?._id === currentUser?._id &&
+      order.products.some((product: any) => product.productId?._id === id)
+    );
+  });
+  // console.log("hasPurchased", hasPurchased);
+  
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (hasPurchased) {
+      const purchasedOrder = order?.find((order: any) => {
+        return (
+          order.userId?._id === currentUser?._id &&
+          order.products.some((product: any) => product.productId?._id === id)
+        );
+      });
+
+      if (purchasedOrder) {
+        // setMessagecm('Người dùng đã đặt mua sản phẩm này');
+        const orderId = purchasedOrder._id;
+        // setMessagecm(`OrderId của đơn hàng đã mua: ${orderId}`);
+
+        // Gửi yêu cầu tạo bình luận với orderId
+        createComment({ userId: currentUser?._id, productId: id, orderId, content })
+          .unwrap()
+          .then((response) => {
+            // Xử lý phản hồi thành công
+            console.log('Bình luận đã được tạo:', response);
+            // Cập nhật danh sách bình luận hiển thị
+            refetch();
+          })
+          .catch((error) => {
+            // Xử lý lỗi
+            console.error('Đã xảy ra lỗi khi tạo bình luận:', error);
+            setMessagecm(error.data.message)
+          });
+      } else {
+        setMessagecm('Không tìm thấy thông tin đơn hàng đã mua');
+      }
+    } else {
+      setMessagecm('Bạn chưa mua sản phẩm này. Hãy mua sản phẩm để có thể bình luận!');
+    }
+
+    // Đặt lại nội dung bình luận
+    setContent('');
+  };
+
+  // xóa comment cho admin 
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
+  const handleDeleteComment = (commentId: any) => {
+    setDeletingCommentId(commentId);
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleDeleteConfirmation = (confirmed: boolean) => {
+    if (confirmed) {
+      deleteCommentById(deletingCommentId)
+        .unwrap()
+        .then(() => {
+          message.success("Xóa thành công")
+          // Cập nhật danh sách bình luận hiển thị
+          refetch();
+        })
+        .catch((error) => {
+          console.error('Lỗi khi xóa bình luận:', error);
+        });
+    }
+
+    setIsDeleteModalVisible(false);
+  };
+
+  // cập nhật + xóa bình luận cho user
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const [isDeleteCommentUserModalVisible, setIsDeleteCommentUserModalVisible] = useState(false);
+  const [selectedComment, setSelectedComment] = useState(null);
+
+  const [updateCommentByIdMutation] = useUpdateCommentByIdMutation();
+  const [deleteCommentByIdUserMutation] = useDeleteCommentByIdUserMutation();
+
+  const handleDeleteCommentUser = (commentId: any) => {
+    setSelectedComment(commentId);
+    setIsDeleteCommentUserModalVisible(true);
+  };
+
+  const handleUpdateComment = (comment: any) => {
+    setSelectedComment(comment);
+    setIsUpdateModalVisible(true);
+  };
+
+  const handleUpdateConfirmation = (commentId: any, content: string) => {
+    // console.log("content", content);
+
+    updateCommentByIdMutation({ id: commentId, content, userId: currentUser?._id })
+      .unwrap()
+      .then(() => {
+        setIsUpdateModalVisible(false);
+        message.success("Cập nhật bình luận thành công");
+        refetch();
+      })
+      .catch((error) => {
+        console.error('Failed to update comment:', error);
+      });
+  };
+
+  const handleDeleteCommentUserConfirmation = (confirmDelete: any) => {
+    if (confirmDelete) {
+      deleteCommentByIdUserMutation(selectedComment)
+        .unwrap()
+        .then(() => {
+          setIsDeleteCommentUserModalVisible(false);
+          message.success("Xóa bình luận thành công");
+          refetch();
+        })
+        .catch((error) => {
+          console.error('Failed to delete comment:', error);
+        });
+    } else {
+      setIsDeleteCommentUserModalVisible(false);
+    }
+  };
+
+  const [updatedContent, setUpdatedContent] = useState('');
   return (
     <div>
       {isLoadingProduct ? <Loading /> : <div className="w-[90vw] mx-auto mt-36 relative">
@@ -463,7 +632,8 @@ const ProductDetail = () => {
           </div>
         </div>
         {/* mô tả + đánh giá + comment */}
-        <div className="single-product-tab-area">
+         {/* mô tả + đánh giá + comment */}
+         <div className="single-product-tab-area">
           <div className="container">
             <div className="row">
               <div className="col-md-12">
@@ -481,26 +651,6 @@ const ProductDetail = () => {
                         data-bs-toggle="tab"
                       >
                         Product Description
-                      </a>
-                    </li>
-                    <li role="presentation">
-                      <a
-                        href="#tab2"
-                        aria-controls="tab2"
-                        role="tab"
-                        data-bs-toggle="tab"
-                      >
-                        reviews
-                      </a>
-                    </li>
-                    <li role="presentation">
-                      <a
-                        href="#tab3"
-                        aria-controls="tab3"
-                        role="tab"
-                        data-bs-toggle="tab"
-                      >
-                        product tag
                       </a>
                     </li>
                   </ul>
@@ -530,261 +680,108 @@ const ProductDetail = () => {
                         </p>
                       </div>
                     </div>
-                    <div role="tabpanel" className="tab-pane fade" id="tab2">
-                      <div className="single-p-tab-content">
-                        <div className="row">
-                          <div className="col-md-5">
-                            <div className="product-review">
-                              <p>
-                                {" "}
-                                <a href="#"> plaza</a> <span>Review by</span>{" "}
-                                plaza{" "}
-                              </p>
-                              <div className="product-rating-info">
-                                <p>defaultValue</p>
-                                <div className="ratings">
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star-half-o"></i>
-                                </div>
-                              </div>
-                              <div className="product-rating-info">
-                                <p>Quality</p>
-                                <div className="ratings">
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star-half-o"></i>
-                                </div>
-                              </div>
-                              <div className="product-rating-info">
-                                <p>Price</p>
-                                <div className="ratings">
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star"></i>
-                                  <i className="fa fa-star-half-o"></i>
-                                </div>
-                              </div>
-                              <div className="review-date">
-                                <p>
-                                  plaza <em> (Posted on 8/27/2015)</em>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-md-7">
-                            <div className="rate-product hidden-xs">
-                              <div className="rate-product-heading">
-                                <h3>You&#39;re reviewing: Fusce aliquam</h3>
-                                <h3>
-                                  How do you rate this product? <em>*</em>
-                                </h3>
-                              </div>
-                              <form action="#">
-                                <table className="product-review-table">
-                                  <thead>
-                                    <tr>
-                                      <th></th>
-                                      <th>1 star</th>
-                                      <th>2 star</th>
-                                      <th>3 star</th>
-                                      <th>4 star</th>
-                                      <th>5 star</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <th>Price</th>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[1]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[1]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[1]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[1]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[1]"
-                                        />{" "}
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <th>defaultValue</th>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[2]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[2]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[2]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[2]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[2]"
-                                        />{" "}
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <th>Quality</th>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[3]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[3]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[3]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[3]"
-                                        />{" "}
-                                      </td>
-                                      <td>
-                                        {" "}
-                                        <input
-                                          type="radio"
-                                          className="radio"
-                                          name="ratings[3]"
-                                        />{" "}
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                                <ul className="form-list">
-                                  <li>
-                                    <label>
-                                      {" "}
-                                      nickname <em>*</em>{" "}
-                                    </label>
-                                    <input type="text" />
-                                  </li>
-                                  <li>
-                                    <label>
-                                      {" "}
-                                      Summary of Your Review <em>*</em>{" "}
-                                    </label>
-                                    <input type="text" />
-                                  </li>
-                                  <li>
-                                    <label>
-                                      {" "}
-                                      Review <em>*</em>{" "}
-                                    </label>
-                                    <textarea cols={3} rows={5}></textarea>
-                                  </li>
-                                </ul>
-                                <button type="submit"> submit review</button>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div role="tabpanel" className="tab-pane fade" id="tab3">
-                      <div className="single-p-tab-content">
-                        <div className="add-tab-title">
-                          <p> add your tag </p>
-                        </div>
-                        <div className="add-tag">
-                          <form action="#">
-                            <input type="text" />
-                            <button type="submit">add tags</button>
-                          </form>
-                        </div>
-                        <p className="tag-rules">
-                          Use spaces to separate tags. Use single quotes (&#39;)
-                          for phrases.
-                        </p>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div className="single-product-tab-area cm">
+          <h2 className="cm_title">Comments</h2>
+
+          <div className="comments">
+            {comments.map((comment: any) => (
+              <div className="comment_detail" key={comment._id}>
+                <div className="comment_detail_header">
+                  <div className="user_cm">
+                    <img className="user_cm_avt" src={comment.userId.imgUrl} alt="" />
+                    <div className="user_cm_inf">
+                      <p className="user_cm_name">@ {comment.userId.username}</p>
+                      <p className="date_created">{comment.createdAt}</p>
+                    </div>
+                  </div>
+                  {currentUser && currentUser?.role == 'admin' ? (
+                    <div className="favorites">
+                      <p onClick={() => handleDeleteComment(comment._id)}><MdDeleteForever /> <span>Delete</span></p>
+                    </div>
+                  ) : (
+                    currentUser && currentUser?._id === comment.userId._id && (
+                      <div>
+                        <div className="favorites">
+                          <p style={{ border: 'none' }} onClick={() => handleUpdateComment(comment)}><FaTools style={{ color: '#18a3f4' }} /> <span style={{ color: '#18a3f4' }}>Sửa</span></p>
+                        </div>
+
+                        <div className="favorites">
+                          <p style={{ border: 'none' }} onClick={() => handleDeleteCommentUser(comment._id)}><MdDeleteForever /> <span>Xóa</span></p>
+                        </div>
+
+                        <Modal
+                          title="Xác nhận xóa"
+                          visible={isDeleteCommentUserModalVisible}
+                          onOk={() => handleDeleteCommentUserConfirmation(true)}
+                          onCancel={() => handleDeleteCommentUserConfirmation(false)}
+                          okText="Xóa"
+                          cancelText="Hủy"
+                          okButtonProps={{ style: { backgroundColor: 'red' } }}
+                        >
+                          Bạn có chắc chắn muốn xóa không?
+                        </Modal>
+
+                        <Modal
+                          title="Cập nhật bình luận"
+                          visible={isUpdateModalVisible}
+                          onOk={() => handleUpdateConfirmation(comment._id, updatedContent)}
+                          onCancel={() => setIsUpdateModalVisible(false)}
+                          okText="Cập nhật"
+                          cancelText="Hủy"
+                          style={{ marginTop: '140px' }}
+                        >
+                          <textarea
+                            style={{ padding: '10px 20px', outline: 'auto', width: '100%' }}
+                            value={updatedContent || comment?.content}
+                            onChange={(e) => setUpdatedContent(e.target.value)}
+                          />
+                        </Modal>
+
+                      </div>
+                    )
+                  )}
+                  <Modal
+                    title="Xác nhận xóa"
+                    visible={isDeleteModalVisible}
+                    onOk={() => handleDeleteConfirmation(true)}
+                    onCancel={() => handleDeleteConfirmation(false)}
+                    okText="Xóa"
+                    cancelText="Hủy"
+                    okButtonProps={{ style: { backgroundColor: "red" } }}
+                  >
+                    Chắc chắn muốn xóa comment của user này không?
+                  </Modal>
+
+                </div>
+                <div className="comment_content">
+                  <p>{comment.content}</p>
+                </div>
+              </div>
+            ))}
+
+            <div className="comment_form">
+              {currentUser?._id ?
+                (<form onSubmit={handleSubmit}>
+                  <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your comment" maxLength={200} cols={110} rows={2} />
+                  <button type="submit" disabled={isLoadingcm}>Send</button>
+                  {messagecm && <p>{messagecm}</p>}
+                </form>) : (<p>Vui lòng đăng nhập để bình luận.</p>)}
+
+
+            </div>
+          </div>
+
+        </div>
         {/* ============================================ khu SP liên quan */}
         <div className="container mb-20 productsRelative text-black">
-          <h3>Sản phẩm liên quan</h3>
+          <h3 style={{ marginTop: '300px' }}>Sản phẩm liên quan</h3>
           <div className={`productShow mt-4 flex flex-wrap space-x-5 ${arrayPR.length > 3 ? "justify-center" : ""}`}>
             {arrayPR.length ? arrayPR?.map((items: any) => {
               return (
@@ -808,7 +805,7 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>}
-    </div>
+    </div >
 
   );
 };

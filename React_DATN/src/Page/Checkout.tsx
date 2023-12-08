@@ -47,7 +47,7 @@ const Checkout = () => {
   const [discountCode, setDiscountCode] = useState("")
   const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null) // Update initial state value
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const enteredDiscount = discounts?.find((d) => d.code === discountCode)
+  const enteredDiscount = Array.isArray(discounts) ? discounts?.find((d) => d.code === discountCode):"không có data discount"
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -231,7 +231,7 @@ const Checkout = () => {
     },
   ]
 
-  const dataDiscounts = discounts
+  const dataDiscounts = Array.isArray(discounts)
     ? discounts.filter((item: IDiscount) => moment().isAfter(item.startDate))
     : []
 

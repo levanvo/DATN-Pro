@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     useGetAllProductQuery,
     // useUpdateProductMutation,
@@ -64,12 +64,20 @@ const Product = () => {
             console.log("Vấn đề về view: ", err);
         }
     }
+    const [dataCt,setDataCt]:any=useState([]);
+
     const dataProducts = arrayLimitProducts.length ? arrayLimitProducts : productData;
     // console.log("product: ", productData);
 
-    const {
-        data: categoryData
-    } = useGetAllCategoryQuery();
+    const {data: categoryData,isLoading:loadingCT}:any = useGetAllCategoryQuery();
+    useEffect(()=>{
+        if(!loadingCT){
+            setDataCt(categoryData)
+        }
+    },[categoryData]);
+    console.log("loading",loadingCT);
+    console.log("datajhcsdgvxb",dataCt);
+    
 
     return (
         <div className='w-[90vw] mx-auto'>
@@ -136,7 +144,7 @@ const Product = () => {
                                                         <p className='text-center border-y border-gray-200 mt-1 text-orange-400 font-bold'>{items.name}</p>
                                                         <div className="flex justify-between -mt-3">
                                                             <div className="flex space-x-1">
-                                                                <span>{items.original_price.toLocaleString()}</span>
+                                                                <span>{items.original_price?.toLocaleString()}</span>
                                                                 {/* <del className='text-xs'> {items.original_price > 0 ? (items.price + items.original_price).toLocaleString() : ""}</del> */}
                                                                 <span> VND</span>
                                                             </div>
