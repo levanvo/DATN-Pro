@@ -23,7 +23,7 @@ const Blog = () => {
                         <div className="col-md-12">
                             <div className="blog-post">
 
-                                {blogData?.data.map((blog: IBlog) => {
+                                {blogData?.data?.map((blog: IBlog) => {
                                     return (
                                         <div className="single-blog-post relative h-[330px]">
                                             <div className="blog-img">

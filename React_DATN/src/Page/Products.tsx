@@ -10,7 +10,7 @@ import { useLocation } from "react-router-dom";
 import Loading from "../Component/Loading";
 
 const Products = () => {
-  const { data: producData, isLoadingData, error } = useGetAllProductQuery();
+  const { data: producData, isLoading:isLoadingData, error } = useGetAllProductQuery();
   const { data: categoryData, error: errorCategory } = useGetAllCategoryQuery();
   const { data: sizeData, error: errorSize } = useGetAllSizeQuery();
   const { data: colorData, error: errorColor } = useGetColorsQuery();
