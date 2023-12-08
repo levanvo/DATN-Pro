@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { useGetAllBlogsQuery } from '../../../Services/Api_Blogs'
 import { IBlog } from '../../../Models/interfaces'
 import parse from 'html-react-parser';
@@ -22,7 +22,6 @@ const Blog = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="blog-post">
-
                                 {blogData?.data?.map((blog: IBlog) => {
                                     return (
                                         <div className="single-blog-post relative h-[330px]">

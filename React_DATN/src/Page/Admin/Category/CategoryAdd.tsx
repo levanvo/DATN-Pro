@@ -15,8 +15,9 @@ const AddCategory = () => {
     const { data: allCategories } = useGetAllCategoryQuery();
 
     const isCategoryNameExists = (name: string) => {
-        return allCategories?.some((category: ICategory) => category.name === name);
-    };
+        return Array.isArray(allCategories) && allCategories.some((category: ICategory) => category.name === name);
+      };
+      
     const onFinish = async (values: ICategory) => {
         try {
             setIsLoadingScreen(true)
