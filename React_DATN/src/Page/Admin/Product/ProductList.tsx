@@ -61,7 +61,7 @@ const ProductList = () => {
   }
 
   //data trả về
-  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId, variants }: IProduct) => {
+  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId, variants,inventoryTotal,sell_quantity }: IProduct) => {
     const colorIds = variants?.map((c) => c.color_id).flat()
     const sizeIds = variants?.map((s) => s.size_id).flat()
     return {
@@ -73,7 +73,9 @@ const ProductList = () => {
       categoryId,
       variants,
       color_id: colorIds,
-      size_id: sizeIds
+      size_id: sizeIds,
+      inventoryTotal: inventoryTotal,
+      sell_quantity: sell_quantity
     }
   })
 
@@ -296,7 +298,7 @@ const ProductList = () => {
     },
 
     {
-      title: 'Số lượng',
+      title: 'Tổng số lượng',
       dataIndex: 'variants',
       align: 'center',
       render: (variants: Object) => (
