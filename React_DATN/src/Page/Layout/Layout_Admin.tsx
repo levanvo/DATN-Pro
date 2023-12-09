@@ -16,8 +16,10 @@ import {
   MenuOutlined,
 } from "@ant-design/icons"
 import type { MenuProps } from "antd"
-import { Breadcrumb, Layout, Menu, theme } from "antd"
+import { Breadcrumb, Layout, Menu, Modal, message, theme } from "antd"
 import { Outlet, Link } from "react-router-dom"
+import { FaAngleDown } from "react-icons/fa"
+import { IoMdLogOut } from "react-icons/io"
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -79,12 +81,36 @@ const Layout_Admin: React.FC = () => {
     token: { colorBgContainer },
   } = theme.useToken()
 
+  // logout
+  const [visible, setVisible] = useState(false);
+
+  const handleLogout = () => {
+    // Thực hiện xóa token và user trong localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // Hiển thị thông báo đăng xuất thành công
+    message.success("Đăng xuất thành công");
+
+    // Chuyển hướng đến trang đăng nhập sau 2 giây
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 2000);
+  };
+
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
 
   return (
     <div className="nav-left">
       <Layout style={{ minHeight: "100vh" }}>
         <Sider
-        style={{position:"fixed", zIndex:2,height: "100vh"}}
+          style={{ position: "fixed", zIndex: 2, height: "100vh" }}
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
@@ -99,11 +125,35 @@ const Layout_Admin: React.FC = () => {
           <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter((item: any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items} />
         </Sider>
         <Layout>
-          <Header className="headerAdmin" style={{ height:80,width:"100%"}} >
-
+          <Header className="headerAdmin" style={{ height: 80, width: "100%" }} >
+            <div className="account mt-2">
+              <div className="flex justify-content-center align-items-center account_hover">
+                <img src={user?.imgUrl} className="account_avt" />
+                <h4 className="mt-2 mr-2 ml-2">{user?.username}</h4>
+                <FaAngleDown />
+                <button
+                  className="account_logout flex justify-content-center align-items-center"
+                  onClick={showModal}
+                >
+                  <IoMdLogOut className="mr-2" style={{ fontSize: "18px" }} />{" "}
+                  Đăng xuất
+                </button>
+                <Modal
+                  title="Xác nhận đăng xuất"
+                  open={visible}
+                  onOk={handleLogout}
+                  onCancel={handleCancel}
+                  okText="Đồng ý"
+                  cancelText="Hủy"
+                  okButtonProps={{ style: { backgroundColor: "red" } }}
+                >
+                  <p>Bạn có chắc chắn muốn đăng xuất?</p>
+                </Modal>
+              </div>
+            </div>
           </Header>
           <div className="h-20"></div>
-          <Content className="" style={{margin:"0 0 0 200px"}}>
+          <Content className="" style={{ margin: "0 0 0 200px" }}>
             {/* <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item>Bảng</Breadcrumb.Item>
               <Breadcrumb.Item></Breadcrumb.Item>

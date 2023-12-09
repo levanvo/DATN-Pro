@@ -24,7 +24,7 @@ const Dashboard = () => {
       tooltip: {
         pointFormat: '{point.name}: <b>{point.y} lượt xem</b>'
     },
-      series: totalViews.series,
+      series: totalViews?.series,
     });
 
   }
