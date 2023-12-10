@@ -22,7 +22,6 @@ import { useGetUserOrdersQuery } from "../Services/Api_Order";
 import { MdDeleteForever } from "react-icons/md";
 import { FaTools } from "react-icons/fa";
 
-
 type Variant = {
   color_id: {
     unicode: string;
@@ -61,6 +60,8 @@ const ProductDetail = () => {
 
     setSizeByColor(arrSize);
   }, [getColor]);
+
+
 
   let arrayPR: any = [];
   const arrayRelate = productDataOne?.categoryId.products;
@@ -422,389 +423,394 @@ const ProductDetail = () => {
   const [updatedContent, setUpdatedContent] = useState('');
   return (
     <div>
-      {isLoadingProduct ? <Loading /> : <div className="w-[90vw] mx-auto mt-36 relative">
-        <div className="Single-product-location home2">
-          <div className="container">
-            <div className="row">
-              <div className="col-md-12">
-                <div className="location">
-                  <ul>
-                    <li>
-                      <a href="index.html" title="go to homepage">
-                        Home<span>/</span>
-                      </a>{" "}
-                    </li>
-                    <li>
-                      <strong>{productDataOne?.name}</strong>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* detail */}
-        <div className="single-product-details">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-6">
-                <div className="single-product-img tab-content">
-                  <Swiper
-                    key={indexSlider}
-                    style={
-                      {
-                        "--swiper-navigation-color": "#fff",
-                        "--swiper-pagination-color": "#fff",
-                      } as React.CSSProperties
-                    }
-                    spaceBetween={5}
-                    navigation={true}
-                    thumbs={{ swiper: thumbsSwiper }}
-                    modules={[FreeMode, Navigation, Thumbs]}
-                    className="mySwiper2"
-                    initialSlide={indexSlider}
-                  >
-                    {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
-                      <SwiperSlide key={index} >
-                        <img src={productDataOne?.imgUrl[index]} />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                </div>
-                <div className="nav product-page-slider">
-                  <Swiper
-                    onSwiper={(swiper) => {
-                      setThumbsSwiper(swiper)
-                    }}
-                    spaceBetween={5}
-                    slidesPerView={4}
-                    freeMode={true}
-                    watchSlidesProgress={true}
-                    modules={[FreeMode, Navigation, Thumbs]}
-                    className="mySwiper"
-                  >
-                    {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
-                      <SwiperSlide key={index}>
-                        <img src={productDataOne?.imgUrl[index]} />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                </div>
-              </div>
-              <div className="col-lg-6">
-                <div className="single-product-details">
-                  <p className="product-name">{productDataOne?.name}</p>
-                  <div className="list-product-info">
-                    <div className="price-rating">
-                      <div className="ratings">
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star-half-o"></i>
-                        <a href="#" className="review">
-                          <p>Số lượt truy cập: {productDataOne?.views}</p>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="avalable">
-                    <p>
-                      Tình trạng: <span> {productDataOne?.quantity > 0 ? "còn hàng" : "hết hàng"}</span>
-                    </p>
-                    <p>
-                      Số lượng: <span className="text-gray-600"> {productDataOne?.inventory}</span>
-                    </p>
-                  </div>
-                  <div className="item-price flex space-x-2">
-                    <span>{productDataOne?.price.toLocaleString()} (VND)</span>
-                    <p className="text-red-500 text-xs">{productDataOne?.original_price > productDataOne?.price && productDataOne?.original_price > 0 ? "Đại hạ giá" : "Sản phẩm đang hot"}</p>
-                    {productDataOne?.original_price > 0 && <p className="text-xs"><del>{productDataOne?.original_price.toLocaleString()} (VND)</del></p>}
-                  </div>
-                  <div className="single-product-info">
-                    <p>{productDataOne?.description}</p>
-                    <div className="share">
-                      <img src="img/product/share.png" alt="" />
-                    </div>
-                  </div>
-
-
-                  <h3 className="-mt-4">Chọn màu:</h3>
-                  <div className="flex space-x-2 my-4">{uniqueColorButtons}</div>
-
-
-                  <div className="select-catagory">
-                    <div>
-                      <h3 className="mt-3">Chọn kích cỡ:</h3>
-                      <div className="mb-3 space-x-3 flex">
-                        {getAllSize ? (
-                          getAllSize?.map((size: any) => (
-                            <button
-                              disabled={!getColor || !getSizeByColor.includes(size.name)}
-                              style={{ marginRight: 10 }}
-                              onClick={() => ChooseSize(size.name)}
-                              className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${
-                                getSize === size.name ? 'border-green-600' : '' 
-                              } ${
-                                  getColor && getSizeByColor.includes(size.name) ?  'bg-transparent' : 'bg-slate-300'
-                              }`}
-                            >
-                              <p>{size.name}</p>
-                              {getSize === size.name && (
-                                <img
-                                  className="absolute top-[-7px] right-[-5px] w-3 h-3"
-                                  src="../../img/icons/correct.png"
-                                  alt=""
-                                />
-                              )}
-                            </button>
-                          ))
-                        ) : (
-                          <p>Loading...</p>
-                        )}
-                        {/* {productDataOne?.variants
-                      .filter((variant: any) => variant.color_id.unicode === getColor)
-                      .map((filteredVariant: any) => (
-                        <div className="flex" key={filteredVariant._id}>
-                          {filteredVariant.size_id._id  && (
-                            <div
-                              style={{ marginRight: 10 }}
-                              onClick={() => ChooseSize(filteredVariant.size_id.name)}
-                              className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${
-                                getSize === filteredVariant.size_id.name ? 'border-green-600' : ''
-                              }`}
-                            >
-                              <p>{filteredVariant.size_id.name}</p>
-                              {getSize === filteredVariant.size_id.name && (
-                                <img
-                                  className="absolute top-[-7px] right-[-5px] w-3 h-3"
-                                  src="../../img/icons/correct.png"
-                                  alt=""
-                                />
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      ))} */}
-                      </div>
-                    </div>
-                  </div>
-
-
-
-                  <div className="cart-item">
-                    <div className="price-box">
-                      {/* <span>
-                      Price: <span></span>
-                    </span> */}
-                    </div>
-                    <div className="single-cart">
-                      <div className="cart-plus-minus">
-                        <div className="quantity-cart">
-                          <span style={{ fontSize: "16px" }}>Số lượng: </span>
-                          <div className="inp_group">
-                            <button>
-                              <MinusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Minus()} />
-                            </button>
-                            <input
-                              className="cart-plus-minus-box outline-0 h-10"
-                              type="text"
-                              name="qtybutton"
-                              // readOnly
-                              id="quanityBuy"
-                              value={getQuantityBuy}
-                              // max={productDataOne?.quantity}
-                              min={1}
-                              onChange={(e) => handleQuantityChange(e)}
-                            />
-                            <button>
-                              <PlusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Plus()} />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <button className="cart-btn" onClick={handleAddToCart}>Thêm vào giỏ</button>
-                    </div>
+      {isLoadingProduct ? <Loading /> : 
+      
+        <div className="w-[90vw] mx-auto mt-36 relative">
+          <div className="Single-product-location home2">
+            <div className="container">
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="location">
+                    <ul>
+                      <li>
+                        <a href="index.html" title="go to homepage">
+                          Home<span>/</span>
+                        </a>{" "}
+                      </li>
+                      <li>
+                        <strong>{productDataOne?.name}</strong>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        {/* mô tả + đánh giá + comment */}
-         {/* mô tả + đánh giá + comment */}
-         <div className="single-product-tab-area">
-          <div className="container">
-            <div className="row">
-              <div className="col-md-12">
-                <div className="single-product-tab">
-                  <ul
-                    className="nav single-product-tab-navigation"
-                    role="tablist"
-                  >
-                    <li role="presentation">
-                      <a
-                        className="active"
-                        href="#tab1"
-                        aria-controls="tab1"
-                        role="tab"
-                        data-bs-toggle="tab"
-                      >
-                        Product Description
-                      </a>
-                    </li>
-                  </ul>
-
-                  {/* <!-- Tab panes --> */}
-                  <div className="tab-content single-product-page">
-                    <div
-                      role="tabpanel"
-                      className="tab-pane fade show active"
-                      id="tab1"
+          {/* detail */}
+          <div className="single-product-details">
+            <div className="container">
+              <div className="row">
+                <div className="col-lg-6">
+                  <div className="single-product-img tab-content">
+                    <Swiper
+                      key={indexSlider}
+                      style={
+                        {
+                          "--swiper-navigation-color": "#fff",
+                          "--swiper-pagination-color": "#fff",
+                        } as React.CSSProperties
+                      }
+                      spaceBetween={5}
+                      navigation={true}
+                      thumbs={{ swiper: thumbsSwiper }}
+                      modules={[FreeMode, Navigation, Thumbs]}
+                      className="mySwiper2"
+                      initialSlide={indexSlider}
                     >
-                      <div className="single-p-tab-content">
-                        <p>
-                          Nunc facilisis sagittis ullamcorper. Proin lectus ipsum,
-                          gravida et mattis vulputate, tristique ut lectus. Sed et
-                          lorem nunc. Vestibulum ante ipsum primis in faucibus
-                          orci luctus et ultrices posuere cubilia Curae; Aenean
-                          eleifend laoreet congue. Vivamus adipiscing nisl ut
-                          dolor dignissim semper. Nulla luctus malesuada
-                          tincidunt. Class aptent taciti sociosqu ad litora
-                          torquent per conubia nostra, per inceptos himenaeos.
-                          Integer enim purus, posuere at ultricies eu, placerat a
-                          felis. Suspendisse aliquet urna pretium eros convallis
-                          interdum. Quisque in arcu id dui vulputate mollis eget
-                          non arcu. Aenean et nulla purus. Mauris vel tellus non
-                          nunc mattis lobortis.{" "}
+                      {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
+                        <SwiperSlide key={index} >
+                          <img src={productDataOne?.imgUrl[index]} />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
+                  <div className="nav product-page-slider">
+                    <Swiper
+                      onSwiper={(swiper) => {
+                        setThumbsSwiper(swiper)
+                      }}
+                      spaceBetween={5}
+                      slidesPerView={4}
+                      freeMode={true}
+                      watchSlidesProgress={true}
+                      modules={[FreeMode, Navigation, Thumbs]}
+                      className="mySwiper"
+                    >
+                      {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
+                        <SwiperSlide key={index}>
+                          <img src={productDataOne?.imgUrl[index]} onClick={() => setIndexSlider(index)}/>
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="single-product-details">
+                    <p className="product-name">{productDataOne?.name}</p>
+                    <div className="list-product-info">
+                      <div className="price-rating flex">
+                        <div className="star">
+                          <p style={{color: "#ffb21e",fontWeight:"bold"}}>5.0</p>
+                        </div>
+                        <div className="ratings">
+                          <i className="fa fa-star" style={{fontSize:14}}></i>
+                          <i className="fa fa-star "style={{fontSize:14}}></i>
+                          <i className="fa fa-star" style={{fontSize:14}}></i>
+                          <i className="fa fa-star" style={{fontSize:14}}></i>
+                          <i className="fa fa-star" style={{fontSize:14}}></i>
+                        </div>
+                        <p style={{fontSize: "20px"}}>
+                          |
+                        </p>
+                        <div className="evaluate">
+                          80 Đánh giá
+                        </div>
+                        <p style={{fontSize: "20px"}}>
+                          |
+                        </p>
+                        <div className="sold">
+                          <p>{productDataOne.sell_quantity} Đã Bán</p>
+                        </div>
+                      </div>
+                    </div>
+                        <p className="view">Số lượt truy cập: {productDataOne?.views}</p>
+                    <div className="avalable">
+                      <p>
+                        Tình trạng: <span> {productDataOne?.inventoryTotal > 0 ? "còn hàng" : "hết hàng"}</span>
+                      </p>
+                      <p>
+                        Số lượng: <span className="text-gray-600"> {productDataOne?.inventoryTotal}</span>
+                      </p>
+                    </div>
+                    <div className="item-price flex">
+                      <p className="price">{productDataOne?.price.toLocaleString()} VND</p>
+                      <p className="original_price">{productDataOne?.original_price.toLocaleString()} VND</p>
+                    </div>
+                    <div className="single-product-info">
+                      <p>{productDataOne?.description}</p>
+                      <div className="share">
+                        <img src="img/product/share.png" alt="" />
+                      </div>
+                    </div>
+
+
+   {/* sử lý kiểm tra sản phẩm tồn kho và  sản phẩm còn hoạt động hay không isDeleted===true là không bán còn isDeleted===false là đang bán */}
+                  {
+                    productDataOne?.isDeleted===true ? (
+                      <div>
+                        <p className="text-red-500" style={{ fontSize: "25px" }}>
+                          Sản phẩm đã ngừng bán
                         </p>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="single-product-tab-area cm">
-          <h2 className="cm_title">Comments</h2>
-
-          <div className="comments">
-            {comments?.map((comment: any) => (
-              <div className="comment_detail" key={comment._id}>
-                <div className="comment_detail_header">
-                  <div className="user_cm">
-                    <img className="user_cm_avt" src={comment.userId.imgUrl} alt="" />
-                    <div className="user_cm_inf">
-                      <p className="user_cm_name">@ {comment.userId.username}</p>
-                      <p className="date_created">{comment.createdAt}</p>
-                    </div>
-                  </div>
-                  {currentUser && currentUser?.role == 'admin' ? (
-                    <div className="favorites">
-                      <p onClick={() => handleDeleteComment(comment._id)}><MdDeleteForever /> <span>Delete</span></p>
-                    </div>
-                  ) : (
-                    currentUser && currentUser?._id === comment.userId._id && (
+                    ) : (
+                    productDataOne?.inventoryTotal === 0 ? (
                       <div>
-                        <div className="favorites">
-                          <p style={{ border: 'none' }} onClick={() => handleUpdateComment(comment)}><FaTools style={{ color: '#18a3f4' }} /> <span style={{ color: '#18a3f4' }}>Sửa</span></p>
+                        <p className="text-red-500" style={{fontSize: "25px"}}>Hết hàng</p>
+                      </div>
+                    ) : (
+                      <div>
+                          <h3 className="-mt-4">Chọn màu:</h3>
+                          <div className="flex space-x-2 my-4">{uniqueColorButtons}</div>
+
+                          <div className="select-catagory">
+                            <div>
+                              <h3 className="mt-3">Chọn kích cỡ:</h3>
+                              <div className="mb-3 space-x-3 flex">
+                                {getAllSize ? (
+                                  getAllSize?.map((size: any) => (
+                                    <button
+                                      disabled={!getColor || !getSizeByColor.includes(size.name)}
+                                      style={{ marginRight: 10 }}
+                                      onClick={() => ChooseSize(size.name)}
+                                      className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${
+                                        getSize === size.name ? 'border-green-600' : '' 
+                                      } ${
+                                          getColor && getSizeByColor.includes(size.name) ?  'bg-transparent' : 'bg-slate-300'
+                                      }`}
+                                    >
+                                      <p>{size.name}</p>
+                                      {getSize === size.name && (
+                                        <img
+                                          className="absolute top-[-7px] right-[-5px] w-3 h-3"
+                                          src="../../img/icons/correct.png"
+                                          alt=""
+                                        />
+                                      )}
+                                    </button>
+                                  ))
+                                ) : (
+                                  <p>Loading...</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="cart-item">
+                      <div className="price-box">
+                      </div>
+                      <div className="single-cart">
+                        <div className="cart-plus-minus">
+                          <div className="quantity-cart">
+                            <span style={{ fontSize: "16px" }}>Số lượng: </span>
+                            <div className="inp_group">
+                              <button>
+                                <MinusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Minus()} />
+                              </button>
+                              <input
+                                className="cart-plus-minus-box outline-0 h-10"
+                                type="text"
+                                name="qtybutton"
+                                // readOnly
+                                id="quanityBuy"
+                                value={getQuantityBuy}
+                                // max={productDataOne?.quantity}
+                                min={1}
+                                onChange={(e) => handleQuantityChange(e)}
+                              />
+                              <button>
+                                <PlusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Plus()} />
+                              </button>
+                            </div>
+                          </div>
                         </div>
-
-                        <div className="favorites">
-                          <p style={{ border: 'none' }} onClick={() => handleDeleteCommentUser(comment._id)}><MdDeleteForever /> <span>Xóa</span></p>
-                        </div>
-
-                        <Modal
-                          title="Xác nhận xóa"
-                          visible={isDeleteCommentUserModalVisible}
-                          onOk={() => handleDeleteCommentUserConfirmation(true)}
-                          onCancel={() => handleDeleteCommentUserConfirmation(false)}
-                          okText="Xóa"
-                          cancelText="Hủy"
-                          okButtonProps={{ style: { backgroundColor: 'red' } }}
-                        >
-                          Bạn có chắc chắn muốn xóa không?
-                        </Modal>
-
-                        <Modal
-                          title="Cập nhật bình luận"
-                          visible={isUpdateModalVisible}
-                          onOk={() => handleUpdateConfirmation(comment._id, updatedContent)}
-                          onCancel={() => setIsUpdateModalVisible(false)}
-                          okText="Cập nhật"
-                          cancelText="Hủy"
-                          style={{ marginTop: '140px' }}
-                        >
-                          <textarea
-                            style={{ padding: '10px 20px', outline: 'auto', width: '100%' }}
-                            value={updatedContent || comment?.content}
-                            onChange={(e) => setUpdatedContent(e.target.value)}
-                          />
-                        </Modal>
-
+                        <button className="cart-btn" onClick={handleAddToCart}>Thêm vào giỏ</button>
+                      </div>
+                          </div>
                       </div>
                     )
-                  )}
-                  <Modal
-                    title="Xác nhận xóa"
-                    visible={isDeleteModalVisible}
-                    onOk={() => handleDeleteConfirmation(true)}
-                    onCancel={() => handleDeleteConfirmation(false)}
-                    okText="Xóa"
-                    cancelText="Hủy"
-                    okButtonProps={{ style: { backgroundColor: "red" } }}
-                  >
-                    Chắc chắn muốn xóa comment của user này không?
-                  </Modal>
-
-                </div>
-                <div className="comment_content">
-                  <p>{comment.content}</p>
+                    ) 
+                  }
+                    {/* kết th sử lý kiểm tra sản phẩm tồn kho  */}      
+                  </div>
                 </div>
               </div>
-            ))}
+            </div>
+          </div>
+          {/* mô tả + đánh giá + comment */}
+          {/* mô tả + đánh giá + comment */}
+          <div className="single-product-tab-area">
+            <div className="container">
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="single-product-tab">
+                    <ul
+                      className="nav single-product-tab-navigation"
+                      role="tablist"
+                    >
+                      <li role="presentation">
+                        <a
+                          className="active"
+                          href="#tab1"
+                          aria-controls="tab1"
+                          role="tab"
+                          data-bs-toggle="tab"
+                        >
+                          Product Description
+                        </a>
+                      </li>
+                    </ul>
 
-            <div className="comment_form">
-              {currentUser?._id ?
-                (<form onSubmit={handleSubmit}>
-                  <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your comment" maxLength={200} cols={110} rows={2} />
-                  <button type="submit" disabled={isLoadingcm}>Send</button>
-                  {messagecm && <p>{messagecm}</p>}
-                </form>) : (<p>Vui lòng đăng nhập để bình luận.</p>)}
-
-
+                    {/* <!-- Tab panes --> */}
+                    <div className="tab-content single-product-page">
+                      <div
+                        role="tabpanel"
+                        className="tab-pane fade show active"
+                        id="tab1"
+                      >
+                        <div className="single-p-tab-content">
+                          <p>
+                            Nunc facilisis sagittis ullamcorper. Proin lectus ipsum,
+                            gravida et mattis vulputate, tristique ut lectus. Sed et
+                            lorem nunc. Vestibulum ante ipsum primis in faucibus
+                            orci luctus et ultrices posuere cubilia Curae; Aenean
+                            eleifend laoreet congue. Vivamus adipiscing nisl ut
+                            dolor dignissim semper. Nulla luctus malesuada
+                            tincidunt. Class aptent taciti sociosqu ad litora
+                            torquent per conubia nostra, per inceptos himenaeos.
+                            Integer enim purus, posuere at ultricies eu, placerat a
+                            felis. Suspendisse aliquet urna pretium eros convallis
+                            interdum. Quisque in arcu id dui vulputate mollis eget
+                            non arcu. Aenean et nulla purus. Mauris vel tellus non
+                            nunc mattis lobortis.{" "}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-        </div>
-        {/* ============================================ khu SP liên quan */}
-        <div className="container mb-20 productsRelative text-black">
-          <h3 style={{ marginTop: '300px' }}>Sản phẩm liên quan</h3>
-          <div className={`productShow mt-4 flex flex-wrap space-x-5 ${arrayPR.length > 3 ? "justify-center" : ""}`}>
-            {arrayPR.length ? arrayPR?.map((items: any) => {
-              return (
-                <div className="border rounded-2xl w-56 m-2 relative" key={items._id}>
+          <div className="single-product-tab-area cm">
+            <h2 className="cm_title">Comments</h2>
 
-                  <Link to={`/product/${items._id}`}><img className="w-56 h-48 rounded-lg hover:scale-110 duration-200" src={items.imgUrl[0]} alt="" /></Link>
-                  <p className="ml-2  text-gray-500">{items.name} <span className="float-right mr-2 text-gray-400 text-xs mt-2">SL: {items.quantity}</span></p>
-                  <div className="flex space-x-2">
-                    <p className="text-xs ml-2">{items.price.toLocaleString()} (VND)</p>
-                    {items.original_price > 0 && <p className="text-xs"><del>{items.original_price.toLocaleString()}</del></p>}
-                    {
-                      items.original_price > items.price ?
-                        <img className=" absolute w-10 top-2" src="../../img/IMAGE_CREATED/sale.png" alt="" />
-                        :
-                        ""
-                    }
+            <div className="comments">
+              {comments?.map((comment: any) => (
+                <div className="comment_detail" key={comment._id}>
+                  <div className="comment_detail_header">
+                    <div className="user_cm">
+                      <img className="user_cm_avt" src={comment.userId.imgUrl} alt="" />
+                      <div className="user_cm_inf">
+                        <p className="user_cm_name">@ {comment.userId.username}</p>
+                        <p className="date_created">{comment.createdAt}</p>
+                      </div>
+                    </div>
+                    {currentUser && currentUser?.role == 'admin' ? (
+                      <div className="favorites">
+                        <p onClick={() => handleDeleteComment(comment._id)}><MdDeleteForever /> <span>Delete</span></p>
+                      </div>
+                    ) : (
+                      currentUser && currentUser?._id === comment.userId._id && (
+                        <div>
+                          <div className="favorites">
+                            <p style={{ border: 'none' }} onClick={() => handleUpdateComment(comment)}><FaTools style={{ color: '#18a3f4' }} /> <span style={{ color: '#18a3f4' }}>Sửa</span></p>
+                          </div>
+
+                          <div className="favorites">
+                            <p style={{ border: 'none' }} onClick={() => handleDeleteCommentUser(comment._id)}><MdDeleteForever /> <span>Xóa</span></p>
+                          </div>
+
+                          <Modal
+                            title="Xác nhận xóa"
+                            visible={isDeleteCommentUserModalVisible}
+                            onOk={() => handleDeleteCommentUserConfirmation(true)}
+                            onCancel={() => handleDeleteCommentUserConfirmation(false)}
+                            okText="Xóa"
+                            cancelText="Hủy"
+                            okButtonProps={{ style: { backgroundColor: 'red' } }}
+                          >
+                            Bạn có chắc chắn muốn xóa không?
+                          </Modal>
+
+                          <Modal
+                            title="Cập nhật bình luận"
+                            visible={isUpdateModalVisible}
+                            onOk={() => handleUpdateConfirmation(comment._id, updatedContent)}
+                            onCancel={() => setIsUpdateModalVisible(false)}
+                            okText="Cập nhật"
+                            cancelText="Hủy"
+                            style={{ marginTop: '140px' }}
+                          >
+                            <textarea
+                              style={{ padding: '10px 20px', outline: 'auto', width: '100%' }}
+                              value={updatedContent || comment?.content}
+                              onChange={(e) => setUpdatedContent(e.target.value)}
+                            />
+                          </Modal>
+
+                        </div>
+                      )
+                    )}
+                    <Modal
+                      title="Xác nhận xóa"
+                      visible={isDeleteModalVisible}
+                      onOk={() => handleDeleteConfirmation(true)}
+                      onCancel={() => handleDeleteConfirmation(false)}
+                      okText="Xóa"
+                      cancelText="Hủy"
+                      okButtonProps={{ style: { backgroundColor: "red" } }}
+                    >
+                      Chắc chắn muốn xóa comment của user này không?
+                    </Modal>
+
+                  </div>
+                  <div className="comment_content">
+                    <p>{comment.content}</p>
                   </div>
                 </div>
-              )
-            }) : arrayPR.length > 0 ? "...loading" : <p className="text-center text-red-500">Hiện chưa có sản phẩm cùng loại !</p>}
+              ))}
+
+              <div className="comment_form">
+                {currentUser?._id ?
+                  (<form onSubmit={handleSubmit}>
+                    <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your comment" maxLength={200} cols={110} rows={2} />
+                    <button type="submit" disabled={isLoadingcm}>Send</button>
+                    {messagecm && <p>{messagecm}</p>}
+                  </form>) : (<p>Vui lòng đăng nhập để bình luận.</p>)}
+
+
+              </div>
+            </div>
+
+          </div>
+          {/* ============================================ khu SP liên quan */}
+          <div className="container mb-20 productsRelative text-black">
+            <h3 style={{ marginTop: '300px' }}>Sản phẩm liên quan</h3>
+            <div className={`productShow mt-4 flex flex-wrap space-x-5 ${arrayPR.length > 3 ? "justify-center" : ""}`}>
+              {arrayPR.length ? arrayPR?.map((items: any) => {
+                return (
+                  <div className="border rounded-2xl w-56 m-2 relative" key={items._id}>
+
+                    <Link to={`/product/${items._id}`}><img className="w-56 h-48 rounded-lg hover:scale-110 duration-200" src={items.imgUrl[0]} alt="" /></Link>
+                    <p className="ml-2  text-gray-500">{items.name} <span className="float-right mr-2 text-gray-400 text-xs mt-2">SL: {items.quantity}</span></p>
+                    <div className="flex space-x-2">
+                      <p className="text-xs ml-2">{items.price.toLocaleString()} (VND)</p>
+                      {items.original_price > 0 && <p className="text-xs"><del>{items.original_price.toLocaleString()}</del></p>}
+                      {
+                        items.original_price > items.price ?
+                          <img className=" absolute w-10 top-2" src="../../img/IMAGE_CREATED/sale.png" alt="" />
+                          :
+                          ""
+                      }
+                    </div>
+                  </div>
+                )
+              }) : arrayPR.length > 0 ? "...loading" : <p className="text-center text-red-500">Hiện chưa có sản phẩm cùng loại !</p>}
+            </div>
           </div>
         </div>
-      </div>}
+      }
     </div >
 
   );

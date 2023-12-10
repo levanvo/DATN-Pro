@@ -9,7 +9,8 @@ import Cart from "../models/cart.js"
 
 export const getProduct = async (req, res) => {
   try {
-    const products = await Product.find({ $or: [{ isDeleted: { $exists: false } }, { isDeleted: false }] })
+    // const products = await Product.find({ $or: [{ isDeleted: { $exists: false } }, { isDeleted: false }] }) // chỉ lấy ra sản phẩm có isDeleted ==false
+    const products = await Product.find().sort({createdAt: -1})
         .populate({
           path: "variants.size_id",
           model: "Size",
@@ -117,8 +118,9 @@ export const readProduct = async (req, res) => {
       console.error(error);
     }
         // Thêm trường quantityTotal, sell_quantity_total, inventory_total cho sản phẩm
-        data.quantity = 0;
+        data.quantityTotal = 0;
         data.sell_quantity = 0;
+        data.inventoryTotal = 0;
 
         // Duyệt qua từng biến thể và tính tổng
         for (const variant of data.variants) {
@@ -126,15 +128,16 @@ export const readProduct = async (req, res) => {
           variant.sell_quantity = variant.sell_quantity || 0;
 
           // Tính tổng quantityTotal và sell_quantity
-          data.quantity += variant.quantity;
+          data.quantityTotal  += variant.quantity;
           data.sell_quantity += variant.sell_quantity;
 
           // Thêm trường inventory cho mỗi biến thể
           variant.inventory = variant.quantity - variant.sell_quantity;
+          data.inventoryTotal += variant.inventory;
         }
 
         // Thêm trường inventory_total cho sản phẩm
-        data.inventory = data.quantity - data.sell_quantity;
+        data.inventoryTotal = data.quantityTotal - data.sell_quantity;
 
     return res.status(200).json(data)
   } catch (error) {
@@ -146,6 +149,20 @@ export const readProduct = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
+    const { error } = productSchema.validate(req.body, { abortEarly: false })
+    if (error) {
+      const errDetails = error.details.map((err) => err.message)
+      return res.status(400).json({
+        message: errDetails
+      })
+    }
+
+    const existingProduct = await Product.findOne({ name: req.body.name });
+    if (existingProduct) {
+      return res.status(400).json({
+        message: 'Tên sản phẩm đã tồn tại hãy thử tên khác',
+      });
+    }
     // Kiểm tra xem trường isDeleted có tồn tại trong req.body hay không
     if (!req.body.hasOwnProperty('isDeleted')) {
       // Nếu không tồn tại, thiết lập giá trị mặc định là false
@@ -153,7 +170,16 @@ export const createProduct = async (req, res) => {
     }
 
     const newProduct = await Product.create(req.body);
-
+    if (!newProduct) {
+      return res.json({
+          message:  "Thêm sản phẩm không thành công",
+      });
+  }
+  await Category.findByIdAndUpdate(newProduct.categoryId, {
+      $addToSet: {
+          products: newProduct._id,
+      },
+  });
     return res.json({
       message: "Thêm sản phẩm thành công",
       data: newProduct,
@@ -165,33 +191,8 @@ export const createProduct = async (req, res) => {
   }
 };
 
-export const getSizeByProductId = async (req, res) => {
-  try {
-    const data = await Product.findById(req.params.id).exec()
 
-    if (!data) {
-      return res.status(400).json({
-        message: "Không có sản phẩm nào",
-      })
-    }
-    const colorId = req.params.color;
-    const filteredData = data.variants.filter(item => item.color_id == colorId);
-    const sizeIds = filteredData.map(item => item.size_id);
-    const color_id = [
-      "6537d795e8b2481b1f10941c"
-    ];
-    const colors = await Color.find({
-      _id: { $nin: color_id }
-    });
-    return res.status(200).json([color_id,colors])
-  } catch (error) {
-    return res.status(404).json({
-      message: error.message,
-    })
-  }
-}
-
-
+// xóa sản phẩm tạm thời xóa mềm cập nhật lại isDeleted
 export const removeProduct = async (req, res) => {
   try {
     const { id } = req.params
@@ -209,22 +210,17 @@ export const removeProduct = async (req, res) => {
       })
     }
 
-    await Cart.updateMany(
-      { "products.productId": productToBeDeleted._id },
-      { $pull: { products: { productId: productToBeDeleted._id } } }
-    ).exec();
-    // Tạo một bản sao của sản phẩm trước khi xóa nó tạm thời
+    productToBeDeleted.isDeleted = true;
+    await productToBeDeleted.save();
 
-    const deletedProduct = new DeletedProduct(productToBeDeleted.toJSON());
+    // await Cart.updateMany(
+    //   { "products.productId": productToBeDeleted._id },
+    //   { $pull: { products: { productId: productToBeDeleted._id } } }
+    // ).exec();
 
-    // Lưu sản phẩm đã xóa vào bảng "deleted_products"
-    await deletedProduct.save()
-
-    // Sau đó, xóa sản phẩm khỏi bảng "Product"
-    await Product.findByIdAndRemove(req.params.id).exec()
 
     return res.status(200).json({
-      message: "Xoá sản phẩm thành công",
+      message: "Xóa sản phẩm thành công",
       productRemoved: productToBeDeleted,
     })
   } catch (error) {
@@ -278,23 +274,14 @@ export const restoreProduct = async (req, res) => {
       });
     }
 
-    // Tìm sản phẩm trong bảng "deleted_products"
-    const deletedProduct = await DeletedProduct.findById(id).exec()
-
-    if (!deletedProduct) {
-      return res.status(404).json({
-        message: "Không tìm thấy sản phẩm cần khôi phục",
+    const restoredProduct = await Product.findById(req.params.id)
+    if (!restoredProduct) {
+      return res.status(400).json({
+        message: "Sản phẩm không tồn tại trong database",
       })
     }
-
-    // Tạo một bản sao của sản phẩm đã xóa
-    const restoredProduct = new Product(deletedProduct.toJSON())
-
-    // Lưu sản phẩm đã khôi phục vào bảng "Product"
-    await restoredProduct.save()
-
-    // Xóa sản phẩm đã khôi phục khỏi bảng "deleted_products"
-    await DeletedProduct.findByIdAndRemove(id).exec()
+    restoredProduct.isDeleted = false;
+    await restoredProduct.save();
 
     return res.status(200).json({
       message: "Khôi phục sản phẩm thành công",
@@ -331,7 +318,7 @@ export const getAllDeletedProducts = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params
-    const product = await DeletedProduct.findByIdAndDelete(id)
+    const product = await Product.findByIdAndDelete(id)
     if (!product) {
       return res.status(400).json({
         message: "Không tìm thấy sản phẩm cần xóa"

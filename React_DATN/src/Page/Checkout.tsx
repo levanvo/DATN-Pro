@@ -40,14 +40,15 @@ const Checkout = () => {
     JSON.parse(localStorage.getItem("cart") || "[]")
   )
 
-
   //-----  DISCOUNT
 
   const { data: discounts } = useGetDiscountsQuery()
   const [discountCode, setDiscountCode] = useState("")
   const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null) // Update initial state value
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const enteredDiscount = Array.isArray(discounts) ? discounts?.find((d) => d.code === discountCode):"không có data discount"
+  const enteredDiscount = Array.isArray(discounts)
+    ? discounts?.find((d) => d.code === discountCode)
+    : "không có data discount"
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -58,15 +59,15 @@ const Checkout = () => {
   }
 
   const storedUser = localStorage.getItem("user")
-  const emailUser = storedUser ? JSON.parse(storedUser).email : "";
+  const emailUser = storedUser ? JSON.parse(storedUser).email : ""
 
-  const currentUser = Array.isArray(users) ? users.find((user) => user.email === emailUser) : null;
+  const currentUser = Array.isArray(users)
+    ? users.find((user) => user.email === emailUser)
+    : null
 
   const handleUseDiscount = (selectedDiscount: any) => {
     // Cập nhật giá trị discountCode
     setDiscountCode(selectedDiscount.code)
-
-    // Áp dụng mã giảm giá tự động
     setIsModalVisible(false)
   }
 
@@ -76,7 +77,8 @@ const Checkout = () => {
         message.warning("Mã giảm giá chưa đến thời gian sử dụng!")
         return
       }
-      const isDiscountUsed = currentUser?.discountUsed.includes(discountCode) || false
+      const isDiscountUsed =
+        currentUser?.discountUsed.includes(discountCode) || false
       if (isDiscountUsed) {
         message.warning("Mã giảm giá đã được sử dụng.")
       } else if (enteredDiscount.quantity > 0) {
@@ -102,13 +104,10 @@ const Checkout = () => {
     }
   }
 
-  // tổng tiền 
+  // tổng tiền
   const calculateTotalPrice = () => {
     let totalPrice = Array.isArray(selectedProducts)
-      ? selectedProducts.reduce(
-          (acc, product) => acc + product.price,
-          0
-        )
+      ? selectedProducts.reduce((acc, product) => acc + product.price, 0)
       : 0
 
     let discountType = null
@@ -246,15 +245,13 @@ const Checkout = () => {
   // Lấy danh sách quận/huyện dựa trên tỉnh/thành phố đã chọn
   const getDistricts = () => {
     if (selectedCity) {
-      const city = vietnamData.find((item) => item.value === selectedCity.value);
+      const city = vietnamData.find((item) => item.value === selectedCity.value)
       if (city) {
-        return city.districts;
+        return city.districts
       }
     }
-    return null; // Hoặc trả về một mảng trống hoặc xử lý phù hợp
-  };
-  
-  
+    return null // Hoặc trả về một mảng trống hoặc xử lý phù hợp
+  }
 
   //validate khi người dùng nhập dữ liệu từ bàn phím
   const handleInputChange = (field: any, value: any) => {
@@ -351,8 +348,8 @@ const Checkout = () => {
     handleInputBlur("district", selectedOption)
   }
 
-  console.log(selectedProducts);
-  
+  console.log(selectedProducts)
+
   // Sử lý tạo đơn hàng
   const handlePlaceOrder = async () => {
     try {
@@ -372,8 +369,8 @@ const Checkout = () => {
         }
 
         const orderData = {
-            cartId: cartId,
-            products: productId.map((id: string, index: number) => ({
+          cartId: cartId,
+          products: productId.map((id: string, index: number) => ({
             productId: id,
             quantity: quantity[index],
             price: selectedProducts[index].price,
@@ -406,7 +403,7 @@ const Checkout = () => {
               password: currentUser.password,
               email: currentUser.email,
               discountUsed: [...currentUser.discountUsed, String(discountCode)],
-            });
+            })
           }
         }
         if (enteredDiscount) {
@@ -434,8 +431,8 @@ const Checkout = () => {
         }
 
         const orderItemData = {
-            cartId: cartId,
-          products: productId.map((id: string|number, index: number) => ({
+          cartId: cartId,
+          products: productId.map((id: string | number, index: number) => ({
             productId: id,
             quantity: quantity[index],
             price: selectedProducts[index].price,
@@ -482,7 +479,9 @@ const Checkout = () => {
   // lựa chọn hình thức tt
   const [selectedMethod, setSelectedMethod] = useState("cod")
 
-  const handlePaymentMethodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePaymentMethodChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSelectedMethod(event.target.value)
   }
 
