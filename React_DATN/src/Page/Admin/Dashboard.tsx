@@ -41,10 +41,10 @@ const Dashboard = () => {
 
         let timeSP=new Date(views.createdAt);
         const daySP:number=timeSP.getDate();
-        if(daySP==day){
+        if(daySP==day && views.views>0){
           arrayToday.push(views);
         };
-        if((day-timeSP.getDate())<=7){
+        if((day-timeSP.getDate())<=7 && views.views>0){
           arrayWeek.push(views);
         };
         if((day-timeSP.getDate())<=30){
