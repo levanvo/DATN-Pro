@@ -19,18 +19,6 @@ export const productSchema = joi.object({
     "string.empty": "Danh mục không được để trống",
     "any.required": "Trường categoryId là bắt buộc",
   }),
-  size_id: joi.array().items(joi.string()).required().messages({
-    "string.empty": "Size không được để trống",
-    "any.required": "Trường size_id là bắt buộc",
-  }),
-  color_id: joi.array().items(joi.string()).required().messages({
-    "string.empty": "Màu không được để trống",
-    "any.required": "Trường color là bắt buộc",
-  }),
-  quantity: joi.number().required().messages({
-    "number.empty": "Số lượng sản phẩm không được để trống",
-    "any.required": "Trường quantity là bắt buộc",
-  }),
   view: joi.number(),
   arrayColor: joi.array(),
 })

@@ -4,6 +4,7 @@ const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      unique: true,
     },
     imgUrl: [
       {
@@ -46,7 +47,10 @@ const productSchema = new mongoose.Schema(
     quantityTotal: Number, // tổng số lượng
 
     inventoryTotal: Number, // tổng số lượng tồn kho
-    categoryId: String,
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+    },
     price: Number,
     original_price: Number,
     description: String,
@@ -56,7 +60,7 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    sell_quantity : Number, // lượt bán ra
+    sell_quantity : Number, // tổng lượt bán ra
     isDeleted: {
       type: Boolean,
       default: false,
