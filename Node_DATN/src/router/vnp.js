@@ -4,6 +4,7 @@ import config from 'config';
 import dateFormat from 'dateformat';
 import querystring from 'qs';
 import crypto from 'crypto';  
+import axios from 'axios';
 
 
 function sortObject(obj) {
@@ -21,9 +22,27 @@ function sortObject(obj) {
     }
     return sorted;
 }
-  
+router.post('/create_payment_url', async function (req, res, next) {
+    try {
+        // Gọi API để nhận URL
+        const apiResponse = await axios.get('https://monitoring-a3f31d970013.herokuapp.com/api/vn-pay', {
+            params: {
+                vnp_TmnCode: '8NBO05PQ',
+                vnp_HashSecret: 'EFVBLTRQYBHKQBTHSINNFSKKNDDKLCZL',
+                vnp_Returnurl: 'http://localhost:5173/order/alert',
+                vnp_Amount: req.body.totalPrice
+            }
+        });
+        // Chuyển hướng người dùng đến URL nhận được
+        return res.json({data: apiResponse.data.data});
+    } catch (error) {
+        // Xử lý lỗi nếu có
+        console.error('Error calling API:', error);
+        res.status(500).send('Internal Server Error: ' + error.message);
+    }
+});
 
-router.post('/create_payment_url', function (req, res, next) {
+router.post('/create_payment_url-v2', function (req, res, next) {
     var ipAddr = req.headers['x-forwarded-for'] ||
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
@@ -39,7 +58,6 @@ router.post('/create_payment_url', function (req, res, next) {
     var createDate = dateFormat(date, 'yyyymmddHHmmss');
     var orderId = dateFormat(date, 'HHmmss');
     var amount = req.body.totalPrice;
-    console.log('Received amount:', amount);
     var bankCode = req.body.bankCode;
     
     // var orderInfo = req.body.orderDescription;
