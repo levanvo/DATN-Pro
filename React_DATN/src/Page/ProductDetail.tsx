@@ -29,7 +29,6 @@ type Variant = {
   size_id: {
     name: string;
   };
-  // Other properties of your variant
 }
 
 const ProductDetail = () => {

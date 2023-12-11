@@ -5,6 +5,7 @@ import { IOrder } from '../../../Models/interfaces';
 import Loading from '../../../Component/Loading';
 import { Link } from 'react-router-dom';
 import { Option } from 'antd/es/mentions';
+import moment from 'moment';
 
 const BillList = () => {
   const { data, isLoading, error } = useGetAllOrdersQuery(undefined);
@@ -14,8 +15,8 @@ const BillList = () => {
   const dataSource = data?.map((order: IOrder) => ({
     key: order._id,
     code_order: order?.code_order,
-    userId: order?.userId?.username || "",
-    createdAt: order?.createdAt,
+    userId: order?.userId?.username || "Khách hàng",
+    createdAt: moment(order?.createdAt).format('DD-MM-YYYY | HH:mm'),
     status: order?.status,
   }));
 
@@ -31,28 +32,22 @@ const BillList = () => {
 
   const columns = [
     {
-      title: 'Code_order',
+      title: 'Mã đơn hàng',
       dataIndex: 'code_order',
       key: 'code_order',
     },
-    // {
-    //   title: 'Address',
-    //   render: (record: any) =>
-    //     `${record.address.city}, ${record.address.district}, ${record.address.location}`,
-    //   key: 'address',
-    // },
     {
-      title: 'Create by',
+      title: 'Tên người dùng',
       dataIndex: 'userId',
       key: 'userId',
     },
     {
-      title: 'Created At',
+      title: 'Ngày đặt hàng',
       dataIndex: 'createdAt',
       key: 'createdAt',
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (status: any, record: IOrder) => (
@@ -70,7 +65,7 @@ const BillList = () => {
       ),
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       render: (record: any) => (
         <Link to={`/admin/bill/detail/${record.key}`}>Chi tiết</Link>
       ),

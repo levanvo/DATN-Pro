@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetOneOrdersQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
+import { useGetOrderByIdQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
 import { useGetOneUserQuery } from '../../../Services/Api_User';
 import { Button, Popconfirm, message } from 'antd';
+import moment from 'moment';
+
 
 const DetailBill = () => {
     const { id } = useParams();
-    const { data } = useGetOneOrdersQuery(id || "");
+    const { data } = useGetOrderByIdQuery(id || "");
     // const { data: user } = useGetOneUserQuery(data?.userId)
     const navigate = useNavigate();
 
@@ -76,11 +78,10 @@ const DetailBill = () => {
                                 <div style={{ marginBottom: 40 }}>
                                     <h2>Thông tin đơn hàng</h2>
                                     <p>Mã đơn hàng: {data?.code_order}</p>
-                                    <p>Người tạo: {data?.userId?.username}</p>
+                                    <p>Người tạo: {data?.userId?.username || "Khách hàng"}</p>
                                     <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
                                     <p>Tổng giá trị đơn hàng: {data?.totalPrice}</p>
-                                    <p>Ngày tạo: {data?.createdAt}</p>
-                                    <p>Ngày cập nhật: {data?.updatedAt}</p>
+                                    <p>Ngày đặt hàng: {moment(data?.createdAt).format('DD-MM-YYYY | HH:mm')}</p>
                                 </div>
                                 <div>
                                     <h2>Địa chỉ giao hàng</h2>
@@ -102,14 +103,13 @@ const DetailBill = () => {
                             <ul>
                                 {data?.products?.map((product: any) => (
                                     <li key={product?._id}>
-                                        <p>Mã sản phẩm: {product?.productId?._id}</p>
                                         <p>Tên sản phẩm: {product?.productId?.name}</p>
                                         <p>Số lượng: {product?.quantity}</p>
                                         <p>Giá: {product?.price}</p>
                                         <p style={{ display: 'flex' }}>Màu sắc: <div style={{ backgroundColor: product?.color, width: '20px', height: '20px', marginLeft: 20 }}></div></p>
                                         <p>Size: {product?.size}</p>
-                                        {product?.productId?.imgUrl && (
-                                            <img src={product?.productId?.imgUrl?.[0]} alt={product?.productId?.name} style={{ width: '100px', height: '100px' }} />
+                                        {product?.imgUrl && (
+                                            <img src={product?.imgUrl[0]} style={{ width: '100px', height: '100px' }} />
                                         )}
                                     </li>
                                 ))}
