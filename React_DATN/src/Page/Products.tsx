@@ -18,11 +18,11 @@ const Products = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchTerm = searchParams.get('search');
-  console.log("searchKeyWord: ", searchTerm);
+  // console.log("searchKeyWord: ", searchTerm);
 
   useEffect(() => {
     // Cập nhật lại searchTerm mỗi khi searchTerm hoặc location.search thay đổi
-    console.log('Search term changed:', searchTerm);
+    // console.log('Search term changed:', searchTerm);
   }, [searchTerm, location.search]);
 
   //Lọc sản phẩm theo bộ lọc
@@ -30,6 +30,7 @@ const Products = () => {
   const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
   const [selectedPriceRange, setSelectedPriceRange] = useState<string | undefined>(undefined);
+  
 
   const handlePriceRangeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
@@ -51,9 +52,10 @@ const Products = () => {
   };
 
   const filteredProduct = producData ? producData.filter((product: IProduct) => {
+  
     const isCategoryMatch = !selectedCategory || product.categoryId === selectedCategory;
-    const isSizeMatch = !selectedSize || (Array.isArray(product.size_id) ? product.size_id.includes(selectedSize) : product.size_id === selectedSize);
-    const isColorMatch = !selectedColor || (Array.isArray(product.color_id) ? product.color_id.includes(selectedColor) : product.color_id === selectedColor);
+    const isSizeMatch = !selectedSize || product.variants?.some(variant => variant.size_id._id === selectedSize)
+    const isColorMatch = !selectedColor || product.variants?.some(variant => variant.color_id._id === selectedColor);
     const isPriceRangeMatch = !selectedPriceRange || isPriceInRange(product.price, selectedPriceRange);
     const isNameMatch = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase());
 

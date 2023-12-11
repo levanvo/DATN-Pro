@@ -127,7 +127,7 @@ const Layout_Admin: React.FC = () => {
         <Layout>
           <Header className="headerAdmin" style={{ height: 80, width: "100%" }} >
             <div className="account mt-2">
-              <div className="flex justify-content-center align-items-center account_hover">
+              <div className="flex justify-content-center align-items-center account_hover mt-2">
                 <img src={user?.imgUrl} className="account_avt" />
                 <h4 className="mt-2 mr-2 ml-2">{user?.username}</h4>
                 <FaAngleDown />
