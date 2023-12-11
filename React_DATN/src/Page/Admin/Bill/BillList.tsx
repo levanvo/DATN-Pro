@@ -15,7 +15,7 @@ const BillList = () => {
     key: order._id,
     code_order: order?.code_order,
     userId: order?.userId?.username || "",
-    createdAt: order?.createdAt,
+    createdAt: new Date(order?.createdAt).toLocaleString(),
     status: order?.status,
   }));
 

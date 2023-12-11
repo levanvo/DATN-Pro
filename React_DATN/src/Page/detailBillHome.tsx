@@ -76,8 +76,8 @@ const BillDetailHome = () => {
                                 <p>Người tạo: {data?.userId?.username}</p>
                                 <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
                                 <p>Tổng giá trị đơn hàng: {data?.totalPrice}</p>
-                                <p>Ngày tạo: {data?.createdAt}</p>
-                                <p>Ngày cập nhật: {data?.updatedAt}</p>
+                                <p>Ngày tạo: {new Date(data?.createdAt).toLocaleString()}</p>
+                                <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p>
 
                                 <h2>Địa chỉ giao hàng</h2>
                                 {data?.address && (

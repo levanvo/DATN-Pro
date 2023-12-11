@@ -54,11 +54,11 @@ const DetailBill = () => {
             case '0':
                 return { color: 'orange' };
             case '1':
-                return { color: 'blue' }; 
+                return { color: 'blue' };
             case '2':
                 return { color: 'red' };
             case '3':
-                return { color: 'brown' }; 
+                return { color: 'brown' };
             case '4':
                 return { color: 'blue' };
             default:
@@ -79,8 +79,8 @@ const DetailBill = () => {
                                     <p>Người tạo: {data?.userId?.username}</p>
                                     <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
                                     <p>Tổng giá trị đơn hàng: {data?.totalPrice}</p>
-                                    <p>Ngày tạo: {data?.createdAt}</p>
-                                    <p>Ngày cập nhật: {data?.updatedAt}</p>
+                                    <p>Ngày tạo: {new Date(data?.createdAt).toLocaleString()}</p>
+                                    <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p>
                                 </div>
                                 <div>
                                     <h2>Địa chỉ giao hàng</h2>
