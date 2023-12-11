@@ -2463,9 +2463,9 @@ ul.address li span {
     text-transform: uppercase;
 }
 
-.list-product-info .price-rating {
+/* .list-product-info .price-rating {
     margin: 5px 0 10px;
-}
+} */
 
 .avalable p {
     font-size: 13px;
@@ -2477,15 +2477,28 @@ ul.address li span {
     font-weight: 700;
 }
 
-.item-price span {
+/* .item-price span {
     color: #333;
     display: block;
     font-size: 18px;
     font-weight: 700;
     margin: 15px 0;
+} */
+
+.item-price>.original_price{
+    font-size: 15px;
+    margin-left: 20px;
+    text-decoration: line-through;
+    margin-top: 2px;
+}
+.item-price>.price{
+    font-weight: 700;
+    color: #333;
+    font-size: 20px;
 }
 
 .item-price {
+    margin-top: 20px;
     border-bottom: 1px dashed #ccc;
     margin-bottom: 15px;
 }
@@ -2579,12 +2592,14 @@ ul.address li span {
 }
 
 .single-cart .cart-btn {
+    width: 150px;
+    height: 30px;
     background-color: transparent;
     border: 1px solid #ccc;
     color: #888;
     display: inline-block;
     margin-left: 30px;
-    padding: 6px 20px;
+    /* padding: 6px 20px; */
     text-transform: uppercase;
     transition: all 0.3s ease 0s;
 }
@@ -2601,7 +2616,7 @@ ul.address li span {
     margin: 5px;
     position: relative;
     text-align: center;
-    width: 55px;
+    width: 75px;
 }
 
 .qtybutton {

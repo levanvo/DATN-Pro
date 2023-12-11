@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 
 export const getAllDiscountCodes = async (req, res) => {
   try {
-    const discountCodes = await DiscountCode.find()
+    const discountCodes = await DiscountCode.find().sort({ createdAt: -1 })
     if (discountCodes.length === 0) {
       return res.json({
         message: "Failed to get Discount Code list!",

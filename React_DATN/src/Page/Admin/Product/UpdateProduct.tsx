@@ -46,8 +46,7 @@ const UpdateProduct = () => {
             name: productData?.name,
             original_price: productData?.original_price,
             price: productData?.price,
-            categoryId: (productData?.categoryId as any)?._id,
-            quantity: productData?.quantity,
+            categoryId: productData?.categoryId,
             description: productData?.description
         })
     },[productData])
@@ -92,13 +91,14 @@ const UpdateProduct = () => {
         ]}>
         <Input />
       </Form.Item>
+
       <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true,message: "Danh mục không để trống"  }]}>
         <Select
           allowClear
-          defaultValue={(productData?.categoryId as any)?.name}
+          // defaultValue={(productData?.categoryId as any)?.name}
         >
            {categoryData && categoryData.length > 0 ? (
-        categoryData.map((category: ICategory) => (
+        categoryData?.map((category: ICategory) => (
           <Option key={category._id} value={category._id}>
             {category.name}
           </Option>
@@ -127,37 +127,29 @@ const UpdateProduct = () => {
         <Input />
       </Form.Item>
 
-      <Form.Item name="price" label="Giá hiện tại"  rules={[
-          { required: true , message: "Giá hiện tại được để trống"},
+      <Form.Item
+        name="price"
+        label="Giá hiện tại"
+        rules={[
+          { required: true, message: 'Giá hiện tại không được để trống' },
           {
-            validator: (_,values) => {
-              if(!isNaN(values)){
-                return Promise.resolve()
-              }else{
-                return Promise.reject(new Error("Giá phải là số"))
+            validator: (_, values) => {
+              const originalPrice = form.getFieldValue('original_price');
+              if (!isNaN(values)) {
+                if (!isNaN(originalPrice) && parseFloat(values) > parseFloat(originalPrice)) {
+                  return Promise.reject(new Error('Giá hiện tại không được lớn hơn giá gốc'));
+                }
+                return Promise.resolve();
+              } else {
+                return Promise.reject(new Error('Giá hiện tại phải là số'));
               }
-            }
-          }
-        
-        ]}>
+            },
+          },
+        ]}
+      >
         <Input />
       </Form.Item>
 
-      <Form.Item name="quantity" label="Số lượng" 
-        rules={[
-          { required: true , message: "Số lượng không được để trống"},
-          {
-            validator: (_,values) => {
-              if(!isNaN(values)){
-                return Promise.resolve()
-              }else{
-                return Promise.reject(new Error("Số lượng phải là số"))
-              }
-            }
-          }
-        ]}>
-        <Input />
-      </Form.Item>
 
       <Form.Item label="Mô tả sản phẩm" name="description">
           <TextArea rows={4} />

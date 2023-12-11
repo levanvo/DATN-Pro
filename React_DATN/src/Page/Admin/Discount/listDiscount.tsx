@@ -46,8 +46,7 @@ const ListDiscount = () => {
 
     const intervalId = setInterval(() => {
       removeExpiredOrDepletedDiscounts()
-    }, 5 * 60 * 1000) // 5 phút chạy 1 lần
-
+    }, 5 * 60 * 1000)
     return () => clearInterval(intervalId)
   }, [data, removeDiscount])
 
@@ -177,7 +176,7 @@ const ListDiscount = () => {
         <p style={{}}>
           {moment(startDate)
             .tz("Asia/Ho_Chi_Minh")
-            .format("YYYY-MM-DD HH:mm A")}
+            .format("YYYY-MM-DD HH:mm a")}
         </p>
       ),
     },
@@ -188,7 +187,7 @@ const ListDiscount = () => {
         <p style={{}}>
           {moment(expiresAt)
             .tz("Asia/Ho_Chi_Minh")
-            .format("YYYY-MM-DD HH:mm A")}
+            .format("YYYY-MM-DD HH:mm a")}
         </p>
       ),
     },

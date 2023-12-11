@@ -6,31 +6,20 @@ import mongoose from "mongoose"
 export const getCart = async(req,res) =>{
     try {
         // Lấy giỏ hàng dựa trên userId
-        const cart = await Cart.findOne({ userId: req.user._id })
+        if(req.user){
+          const cart = await Cart.findOne({ userId: req.user._id })
         .populate({
-          path: "products.productId",
-          model: "Product",
-          populate: [
-            {
-              path: "size_id",
-              model: "Size"
-            },
-            {
-              path: "color_id",
-              model: "Color"
-            },
-            {
-                path: "categoryId",
-                model: "Category"
-            }
-          ]
-        })
-    
-        if (!cart) {
-          return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
+          path: 'products.productId',
+          model: 'Product', 
+          select: 'name imgUrl price isDeleted variants', 
+        });
+      
+          if (!cart) {
+            return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
+          }
+      
+          res.json(cart);
         }
-    
-        res.json(cart);
       } catch (error) {
         res.status(500).json({
           message: "Đã xảy ra lỗi khi lấy giỏ hàng.",
@@ -39,7 +28,7 @@ export const getCart = async(req,res) =>{
       }
 }
 export const addToCart = async (req, res) => {
-  const { productId, color, size, quantity } = req.body;
+  const { productId, color, size, quantity,price,imgUrl } = req.body;
   const userId = req.user._id;
   try {
     let cart = await Cart.findOne({ userId });
@@ -49,13 +38,14 @@ export const addToCart = async (req, res) => {
     }
 
     if (!cart) {
-      cart = new Cart({ userId, products: [{ productId, color, size, quantity }] });
+      cart = new Cart({ userId, products: [{ productId, color, size, quantity,price,imgUrl }] });
     }else{
       const existingProduct = cart.products.find(
         (item) => item.productId.equals(productId) && item.color === color && item.size === size
       );
       if(existingProduct){
       existingProduct.quantity += quantity;
+      existingProduct.price += price*quantity
       }else{
         if (!mongoose.Types.ObjectId.isValid(productId)) {
           return res.status(400).json({ message: "Địa chỉ sản phẩm không hợp lệ." });
@@ -64,7 +54,7 @@ export const addToCart = async (req, res) => {
         if (!productDocument) {
           return res.status(404).json({ message: "Không tìm thấy sản phẩm." });
         }
-        cart.products.unshift({ productId, color, size, quantity });
+        cart.products.unshift({ productId, color, size, quantity,price,imgUrl });
       }
     }
 
@@ -81,9 +71,9 @@ export const addToCart = async (req, res) => {
   }
 }
 
-
-export const updateCart = async (req, res) => {
-  const { productId, color, size, quantity } = req.body;
+// hàm cập nhật giảm số lượng tính lại tổng tiền
+export const updateMinus = async (req, res) => {
+  const { productId, color, size, quantity,price } = req.body;
   const userId = req.user._id;
   try {
     const cart = await Cart.findOne({ userId });
@@ -92,7 +82,7 @@ export const updateCart = async (req, res) => {
       return res.status(404).json({ message: "Giỏ hàng của bạn đang trống." });
     }
 
-    if (!productId || !quantity || !size || !color) {
+    if (!productId || !quantity || !size || !color || !price) {
       return res.status(400).json({ message: "Dữ liệu sản phẩm không hợp lệ." });
     }
 
@@ -107,13 +97,52 @@ export const updateCart = async (req, res) => {
       }
 
       existingProduct.quantity -= quantity;
-
+      existingProduct.price -= price
+      
       if (existingProduct.quantity <= 0) {
         // Nếu số lượng sản phẩm trong giỏ hàng bằng 0, hãy loại bỏ nó khỏi giỏ hàng
         cart.products = cart.products.filter(
           (item) => !item.productId.equals(productId) || item.color !== color || item.size !== size
         );
       }
+      
+      await cart.save();
+      return res.status(200).json({
+        message: 'Sản phẩm trong giỏ hàng đã được cập nhật',
+        cart
+      });
+    } else {
+      return res.status(404).json({ message: "Không tìm thấy sản phẩm trong giỏ hàng." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+}
+
+// hàm cập nhật tăng số lượng tính lại tổng tiền
+export const updateIncrease = async (req, res) => {
+  const { productId, color, size, quantity,price } = req.body;
+  const userId = req.user._id;
+  try {
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: "Giỏ hàng của bạn đang trống." });
+    }
+
+    if (!productId || !quantity || !size || !color || !price) {
+      return res.status(400).json({ message: "Dữ liệu sản phẩm không hợp lệ." });
+    }
+
+    const existingProduct = cart.products.find(
+      (item) => item.productId.equals(productId) && item.color === color && item.size === size
+    );
+
+    if (existingProduct) {
+      existingProduct.quantity += quantity;
+      existingProduct.price += price
+
       
       await cart.save();
       return res.status(200).json({

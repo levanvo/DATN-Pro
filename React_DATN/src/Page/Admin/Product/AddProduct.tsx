@@ -11,15 +11,13 @@ import {
 } from "antd"
 import { PlusOutlined } from "@ant-design/icons"
 import axios from "axios"
-import { IProduct, IColor } from "../../../Models/interfaces"
+import { IProduct } from "../../../Models/interfaces"
 import type { UploadFile } from "antd/es/upload/interface"
 import type { RcFile, UploadProps } from "antd/es/upload"
 import { useAddProductMutation } from "../../../Services/Api_Product"
 import { useGetAllCategoryQuery } from "../../../Services/Api_Category"
 import Loading from "../../../Component/Loading"
 import { useNavigate } from "react-router-dom"
-import { useGetAllSizeQuery } from "../../../Services/Api_Size"
-import { useGetColorsQuery } from "../../../Services/api_Color"
 
 const { TextArea } = Input
 
@@ -39,14 +37,13 @@ const AddProduct = () => {
   const navigate = useNavigate()
   const [addProduct, { error }] = useAddProductMutation()
   const { data: getAllCategory, isLoading } = useGetAllCategoryQuery()
-  const { data: getAllSize, isLoading: isLoadingSize } = useGetAllSizeQuery()
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewImage, setPreviewImage] = useState("")
   const [previewTitle, setPreviewTitle] = useState("")
   const [isLoadingScreen, setIsLoadingScreen] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
-  const { data:getAllColor } = useGetColorsQuery()
+  const [form] = Form.useForm();
 
   const handleCancel = () => setPreviewOpen(false)
 
@@ -113,9 +110,6 @@ const AddProduct = () => {
           imgUrl: imageUrls,
           categoryId: values.categoryId,
           description: values.description,
-          color_id: values.color_id,
-          size_id: values.size_id,
-          quantity: values.quantity,
         }
 
         await addProduct(newProduct)
@@ -146,6 +140,7 @@ const AddProduct = () => {
         wrapperCol={{ span: 14 }}
         layout="horizontal"
         name="control-ref"
+        form={form}
         onFinish={onFinish}
         style={{ maxWidth: 800, margin: "0 auto" }}
       >
@@ -169,7 +164,7 @@ const AddProduct = () => {
           ]}
         >
           <Select style={{ width: 200 }} loading={isLoading}>
-            {getAllCategory ? (
+            {Array.isArray(getAllCategory) ? (
               getAllCategory?.map((category: any) => (
                 <Select.Option key={category._id} value={category._id}>
                   {category.name}
@@ -181,29 +176,6 @@ const AddProduct = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Color" name="color_id" rules={[{ required: true }]}>
-          <Select mode="multiple" style={{ width: 200 }} loading={isLoading}>
-            {getAllColor?.map((color: IColor) => (
-              <Select.Option key={color._id} value={color._id}>
-                {color.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item label="Size" name="size_id" rules={[{ required: true }]}>
-          <Select mode="multiple" style={{ width: 200 }} loading={isLoadingSize}>
-            {getAllSize ? (
-              getAllSize?.map((size: any) => (
-                <Select.Option key={size._id} value={size._id}>
-                  {size.name}
-                </Select.Option>
-              ))
-            ) : (
-              <p>Loading...</p>
-            )}
-          </Select>
-        </Form.Item>
 
         <Form.Item
           name="original_price"
@@ -225,42 +197,27 @@ const AddProduct = () => {
         </Form.Item>
 
         <Form.Item
-          name="price"
-          label="Giá hiện tại"
-          rules={[
-            { required: true, message: "Giá hiện tại không được để trống" },
-            {
-              validator: (_, values) => {
-                if (!isNaN(values)) {
-                  return Promise.resolve()
-                } else {
-                  return Promise.reject(new Error("Giá hiện tại phải là số"))
+        name="price"
+        label="Giá hiện tại"
+        rules={[
+          { required: true, message: 'Giá hiện tại không được để trống' },
+          {
+            validator: (_, values) => {
+              const originalPrice = form.getFieldValue('original_price');
+              if (!isNaN(values)) {
+                if (!isNaN(originalPrice) && parseFloat(values) > parseFloat(originalPrice)) {
+                  return Promise.reject(new Error('Giá hiện tại không được lớn hơn giá gốc'));
                 }
-              },
+                return Promise.resolve();
+              } else {
+                return Promise.reject(new Error('Giá hiện tại phải là số'));
+              }
             },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name="quantity"
-          label="Số lượng"
-          rules={[
-            { required: true, message: "Số lượng không được để trống" },
-            {
-              validator: (_, values) => {
-                if (!isNaN(values)) {
-                  return Promise.resolve()
-                } else {
-                  return Promise.reject(new Error("Số lượng phải là số"))
-                }
-              },
-            },
-          ]}
-        >
-          <InputNumber />
-        </Form.Item>
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
 
         <Form.Item label="Mô tả sản phẩm" name="description">
           <TextArea rows={4} />

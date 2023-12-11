@@ -1,9 +1,15 @@
 import Order from "../models/order.js"
 import Cart from "../models/cart.js"
+import Product from "../models/product.js"
+import mongoose from "mongoose";
+import Color from "../models/color.js"
+import Size from "../models/size.js"
+
+
 
 export const getAllOrders = async (req, res) => {
     try {
-        const orders = await Order.find().populate("products.productId").populate({path: "userId", select: "username"});
+        const orders = await Order.find().populate("products.productId").populate({path: "userId", select: "username"}).sort({ createdAt: -1 });
         if(orders.length === 0){
             return res.status(400).json({
                 message: "Không lấy được danh sách Order!"
@@ -32,17 +38,19 @@ export const getOneOrders = async (req, res) => {
 };
 
 export const getUserOrders = async (req, res) => {
-    const userId = req.user._id;
+    const userId = req.user ? req.user._id : null;
 
     try {
-        const orders = await Order.find({ userId }).populate("products.productId").populate({path: "userId", select: "username"});
-        if(orders.length === 0){
-            return res.status(400).json({
-                message: "Bạn chưa có đơn hàng nào"
-            })
+        if(req.user){
+            const orders = await Order.find({ userId }).populate("products.productId").populate({path: "userId", select: "username"});
+            if(orders.length === 0){
+                return res.status(400).json({
+                    message: "Bạn chưa có đơn hàng nào"
+                })
+            }
+            return res.status(200).json(orders);
         }
 
-        return res.status(200).json(orders);
     } catch (error) {
         return res.status(500).json({ message: "Lỗi khi lấy danh sách đơn hàng", error });
     }
@@ -51,7 +59,7 @@ export const getUserOrders = async (req, res) => {
 
 
 export const getOneOrder = async (req, res) => {
-    const userId = req.user._id;
+    const userId = req.user ? req.user._id : null;
     const orderId = req.params.id;
 
     try {
@@ -86,34 +94,81 @@ const generateRandomCode = () => {
 
 
 export const createOrder = async (req, res) => {
-    const userId = req.user._id;
+    const userId = req.user ? req.user._id : null;
     try {
         if (!req.body) {
             return res.status(400).json("Hãy thêm thông tin order cần tạo !");
-        };
+        }
 
         const codeOrder = generateRandomCode();
 
         const order = await Order.create({ ...req.body, userId, code_order: codeOrder });
-
         const productIdsToDelete = req.body.cartId;
-        for (const productIdToDelete of productIdsToDelete) {
-            
-            await Cart.updateMany(
-                { userId: req.user._id, 'products._id': productIdToDelete },
-                { $pull: { products: { _id: productIdToDelete } } }
-            );
+
+        if (req.user) {
+            for (const productIdToDelete of productIdsToDelete) {
+                await Cart.updateMany(
+                    { userId: req.user._id, 'products._id': productIdToDelete },
+                    { $pull: { products: { _id: productIdToDelete } } }
+                );
+            }
         }
-        
+
+        // Update sell_quantity for each product in the order
+        await Promise.all(order.products.map(async (product) => {
+            const colorId = await Color.findOne({ unicode: product.color }).select('_id');
+        const sizeId = await Size.findOne({ name: product.size }).select('_id');
+
+        const filter = {
+            _id: product.productId,
+            'variants.size_id': sizeId,
+            'variants.color_id': colorId
+        };
+
+
+            const existingProduct = await Product.findOne(filter);
+
+
+            if (!existingProduct) {
+                console.log('không tìm thấy biến thể sản phẩm. Bỏ qua cập nhật cho:', product);
+                return null; 
+            }
+
+            const updatedProduct = await Product.findOneAndUpdate(
+                {
+                    _id: product.productId,
+                    'variants': {
+                        $elemMatch: {
+                            'size_id': sizeId,
+                            'color_id': colorId
+                        }
+                    }
+                },
+                {
+                    $inc: {
+                        'variants.$.sell_quantity': product.quantity,
+                        'variants.$.inventory': product.quantity - (product.sell_quantity || 0)
+                    }
+                },
+                { new: true }
+            );
+
+            updatedProduct.save();
+        }));
 
         return res.status(200).json({
             message: "Đã thêm 1 order",
             order
         });
     } catch (error) {
-        return res.status(404).json({ mesage: "lỗi thêm 1 order !", err: error.message })
+        console.error("Error creating order:", error);
+        return res.status(404).json({ message: "Lỗi thêm 1 order !", err: error.message });
     }
 };
+
+
+
+
 
 export const updateOrder = async (req, res) => {
     try {

@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { Divider, Table, Popconfirm, message, Button, Input, Menu, Dropdown } from 'antd';
+import { Divider, Table, Popconfirm, message, Button, Input, Menu, Dropdown, Modal , Tag} from 'antd';
 import { useDeleteProductMutation, useGetAllProductQuery } from '../../../Services/Api_Product';
 import { IProduct } from '../../../Models/interfaces';
-import { QuestionCircleOutlined, FilterOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, FilterOutlined, ClusterOutlined } from '@ant-design/icons';
 import Loading from '../../../Component/Loading';
+import { Collapse } from 'antd';
 import { DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
-import { useGetColorsQuery } from '../../../Services/api_Color';
+import { useGetColorsQuery } from '../../../Services/Api_Color';
 import { useGetAllSizeQuery } from '../../../Services/Api_Size';
 
 
 const { Search } = Input;
+const { Panel } = Collapse;
 
 
 // rowSelection object indicates the need for row selection
@@ -29,9 +31,9 @@ const ProductList = () => {
   const [isResetClicked, setIsResetClicked] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
-  const { data:getAllColor } = useGetColorsQuery()
-  const {data: getAllSize} = useGetAllSizeQuery()
 
+  console.log("getAllProduct",getAllProduct);
+  
 
   const rowSelection = {
     selectedRowKeys: selectedProductId,
@@ -43,7 +45,7 @@ const ProductList = () => {
   // Xóa sản phẩm đã chọn
   const deleteMultipleProducts = async () => {
     try {
-      
+
       if (selectedProductId.length === 0) {
         message.error("Vui lòng chọn các category muốn xoá!")
         return
@@ -58,17 +60,28 @@ const ProductList = () => {
     setIsLoadingDelete(false)
   }
 
+  const filteredProducts = (getAllProduct || []).filter(
+    (product: IProduct) => product.isDeleted === false
+  );
+
   //data trả về
-  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId,color_id,size_id }: IProduct) => ({
-    key: _id,
-    name,
-    original_price,
-    price,
-    imgUrl,
-    categoryId,
-    color_id,
-    size_id
-  }))
+  const dataSource = filteredProducts?.map(({ _id, name, original_price, price, imgUrl, categoryId, variants,inventoryTotal,sell_quantity }: IProduct) => {
+    const colorIds = variants?.map((c) => c.color_id).flat()
+    const sizeIds = variants?.map((s) => s.size_id).flat()
+    return {
+      key: _id,
+      name,
+      original_price,
+      price,
+      imgUrl,
+      categoryId,
+      variants,
+      color_id: colorIds,
+      size_id: sizeIds,
+      inventoryTotal: inventoryTotal,
+      sell_quantity: sell_quantity
+    }
+  })
 
   // hàm thực hiện đóng và mở chức năng lọc theo giá
   const handleFilterVisibleChange = (visible: any) => {
@@ -126,6 +139,85 @@ const ProductList = () => {
     </Menu>
   );
 
+  const getVariant = (record: any) => {
+    var variants = record?.variants?.map((variant: any) => {
+      console.log("Variant Object:", variant);
+      return {
+        key: variant._id,
+        name: record.name,
+        imgUrl: variant.imgUrl[0], // Assuming imgUrl is an array and you want the first element
+        size: variant?.size_id?.name,
+        color: {
+          name: variant.color_id?.name || 'N/A',
+          unicode: variant.color_id?.unicode || 'N/A',
+        },
+        quantity: variant.quantity || 0,
+        inventory: variant.inventory || 0
+      };
+    });
+    
+    return variants;
+  }
+
+  const getCountVariant = (variants : any) => { 
+    let count = 0;   
+    variants.forEach((item: any) => {      
+      count+=item.quantity
+    })
+   
+    return count;
+  }
+
+  const columnVariant: any[] = [
+    {
+      dataIndex: 'name',
+      key: 'name',
+      align: 'center',
+    },
+    {
+      dataIndex: "imgUrl",
+      key: "imgUrl",
+      render: (imgUrl: string) => (
+        imgUrl ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img src={imgUrl} style={{ width: 100 }} alt="Product" />
+          </div>
+        ) : null
+      ),
+      align: 'center',
+    },
+    {
+      dataIndex: 'size',
+      key: 'size',
+      align: 'center',
+      render: (size: any) => (
+          <span>Size: {size}</span>
+      ),
+    },
+    {
+      dataIndex: 'color',
+      key: 'color',
+      align: 'center',
+      render: (color: { name: string, unicode: string }) => (
+        <span>
+          {color ? (
+            <Tag color={color.unicode} key={color.unicode}>
+              {color.name}
+            </Tag>
+          ) : "Không xác định"}
+        </span>
+      ),
+    },
+    {
+      dataIndex: 'inventory',
+      key: 'inventory',
+      align: 'center',
+      render: (inventory: any) => (
+        <span>SL: {inventory}</span>
+      ),
+    },
+  ];
+
 
   const confirm = (id: number | string) => {
 
@@ -136,7 +228,6 @@ const ProductList = () => {
       })
     })
   }
-
 
   //Tìm kiếm theo tên
   const handleSearch = (value: string) => {
@@ -163,7 +254,7 @@ const ProductList = () => {
     {
       title: 'Tên sản phẩm',
       dataIndex: 'name',
-      render: (text: string) => (<a>{text}</a>),
+      render: (text: string, record: any) => (<a href={`/admin/product/details/${record.key}`}>{text}</a>),
       align: 'center',
     },
     {
@@ -191,77 +282,47 @@ const ProductList = () => {
       },
       align: 'center',
     },
-    {
-      title: 'Màu xắc',
-      dataIndex: 'color_id',
-      key: 'color_id',
-      render: (colorIds: string[]) => {
-        if (getAllColor) {       
-          const colorElements = colorIds?.map(colorId => {
-            const color = getAllColor.find(c => c._id === colorId);
-            return color ? (
-              <span
-                key={color._id}
-                style={{
-                  background: color.unicode,
-                  width: "25px",
-                  height: "25px",
-                  borderRadius: "50%",
-                  marginRight:5
-                }}
-              ></span>
-            ) : null;
-          });
-          return (
-            <div style={{ display: 'flex',justifyContent: "center",alignItems: "center" }}>
-              {colorElements}
-            </div>
-          );
-        }
-        return "Không xác định";
-      },
-      align: 'center',
-    },
-    
-    {
-      title: 'Kích thước',
-      dataIndex: 'size_id',
-      key: 'size_id',
-      render: (sizeIds: string[]) => {
-       if(getAllSize){
-          const sizeElements = sizeIds.map(sizeID => {
-            const size = getAllSize.find(s => s._id === sizeID)
-            return size ? size.name : ""
-          })
-          if(sizeElements){
-            return sizeElements.join(", ")
-          }    
-      }
-        return "Không xác định"
-      },
-      align: 'center',
-    },
-    
+
     {
       title: 'Giá hiện tại',
       dataIndex: 'price',
       align: 'center',
       render: (price: number) => (
-        <span>{price.toLocaleString('vi-VN',{style: "currency", currency: "VND"})}</span>
+        <span>{price.toLocaleString('vi-VN', { style: "currency", currency: "VND" })}</span>
       )
     },
-    
+
     {
       title: 'Giá gốc',
       dataIndex: 'original_price',
       align: 'center',
       render: (original_price: number) => (
-        <span>{original_price.toLocaleString("vi-VN", {style: "currency", currency: "VND"})}</span>
+        <span>{original_price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span>
       )
     },
 
     {
-      title: 'Action',
+      title: 'Tổng số lượng',
+      dataIndex: 'variants',
+      align: 'center',
+      render: (variants: Object) => (
+        <span>{getCountVariant(variants)}</span>
+      )
+    },
+    {
+      title: 'Tồn kho',
+      dataIndex: 'inventoryTotal',
+      align: 'center'
+    },
+
+    {
+      title: 'Đã bán',
+      dataIndex: 'sell_quantity',
+      align: 'center'
+    },
+
+    {
+      title: 'Hành động',
       key: 'action',
       render: ({ key: id }: any) => (
         <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
@@ -281,6 +342,11 @@ const ProductList = () => {
 
             <EditOutlined style={{ fontSize: "20px" }} />
           </Link>
+
+          <Link to={`/admin/product/${id}/variants`}>
+
+            <ClusterOutlined style={{ fontSize: "20px" }} />
+          </Link>
         </div>
       ),
       align: 'center',
@@ -293,7 +359,7 @@ const ProductList = () => {
       {isLoadingDelete && <Loading />}
       <div>
         <Button
-        className='setSize-1'
+          className='setSize-1'
           style={{ marginRight: 20 }}
           type="primary"
           onClick={deleteMultipleProducts}
@@ -307,7 +373,6 @@ const ProductList = () => {
         </Button>
         <Search
           onSearch={handleSearch} placeholder="tìm từ khóa" allowClear style={{ width: 300, marginLeft: 50 }} />
-
         <Dropdown
           visible={filterVisible}
           onVisibleChange={handleFilterVisibleChange}
@@ -318,13 +383,24 @@ const ProductList = () => {
             <FilterOutlined />
           </Button>
         </Dropdown>
-
-
       </div>
       <Divider />
-      {isLoading ? <Loading /> : <Table rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource} />}
-
+      <Table
+        rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource}
+        expandedRowRender={(record) => (
+          <div  style={{ marginLeft: 20 }}>
+            <p>Danh sách biến thể : <span>{getVariant(record).length}</span></p>
+            <Table
+              columns={columnVariant}
+              dataSource={getVariant(record)}
+              pagination={false}
+              showHeader={false}
+            />
+          </div>
+        )}
+      />
     </div>
+
   );
 };
 

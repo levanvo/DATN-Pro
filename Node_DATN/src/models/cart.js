@@ -13,15 +13,19 @@ const cartSchema = new mongoose.Schema({
           type: mongoose.Types.ObjectId,
           ref: "Product"
         },
+        imgUrl: [
+          {type: String}
+        ],
         quantity: {
           type: Number,
         },
         size: {
-          type: Number
+          type: String
         },
         color: {
           type: String
-        }
+        },
+        price: Number
       }
     ]
   },{timestamps: true, versionKey: false});

@@ -45,9 +45,18 @@ const cartApi = createApi({
 
         }),
 
-        updateCart: builder.mutation({
+        updateMinus: builder.mutation({
             query: (product) => ({
-                url: "/api/cart/update",
+                url: "/api/cart/update-minus",
+                method: "POST",
+                body: product
+            }),
+            invalidatesTags: ["Cart"]
+        }),
+
+        updateIncrease: builder.mutation({
+            query: (product) => ({
+                url: "/api/cart/update-increase",
                 method: "POST",
                 body: product
             }),
@@ -56,5 +65,5 @@ const cartApi = createApi({
     }),
 });
 
-export const { useGetCartQuery, useAddToCartMutation, useDeleteFromCartMutation,useUpdateCartMutation } = cartApi;
+export const { useGetCartQuery, useAddToCartMutation, useDeleteFromCartMutation,useUpdateMinusMutation, useUpdateIncreaseMutation } = cartApi;
 export default cartApi;

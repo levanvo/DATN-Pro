@@ -8,14 +8,16 @@ import {
   restoreProduct,
   getAllDeletedProducts,
   deleteProduct,
-  getHotProducts
+  getHotProducts,
+  createProductVariant
 } from "../controller/product.js"
 const router = express.Router()
 
 router.get("/products", getProduct)
+router.post('/product/:id/variants', createProductVariant);
 router.get("/product/:id", readProduct)
 router.post("/product", createProduct)
-router.delete("/product/:id", removeProduct)
+router.put("/product/:id", removeProduct)
 router.patch("/product/:id", updateProduct)
 router.put("/product/restore/:id",restoreProduct) //khôi phục sản phẩm
 router.get("/restore-product-data", getAllDeletedProducts) // in ra tất cả sản phẩm xóa tạm thời

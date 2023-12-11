@@ -62,7 +62,7 @@ const items: MenuItem[] = [
       "restore-product-data"
     ),
   ]),
-  // getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
+  getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
   getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
   getItem('Tài khoản', '7', <UserOutlined />, undefined, 'user/list'),
   getItem('Hóa đơn', '8', <HddOutlined />, undefined, 'bill/list'),

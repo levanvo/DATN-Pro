@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema({
     },
     code_order: String, // mã đơn hàng
     cartId: [{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.Mixed, // dùng Mixed để dữ liệu có thể là chuỗi hoặc số
         ref: "Cart"
     }],
     products: [
@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
           quantity: Number,
           price: Number,
           color: String,
-          size: Number
+          size: String
         }
       ],
     name: String,
