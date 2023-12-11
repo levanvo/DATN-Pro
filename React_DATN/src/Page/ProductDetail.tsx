@@ -76,6 +76,8 @@ const ProductDetail = () => {
   };
   arrayPR = arrayPR.filter((item: any) => item._id != id);
 
+
+  // Sử lý chọn màu sắc hiện ra size tương ứng
   const ChooseColor = (color: any, indColor: number) => {
     setColor(color);
     setIndexSlider(indColor);
@@ -87,22 +89,24 @@ const ProductDetail = () => {
     const selectedImgUrl = selectedVariant ? selectedVariant.imgUrl : "";
   
     setImgUrl(selectedImgUrl);
-    
+  
     const sizesForColor = productDataOne?.variants
       .filter((variant: any) => variant.color_id.unicode === color)
       .map((variant: any) => variant.size_id.name);
-  
     setSizeByColor(sizesForColor);
   };
 
-
+  // Chọn size
   const ChooseSize = (size: any) => {
     setSize(size);
   };
 
+    // giảm số lượng
   const Minus = () => {
     getQuantityBuy > 1 && setQuantityBuy(getQuantityBuy - 1)
   };
+
+  // tăng số lượng
   const Plus = () => {
     setQuantityBuy(getQuantityBuy + 1)
   };
@@ -254,11 +258,16 @@ const ProductDetail = () => {
       if (!isNaN(inputValue) && inputValue >= 1) {
         setQuantityBuy(inputValue);
       }
+
+      
     };
 
-
-     // comment
-  // console.log("productId", id);
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.keyCode === 8) {
+        setQuantityBuy(0);
+      }
+    };
+    
 
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -566,33 +575,45 @@ const ProductDetail = () => {
                             <div>
                               <h3 className="mt-3">Chọn kích cỡ:</h3>
                               <div className="mb-3 space-x-3 flex">
-                                {getAllSize ? (
-                                  getAllSize?.map((size: any) => (
-                                    <button
-                                      disabled={!getColor || !getSizeByColor.includes(size.name)}
-                                      style={{ marginRight: 10 }}
-                                      onClick={() => ChooseSize(size.name)}
-                                      className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${
-                                        getSize === size.name ? 'border-green-600' : '' 
-                                      } ${
-                                          getColor && getSizeByColor.includes(size.name) ?  'bg-transparent' : 'bg-slate-300'
-                                      }`}
-                                    >
-                                      <p>{size.name}</p>
-                                      {getSize === size.name && (
-                                        <img
-                                          className="absolute top-[-7px] right-[-5px] w-3 h-3"
-                                          src="../../img/icons/correct.png"
-                                          alt=""
-                                        />
-                                      )}
-                                    </button>
-                                  ))
+                            {getAllSize ? (
+                              getAllSize?.map((size: any) => {
+                                const isSizeAvailable = getColor && getSizeByColor.includes(size.name) &&
+                                  productDataOne?.variants.some(
+                                    (variant: any) =>
+                                      variant.color_id.unicode === getColor &&
+                                      variant.size_id.name === size.name &&
+                                      variant.inventory > 0
+                                  );
+
+                                    return (
+                                      <button
+                                        key={size._id}
+                                        disabled={!isSizeAvailable}
+                                        style={{ marginRight: 10 }}
+                                        onClick={() => {
+                                          ChooseSize(size.name);
+                                        }}
+                                        className={`w-14 h-7 cursor-pointer relative border-[1px] text-center 
+                                        ${
+                                          getSize === size.name ? 'border-green-600' : ''
+                                        } ${isSizeAvailable ? 'bg-transparent' : 'bg-slate-300'}`}
+                                      >
+                                        <p>{size.name}</p>
+                                        {getSize === size.name && (
+                                          <img
+                                            className="absolute top-[-7px] right-[-5px] w-3 h-3"
+                                            src="../../img/icons/correct.png"
+                                            alt=""
+                                          />
+                                        )}
+                                      </button>
+                                    );
+                                  })
                                 ) : (
                                   <p>Loading...</p>
                                 )}
-                              </div>
                             </div>
+                          </div>
                           </div>
 
                           <div className="cart-item">
@@ -610,12 +631,12 @@ const ProductDetail = () => {
                                 className="cart-plus-minus-box outline-0 h-10"
                                 type="text"
                                 name="qtybutton"
-                                // readOnly
                                 id="quanityBuy"
                                 value={getQuantityBuy}
                                 // max={productDataOne?.quantity}
-                                min={1}
+                                // min={1}
                                 onChange={(e) => handleQuantityChange(e)}
+                                onKeyDown={(e) => handleKeyDown(e)}
                               />
                               <button>
                                 <PlusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Plus()} />
