@@ -10,8 +10,8 @@ export const getCart = async(req,res) =>{
           const cart = await Cart.findOne({ userId: req.user._id })
         .populate({
           path: 'products.productId',
-          model: 'Product', // Replace 'Product' with the actual model name
-          select: 'name imgUrl price', // Select the fields you want to populate for the product
+          model: 'Product', 
+          select: 'name imgUrl price isDeleted variants', 
         });
       
           if (!cart) {

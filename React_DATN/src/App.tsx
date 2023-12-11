@@ -53,6 +53,7 @@ import AddProductDetails from "./Page/Admin/Product/AddProductDetails"
 import DetailBill from "./Page/Admin/Bill/DetailBill"
 import BillDetailHome from "./Page/detailBillHome"
 import CommentList from "./Page/Admin/comment"
+import CheckOutSuccess from "./Page/CheckOutSuccess"
 
 
 function App() {
@@ -83,6 +84,7 @@ function App() {
         <Route path="user/:id" element={<User />} />
         <Route path="order/view" element={<Bill />} />
         <Route path="order/view/detail/:id" element={<BillDetailHome />} />
+        <Route path="order/alert" element={<CheckOutSuccess />} />
       </Route >
 
       <Route

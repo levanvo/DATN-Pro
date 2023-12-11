@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom"
 import { message } from "antd"
 import { useAddOrderMutation } from "../Services/Api_Order"
 import { useAddOrderItemMutation } from "../Services/Api_OrderItem"
+import { useCreatePaymentMutation } from "../Services/Api_VNP";
 import {
   useGetDiscountsQuery,
   useUpdateDiscountMutation,
@@ -36,6 +37,7 @@ const Checkout = () => {
   const address = (document.getElementById("address") as HTMLInputElement)
     ?.value
   const [addOrderItem] = useAddOrderItemMutation()
+  const [createPayment] = useCreatePaymentMutation()
   const [localCart, setLocalCart] = useState<any[]>(
     JSON.parse(localStorage.getItem("cart") || "[]")
   )
@@ -47,7 +49,7 @@ const Checkout = () => {
   const [discountCode, setDiscountCode] = useState("")
   const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null) // Update initial state value
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const enteredDiscount = Array.isArray(discounts) ? discounts?.find((d) => d.code === discountCode):"không có data discount"
+  const enteredDiscount = Array.isArray(discounts) ? discounts?.find((d) => d.code === discountCode) : "không có data discount"
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -106,9 +108,9 @@ const Checkout = () => {
   const calculateTotalPrice = () => {
     let totalPrice = Array.isArray(selectedProducts)
       ? selectedProducts.reduce(
-          (acc, product) => acc + product.price,
-          0
-        )
+        (acc, product) => acc + product.price,
+        0
+      )
       : 0
 
     let discountType = null
@@ -164,9 +166,9 @@ const Checkout = () => {
           {" "}
           {amountDiscount
             ? amountDiscount.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })
+              style: "currency",
+              currency: "VND",
+            })
             : "0 ₫"}
         </p>
       ),
@@ -179,9 +181,9 @@ const Checkout = () => {
           Giá trị đơn hàng tối thiểu có thể áp dụng:{" "}
           {minimumOrderAmount
             ? minimumOrderAmount.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })
+              style: "currency",
+              currency: "VND",
+            })
             : "0₫"}
         </p>
       ),
@@ -253,8 +255,8 @@ const Checkout = () => {
     }
     return null; // Hoặc trả về một mảng trống hoặc xử lý phù hợp
   };
-  
-  
+
+
 
   //validate khi người dùng nhập dữ liệu từ bàn phím
   const handleInputChange = (field: any, value: any) => {
@@ -351,8 +353,6 @@ const Checkout = () => {
     handleInputBlur("district", selectedOption)
   }
 
-  console.log(selectedProducts);
-  
   // Sử lý tạo đơn hàng
   const handlePlaceOrder = async () => {
     try {
@@ -372,8 +372,8 @@ const Checkout = () => {
         }
 
         const orderData = {
-            cartId: cartId,
-            products: productId.map((id: string, index: number) => ({
+          cartId: cartId,
+          products: productId.map((id: string, index: number) => ({
             productId: id,
             quantity: quantity[index],
             price: selectedProducts[index].price,
@@ -397,7 +397,15 @@ const Checkout = () => {
           totalPrice: totalPrice,
         }
 
-        await addOrder(orderData)
+        if (selectedMethod == 'transfer') {
+            const urlPay = await createPayment(orderData);
+            localStorage.setItem('orderData', JSON.stringify(orderData));
+            window.location.href = urlPay.data.data;
+        }else{
+          console.log(orderData);
+          await addOrder(orderData)
+        }
+
         if (currentUser) {
           if (discountCode) {
             updateUser({
@@ -418,7 +426,6 @@ const Checkout = () => {
             quantity: enteredDiscount.quantity - 1,
           })
         }
-        message.success("Đặt hàng thành công")
       } else {
         const cartId = selectedProducts.map((product: any) => product.key)
         const productId = selectedProducts.map(
@@ -434,8 +441,8 @@ const Checkout = () => {
         }
 
         const orderItemData = {
-            cartId: cartId,
-          products: productId.map((id: string|number, index: number) => ({
+          cartId: cartId,
+          products: productId.map((id: string | number, index: number) => ({
             productId: id,
             quantity: quantity[index],
             price: selectedProducts[index].price,
@@ -475,7 +482,8 @@ const Checkout = () => {
         localStorage.setItem("cart", JSON.stringify(updatedLocalCart))
       }
     } catch (error) {
-      message.error("Đã có lỗi xảy ra xin vui lòng thử lại")
+      console.log(error);
+      
     }
   }
 
@@ -578,14 +586,14 @@ const Checkout = () => {
                         {appliedDiscount.percentage > 0
                           ? `Bạn được giảm ${appliedDiscount.percentage}%`
                           : appliedDiscount.amountDiscount > 0
-                          ? `Bạn được giảm ${appliedDiscount.amountDiscount.toLocaleString(
+                            ? `Bạn được giảm ${appliedDiscount.amountDiscount.toLocaleString(
                               "vi-VN",
                               {
                                 style: "currency",
                                 currency: "VND",
                               }
                             )}`
-                          : "Không xác định"}
+                            : "Không xác định"}
                         )
                         <button onClick={handleRemoveDiscount} className="ml-2">
                           Xóa

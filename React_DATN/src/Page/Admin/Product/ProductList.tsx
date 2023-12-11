@@ -60,8 +60,12 @@ const ProductList = () => {
     setIsLoadingDelete(false)
   }
 
+  const filteredProducts = (getAllProduct || []).filter(
+    (product: IProduct) => product.isDeleted === false
+  );
+
   //data trả về
-  const dataSource = getAllProduct?.map(({ _id, name, original_price, price, imgUrl, categoryId, variants,inventoryTotal,sell_quantity }: IProduct) => {
+  const dataSource = filteredProducts?.map(({ _id, name, original_price, price, imgUrl, categoryId, variants,inventoryTotal,sell_quantity }: IProduct) => {
     const colorIds = variants?.map((c) => c.color_id).flat()
     const sizeIds = variants?.map((s) => s.size_id).flat()
     return {

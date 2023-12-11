@@ -125,12 +125,9 @@ export const createOrder = async (req, res) => {
             'variants.color_id': colorId
         };
 
-            // Log filter conditions for debugging
-            console.log('Filter Conditions:', filter);
 
             const existingProduct = await Product.findOne(filter);
 
-            console.log("existingProduct",existingProduct);
 
             if (!existingProduct) {
                 console.log('không tìm thấy biến thể sản phẩm. Bỏ qua cập nhật cho:', product);
@@ -155,10 +152,6 @@ export const createOrder = async (req, res) => {
                 },
                 { new: true }
             );
-            
-
-            // Log the variant after the update
-            console.log('After Update:', updatedProduct);
 
             updatedProduct.save();
         }));

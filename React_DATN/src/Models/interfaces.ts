@@ -13,8 +13,9 @@ export interface IProduct {
       quantity?: number[]
     }
   ]
-  inventoryTotal: number // tổng tồn kho
-  sell_quantity: number // tổng bán ra
+  isDeleted?: boolean
+  inventoryTotal?: number // tổng tồn kho
+  sell_quantity?: number // tổng bán ra
   discount_code_id?: string
   poinId?: string
   views?: number

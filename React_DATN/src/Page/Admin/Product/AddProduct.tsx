@@ -43,7 +43,7 @@ const AddProduct = () => {
   const [previewTitle, setPreviewTitle] = useState("")
   const [isLoadingScreen, setIsLoadingScreen] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
-
+  const [form] = Form.useForm();
 
   const handleCancel = () => setPreviewOpen(false)
 
@@ -121,9 +121,9 @@ const AddProduct = () => {
         // đóng loading
         setIsLoadingScreen(false)
 
-        // setTimeout(() => {
-        //   navigate("/admin/product/list")
-        // }, 1500)
+        setTimeout(() => {
+          navigate("/admin/product/list")
+        }, 1500)
       }
     } catch (error) {
       console.error("Error uploading images:", error)
@@ -140,6 +140,7 @@ const AddProduct = () => {
         wrapperCol={{ span: 14 }}
         layout="horizontal"
         name="control-ref"
+        form={form}
         onFinish={onFinish}
         style={{ maxWidth: 800, margin: "0 auto" }}
       >
@@ -196,23 +197,27 @@ const AddProduct = () => {
         </Form.Item>
 
         <Form.Item
-          name="price"
-          label="Giá hiện tại"
-          rules={[
-            { required: true, message: "Giá hiện tại không được để trống" },
-            {
-              validator: (_, values) => {
-                if (!isNaN(values)) {
-                  return Promise.resolve()
-                } else {
-                  return Promise.reject(new Error("Giá hiện tại phải là số"))
+        name="price"
+        label="Giá hiện tại"
+        rules={[
+          { required: true, message: 'Giá hiện tại không được để trống' },
+          {
+            validator: (_, values) => {
+              const originalPrice = form.getFieldValue('original_price');
+              if (!isNaN(values)) {
+                if (!isNaN(originalPrice) && parseFloat(values) > parseFloat(originalPrice)) {
+                  return Promise.reject(new Error('Giá hiện tại không được lớn hơn giá gốc'));
                 }
-              },
+                return Promise.resolve();
+              } else {
+                return Promise.reject(new Error('Giá hiện tại phải là số'));
+              }
             },
-          ]}
-        >
-          <Input />
-        </Form.Item>
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
 
         <Form.Item label="Mô tả sản phẩm" name="description">
           <TextArea rows={4} />
