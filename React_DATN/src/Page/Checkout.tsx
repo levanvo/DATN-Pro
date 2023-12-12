@@ -402,7 +402,7 @@ const Checkout = () => {
             localStorage.setItem('orderData', JSON.stringify(orderData));
             window.location.href = urlPay.data.data;
         }else{
-          console.log(orderData);
+          // console.log(orderData);
           await addOrder(orderData)
         }
 

@@ -32,12 +32,12 @@ const Featured_products = () => {
                                 {getProduct?.slice(0, 4).map((product: IProduct) => {
                                     return (
                                         <div
-                                            // className="col-lg-4 col-md-6"
+                                            className="product-items-hover"
                                             key={product._id}
-                                            style={{margin: 12}}
+                                            style={{margin: 12, flex: '1'}}
                                         >
                                             <a href={`/product/${product._id}`}>
-                                                <div className="single-product">
+                                                <div className="single-product mt-0">
                                                     <div className="level-pro-new">
                                                         <span>new</span>
                                                     </div>
@@ -90,8 +90,8 @@ const Featured_products = () => {
                                                         </ul>
                                                     </div>
                                                     <div className="product-price">
-                                                        <div className="product-name">
-                                                            <h1>{product.name}</h1>
+                                                        <div className="product-name ">
+                                                            <h1 className="product-name-overflow">{product.name}</h1>
                                                         </div>
                                                         <div className="price-rating">
                                                             <span>

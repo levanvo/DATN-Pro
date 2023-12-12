@@ -107,7 +107,6 @@ const Header = () => {
 
                 }
                 <div className="cart-img">
-                  {/* {VerifyAccount ? ( */}
                   <a href="/cart">
                     <img
                       className="active:scale-90 "
@@ -115,15 +114,6 @@ const Header = () => {
                       alt=""
                     />
                   </a>
-                  {/* ) : (
-                    <Link to={`/login`}>
-                      <img
-                        className="active:scale-90 "
-                        src="img/icon-cart.png"
-                        alt=""
-                      />
-                    </Link>
-                  )} */}
                 </div>
                 {user ? (
                   <div className="account-menu">
@@ -185,7 +175,7 @@ const Header = () => {
                         )}
                         <li className="text-green-500"></li>
                       </div>
-                      <p>{user.username}</p>
+                      <p style={{fontWeight: '600', color: '#232323'}}>{user.username}</p>
                     </div>
                   </div>
                 ) : (
@@ -219,7 +209,7 @@ const Header = () => {
             <div className="col-lg-9">
               <div className="mainmenu">
                 <nav>
-                  <ul>
+                  <ul style={{marginLeft: '10%'}}>
                     <li>
                       <a href="/">Trang chủ</a>
                     </li>
@@ -277,7 +267,7 @@ const Header = () => {
       </div>
       <Modal
         title="Xác nhận đăng xuất"
-        visible={isLogoutModalVisible}
+        open={isLogoutModalVisible}
         onOk={() => handleLogoutConfirmation(true)}
         onCancel={() => handleLogoutConfirmation(false)}
         okText="Đăng xuất"

@@ -48,17 +48,17 @@ const Hot_products = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="section-heading">
-                                <h2>Sản HOT</h2>
+                                <h2>Sản phẩm HOT</h2>
                             </div>
                         </div>
                     </div>
                     <div className="row">
                         <div className="relative">
                             <div className="overflow-hidden">
-                                <div className="flex justify-center">
+                                <div className="flex justify-center product_host">
                                     {visibleProducts.map((product: IProduct) => {
                                         return (
-                                            <div className='ml-2' key={product._id}>
+                                            <div className='product_host-items' key={product._id}>
                                                 <a href={`/product/${product._id}`} >
                                                     <div className="single-product">
                                                         <div className="level-pro-new">
@@ -114,7 +114,7 @@ const Hot_products = () => {
                                                         </div>
                                                         <div className="product-price">
                                                             <div className="product-name">
-                                                                <h1>{product.name}</h1>
+                                                                <h1 className='product-name-overflow'>{product.name}</h1>
                                                                 <p>Lượt xem: {product.views}</p>
                                                             </div>
                                                             <div className="price-rating">

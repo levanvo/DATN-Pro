@@ -11,7 +11,8 @@
   z-index: 10;
   top: 0;
   width: 100vw;
-  background-color: rgba(240, 248, 255, 0.835);
+  // background-color: rgba(240, 248, 255, 0.835);
+  background-color: rgb(240, 248, 255);
 }
 
 .image-banner,
@@ -423,6 +424,7 @@
 .product-new {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 30px;
 }
 
 .row-new {
