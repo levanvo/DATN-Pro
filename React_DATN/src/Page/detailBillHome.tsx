@@ -65,60 +65,94 @@ const BillDetailHome = () => {
             <UserMenu />
             <div className='user_profile'>
                 <div className="user_profile-head">
-                    <p>Đơn hàng Của Tôi</p>
+                    <p style={{fontSize: 30}}>Đơn hàng Của Tôi</p>
                 </div>
-                <div>
+                <div style={{marginBottom: 20}}>
                     {data && (
-                        <div className='order' style={{ display: 'flex', justifyContent: 'space-between', marginTop: 30 }}>
-                            <div style={{ marginRight: 30, marginLeft: 30 }}>
-                                <h2>Thông tin đơn hàng</h2>
-                                <p>Mã đơn hàng: {data?.code_order}</p>
-                                <p>Người tạo: {data?.userId?.username}</p>
-                                <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
-                                <p>Tổng giá trị đơn hàng: {data?.totalPrice}</p>
-                                <p>Ngày tạo: {new Date(data?.createdAt).toLocaleString()}</p>
-                                <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p>
-
-                                <h2>Địa chỉ giao hàng</h2>
-                                {data?.address && (
-                                    <div>
-                                        <p>Thành phố: {data?.address?.city}</p>
-                                        <p>Quận/Huyện: {data?.address?.district}</p>
-                                        <p>Địa chỉ: {data?.address?.location}</p>
-                                    </div>
-                                )}
-                                <p>Người nhận: {data?.name}</p>
-                                <p>Số điện thoại: {data?.phone}</p>
-                                <p>Ghi chú: {data?.note}</p>
-                            </div>
-                            <div style={{ marginRight: 30, marginLeft: 30 }}>
-                                <h2>Sản phẩm trong đơn hàng</h2>
-                                <ul>
-                                    {data?.products?.map((product: any) => (
-                                        <li key={product?._id}>
-                                            <p>Mã sản phẩm: {product?.productId?._id}</p>
-                                            <p>Tên sản phẩm: {product?.productId?.name}</p>
-                                            <p>Số lượng: {product?.quantity}</p>
-                                            <p>Giá: {product?.price}</p>
-                                            <p style={{ display: 'flex' }}>Màu sắc: <div style={{ backgroundColor: product?.color, width: '20px', height: '20px', marginLeft: 20 }}></div></p>
-                                            <p>Size: {product?.size}</p>
-                                            {product?.productId?.imgUrl && (
-                                                <img src={product?.productId?.imgUrl?.[0]} alt={product?.productId?.name} style={{ width: '100px', height: '100px' }} />
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
+                        <div className='order' >
+                        <div style={{ margin: 25 }}>
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ marginBottom: 40, marginRight: 200 }}>
+                                    <h2>Thông tin đơn hàng</h2>
+                                    <p>Mã đơn hàng: {data?.code_order}</p>
+                                    <p>Người tạo: {data?.userId?.username}</p>
+                                    <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
+                                    <p>Tổng giá trị đơn hàng: {data?.totalPrice}</p>
+                                    <p>Ngày tạo: {new Date(data?.createdAt).toLocaleString()}</p>
+                                    <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p>
+                                </div>
+                                <div>
+                                    <h2>Địa chỉ giao hàng</h2>
+                                    {data?.address && (
+                                        <div>
+                                            <p>Thành phố: {data?.address?.city}</p>
+                                            <p>Quận/Huyện: {data?.address?.district}</p>
+                                            <p>Địa chỉ: {data?.address?.location}</p>
+                                        </div>
+                                    )}
+                                    <p>Người nhận: {data?.name}</p>
+                                    <p>Số điện thoại: {data?.phone}</p>
+                                    <p>Ghi chú: {data?.note}</p>
+                                </div>
                             </div>
                         </div>
+                        <div style={{ marginRight: 30, marginLeft: 30 }}>
+                            <h2>Sản phẩm trong đơn hàng</h2>
+                            <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%' }}>Mã sản phẩm</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%' }}>Tên sản phẩm</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '7%' }}>Số lượng</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%' }}>Giá</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%' }}>Màu sắc</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%' }}>Size</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%' }}>Ảnh</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data?.products?.map((product: any) => (
+                                        <tr key={product?._id}>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.productId?._id}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.productId?.name}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.quantity}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.price}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                                                <div
+                                                    style={{
+                                                        backgroundColor: product?.color,
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        marginLeft: 'auto',
+                                                        marginRight: 'auto',
+                                                    }}
+                                                ></div>
+                                            </td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.size}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                                                {product?.productId?.imgUrl && (
+                                                    <img
+                                                        src={product?.productId?.imgUrl?.[0]}
+                                                        alt={product?.productId?.name}
+                                                        style={{ width: '100px', height: '100px' }}
+                                                    />
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     )}
                 </div>
                 <div>
                     {/* <button style={{ borderRadius: 10, height: 40, marginRight: 20, backgroundColor: 'blue', color: 'white' }} onClick={() => onFinish({
                     ...data,
                     status: "1"
-                })}>
-                    Xác nhận
-                </button> */}
+                    })}>
+                        Xác nhận
+                    </button> */}
                     {data?.status === '1' ? (
                         <Button style={{ height: 40, marginRight: 20 }} disabled>
                             Hủy

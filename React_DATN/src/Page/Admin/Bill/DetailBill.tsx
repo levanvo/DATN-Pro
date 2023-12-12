@@ -70,10 +70,10 @@ const DetailBill = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>
                 {data && (
-                    <div className='order' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div className='order' >
                         <div style={{ marginRight: 30, marginLeft: 30 }}>
-                            <div>
-                                <div style={{ marginBottom: 40 }}>
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ marginBottom: 40, marginRight: 200 }}>
                                     <h2>Thông tin đơn hàng</h2>
                                     <p>Mã đơn hàng: {data?.code_order}</p>
                                     <p>Người tạo: {data?.userId?.username}</p>
@@ -99,21 +99,50 @@ const DetailBill = () => {
                         </div>
                         <div style={{ marginRight: 30, marginLeft: 30 }}>
                             <h2>Sản phẩm trong đơn hàng</h2>
-                            <ul>
-                                {data?.products?.map((product: any) => (
-                                    <li key={product?._id}>
-                                        <p>Mã sản phẩm: {product?.productId?._id}</p>
-                                        <p>Tên sản phẩm: {product?.productId?.name}</p>
-                                        <p>Số lượng: {product?.quantity}</p>
-                                        <p>Giá: {product?.price}</p>
-                                        <p style={{ display: 'flex' }}>Màu sắc: <div style={{ backgroundColor: product?.color, width: '20px', height: '20px', marginLeft: 20 }}></div></p>
-                                        <p>Size: {product?.size}</p>
-                                        {product?.productId?.imgUrl && (
-                                            <img src={product?.productId?.imgUrl?.[0]} alt={product?.productId?.name} style={{ width: '100px', height: '100px' }} />
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
+                            <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%' }}>Mã sản phẩm</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%' }}>Tên sản phẩm</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '7%' }}>Số lượng</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%' }}>Giá</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%' }}>Màu sắc</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%' }}>Size</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%' }}>Ảnh</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data?.products?.map((product: any) => (
+                                        <tr key={product?._id}>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.productId?._id}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.productId?.name}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.quantity}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.price}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                                                <div
+                                                    style={{
+                                                        backgroundColor: product?.color,
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        marginLeft: 'auto',
+                                                        marginRight: 'auto',
+                                                    }}
+                                                ></div>
+                                            </td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.size}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                                                {product?.productId?.imgUrl && (
+                                                    <img
+                                                        src={product?.productId?.imgUrl?.[0]}
+                                                        alt={product?.productId?.name}
+                                                        style={{ width: '100px', height: '100px' }}
+                                                    />
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 )}
@@ -149,7 +178,9 @@ const DetailBill = () => {
                         style={{
                             borderRadius: 10,
                             height: 40,
-                            marginRight: 20
+                            marginRight: 20,
+                            marginTop: 10,
+                            marginBottom: 10
                         }}
                         disabled={data?.status === "2"}
                         className={data?.status === "0" ? "cancel-button" : "disabled-button"}
