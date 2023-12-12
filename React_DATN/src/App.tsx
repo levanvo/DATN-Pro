@@ -59,7 +59,7 @@ import CheckOutSuccess from "./Page/CheckOutSuccess"
 function App() {
   !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
   !window.location.href.includes("checkout") && localStorage.removeItem("totalPrice.shoe");
-
+  
   Config();
   return (
     <Routes>

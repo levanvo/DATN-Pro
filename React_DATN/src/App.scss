@@ -487,7 +487,14 @@
 .selector-Views {
 
   & h3{
-    font-family: fantasy;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+}
+
+.selector-Products {
+
+  & h3{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
 }
 
@@ -528,3 +535,6 @@
   color: white;
 }
 
+.borderChooseColor{
+  border: 3px solid rgb(246, 246, 246);
+}
