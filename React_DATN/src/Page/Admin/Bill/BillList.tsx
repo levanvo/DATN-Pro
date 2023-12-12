@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Select, Table } from 'antd';
+import { Divider, Select, Table, message } from 'antd';
 import { useGetAllOrdersQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
 import Loading from '../../../Component/Loading';
@@ -15,7 +15,7 @@ const BillList = () => {
     key: order._id,
     code_order: order?.code_order,
     userId: order?.userId?.username || "",
-    createdAt: order?.createdAt,
+    createdAt: new Date(order?.createdAt).toLocaleString(),
     status: order?.status,
   }));
 
@@ -24,6 +24,7 @@ const BillList = () => {
   const handleStatusChange = (value: string, orderId: string) => {
     updateOrder({ _id: orderId, status: value }).unwrap().then(() => {
       console.log("Trạng thái đã được cập nhật thành công.");
+      message.success("Trạng thái đã được cập nhật thành công.");
     }).catch((error) => {
       console.error("Lỗi khi cập nhật trạng thái:", error);
     });
@@ -31,7 +32,7 @@ const BillList = () => {
 
   const columns = [
     {
-      title: 'Code_order',
+      title: 'Mã đơn hàng',
       dataIndex: 'code_order',
       key: 'code_order',
     },
@@ -42,17 +43,17 @@ const BillList = () => {
     //   key: 'address',
     // },
     {
-      title: 'Create by',
+      title: 'Người tạo',
       dataIndex: 'userId',
       key: 'userId',
     },
     {
-      title: 'Created At',
+      title: 'Ngày tạo đơn hàng',
       dataIndex: 'createdAt',
       key: 'createdAt',
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (status: any, record: IOrder) => (
@@ -70,7 +71,7 @@ const BillList = () => {
       ),
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       render: (record: any) => (
         <Link to={`/admin/bill/detail/${record.key}`}>Chi tiết</Link>
       ),

@@ -14,13 +14,13 @@ const Bill = () => {
     key: order._id,
     code_order: order?.code_order,
     userId: order?.userId?.username || "",
-    createdAt: order?.createdAt,
+    createdAt: new Date(order?.createdAt).toLocaleString(),
     status: order?.status,
   }));
 
   const columns = [
     {
-      title: 'Code_order',
+      title: 'Mã đơn hàng',
       dataIndex: 'code_order',
       key: 'code_order',
     },
@@ -31,17 +31,17 @@ const Bill = () => {
     //   key: 'address',
     // },
     {
-      title: 'Create by',
+      title: 'Người tạo',
       dataIndex: 'userId',
       key: 'userId',
     },
     {
-      title: 'Created At',
+      title: 'Ngày tạo đơn hàng',
       dataIndex: 'createdAt',
       key: 'createdAt',
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (status: any) => (
@@ -51,7 +51,7 @@ const Bill = () => {
       ),
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       render: (record: any) => (
         <Link to={`detail/${record.key}`}>Chi tiết</Link>
       ),
