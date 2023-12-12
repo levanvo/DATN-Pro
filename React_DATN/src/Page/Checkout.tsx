@@ -4,8 +4,7 @@ import vietnamData from "../Services/vietnamData"
 import { useLocation } from "react-router-dom"
 import { message } from "antd"
 import { useAddOrderMutation } from "../Services/Api_Order"
-import { useAddOrderItemMutation } from "../Services/Api_OrderItem"
-import { useCreatePaymentMutation } from "../Services/Api_VNP";
+import { useCreatePaymentMutation } from "../Services/Api_VNP"
 import {
   useGetDiscountsQuery,
   useUpdateDiscountMutation,
@@ -42,14 +41,15 @@ const Checkout = () => {
     JSON.parse(localStorage.getItem("cart") || "[]")
   )
 
-
   //-----  DISCOUNT
 
   const { data: discounts } = useGetDiscountsQuery()
   const [discountCode, setDiscountCode] = useState("")
   const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null) // Update initial state value
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const enteredDiscount = Array.isArray(discounts) ? discounts?.find((d) => d.code === discountCode) : "không có data discount"
+  const enteredDiscount = Array.isArray(discounts)
+    ? discounts?.find((d) => d.code === discountCode)
+    : "không có data discount"
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -60,11 +60,17 @@ const Checkout = () => {
   }
 
   const storedUser = localStorage.getItem("user")
-  const emailUser = storedUser ? JSON.parse(storedUser).email : "";
+  const emailUser = storedUser ? JSON.parse(storedUser).email : ""
 
-  const currentUser = Array.isArray(users) ? users.find((user) => user.email === emailUser) : null;
+  const currentUser = Array.isArray(users)
+    ? users.find((user) => user.email === emailUser)
+    : null
 
   const handleUseDiscount = (selectedDiscount: any) => {
+    if (moment().isBefore(selectedDiscount.startDate)) {
+      message.warning("Mã giảm giá chưa đến thời gian sử dụng!")
+      return
+    }
     // Cập nhật giá trị discountCode
     setDiscountCode(selectedDiscount.code)
 
@@ -74,11 +80,12 @@ const Checkout = () => {
 
   const handleApplyDiscount = () => {
     if (enteredDiscount) {
-      if (moment().isBefore(enteredDiscount?.startDate)) {
-        message.warning("Mã giảm giá chưa đến thời gian sử dụng!")
+      if (moment().isAfter(enteredDiscount?.expiresAt)) {
+        message.warning("Mã giảm giá hết thời gian sử dụng!")
         return
       }
-      const isDiscountUsed = currentUser?.discountUsed.includes(discountCode) || false
+      const isDiscountUsed =
+        currentUser?.discountUsed.includes(discountCode) || false
       if (isDiscountUsed) {
         message.warning("Mã giảm giá đã được sử dụng.")
       } else if (enteredDiscount.quantity > 0) {
@@ -104,13 +111,10 @@ const Checkout = () => {
     }
   }
 
-  // tổng tiền 
+  // tổng tiền
   const calculateTotalPrice = () => {
     let totalPrice = Array.isArray(selectedProducts)
-      ? selectedProducts.reduce(
-        (acc, product) => acc + product.price,
-        0
-      )
+      ? selectedProducts.reduce((acc, product) => acc + product.price, 0)
       : 0
 
     let discountType = null
@@ -166,9 +170,9 @@ const Checkout = () => {
           {" "}
           {amountDiscount
             ? amountDiscount.toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })
+                style: "currency",
+                currency: "VND",
+              })
             : "0 ₫"}
         </p>
       ),
@@ -181,9 +185,9 @@ const Checkout = () => {
           Giá trị đơn hàng tối thiểu có thể áp dụng:{" "}
           {minimumOrderAmount
             ? minimumOrderAmount.toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })
+                style: "currency",
+                currency: "VND",
+              })
             : "0₫"}
         </p>
       ),
@@ -234,7 +238,7 @@ const Checkout = () => {
   ]
 
   const dataDiscounts = Array.isArray(discounts)
-    ? discounts.filter((item: IDiscount) => moment().isAfter(item.startDate))
+    ? discounts.filter((item: IDiscount) => moment().isBefore(item.expiresAt))
     : []
 
   const subtotal = Array.isArray(selectedProducts)
@@ -248,15 +252,13 @@ const Checkout = () => {
   // Lấy danh sách quận/huyện dựa trên tỉnh/thành phố đã chọn
   const getDistricts = () => {
     if (selectedCity) {
-      const city = vietnamData.find((item) => item.value === selectedCity.value);
+      const city = vietnamData.find((item) => item.value === selectedCity.value)
       if (city) {
-        return city.districts;
+        return city.districts
       }
     }
-    return null; // Hoặc trả về một mảng trống hoặc xử lý phù hợp
-  };
-
-
+    return null // Hoặc trả về một mảng trống hoặc xử lý phù hợp
+  }
 
   //validate khi người dùng nhập dữ liệu từ bàn phím
   const handleInputChange = (field: any, value: any) => {
@@ -400,12 +402,12 @@ const Checkout = () => {
           totalPrice: totalPrice,
         }
 
-        if (selectedMethod == 'transfer') {
-            const urlPay = await createPayment(orderData);
-            localStorage.setItem('orderData', JSON.stringify(orderData));
-            window.location.href = urlPay.data.data;
-        }else{
-          console.log(orderData);
+        if (selectedMethod == "transfer") {
+          const urlPay = await createPayment(orderData)
+          localStorage.setItem("orderData", JSON.stringify(orderData))
+          window.location.href = urlPay.data.data
+        } else {
+          console.log(orderData)
           await addOrder(orderData)
         }
 
@@ -417,7 +419,7 @@ const Checkout = () => {
               password: currentUser.password,
               email: currentUser.email,
               discountUsed: [...currentUser.discountUsed, String(discountCode)],
-            });
+            })
           }
         }
         if (enteredDiscount) {
@@ -477,28 +479,31 @@ const Checkout = () => {
           ),
         }
 
-        if (selectedMethod == 'transfer') {
-          const urlPay = await createPayment(orderItemData);
-          localStorage.setItem('orderItemData', JSON.stringify(orderItemData));
-          window.location.href = urlPay.data.data;
-        }else{
+        if (selectedMethod == "transfer") {
+          const urlPay = await createPayment(orderItemData)
+          localStorage.setItem("orderItemData", JSON.stringify(orderItemData))
+          window.location.href = urlPay.data.data
+        } else {
           await addOrder(orderItemData)
           message.success("Đặt hàng thành công")
 
-          const updatedLocalCart = localCart.filter((item) => !cartId.includes(item.id))
+          const updatedLocalCart = localCart.filter(
+            (item) => !cartId.includes(item.id)
+          )
           localStorage.setItem("cart", JSON.stringify(updatedLocalCart))
-        } 
+        }
       }
     } catch (error) {
-      console.log(error);
-      
+      console.log(error)
     }
   }
 
   // lựa chọn hình thức tt
   const [selectedMethod, setSelectedMethod] = useState("cod")
 
-  const handlePaymentMethodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePaymentMethodChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSelectedMethod(event.target.value)
   }
 
@@ -594,14 +599,14 @@ const Checkout = () => {
                         {appliedDiscount.percentage > 0
                           ? `Bạn được giảm ${appliedDiscount.percentage}%`
                           : appliedDiscount.amountDiscount > 0
-                            ? `Bạn được giảm ${appliedDiscount.amountDiscount.toLocaleString(
+                          ? `Bạn được giảm ${appliedDiscount.amountDiscount.toLocaleString(
                               "vi-VN",
                               {
                                 style: "currency",
                                 currency: "VND",
                               }
                             )}`
-                            : "Không xác định"}
+                          : "Không xác định"}
                         )
                         <button onClick={handleRemoveDiscount} className="ml-2">
                           Xóa
