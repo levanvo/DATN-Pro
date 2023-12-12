@@ -105,11 +105,11 @@ const DetailBill = () => {
                                     <tr>
                                         <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Mã sản phẩm</th>
                                         <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Tên sản phẩm</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '7%', textAlign: 'center' }}>Số lượng</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%', textAlign: 'center' }}>Giá</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '15%', textAlign: 'center' }}>Ảnh</th>
                                         <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '8%', textAlign: 'center' }}>Màu sắc</th>
                                         <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%', textAlign: 'center' }}>Size</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '15%', textAlign: 'center' }}>Ảnh</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '7%', textAlign: 'center' }}>Số lượng</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%', textAlign: 'center' }}>Giá</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -117,8 +117,15 @@ const DetailBill = () => {
                                         <tr key={product?._id}>
                                             <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?._id}</td>
                                             <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?.name}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.quantity}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.price.toLocaleString()}đ</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
+                                                {product?.productId?.imgUrl && (
+                                                    <img
+                                                        src={product?.productId?.imgUrl?.[0]}
+                                                        alt={product?.productId?.name}
+                                                        style={{ width: '100px', height: '100px' }}
+                                                    />
+                                                )}
+                                            </td>
                                             <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
                                                 <div
                                                     style={{
@@ -131,24 +138,21 @@ const DetailBill = () => {
                                                 ></div>
                                             </td>
                                             <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.size}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                                                {product?.productId?.imgUrl && (
-                                                    <img
-                                                        src={product?.productId?.imgUrl?.[0]}
-                                                        alt={product?.productId?.name}
-                                                        style={{ width: '100px', height: '100px' }}
-                                                    />
-                                                )}
-                                            </td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.quantity}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.price.toLocaleString()}đ</td>
                                         </tr>
                                     ))}
+                                    <tr style={{ marginTop: 20 }}>
+                                        <td colSpan={6} style={{ textAlign: 'right', fontWeight: 'bold', borderTop: '1px solid #ddd', padding: '8px' }}>Tổng tiền:</td>
+                                        <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>{data?.totalPrice.toLocaleString()}đ</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 )}
             </div>
-            <div>
+            <div style={{ marginTop: 25 }}>
                 <Popconfirm
                     title="Bạn có chắc chắn muốn xác nhận đơn hàng này?"
                     onConfirm={() => handleConfirm()}
