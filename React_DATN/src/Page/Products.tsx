@@ -3,33 +3,31 @@ import { useGetAllProductQuery } from "../Services/Api_Product";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useGetAllCategoryQuery } from "../Services/Api_Category";
-import { useGetAllSizeQuery } from "../Services/Api_Size";
 import { useGetColorsQuery } from "../Services/Api_Color";
 import { Button } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Loading from "../Component/Loading";
 
 const Products = () => {
   const { data: producData, isLoading:isLoadingData, error } = useGetAllProductQuery();
   const { data: categoryData, error: errorCategory } = useGetAllCategoryQuery();
-  const { data: sizeData, error: errorSize } = useGetAllSizeQuery();
   const { data: colorData, error: errorColor } = useGetColorsQuery();
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchTerm = searchParams.get('search');
-  console.log("searchKeyWord: ", searchTerm);
+  // console.log("searchKeyWord: ", searchTerm);
 
   useEffect(() => {
     // Cập nhật lại searchTerm mỗi khi searchTerm hoặc location.search thay đổi
-    console.log('Search term changed:', searchTerm);
+    // console.log('Search term changed:', searchTerm);
   }, [searchTerm, location.search]);
 
   //Lọc sản phẩm theo bộ lọc
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
-  const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
   const [selectedPriceRange, setSelectedPriceRange] = useState<string | undefined>(undefined);
+  
 
   const handlePriceRangeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
@@ -51,13 +49,13 @@ const Products = () => {
   };
 
   const filteredProduct = producData ? producData.filter((product: IProduct) => {
+  
     const isCategoryMatch = !selectedCategory || product.categoryId === selectedCategory;
-    const isSizeMatch = !selectedSize || (Array.isArray(product.size_id) ? product.size_id.includes(selectedSize) : product.size_id === selectedSize);
-    const isColorMatch = !selectedColor || (Array.isArray(product.color_id) ? product.color_id.includes(selectedColor) : product.color_id === selectedColor);
+    const isColorMatch = !selectedColor || product.variants?.some((variant:any) => variant.color_id._id === selectedColor);
     const isPriceRangeMatch = !selectedPriceRange || isPriceInRange(product.price, selectedPriceRange);
     const isNameMatch = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return isCategoryMatch && isSizeMatch && isColorMatch && isPriceRangeMatch && isNameMatch;
+    return isCategoryMatch && isColorMatch && isPriceRangeMatch && isNameMatch;
   })
     : [];
 
@@ -82,7 +80,7 @@ const Products = () => {
 
   // Phân trang
   const [currentPage, setCurrentPage] = useState(0);
-  const [productsPerPage, setProductsPerPage] = useState(5);
+  const [productsPerPage, setProductsPerPage] = useState(6);
 
 
   const totalProducts = sortedProducts?.length || 0;
@@ -109,7 +107,7 @@ const Products = () => {
     }).format(value);
 
 
-  if (errorCategory || errorSize || errorColor || error) {
+  if (errorCategory  || errorColor || error) {
     return <div>Error</div>;
   }
   return (
@@ -173,10 +171,11 @@ const Products = () => {
                   <div className="single-sidebar-title">
                     <h3>Màu Sắc</h3>
                   </div>
-                  <div className="single-sidebar-content">
+                  <div className="single-sidebar-content" >
                     {colorData?.map((color: IColor) => {
                       return (
                         <Button
+                        style={{marginRight:5, marginBottom:10}}
                           className={`hover:bg-red-500 ${selectedColor === color._id ? "bg-red-500 text-white" : ""}`}
                           key={color._id}
                           onClick={() => {
@@ -193,31 +192,7 @@ const Products = () => {
                     })}
                   </div>
                 </div>
-                <div className="single-sidebar">
-                  <div className="single-sidebar-title">
-                    <h3>Size</h3>
-                  </div>
-                  <div className="single-sidebar-content">
-                    {sizeData?.map((size: ISize) => {
-                      return (
-                        <Button
-                          className={`hover:bg-red-500 ${selectedSize === size._id ? "bg-red-500 text-white" : ""
-                            }`}
-                          key={size._id}
-                          onClick={() => {
-                            if (selectedSize === size._id) {
-                              setSelectedSize(undefined);
-                            } else {
-                              setSelectedSize(size._id?.toString());
-                            }
-                          }}
-                        >
-                          {size.name}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
+         
                 <div className="single-sidebar price">
                   <div className="single-sidebar-title">
                     <h3>Khoảng giá</h3>
@@ -246,16 +221,16 @@ const Products = () => {
             <div className="col-lg-9">
               <div className="product-bar">
                 <div className="sort-by">
-                  <label>Sort By Price: </label>
+                  <label>Giá: </label>
                   <select
                     name="sort"
                     onChange={handleSortChange}
                     value={sortOption}
                   >
                     <option value="ascending" selected>
-                      Ascending
+                      Thấp đến cao 
                     </option>
-                    <option value="decrease">Decrease</option>
+                    <option value="decrease">Cao đến thấp </option>
                   </select>
                 </div>
                 <div className="limit-product">
@@ -265,12 +240,11 @@ const Products = () => {
                     onChange={handleProductsPerPageChange}
                     value={productsPerPage}
                   >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
+                    <option value="6">6</option>
+                    <option value="9">9</option>
+                    <option value="12">12</option>
                     <option value="15">15</option>
-                    <option value="20">20</option>
                   </select>
-                  per page
                 </div>
               </div>
               {/* Nhập dữ liệu category */}
@@ -290,7 +264,7 @@ const Products = () => {
                                 className="col-lg-4 col-md-6"
                                 key={product._id}
                               >
-                                <Link to={`/product/${product._id}`}>
+                                <a href={`/product/${product._id}`}>
                                   <div className="single-product">
                                     <div className="level-pro-new">
                                       <span>new</span>
@@ -309,40 +283,7 @@ const Products = () => {
                                         />
                                       </div>
                                     </div>
-                                    <div className="actions">
-                                      <button
-                                        type="submit"
-                                        className="cart-btn"
-                                        title="Add to cart"
-                                      >
-                                        add to cart
-                                      </button>
-                                      <ul className="add-to-link">
-                                        <li>
-                                          <a
-                                            className="modal-view"
-                                            data-target="#productModal"
-                                            data-bs-toggle="modal"
-                                            href="#"
-                                          >
-                                            {" "}
-                                            <i className="fa fa-search"></i>
-                                          </a>
-                                        </li>
-                                        <li>
-                                          <a href="#">
-                                            {" "}
-                                            <i className="fa fa-heart-o"></i>
-                                          </a>
-                                        </li>
-                                        <li>
-                                          <a href="#">
-                                            {" "}
-                                            <i className="fa fa-refresh"></i>
-                                          </a>
-                                        </li>
-                                      </ul>
-                                    </div>
+                                    
                                     <div className="product-price">
                                       <div className="product-name">
                                         <h1>{product.name}</h1>
@@ -356,12 +297,12 @@ const Products = () => {
                                           <i className="fa fa-star"></i>
                                           <i className="fa fa-star"></i>
                                           <i className="fa fa-star"></i>
-                                          <i className="fa fa-star-half-o"></i>
+                                          <i className="fa fa-star"></i>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                </Link>
+                                </a>
                               </div>
                             );
                           })
@@ -380,7 +321,7 @@ const Products = () => {
                     breakClassName={"break-me"}
                     pageCount={pageCount}
                     marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
+                    pageRangeDisplayed={6}
                     onPageChange={handlePageChange}
                     containerClassName={"pagination"}
                     activeClassName={"active"}

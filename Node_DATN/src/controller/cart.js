@@ -19,7 +19,14 @@ export const getCart = async (req, res) => {
       }
 
       // Filter out products with zero inventory
-      // cart.products = cart.products.filter(product => product.productId.variants.some(variant => variant.inventory > 0));
+      cart.products = cart.products.filter(product => {
+        const matchingVariant = product.productId.variants.find(variant =>
+          variant.size_id.toString() === product.size &&
+          variant.color_id.toString() === product.color &&
+          variant.inventory > 0
+        );
+        return matchingVariant;
+      });
 
       // // Save the updated cart (optional, if you want to persist the changes in the cart)
       // await cart.save();

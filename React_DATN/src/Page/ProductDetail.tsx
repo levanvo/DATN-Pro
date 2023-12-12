@@ -601,7 +601,7 @@ const ProductDetail = () => {
                                 <div className="mt-4 -mb-4">
                                   {
                                     totalVariant > 0 ?
-                                      <p>Sản phẩm đã chọn hiện có: {totalVariant}</p>
+                                      <p>{totalVariant} sản phẩm có sẵn</p>
                                       :
                                       <p>Vui lòng chọn màu và kích cỡ của sản phẩm !</p>
                                   }
@@ -625,8 +625,6 @@ const ProductDetail = () => {
                                         name="qtybutton"
                                         id="quanityBuy"
                                         value={getQuantityBuy}
-                                        // max={productDataOne?.quantity}
-                                        // min={1}
                                         onChange={(e) => handleQuantityChange(e)}
                                         onKeyDown={(e) => handleKeyDown(e)}
                                       />
