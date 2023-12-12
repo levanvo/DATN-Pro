@@ -35,9 +35,6 @@ const Cart = () => {
       },
     };
     
-    console.log(selectedProducts);
-    
-      
 
     // Khai báo biến dataSource
     let dataSource: any[] = [];
@@ -205,9 +202,9 @@ const Cart = () => {
         dataSource = cartData?.products.map((product: any) => {
           return {
             key: product._id,
-            productId: product.productId._id,
-            priceItem: product.productId.price,
-            name: product.productId.name,
+            productId: product.productId?._id,
+            priceItem: product.productId?.price,
+            name: product.productId?.name,
             price: product.price,
             imgUrl: product.imgUrl[0],
             color: product.color,

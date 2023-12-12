@@ -26,13 +26,13 @@ const orderApi = createApi({
       providesTags: ["Order"]
     }),
 
-    getOneOrder: builder.query<IOrder[], number | string>({
-      query: (_id) => `/api/order/${_id}`,
+    getOneOrderUser: builder.query<IOrder[], number | string>({
+      query: (_id) => `/api/order/${_id}/user`,
       providesTags: ["Order"]
     }),
 
-    getOneOrders: builder.query<any, number | string>({
-      query: (_id) => `/api/orders/${_id}`,
+    getOrderById: builder.query<any, number | string>({
+      query: (_id) => `/api/order/${_id}`,
       providesTags: ["Order"]
     }),
 
@@ -81,8 +81,8 @@ export const {
   useAddOrderMutation,
   useUpdateOrderMutation,
   useRemoveOrderMutation,
-  useGetOneOrderQuery,
+  useGetOneOrderUserQuery,
   useUpdatePatchOrderMutation,
-  useGetOneOrdersQuery
+  useGetOrderByIdQuery
 } = orderApi;
 export default orderApi;
