@@ -528,7 +528,7 @@ const ProductDetail = () => {
                           |
                         </p>
                         <div className="sold">
-                          <p>{productDataOne.sell_quantity} Đã Bán</p>
+                          <p>{productDataOne.sell_quantity||0} Đã Bán</p>
                         </div>
                       </div>
                     </div>

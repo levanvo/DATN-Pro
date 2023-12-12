@@ -1,6 +1,5 @@
 import Product from "../models/product.js"
 import Category from "../models/category.js"
-import DeletedProduct from "../models/deletedData.js"
 import { productSchema } from "../schema/product.js"
 import mongoose from "mongoose"
 import Color from "../models/color.js"
