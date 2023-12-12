@@ -113,7 +113,8 @@ select option:checked {
 
 .inp_group {
   display: flex;
-  margin-left: 40px;
+  margin-left: -6px;
+  margin-top: 3px;
 }
 
 .inp_group button {
