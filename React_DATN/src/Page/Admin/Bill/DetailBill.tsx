@@ -71,16 +71,17 @@ const DetailBill = () => {
             <div>
                 {data && (
                     <div className='order' >
-                        <div style={{ marginRight: 30, marginLeft: 30 }}>
+                        <div style={{ margin: 25 }}>
                             <div style={{ display: 'flex' }}>
                                 <div style={{ marginBottom: 40, marginRight: 200 }}>
                                     <h2>Thông tin đơn hàng</h2>
                                     <p>Mã đơn hàng: {data?.code_order}</p>
-                                    <p>Người tạo: {data?.userId?.username}</p>
+                                    {/* <p>Tên khách hàng: {data?.userId?.username}</p> */}
+                                    <p>Tên khách hàng: {data?.name}</p>
                                     <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
-                                    <p>Tổng giá trị đơn hàng: {data?.totalPrice}</p>
-                                    <p>Ngày tạo: {new Date(data?.createdAt).toLocaleString()}</p>
-                                    <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p>
+                                    <p>Tổng giá trị đơn hàng: {data?.totalPrice.toLocaleString()}đ</p>
+                                    <p>Thời gian: {`${new Date(data?.createdAt).toLocaleTimeString()} | ${new Date(data?.createdAt).toLocaleDateString()}`}</p>
+                                    {/* <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p> */}
                                 </div>
                                 <div>
                                     <h2>Địa chỉ giao hàng</h2>
@@ -98,27 +99,27 @@ const DetailBill = () => {
                             </div>
                         </div>
                         <div style={{ marginRight: 30, marginLeft: 30 }}>
-                            <h2>Sản phẩm trong đơn hàng</h2>
+                            {/* <h2>Sản phẩm trong đơn hàng</h2> */}
                             <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed' }}>
                                 <thead>
                                     <tr>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%' }}>Mã sản phẩm</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%' }}>Tên sản phẩm</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '7%' }}>Số lượng</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%' }}>Giá</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%' }}>Màu sắc</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%' }}>Size</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%' }}>Ảnh</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Mã sản phẩm</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Tên sản phẩm</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '7%', textAlign: 'center' }}>Số lượng</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%', textAlign: 'center' }}>Giá</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '8%', textAlign: 'center' }}>Màu sắc</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%', textAlign: 'center' }}>Size</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '15%', textAlign: 'center' }}>Ảnh</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {data?.products?.map((product: any) => (
                                         <tr key={product?._id}>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.productId?._id}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.productId?.name}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.quantity}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.price}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?._id}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?.name}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.quantity}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.price.toLocaleString()}đ</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
                                                 <div
                                                     style={{
                                                         backgroundColor: product?.color,
@@ -129,8 +130,8 @@ const DetailBill = () => {
                                                     }}
                                                 ></div>
                                             </td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{product?.size}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.size}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
                                                 {product?.productId?.imgUrl && (
                                                     <img
                                                         src={product?.productId?.imgUrl?.[0]}
