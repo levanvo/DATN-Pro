@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetOneOrdersQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
+import { useGetOrderByIdQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
 import { useGetOneUserQuery } from '../../../Services/Api_User';
 import { Button, Popconfirm, message } from 'antd';
+import moment from 'moment';
+
 
 const DetailBill = () => {
     const { id } = useParams();
-    const { data } = useGetOneOrdersQuery(id || "");
+    const { data } = useGetOrderByIdQuery(id || "");
     // const { data: user } = useGetOneUserQuery(data?.userId)
     const navigate = useNavigate();
 
@@ -54,11 +56,11 @@ const DetailBill = () => {
             case '0':
                 return { color: 'orange' };
             case '1':
-                return { color: 'blue' }; 
+                return { color: 'blue' };
             case '2':
                 return { color: 'red' };
             case '3':
-                return { color: 'brown' }; 
+                return { color: 'brown' };
             case '4':
                 return { color: 'blue' };
             default:
@@ -70,17 +72,18 @@ const DetailBill = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>
                 {data && (
-                    <div className='order' style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <div style={{ marginRight: 30, marginLeft: 30 }}>
-                            <div>
-                                <div style={{ marginBottom: 40 }}>
+                    <div className='order' >
+                        <div style={{ margin: 25 }}>
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ marginBottom: 40, marginRight: 200 }}>
                                     <h2>Thông tin đơn hàng</h2>
                                     <p>Mã đơn hàng: {data?.code_order}</p>
-                                    <p>Người tạo: {data?.userId?.username}</p>
+                                    {/* <p>Tên khách hàng: {data?.userId?.username}</p> */}
+                                    <p>Tên khách hàng: {data?.name}</p>
                                     <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
-                                    <p>Tổng giá trị đơn hàng: {data?.totalPrice}</p>
-                                    <p>Ngày tạo: {data?.createdAt}</p>
-                                    <p>Ngày cập nhật: {data?.updatedAt}</p>
+                                    <p>Tổng giá trị đơn hàng: {data?.totalPrice.toLocaleString()}đ</p>
+                                    <p>Thời gian: {`${new Date(data?.createdAt).toLocaleTimeString()} | ${new Date(data?.createdAt).toLocaleDateString()}`}</p>
+                                    {/* <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p> */}
                                 </div>
                                 <div>
                                     <h2>Địa chỉ giao hàng</h2>
@@ -98,27 +101,60 @@ const DetailBill = () => {
                             </div>
                         </div>
                         <div style={{ marginRight: 30, marginLeft: 30 }}>
-                            <h2>Sản phẩm trong đơn hàng</h2>
-                            <ul>
-                                {data?.products?.map((product: any) => (
-                                    <li key={product?._id}>
-                                        <p>Mã sản phẩm: {product?.productId?._id}</p>
-                                        <p>Tên sản phẩm: {product?.productId?.name}</p>
-                                        <p>Số lượng: {product?.quantity}</p>
-                                        <p>Giá: {product?.price}</p>
-                                        <p style={{ display: 'flex' }}>Màu sắc: <div style={{ backgroundColor: product?.color, width: '20px', height: '20px', marginLeft: 20 }}></div></p>
-                                        <p>Size: {product?.size}</p>
-                                        {product?.productId?.imgUrl && (
-                                            <img src={product?.productId?.imgUrl?.[0]} alt={product?.productId?.name} style={{ width: '100px', height: '100px' }} />
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
+                            {/* <h2>Sản phẩm trong đơn hàng</h2> */}
+                            <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Mã sản phẩm</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Tên sản phẩm</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '15%', textAlign: 'center' }}>Ảnh</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '8%', textAlign: 'center' }}>Màu sắc</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%', textAlign: 'center' }}>Size</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '7%', textAlign: 'center' }}>Số lượng</th>
+                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%', textAlign: 'center' }}>Giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data?.products?.map((product: any) => (
+                                        <tr key={product?._id}>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?._id}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?.name}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
+                                                {product?.productId?.imgUrl && (
+                                                    <img
+                                                        src={product?.productId?.imgUrl?.[0]}
+                                                        alt={product?.productId?.name}
+                                                        style={{ width: '100px', height: '100px' }}
+                                                    />
+                                                )}
+                                            </td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
+                                                <div
+                                                    style={{
+                                                        backgroundColor: product?.color,
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        marginLeft: 'auto',
+                                                        marginRight: 'auto',
+                                                    }}
+                                                ></div>
+                                            </td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.size}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.quantity}</td>
+                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.price.toLocaleString()}đ</td>
+                                        </tr>
+                                    ))}
+                                    <tr style={{ marginTop: 20 }}>
+                                        <td colSpan={6} style={{ textAlign: 'right', fontWeight: 'bold', borderTop: '1px solid #ddd', padding: '8px' }}>Tổng tiền:</td>
+                                        <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>{data?.totalPrice.toLocaleString()}đ</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 )}
             </div>
-            <div>
+            <div style={{ marginTop: 25 }}>
                 <Popconfirm
                     title="Bạn có chắc chắn muốn xác nhận đơn hàng này?"
                     onConfirm={() => handleConfirm()}
@@ -149,7 +185,9 @@ const DetailBill = () => {
                         style={{
                             borderRadius: 10,
                             height: 40,
-                            marginRight: 20
+                            marginRight: 20,
+                            marginTop: 10,
+                            marginBottom: 10
                         }}
                         disabled={data?.status === "2"}
                         className={data?.status === "0" ? "cancel-button" : "disabled-button"}

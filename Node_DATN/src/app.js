@@ -14,6 +14,7 @@ import slideRouter from "./router/slider.js"
 import blogRouter from "./router/blog.js"
 import orderRouter from "./router/order.js"
 import discountRouter from "./router/discountCode.js"
+import statisticRouter from "./router/statistic.js"
 import vnpRouter from "./router/vnp.js"
 import commentRouter from "./router/comment.js"
 
@@ -41,6 +42,8 @@ app.use("/api", orderRouter)
 app.use("/api", discountRouter)
 app.use("/api",vnpRouter)
 app.use("/api", commentRouter)
+app.use("/api", statisticRouter)
+
 
 
 

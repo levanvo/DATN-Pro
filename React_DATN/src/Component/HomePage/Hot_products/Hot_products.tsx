@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {  useGetHotProductsQuery } from '../../../Services/Api_Product'
 import { IProduct } from '../../../Models/interfaces';
+import { Link } from 'react-router-dom';
 
 const Hot_products = () => {
     const { data: productData, isError, isLoading }: any = useGetHotProductsQuery()
@@ -48,7 +49,7 @@ const Hot_products = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="section-heading">
-                                <h2>Sản HOT</h2>
+                                <h2>Sản PHẨM HOT</h2>
                             </div>
                         </div>
                     </div>
@@ -59,7 +60,7 @@ const Hot_products = () => {
                                     {visibleProducts.map((product: IProduct) => {
                                         return (
                                             <div className='ml-2' key={product._id}>
-                                                <a href={`/product/${product._id}`} >
+                                                <Link to={`/product/${product._id}`} >
                                                     <div className="single-product">
                                                         <div className="level-pro-new">
                                                             <span>HOT</span>
@@ -131,7 +132,7 @@ const Hot_products = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </a>
+                                                </Link>
                                             </div>
                                         );
                                     })}

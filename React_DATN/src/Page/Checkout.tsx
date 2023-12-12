@@ -355,6 +355,8 @@ const Checkout = () => {
     handleInputBlur("district", selectedOption)
   }
 
+  console.log(selectedProducts);
+  
   // Sử lý tạo đơn hàng
   const handlePlaceOrder = async () => {
     try {
@@ -381,6 +383,7 @@ const Checkout = () => {
             price: selectedProducts[index].price,
             color: selectedProducts[index].color,
             size: selectedProducts[index].size,
+            imgUrl: selectedProducts[index].imgUrl
           })),
           name:
             (document.getElementById("name") as HTMLInputElement)?.value || "",
@@ -450,6 +453,7 @@ const Checkout = () => {
             price: selectedProducts[index].price,
             color: selectedProducts[index].color,
             size: selectedProducts[index].size,
+            imgUrl: selectedProducts[index].imgUrl
           })),
           name:
             (document.getElementById("name") as HTMLInputElement)?.value || "",
