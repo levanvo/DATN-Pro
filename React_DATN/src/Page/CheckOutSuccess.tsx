@@ -7,6 +7,10 @@ const CheckOutSuccess = () => {
     const location = useLocation();    
     const [addOrder, { error }] = useAddOrderMutation();
     const [statusOrder, setStatusOrder] = useState(true);
+    const [localCart, setLocalCart] = useState<any[]>(
+        JSON.parse(localStorage.getItem("cart") || "[]")
+      )
+
     const contentSuccess = {
         title: 'Bạn đã thanh toán thành công !',
         image: "https://npay-214706.as.r.appspot.com/npay/660_0/cong-thanh-toan-la-gi-loi-ich-cua-cong-thanh-toan-dien-tu-1676616433.jpg",
@@ -22,12 +26,29 @@ const CheckOutSuccess = () => {
         const fetchData = async () => {
             if (location.search.includes('vnp_ResponseCode=00')) {
                 let orderDataString = localStorage.getItem('orderData')
+                let orderItemData= localStorage.getItem('orderItemData')
+
+                // Thanh toán vnp với người có tài khoản
                 if(orderDataString){
                     let dataOrder = JSON.parse(orderDataString);
                     await addOrder(dataOrder)
+                    localStorage.removeItem('orderData');
+                }
+
+                // Thanh toán vnp với người không có tài khoản
+                if(orderItemData){
+                    let dataOrder = JSON.parse(orderItemData);
+                    console.log(dataOrder);
+                    await addOrder(dataOrder)
+                
+                    
+                    const cartId = dataOrder.cartId
+                    const updatedLocalCart = localCart.filter((item) => !cartId.includes(item.id));
+                    setLocalCart(updatedLocalCart);
+                    localStorage.setItem('cart', JSON.stringify(updatedLocalCart));
+                    localStorage.removeItem('orderItemData');
                 }
                 setStatusOrder(true);
-                localStorage.removeItem('orderData');
             } else {
                 setStatusOrder(false);
             }
