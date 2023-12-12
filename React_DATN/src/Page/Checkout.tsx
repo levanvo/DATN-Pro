@@ -4,7 +4,6 @@ import vietnamData from "../Services/vietnamData"
 import { useLocation } from "react-router-dom"
 import { message } from "antd"
 import { useAddOrderMutation } from "../Services/Api_Order"
-import { useAddOrderItemMutation } from "../Services/Api_OrderItem"
 import { useCreatePaymentMutation } from "../Services/Api_VNP";
 import {
   useGetDiscountsQuery,
@@ -36,7 +35,7 @@ const Checkout = () => {
   const phone = (document.getElementById("phone") as HTMLInputElement)?.value
   const address = (document.getElementById("address") as HTMLInputElement)
     ?.value
-  const [addOrderItem] = useAddOrderItemMutation()
+
   const [createPayment] = useCreatePaymentMutation()
   const [localCart, setLocalCart] = useState<any[]>(
     JSON.parse(localStorage.getItem("cart") || "[]")
@@ -472,14 +471,18 @@ const Checkout = () => {
             0
           ),
         }
-        // await addOrderItem(orderItemData)
-        await addOrder(orderItemData)
 
-        message.success("Đặt hàng thành công")
-        const updatedLocalCart = localCart.filter(
-          (item) => !cartId.includes(item.id)
-        )
-        localStorage.setItem("cart", JSON.stringify(updatedLocalCart))
+        if (selectedMethod == 'transfer') {
+          const urlPay = await createPayment(orderItemData);
+          localStorage.setItem('orderItemData', JSON.stringify(orderItemData));
+          window.location.href = urlPay.data.data;
+        }else{
+          await addOrder(orderItemData)
+          message.success("Đặt hàng thành công")
+
+          const updatedLocalCart = localCart.filter((item) => !cartId.includes(item.id))
+          localStorage.setItem("cart", JSON.stringify(updatedLocalCart))
+        } 
       }
     } catch (error) {
       console.log(error);
