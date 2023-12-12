@@ -11,6 +11,8 @@ import newSletterApi from "./Services/Api_newSletter"
 import orderApi from "./Services/Api_Order"
 import commentApi from "./Services/Api_Comment"
 import discountApi from "./Services/Api_Discount"
+import statisticApi from "./Services/Api_Statistic"
+
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +28,8 @@ export const store = configureStore({
     newSletterApi: newSletterApi.reducer,
     comments: commentApi.reducer,
     discountApi: discountApi.reducer,
+    statistic: statisticApi.reducer,
+
   },
   middleware: (defaultMiddleware) =>
     defaultMiddleware()
@@ -40,7 +44,8 @@ export const store = configureStore({
       .concat(newSletterApi.middleware)
       .concat(blogApi.middleware)
       .concat(commentApi.middleware)
-      .concat(discountApi.middleware),
+      .concat(discountApi.middleware)
+      .concat(statisticApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

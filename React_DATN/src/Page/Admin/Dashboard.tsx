@@ -1,263 +1,156 @@
-import React, { useState, useEffect } from 'react'
-import Highcharts from 'highcharts';
-import { useGetAllProductQuery } from '../../Services/Api_Product';
-import Loading from '../../Component/Loading';
-import { Table } from 'antd';
+import React, { useState } from 'react';
+import { Calendar, Button, Table, Pagination } from 'antd';
+import moment from 'moment';
+import { useCurrentDayStatisticsMutation } from '../../Services/Api_Statistic';
 
 const Dashboard = () => {
-  const { data: dataGetProducts, isLoading: loadingProducts }: any = useGetAllProductQuery();
-  const [totalAllViews, setTotalAllViews]: any = useState(0);
-  const [totalAllSelled, setTotalAllSelled]: any = useState(0);
-  const [selectView, setSelectView]: any = useState("today");
-  const [selectProducts, setSelectProducts]: any = useState("todayP");
-  
-  const [viewToday, setViewsToday]: any = useState([]);
-  const [viewWeek, setViewsWeek]: any = useState([]);
-  const [viewMonth, setViewsMonth]: any = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [tableData, setTableData] = useState([]);
+  const [totalQuantitySold, setTotalQuantitySold] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(4);
+  const [totalItems, setTotalItems] = useState(0); // Thêm state totalItems
+  const [totalPrice, setToalPrice] = useState(0);
 
-  const [selledToday, setSelledToday]: any = useState([]);
-  const [selledWeek, setSelledWeek]: any = useState([]);
-  const [selledMonth, setSelledMonth]: any = useState([]);
-  // views
-  function TodayViews() {
-    setSelectView("today");
-  }
-  function WeekViews() {
-    setSelectView("week");
-  }
-  function MonthViews() {
-    setSelectView("month");
-  }
-  useEffect(() => {
-    if (!loadingProducts) {
-      let arrayToday: any = [];
-      let arrayWeek: any = [];
-      let arrayMonth: any = [];
-      let countViews = 0;
-      const Time = new Date();
 
-      const month = Time.getMonth() + 1;
-      const day = Time.getDate();
-      const hours = Time.getHours();
+  const [CurrentDayStatistics] = useCurrentDayStatisticsMutation();
 
-      dataGetProducts.map((views: any) => {
-        views.views > 0 ? countViews += views.views : "";
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+  };
 
-        let timeSP = new Date(views.createdAt);
-        const daySP: number = timeSP.getDate();
-        if (daySP == day && views.views > 0) {
-          arrayToday.push(views);
-        };
-        if ((day - timeSP.getDate()) <= 7 && views.views > 0) {
-          arrayWeek.push(views);
-        };
-        if ((day - timeSP.getDate()) <= 30 && views.views > 0) {
-          arrayMonth.push(views);
-        };
-        // arrayMonth.push(views);
-      });
+  const handleSearch = async () => {
+    try {
+      if (selectedDate) {
+        const response = await CurrentDayStatistics({ date: selectedDate.format('YYYY-MM-DD') });
 
-      setViewsMonth(arrayMonth);
-      setViewsWeek(arrayWeek);
-      setViewsToday(arrayToday);
-      setTotalAllViews(countViews);
-    };
-  }, [dataGetProducts]);
-  const columnsViews: any = [
+        if (response.data && response.data.success) {
+          const { startDate, totalQuantity, orders,totalPrice } = response.data.StatisticsByDay;
+
+          if (orders.length > 0) {
+            const serverData = orders.map(order => {
+              return order.products.map(product => ({
+                key: product._id,
+                date: moment(startDate).format('DD-MM-YYYY  HH:mm'),
+                totalQuantity: totalQuantity,
+                productId: product.productId?._id,
+                productName: product.productId?.name,
+                quantity: product.quantity,
+                color: product.color,
+                size: product.size,
+                totalPrice: totalPrice,
+                imgUrl: product.imgUrl && product.imgUrl[0], // Assuming imgUrl is an array
+              }));
+            }).flat();
+
+            setTotalQuantitySold(totalQuantity);
+            setToalPrice(totalPrice)
+            setTotalItems(serverData.length); // Set totalItems
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedData = serverData.slice(startIndex, endIndex);
+
+            setTableData(paginatedData);
+          } else {
+            setTableData([]);
+            setTotalQuantitySold(0);
+            setTotalItems(0); // Reset totalItems
+          }
+        } else {
+          console.error('Error fetching data from the server');
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const wrapperStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '500px',
+    border: '1px solid #f0f0f0',
+    borderRadius: '6px',
+  };
+
+  const columns = [
+    {
+      title: 'Ngày',
+      dataIndex: 'date',
+      key: 'date',
+      align: "center"
+    },
+    
     {
       title: 'Tên sản phẩm',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text: any) => <a>{text}</a>,
+      dataIndex: 'productName',
+      key: 'productName',
+      align: "center"
     },
     {
-      title: 'Lượt xem',
-      dataIndex: 'views',
-      key: 'views',
-    }
-  ];
-  let dataViews: any = [];
-  if (selectView == 'today') {
-    viewToday?.map((items: any) => {
-      dataViews.push({
-        key: items._id,
-        name: items.name,
-        views: items.views
-      });
-    });
-  } else if (selectView == "week") {
-    viewWeek?.map((items: any) => {
-      dataViews.push({
-        key: items._id,
-        name: items.name,
-        views: items.views
-      });
-    });
-  } else {
-    viewMonth?.map((items: any) => {
-      dataViews.push({
-        key: items._id,
-        name: items.name,
-        views: items.views
-      });
-    });
-
-  };
-  dataViews.sort((a: any, b: any) => b.views - a.views)
-  // products
-  function TodayProducts() {
-    setSelectProducts("todayP");
-  }
-  function WeekProducts() {
-    setSelectProducts("weekP");
-  }
-  function MonthProducts() {
-    setSelectProducts("monthP");
-  }
-  const columnsProducts: any = [
-    {
-      title: 'Tên Sản phẩm',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text: any) => <a>{text}</a>,
+      title: 'Hình ảnh',
+      dataIndex: 'imgUrl',
+      key: 'imgUrl',
+      align: "center",
+      render: (imgUrl:any) => <img src={imgUrl} alt="Product" style={{ width: '50px', height: '50px' }} />,
     },
     {
-      title: 'Đã bán',
-      dataIndex: 'selled',
-      key: 'selled',
+      title: 'Color',
+      dataIndex: 'color',
+      key: 'color',
+      align: "center",
+      render: (color: string) => (
+        <div style={{ backgroundColor: color, width: '20px', height: '20px', margin: '0 auto' }}></div>
+      ),
+    },
+    {
+      title: 'Size',
+      dataIndex: 'size',
+      key: 'size',
+      align: "center"
+    },
+    {
+      title: 'Số lượng đã bán',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      align: "center"
     }
   ];
-  useEffect(() => {
-    if (!loadingProducts) {
-      let arrayToday: any = [];
-      let arrayWeek: any = [];
-      let arrayMonth: any = [];
-      let countSelled = 0;
-      const Time = new Date();
 
-      const month = Time.getMonth() + 1;
-      const day = Time.getDate();
-      const hours = Time.getHours();
-
-      dataGetProducts.map((views: any) => {
-        views.sell_quantity > 0 ? countSelled += views.sell_quantity : "";
-
-        let timeSP = new Date(views.createdAt);
-        const daySP: number = timeSP.getDate();
-        if (daySP == day && views.sell_quantity > 0) {
-          arrayToday.push(views);
-        };
-        if ((day - timeSP.getDate()) <= 7 && views.sell_quantity > 0) {
-          arrayWeek.push(views);
-        };
-        if ((day - timeSP.getDate()) <= 30 && views.sell_quantity > 0) {
-          arrayMonth.push(views);
-        };
-        // arrayMonth.push(views);
-      });
-
-      setSelledMonth(arrayMonth);
-      setSelledWeek(arrayWeek);
-      setSelledToday(arrayToday);
-      setTotalAllSelled(countSelled);
-    };
-  }, [dataGetProducts]);
-  let dataProducts: any = [];
-  if (selectProducts == 'todayP') {
-    selledToday?.map((items: any) => {
-      dataProducts.push({
-        key: items._id,
-        name: items.name,
-        selled: items.sell_quantity
-      });
-    });
-  } else if (selectProducts == "weekP") {
-    selledWeek?.map((items: any) => {
-      dataProducts.push({
-        key: items._id,
-        name: items.name,
-        selled: items.sell_quantity
-      });
-    });
-  } else {
-    selledMonth?.map((items: any) => {
-      dataProducts.push({
-        key: items._id,
-        name: items.name,
-        selled: items.sell_quantity
-      });
-    });
-  };
-  dataProducts.sort((a: any, b: any) => b.selled - a.selled)
   return (
-    <div className='h-[80vh] scrollDasboard'>
-      {/* views */}
-      <div className="flex justify-between border rounded-md VIEWS select-none mb-10">
-        <div className={`selector-Views`}>
-          <h3 className='mt-2 text-sky-600 ml-10'>Thống kê theo lượt xem</h3>
-          <p className='ml-2'>(*) <span className='text-red-400'>Lượt xem được phân tích theo khoảng thời gian được tạo của các sản phẩm.</span></p>
-          <p className='-mt-4 ml-2'>(*) Tổng lượt xem toàn bộ: <span className='text-green-600'>{totalAllViews} views /{dataGetProducts?.length} sản phẩm.</span></p>
-          <div className="flex space-x-2 ml-20 ">
-            {selectView == "today" ? <input type="radio" id='today' name='a' checked /> : <input type="radio" id='today' name='a' />}
-            <label htmlFor='today'><p className='m-0 cursor-pointer font-medium' onClick={() => TodayViews()}>Lượt xem hôm nay. </p></label>
-          </div>
-          <div className="flex space-x-2 ml-20 ">
-            {selectView == "week" ? <input type="radio" id='week' name='a' checked /> : <input type="radio" id='week' name='a' />}
-            <label htmlFor='week'><p className='m-0 cursor-pointer font-medium' onClick={() => WeekViews()}>Lượt xem 7 ngày qua. </p></label>
-          </div>
-          <div className="flex space-x-2 ml-20 ">
-            {selectView == "month" ? <input type="radio" id='month' name='a' checked /> : <input type="radio" id='month' name='a' />}
-            <label htmlFor='month'><p className='m-0 cursor-pointer font-medium' onClick={() => MonthViews()}>Lượt xem trong 1 tháng. </p></label>
-          </div>
-        </div>
-        <div className="">
-          <div className="flex space-x-2 -mb-10 mt-5 bg-gray-50 rounded-full w-fit">
-            <img className='w-7 h-7' src="../../../img/icons/timetable.png" alt="" />
-            {selectView == "today" && <p className='pr-5 mt-1 h-[12px]'>hôm nay: {(new Date().getDate()) < 10 ? "0" + (new Date().getDate()) : (new Date().getDate())}/{(new Date().getMonth() + 1) > 12 ? "01" : (new Date().getMonth() + 1)}/{new Date().getFullYear()}</p>}
-            {selectView == "week" && <p className='pr-5 mt-1 h-[12px]'>từ: 7 ngày trước</p>}
-            {selectView == "month" && <p className='pr-5 mt-1 h-[12px]'>từ: {(new Date().getDate()) < 10 ? "0" + (new Date().getDate()) : (new Date().getDate())}/{(new Date().getMonth() + 1) > 12 ? "01" : (new Date().getMonth())}/{new Date().getFullYear()} đến: {(new Date().getDate()) < 10 ? "0" + (new Date().getDate()) : (new Date().getDate())}/{(new Date().getMonth() + 1) > 12 ? "01" : (new Date().getMonth() + 1)}/{new Date().getFullYear()}</p>}
-
-          </div>
-          <p className='float-right mr-5'>số lượng: {selectView == "today" && viewToday.length} {selectView == "week" && viewWeek.length} {selectView == "month" && viewMonth.length}</p>
-          {loadingProducts ? <Loading /> : <Table className='w-[700px] mt-5 mr-2' columns={columnsViews} dataSource={dataViews} pagination={{ pageSize: 5 }} />}
+    <div style={{ display: 'flex' }}>
+      <div style={wrapperStyle}>
+        <Calendar
+          fullscreen={false}
+          onSelect={handleDateSelect}
+        />
+        <Button type="primary" onClick={handleSearch} style={{ margin: '10px', color: "white", background: "red" }}>
+          Tìm kiếm
+        </Button>
+      </div>
+      <div style={{ marginLeft: '20px', flex: 1 }}>
+        <h4>Kết Quả Thống Kê:</h4>
+        <Table columns={columns} dataSource={tableData} pagination={false} />
+        <Pagination
+          current={currentPage}
+          total={totalItems}  // Thay đổi total thành totalItems
+          pageSize={pageSize}
+          onChange={handlePageChange}
+          style={{ marginTop: '10px', textAlign: 'right' }}
+        />
+        <div style={{ textAlign: 'right', marginTop: '10px' }}>
+          Tổng đã bán: {totalQuantitySold}
         </div>
       </div>
-      {/* products */}
-      <div className="flex justify-between border rounded-md VIEWS select-none">
-        <div className={`selector-Products`}>
-          <h3 className='mt-2 text-sky-600 ml-10'>Biến động về sản phẩm</h3>
-          <p className='ml-2'>(*) <span className='text-red-400'>Lượt xem được phân tích theo khoảng thời gian được tạo của các sản phẩm.</span></p>
-          <p className='-mt-4 ml-2'>(*) Tổng đã bán: <span className='text-green-600'>{totalAllSelled} /{dataGetProducts?.length} sản phẩm.</span></p>
-          <p className='ml-5 font-bold mb-0'>Theo lượt bán:</p>
-          <div className="flex space-x-2 ml-20 ">
-            {selectProducts == "todayP" ? <input type="radio" id='todayP' name='PR' checked /> : <input type="radio" id='todayP' name='PR' />}
-            <label htmlFor='todayP'><p className='m-0 cursor-pointer font-medium' onClick={() => TodayProducts()}>Lượt bán hôm nay. </p></label>
-          </div>
-          <div className="flex space-x-2 ml-20 ">
-            {selectProducts == "weekP" ? <input type="radio" id='weekP' name='PR' checked /> : <input type="radio" id='weekP' name='PR' />}
-            <label htmlFor='weekP'><p className='m-0 cursor-pointer font-medium' onClick={() => WeekProducts()}>Lượt bán trong 1 tuần. </p></label>
-          </div>
-          <div className="flex space-x-2 ml-20 ">
-            {selectProducts == "monthP" ? <input type="radio" id='monthP' name='PR' checked /> : <input type="radio" id='monthP' name='PR' />}
-            <label htmlFor='monthP'><p className='m-0 cursor-pointer font-medium' onClick={() => MonthProducts()}>Lượt bán trong 1 tháng. </p></label>
-          </div>
+      <div style={{ textAlign: 'right', marginTop: '10px' }}>
+          Tổng doanh thu: {totalPrice}
         </div>
-        <div className="">
-          <div className="flex space-x-2 -mb-10 mt-5 bg-gray-50 rounded-full w-fit">
-            <img className='w-7 h-7' src="../../../img/icons/timetable.png" alt="" />
-            {selectProducts == "todayP" && <p className='pr-5 mt-1 h-[12px]'>hôm nay: {(new Date().getDate()) < 10 ? "0" + (new Date().getDate()) : (new Date().getDate())}/{(new Date().getMonth() + 1) > 12 ? "01" : (new Date().getMonth() + 1)}/{new Date().getFullYear()}</p>}
-            {selectProducts == "weekP" && <p className='pr-5 mt-1 h-[12px]'>từ: 7 ngày trước</p>}
-            {selectProducts == "monthP" && <p className='pr-5 mt-1 h-[12px]'>từ: {(new Date().getDate()) < 10 ? "0" + (new Date().getDate()) : (new Date().getDate())}/{(new Date().getMonth() + 1) > 12 ? "01" : (new Date().getMonth())}/{new Date().getFullYear()} đến: {(new Date().getDate()) < 10 ? "0" + (new Date().getDate()) : (new Date().getDate())}/{(new Date().getMonth() + 1) > 12 ? "01" : (new Date().getMonth() + 1)}/{new Date().getFullYear()}</p>}
-
-          </div>
-          <p className='float-right mr-5'>số lượng: {selectProducts == "todayP" && selledToday.length} {selectProducts == "weekP" && selledWeek.length} {selectProducts == "monthP" && selledMonth.length}</p>
-          {loadingProducts ? <Loading /> : <Table className='w-[700px] mt-5 mr-2' columns={columnsProducts} dataSource={dataProducts} pagination={{ pageSize: 5 }} />}
-        </div>
-
-      </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

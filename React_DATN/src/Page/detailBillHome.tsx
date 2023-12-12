@@ -1,16 +1,17 @@
-import React from 'react';
-import { useGetOneOrdersQuery, useUpdateOrderMutation } from '../Services/Api_Order';
+
+import { useGetOrderByIdQuery, useUpdateOrderMutation } from '../Services/Api_Order';
 import { Button, message } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IOrder } from '../Models/interfaces';
 import '../../css/user.css'
 import UserMenu from '../Component/UserMenu';
+import moment from 'moment';
 
 const BillDetailHome = () => {
     const navigate = useNavigate()
 
     const { id } = useParams();
-    const { data } = useGetOneOrdersQuery(id || "");
+    const { data } = useGetOrderByIdQuery(id || "");
     console.log("dtaa", data)
 
     const [updateOrder] = useUpdateOrderMutation();
