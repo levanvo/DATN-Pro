@@ -87,6 +87,8 @@ const generateStatistics = async (startDate, endDate) => {
     const statistics = [];
   
     let totalQuantity = 0; // tổng số lượng bán ra
+    let totalPrice = 0; // tổng số lượng bán ra
+
   
     for (const order of orders) {
       for (const product of order.products) {
@@ -95,12 +97,14 @@ const generateStatistics = async (startDate, endDate) => {
           productId: product.productId?._id,
           userId: order.userId,
           quantity: product.quantity,
+          totalPrice: product.totalPrice
         });
   
         statistics.push(statistic);
   
         // Cập nhật tổng số lượng sản phẩm đã mua
         totalQuantity += product.quantity;
+        totalPrice +=product.totalPrice
       }
     }
   

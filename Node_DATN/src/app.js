@@ -16,14 +16,12 @@ import orderRouter from "./router/order.js"
 import discountRouter from "./router/discountCode.js"
 import statisticRouter from "./router/statistic.js"
 import vnpRouter from "./router/vnp.js"
-
-
 import commentRouter from "./router/comment.js"
+
 
 dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3000
-
 
 // kết nối database
 connectDB()

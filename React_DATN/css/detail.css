@@ -165,7 +165,7 @@ select option:checked {
 
 .cm {
   width: 1290px;
-  height: 245px;
+  /* height: 245px; */
   margin: 20px auto;
 }
 

@@ -52,29 +52,11 @@ const Product = () => {
                                         <div>
                                             <img src="img/banner/banner-5.jpg" />
                                         </div>
-                                        {/* <ul className="nav tab-navigation" role="tablist">
-                                            <li role="presentation">
-                                                <a href="#tab5" aria-controls="tab5" role="tab" data-bs-toggle="tab">NIKE</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab6" aria-controls="tab6" role="tab" data-bs-toggle="tab">MLB</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab7" aria-controls="tab7" role="tab" data-bs-toggle="tab">ADIDAS</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab8" aria-controls="tab8" role="tab" data-bs-toggle="tab">VANS</a>
-                                            </li>
-                                            <li></li>
-                                        </ul> */}
+
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="col-lg-9">
-                                <div className="row">
-                                    
-                                </div>
-                            </div> */}
+
                             <div className="flex justify-center flex-wrap col-lg-9 mt-1">
                                 {
                                     isLoading ?
@@ -91,7 +73,7 @@ const Product = () => {
                                                         <div className="flex justify-between -mt-3">
                                                             <div className="flex space-x-1">
                                                                 <span>{items.original_price?.toLocaleString()}</span>
-                                                                {/* <del className='text-xs'> {items.original_price > 0 ? (items.price + items.original_price).toLocaleString() : ""}</del> */}
+
                                                                 <span> VND</span>
                                                             </div>
                                                             <span>SL: {items.quantity}</span>

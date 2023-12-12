@@ -32,7 +32,7 @@ const Bill = () => {
       key: 'userId',
     },
     {
-      title: 'Ngày tạo đơn',
+      title: 'Ngày tạo đơn hàng',
       dataIndex: 'createdAt',
       key: 'createdAt',
     },

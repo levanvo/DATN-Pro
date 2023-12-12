@@ -68,7 +68,7 @@ const SizeList = () => {
       align: 'center',
     },
     {
-      title: 'Action',
+      title: 'Hành động',
       key: 'action',
       render: ({ key: id }: any) => (
         <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>

@@ -8,8 +8,10 @@ const Dashboard = () => {
   const [tableData, setTableData] = useState([]);
   const [totalQuantitySold, setTotalQuantitySold] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(4);
   const [totalItems, setTotalItems] = useState(0); // Thêm state totalItems
+  const [totalPrice, setToalPrice] = useState(0);
+
 
   const [CurrentDayStatistics] = useCurrentDayStatisticsMutation();
 
@@ -23,24 +25,26 @@ const Dashboard = () => {
         const response = await CurrentDayStatistics({ date: selectedDate.format('YYYY-MM-DD') });
 
         if (response.data && response.data.success) {
-          const { startDate, totalQuantity, orders } = response.data.StatisticsByDay;
+          const { startDate, totalQuantity, orders,totalPrice } = response.data.StatisticsByDay;
 
           if (orders.length > 0) {
             const serverData = orders.map(order => {
               return order.products.map(product => ({
                 key: product._id,
-                date: moment(startDate).format('DD-MM-YYYY'),
+                date: moment(startDate).format('DD-MM-YYYY  HH:mm'),
                 totalQuantity: totalQuantity,
                 productId: product.productId?._id,
                 productName: product.productId?.name,
                 quantity: product.quantity,
                 color: product.color,
                 size: product.size,
+                totalPrice: totalPrice,
                 imgUrl: product.imgUrl && product.imgUrl[0], // Assuming imgUrl is an array
               }));
             }).flat();
 
             setTotalQuantitySold(totalQuantity);
+            setToalPrice(totalPrice)
             setTotalItems(serverData.length); // Set totalItems
             const startIndex = (currentPage - 1) * pageSize;
             const endIndex = startIndex + pageSize;
@@ -142,6 +146,9 @@ const Dashboard = () => {
           Tổng đã bán: {totalQuantitySold}
         </div>
       </div>
+      <div style={{ textAlign: 'right', marginTop: '10px' }}>
+          Tổng doanh thu: {totalPrice}
+        </div>
     </div>
   );
 };
