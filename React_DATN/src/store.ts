@@ -9,7 +9,6 @@ import slideApi from "./Services/Api_Slide"
 import blogApi from "./Services/Api_Blogs"
 import newSletterApi from "./Services/Api_newSletter"
 import orderApi from "./Services/Api_Order"
-import orderItemApi from "./Services/Api_OrderItem"
 import commentApi from "./Services/Api_Comment"
 import discountApi from "./Services/Api_Discount"
 
@@ -25,7 +24,6 @@ export const store = configureStore({
     order: orderApi.reducer,
     blogs: blogApi.reducer,
     newSletterApi: newSletterApi.reducer,
-    orderItem: orderItemApi.reducer,
     comments: commentApi.reducer,
     discountApi: discountApi.reducer,
   },
@@ -41,7 +39,6 @@ export const store = configureStore({
       .concat(orderApi.middleware)
       .concat(newSletterApi.middleware)
       .concat(blogApi.middleware)
-      .concat(orderItemApi.middleware)
       .concat(commentApi.middleware)
       .concat(discountApi.middleware),
 })

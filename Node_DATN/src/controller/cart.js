@@ -3,30 +3,37 @@ import Product from "../models/product.js"
 import mongoose from "mongoose"
 
 
-export const getCart = async(req,res) =>{
-    try {
-        // Lấy giỏ hàng dựa trên userId
-        if(req.user){
-          const cart = await Cart.findOne({ userId: req.user._id })
+export const getCart = async (req, res) => {
+  try {
+    // Lấy giỏ hàng dựa trên userId
+    if (req.user) {
+      const cart = await Cart.findOne({ userId: req.user._id })
         .populate({
           path: 'products.productId',
-          model: 'Product', 
-          select: 'name imgUrl price isDeleted variants', 
+          model: 'Product',
+          select: 'name imgUrl price isDeleted variants.inventory', // Include 'variants.inventory' in the selection
         });
-      
-          if (!cart) {
-            return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
-          }
-      
-          res.json(cart);
-        }
-      } catch (error) {
-        res.status(500).json({
-          message: "Đã xảy ra lỗi khi lấy giỏ hàng.",
-          error: error.message,
-        });
+
+      if (!cart) {
+        return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
       }
+
+      // Filter out products with zero inventory
+      // cart.products = cart.products.filter(product => product.productId.variants.some(variant => variant.inventory > 0));
+
+      // // Save the updated cart (optional, if you want to persist the changes in the cart)
+      // await cart.save();
+
+      res.json(cart);
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Đã xảy ra lỗi khi lấy giỏ hàng.",
+      error: error.message,
+    });
+  }
 }
+
 export const addToCart = async (req, res) => {
   const { productId, color, size, quantity,price,imgUrl } = req.body;
   const userId = req.user._id;
