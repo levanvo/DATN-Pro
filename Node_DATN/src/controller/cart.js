@@ -11,17 +11,17 @@ export const getCart = async(req,res) =>{
         .populate({
           path: 'products.productId',
           model: 'Product', 
-          select: 'name imgUrl price isDeleted variants.inventory', 
+          select: 'name imgUrl price isDeleted',
         });
       
           if (!cart) {
             return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
           }
 
-          cart.products = cart.products.filter(product => product.productId.variants.some(variant => variant.inventory > 0));
+          // cart.products = cart.products.filter(product => product.productId.variants.some(variant => variant.inventory > 0));
 
           // Save the updated cart (optional, if you want to persist the changes in the cart)
-          await cart.save();
+          // await cart.save();
 
       
           res.json(cart);

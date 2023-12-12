@@ -18,12 +18,12 @@ export const generateStatisticsForSpecificDate = async (req, res) => {
       const startDate = new Date(requestedDate.getTime() - serverTimeZoneOffset);
       const endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
   
-      const statisticsForSpecificDate = await generateStatistics(startDate, endDate);
+      const StatisticsByDay = await generateStatistics(startDate, endDate);
   
       res.status(200).json({
         success: true,
         message: "Daily statistics for the specified date generated successfully",
-        statisticsForSpecificDate,
+        StatisticsByDay,
       });
     } catch (error) {
       console.error(error);
@@ -86,13 +86,13 @@ const generateStatistics = async (startDate, endDate) => {
   
     const statistics = [];
   
-    let totalQuantity = 0;
+    let totalQuantity = 0; // tổng số lượng bán ra
   
     for (const order of orders) {
       for (const product of order.products) {
         const statistic = new Statistic({
           date: startDate,  // Sử dụng startDate thay vì requestedDate
-          productId: product.productId._id,
+          productId: product.productId?._id,
           userId: order.userId,
           quantity: product.quantity,
         });
