@@ -150,7 +150,7 @@ const Products = () => {
                     {categoryData?.map((category: ICategory) => {
                       return (
                         <Button
-                          className={`hover:bg-red-500 ${selectedCategory === category._id ? "bg-red-500 text-white" : ""
+                          className={`hover:bg-red-500 hover:text-white m-1 ${selectedCategory === category._id ? "bg-red-500 text-white" : ""
                             }`}
                           key={category._id}
                           onClick={() => {
