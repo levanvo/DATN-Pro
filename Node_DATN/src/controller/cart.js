@@ -18,19 +18,6 @@ export const getCart = async (req, res) => {
         return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
       }
 
-      // Filter out products with zero inventory
-      cart.products = cart.products.filter(product => {
-        const matchingVariant = product.productId.variants.find(variant =>
-          variant.size_id.toString() === product.size &&
-          variant.color_id.toString() === product.color &&
-          variant.inventory > 0
-        );
-        return matchingVariant;
-      });
-
-      // // Save the updated cart (optional, if you want to persist the changes in the cart)
-      // await cart.save();
-
       res.json(cart);
     }
   } catch (error) {

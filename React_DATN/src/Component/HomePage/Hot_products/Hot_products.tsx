@@ -61,7 +61,7 @@ const Hot_products = () => {
                                         return (
                                             <div className='ml-2' key={product._id}>
                                                 <Link to={`/product/${product._id}`} >
-                                                    <div className="single-product">
+                                                    <div className="single-product w-[280px] h-auto">
                                                         <div className="level-pro-new">
                                                             <span>HOT</span>
                                                         </div>
@@ -70,48 +70,23 @@ const Hot_products = () => {
                                                                 <img
                                                                     src={product.imgUrl?.[0]}
                                                                     alt=""
-                                                                    className="primary-img h-[300px] w-[250px]"
+                                                                    className="primary-img h-[300px] w-[280px]"
                                                                 />
                                                                 <img
                                                                     src={product.imgUrl?.[1]}
                                                                     alt=""
-                                                                    className="secondary-img"
+                                                                    className="secondary-img h-[300px] w-[280px]"
                                                                 />
                                                             </div>
                                                         </div>
                                                         <div className="actions">
                                                             <button
                                                                 type="submit"
-                                                                className="cart-btn"
+                                                                className="cart-btn w-[280px]"
                                                                 title="Add to cart"
                                                             >
-                                                                add to cart
+                                                                THÊM VÀO GIỎ HÀNG
                                                             </button>
-                                                            <ul className="add-to-link">
-                                                                <li>
-                                                                    <a
-                                                                        className="modal-view"
-                                                                        data-target="#productModal"
-                                                                        data-bs-toggle="modal"
-                                                                        href="#"
-                                                                    >
-                                                                        {" "}
-                                                                        <i className="fa fa-search"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fa fa-heart-o"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fa fa-refresh"></i>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
                                                         </div>
                                                         <div className="product-price">
                                                             <div className="product-name">

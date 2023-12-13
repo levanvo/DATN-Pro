@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import { useGetAllCategoryQuery } from "../Services/Api_Category";
 import { useGetColorsQuery } from "../Services/Api_Color";
 import { Button } from "antd";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Loading from "../Component/Loading";
 
 const Products = () => {
@@ -264,7 +264,7 @@ const Products = () => {
                                 className="col-lg-4 col-md-6"
                                 key={product._id}
                               >
-                                <a href={`/product/${product._id}`}>
+                                <Link to={`/product/${product._id}`}>
                                   <div className="single-product">
                                     <div className="level-pro-new">
                                       <span>new</span>
@@ -302,7 +302,7 @@ const Products = () => {
                                       </div>
                                     </div>
                                   </div>
-                                </a>
+                                </Link>
                               </div>
                             );
                           })

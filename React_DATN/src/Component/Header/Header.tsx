@@ -280,7 +280,7 @@ const Header = () => {
         visible={isLogoutModalVisible}
         onOk={() => handleLogoutConfirmation(true)}
         onCancel={() => handleLogoutConfirmation(false)}
-        okText="Đăng xuất"
+        okText={<span className='-ml-[6px]'>Đăng xuất</span>}
         cancelText="Hủy"
         okButtonProps={{ style: { backgroundColor: "red" } }}
       >
