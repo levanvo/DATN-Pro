@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 
-
 const statisticApi = createApi({
     reducerPath: "statistic",
     baseQuery: fetchBaseQuery({
@@ -9,25 +8,17 @@ const statisticApi = createApi({
     }),
     endpoints: (builder) => ({
 
-        CurrentDayStatistics: builder.mutation({
+        StatisticsByDay: builder.mutation({
             query: (date) => ({
-                url: "/api/generate-daily",
+                url: "/api/statistic/day",
                 method: "POST",
                 body: date
             }),
         }),
 
-        PastDateStatistics: builder.mutation({
+        StatisticsByMonth: builder.mutation({
             query: (date) => ({
-                url: "/api/generate-qua",
-                method: "POST",
-                body: date
-            }),
-        }),
-
-        FutureDateStatistics: builder.mutation({
-            query: (date) => ({
-                url: "/api/generate-mai",
+                url: "/api/statistic/month",
                 method: "POST",
                 body: date
             }),
@@ -35,5 +26,5 @@ const statisticApi = createApi({
     }),
 });
 
-export const { useCurrentDayStatisticsMutation, useFutureDateStatisticsMutation, usePastDateStatisticsMutation } = statisticApi;
+export const { useStatisticsByDayMutation,useStatisticsByMonthMutation } = statisticApi;
 export default statisticApi;
