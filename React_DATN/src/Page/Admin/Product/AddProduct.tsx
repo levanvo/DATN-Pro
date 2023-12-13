@@ -238,12 +238,12 @@ const AddProduct = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item label="Mô tả sản phẩm" name="description">
-          <ReactQuill theme="snow" modules={modules} className="h-[200px] w-[800px] mb-10" />
+        <Form.Item label="Mô tả sản phẩm" name="description" >
+          <ReactQuill theme="snow" modules={modules} className="h-[150px] w-[470px] mb-10 " />
 
         </Form.Item>
 
-        <Form.Item label="Tải lên">
+        <Form.Item label="Tải lên" className="mt-5">
           <Upload
             listType="picture-card"
             name="images"

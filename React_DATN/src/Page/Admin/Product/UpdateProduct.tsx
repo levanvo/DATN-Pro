@@ -170,8 +170,8 @@ const UpdateProduct = () => {
         </Form.Item>
 
 
-        <Form.Item label="Mô tả sản phẩm" name="description">
-          <ReactQuill theme="snow" modules={modules} className="h-[200px] w-[800px] mb-10" />
+        <Form.Item label="Mô tả sản phẩm" name="description" className="mb-40">
+          <ReactQuill theme="snow" modules={modules} className="h-[150px] w-[400px] " />
 
         </Form.Item>
 
