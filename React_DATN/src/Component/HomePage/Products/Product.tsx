@@ -16,13 +16,13 @@ import { ICategory, IProduct } from '../../../Models/interfaces';
 const Product = () => {
     const [getId, setId]: any = useState("");
     const { data: productData, isLoading }: any = useGetAllProductQuery();
-    const { data: categoryData, isLoading: loadingCT }: any = useGetAllCategoryQuery();
+    // const { data: categoryData, isLoading: loadingCT }: any = useGetAllCategoryQuery();
 
 
 
     const sortedProducts = productData?.slice()
     .sort((a: any, b: any) => (b.sell_quantity || 0) - (a.sell_quantity || 0))
-    .filter((product: IProduct) => !product.isDeleted && (product.sell_quantity || 0) > 0).slice(0, 9);
+    .filter((product: IProduct) => !product.isDeleted && (product.sell_quantity || 0) > 0).slice(0, 8);
 
     
     return (
@@ -38,7 +38,7 @@ const Product = () => {
                                         <h2>Best seller <strong>Các Mẫu Giày</strong></h2>
                                     </div>
                                     <div className="side-menu">
-                                    {Array.isArray(categoryData) ? (
+                                    {/* {Array.isArray(categoryData) ? (
                                         categoryData?.map((category: ICategory) => (
                                         <ul className="nav tab-navigation" role="tablist" key={category._id}>
                                             <li role="presentation">
@@ -48,7 +48,7 @@ const Product = () => {
                                         ))
                                     ) : (
                                         <div>No categories available</div>
-                                    )}
+                                    )} */}
                                         <div>
                                             <img src="img/banner/banner-5.jpg" />
                                         </div>
@@ -76,7 +76,9 @@ const Product = () => {
 
                                                                 <span> VND</span>
                                                             </div>
-                                                            <span>SL: {items.quantityTotal-items.sell_quantity}</span>
+                                                            {/* <p>Lượt bán: {items.sell_quantity}</p> */}
+                                                            <span>Lượt bán: {items.sell_quantity}</span>
+                                                            {/* <span>SL: {items.quantityTotal-items.sell_quantity}</span> */}
                                                         </div>
                                                     </div>
                                                 </div>

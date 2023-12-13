@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import Select from "react-select"
 import vietnamData from "../Services/vietnamData"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { message } from "antd"
 import { useAddOrderMutation } from "../Services/Api_Order"
 import { useCreatePaymentMutation } from "../Services/Api_VNP"
@@ -18,19 +18,20 @@ const Checkout = () => {
   const { data: users } = useGetAllUserQuery()
   const [updateUser] = useUpdateUserMutation()
   const [updateDiscount] = useUpdateDiscountMutation()
+  const navigate=useNavigate();
   // kiểm tra ng dùng có chọn sử dụng mã giảm giá không
   const [isVisible, setIsVisible] = useState(false)
   const location = useLocation()
   const { selectedProducts } = location.state || {}
-  const [addOrder, { error }] = useAddOrderMutation()
-  const [messageApi, contexHolder] = message.useMessage()
-  const [nameError, setNameError] = useState("")
-  const [phoneError, setPhoneError] = useState("")
-  const [cityError, setCityError] = useState("")
-  const [districtError, setDistrictError] = useState("")
-  const [addressError, setAddressError] = useState("")
-  const [selectedCity, setSelectedCity] = useState(null)
-  const [selectedDistrict, setSelectedDistrict] = useState(null)
+  const [addOrder, { error }]:any = useAddOrderMutation()
+  const [messageApi, contexHolder]:any = message.useMessage()
+  const [nameError, setNameError]:any = useState("")
+  const [phoneError, setPhoneError]:any = useState("")
+  const [cityError, setCityError]:any = useState("")
+  const [districtError, setDistrictError]:any = useState("")
+  const [addressError, setAddressError]:any = useState("")
+  const [selectedCity, setSelectedCity]:any = useState(null)
+  const [selectedDistrict, setSelectedDistrict]:any = useState(null)
   const name = (document.getElementById("name") as HTMLInputElement)?.value
   const phone = (document.getElementById("phone") as HTMLInputElement)?.value
   const address = (document.getElementById("address") as HTMLInputElement)
@@ -47,7 +48,7 @@ const Checkout = () => {
   const [discountCode, setDiscountCode] = useState("")
   const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null) // Update initial state value
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const enteredDiscount = Array.isArray(discounts)
+  const enteredDiscount:any = Array.isArray(discounts)
     ? discounts?.find((d) => d.code === discountCode)
     : "không có data discount"
 
@@ -290,6 +291,9 @@ const Checkout = () => {
       default:
         break
     }
+    console.log("Field: ",field);
+    console.log("value: ",value);
+    
   }
 
   const validatePhoneNumber = (phoneNumber: string) => {
@@ -298,64 +302,64 @@ const Checkout = () => {
   }
 
   //validate khi người dùng click ra ngoài
-  const handleInputBlur = (field: any, value: any) => {
-    // Validate the field on blur
-    switch (field) {
-      case "name":
-        if (!value) {
-          setNameError("Họ và tên không được để trống.")
-        } else {
-          setNameError("")
-        }
-        break
-      case "phone":
-        if (!value) {
-          setPhoneError("Số điện thoại không để trống")
-        } else {
-          setPhoneError("")
-        }
-        break
-      case "city":
-        if (!value) {
-          setCityError("Vui lòng chọn tỉnh/thành phố")
-        } else {
-          setCityError("")
-        }
-        break
-      case "district":
-        if (!value) {
-          setDistrictError("Vui lòng chọn quận/huyện")
-        } else {
-          setDistrictError("")
-        }
-        break
-      case "address":
-        if (!value) {
-          setAddressError("Địa chỉ không được bỏ trống")
-        } else {
-          setAddressError("")
-        }
-        break
-      default:
-        break
-    }
-  }
+  // const handleInputBlur = (field: any, value: any) => {
+  //   // Validate the field on blur
+  //   switch (field) {
+  //     case "name":
+  //       if (!value) {
+  //         setNameError("Họ và tên không được để trống.")
+  //       } else {
+  //         setNameError("")
+  //       }
+  //       break
+  //     case "phone":
+  //       if (!value) {
+  //         setPhoneError("Số điện thoại không để trống")
+  //       } else {
+  //         setPhoneError("")
+  //       }
+  //       break
+  //     case "city":
+  //       if (!value) {
+  //         setCityError("Vui lòng chọn tỉnh/thành phố")
+  //       } else {
+  //         setCityError("")
+  //       }
+  //       break
+  //     case "district":
+  //       if (!value) {
+  //         setDistrictError("Vui lòng chọn quận/huyện")
+  //       } else {
+  //         setDistrictError("")
+  //       }
+  //       break
+  //     case "address":
+  //       if (!value) {
+  //         setAddressError("Địa chỉ không được bỏ trống")
+  //       } else {
+  //         setAddressError("")
+  //       }
+  //       break
+  //     default:
+  //       break
+  //   }
+  // }
 
   //handleCityChange thực hiện onChange validate kết hợp chọn select
   const handleCityChange = (selectedOption: any) => {
     setSelectedCity(selectedOption)
     setSelectedDistrict(null) // Reset lựa chọn quận/huyện khi thay đổi tỉnh/thành phố
-    handleInputBlur("city", selectedOption)
+    // handleInputBlur("city", selectedOption)
   }
 
   //handleDistrictChange thực hiện onChange validate kết hợp chọn select
   const handleDistrictChange = (selectedOption: any) => {
     setSelectedDistrict(selectedOption)
     handleInputChange("district", selectedOption)
-    handleInputBlur("district", selectedOption)
+    // handleInputBlur("district", selectedOption)
   }
 
-  console.log(selectedProducts);
+  // console.log(selectedProducts);
   
   // Sử lý tạo đơn hàng
   const handlePlaceOrder = async () => {
@@ -375,7 +379,7 @@ const Checkout = () => {
           return
         }
 
-        const orderData = {
+        const orderData:any = {
           cartId: cartId,
           products: productId.map((id: string, index: number) => ({
             productId: id,
@@ -403,12 +407,15 @@ const Checkout = () => {
         }
 
         if (selectedMethod == "transfer") {
-          const urlPay = await createPayment(orderData)
+          const urlPay:any = await createPayment(orderData)
           localStorage.setItem("orderData", JSON.stringify(orderData))
           window.location.href = urlPay.data.data
         } else {
-          console.log(orderData)
           await addOrder(orderData)
+          message.success("Đặt hàng thành công, vui lòng đợi giây lát để về sảnh.");
+          setTimeout(()=>{
+            navigate('/')
+          },2000);
         }
 
         if (currentUser) {
@@ -480,7 +487,7 @@ const Checkout = () => {
         }
 
         if (selectedMethod == "transfer") {
-          const urlPay = await createPayment(orderItemData)
+          const urlPay:any = await createPayment(orderItemData)
           localStorage.setItem("orderItemData", JSON.stringify(orderItemData))
           window.location.href = urlPay.data.data
         } else {
@@ -641,7 +648,7 @@ const Checkout = () => {
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("name", e.target.value)}
-                onBlur={() => handleInputBlur("name", name)}
+                // onBlur={() => handleInputBlur("name", name)}
                 id="name"
                 placeholder="Họ tên của bạn"
               />
@@ -657,7 +664,7 @@ const Checkout = () => {
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("phone", e.target.value)}
-                onBlur={() => handleInputBlur("phone", phone)}
+                // onBlur={() => handleInputBlur("phone", phone)}
                 id="phone"
                 placeholder="Số điện thoại của bạn"
               />
@@ -676,7 +683,7 @@ const Checkout = () => {
                     onChange={handleCityChange}
                     options={vietnamData}
                     placeholder="Chọn tỉnh thành phố"
-                    onBlur={() => handleInputBlur("city", selectedCity)}
+                    // onBlur={() => handleInputBlur("city", selectedCity)}
                   />
                 </div>
                 <div className="selection">
@@ -692,7 +699,7 @@ const Checkout = () => {
                     options={getDistricts() || []}
                     placeholder="Chọn quận huyện"
                     isDisabled={!selectedCity}
-                    onBlur={() => handleInputBlur("district", selectedDistrict)}
+                    // onBlur={() => handleInputBlur("district", selectedDistrict)}
                   />
                 </div>
               </div>
@@ -709,7 +716,7 @@ const Checkout = () => {
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("address", e.target.value)}
-                onBlur={() => handleInputBlur("address", address)}
+                // onBlur={() => handleInputBlur("address", address)}
                 id="address"
                 placeholder="Ví dụ: Số 20, ngõ 20"
               />
@@ -779,7 +786,7 @@ const Checkout = () => {
                       onChange={handlePaymentMethodChange}
                     />
                     <label htmlFor="transfer">Chuyển khoản ngân hàng</label>
-                    <div
+                    {/* <div
                       className="transfer_extend"
                       style={{
                         display:
@@ -790,7 +797,7 @@ const Checkout = () => {
                       <div className="qr_code">
                         <img src="../../img/codeqr_.png" alt="" />
                       </div>
-                    </div>
+                    </div> */}
                   </li>
                 </ul>
               </div>
