@@ -18,7 +18,26 @@ import { useAddProductMutation } from "../../../Services/Api_Product"
 import { useGetAllCategoryQuery } from "../../../Services/Api_Category"
 import Loading from "../../../Component/Loading"
 import { useNavigate } from "react-router-dom"
-
+import ReactQuill from 'react-quill';
+const modules = {
+  toolbar: [
+    [{ header: '1' }, { header: '2' }, { font: [] }],
+    [{ size: [] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [
+      { list: 'ordered' },
+      { list: 'bullet' },
+      { indent: '-1' },
+      { indent: '+1' },
+    ],
+    ['link', 'image', 'video'],
+    ['clean'],
+  ],
+  clipboard: {
+    // toggle to add extra line breaks when pasting HTML:
+    matchVisual: false,
+  },
+}
 const { TextArea } = Input
 
 const getBase64 = (file: RcFile): Promise<string> =>
@@ -220,7 +239,8 @@ const AddProduct = () => {
         </Form.Item>
 
         <Form.Item label="Mô tả sản phẩm" name="description">
-          <TextArea rows={4} />
+          <ReactQuill theme="snow" modules={modules} className="h-[200px] w-[800px] mb-10" />
+
         </Form.Item>
 
         <Form.Item label="Tải lên">

@@ -21,7 +21,7 @@ import { useCreateCommentMutation, useDeleteCommentByAdminMutation, useDeleteCom
 import { useGetUserOrdersQuery } from "../Services/Api_Order";
 import { MdDeleteForever } from "react-icons/md";
 import { FaTools } from "react-icons/fa";
-
+import parse from 'html-react-parser';
 type Variant = {
   color_id: {
     unicode: string;
@@ -670,7 +670,7 @@ const ProductDetail = () => {
                         id="tab1"
                       >
                         <div className="single-p-tab-content">
-                          <p>{productDataOne?.description} .</p>
+                          <p>{parse(productDataOne?.description || "")} .</p>
                         </div>
                       </div>
                     </div>
