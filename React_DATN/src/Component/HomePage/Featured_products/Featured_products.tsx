@@ -59,36 +59,11 @@ const Featured_products = () => {
                                                     <div className="actions">
                                                         <button
                                                             type="submit"
-                                                            className="cart-btn"
+                                                            className="cart-btn w-[300px]"
                                                             title="Add to cart"
                                                         >
-                                                            add to cart
+                                                            THÊM VÀO GIỎ HÀNG
                                                         </button>
-                                                        <ul className="add-to-link">
-                                                            <li>
-                                                                <a
-                                                                    className="modal-view"
-                                                                    data-target="#productModal"
-                                                                    data-bs-toggle="modal"
-                                                                    href="#"
-                                                                >
-                                                                    {" "}
-                                                                    <a href={`/product/${product._id}`}><i className="fa fa-search"></i></a>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">
-                                                                    {" "}
-                                                                    <i className="fa fa-heart-o"></i>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">
-                                                                    {" "}
-                                                                    <i className="fa fa-refresh"></i>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
                                                     </div>
                                                     <div className="product-price">
                                                         <div className="product-name">

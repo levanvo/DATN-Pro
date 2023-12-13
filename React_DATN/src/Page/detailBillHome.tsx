@@ -172,7 +172,7 @@ const BillDetailHome = () => {
                             ...data,
                             status: "2"
                         })}>
-                            Hủy
+                            Hủy mua
                         </button>
                     )}
                     <Button style={{ height: 40 }} htmlType="button" onClick={() => navigate("/order/view")}>
