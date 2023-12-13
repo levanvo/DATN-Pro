@@ -72,11 +72,11 @@ const Product = () => {
                                                         <p className='text-center border-y border-gray-200 mt-1 text-orange-400 font-bold'>{items.name}</p>
                                                         <div className="flex justify-between -mt-3">
                                                             <div className="flex space-x-1">
-                                                                <span>{items.original_price?.toLocaleString()}</span>
+                                                                <span>{items.price?.toLocaleString()}</span>
 
                                                                 <span> VND</span>
                                                             </div>
-                                                            <span>SL: {items.quantity}</span>
+                                                            <span>SL: {items.quantityTotal-items.sell_quantity}</span>
                                                         </div>
                                                     </div>
                                                 </div>
