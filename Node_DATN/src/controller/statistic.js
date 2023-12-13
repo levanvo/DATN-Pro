@@ -1,76 +1,73 @@
-import Statistic from "../models/statistic.js";
 import Order from "../models/order.js";
-import Product from "../models/product.js";
 
-// Thống kê theo ngày hôm nay
-export const generateStatisticsForSpecificDate = async (req, res) => {
-    try {
-      const requestedDate = new Date(req.body.date);
-  
-      if (isNaN(requestedDate)) {
-        return res.status(400).json({ success: false, error: "Invalid date format" });
-      }
-  
-      // Lấy múi giờ hiện tại của máy chủ
-      const serverTimeZoneOffset = new Date().getTimezoneOffset() * 60000;
-  
-      // Điều chỉnh ngày theo múi giờ của máy chủ
-      const startDate = new Date(requestedDate.getTime() - serverTimeZoneOffset);
-      const endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
-  
-      const StatisticsByDay = await generateStatistics(startDate, endDate);
-  
-      res.status(200).json({
-        success: true,
-        message: "Daily statistics for the specified date generated successfully",
-        StatisticsByDay,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, error: "Internal Server Error" });
-    }
-  };
 
-// Thống kê theo ngày hôm qua
-export const generateStatisticsYesterday = async (req, res) => {
+
+// Thống kê theo ngày
+// Thống kê theo khoảng thời gian
+export const generateStatisticsForDateRange = async (req, res) => {
   try {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    const requestedStartDate = new Date(req.body.startDate);
+    const requestedEndDate = new Date(req.body.endDate);
 
-    const startDate = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
-    const endDate = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate() + 1);
-
-    const statisticsYesterday = await generateStatistics(startDate, endDate);
-
-    res.status(200).json({
-      success: true,
-      message: "Daily statistics for yesterday generated successfully",
-      statisticsYesterday,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, error: "Internal Server Error" });
-  }
-};
-
-// Thống kê theo ngày trong tương lai
-export const generateStatisticsFutureDate = async (req, res) => {
-  try {
-    const requestedDate = new Date(req.body.date);
-
-    if (isNaN(requestedDate)) {
+    if (!requestedStartDate || isNaN(requestedStartDate) || !requestedEndDate || isNaN(requestedEndDate)) {
       return res.status(400).json({ success: false, error: "Invalid date format" });
     }
 
-    const startDate = new Date(requestedDate.getFullYear(), requestedDate.getMonth(), requestedDate.getDate());
-    const endDate = new Date(requestedDate.getFullYear(), requestedDate.getMonth(), requestedDate.getDate() + 1);
+    // Set the time part of the dates to match the entire day
+    requestedStartDate.setHours(0, 0, 0, 0);
+    requestedEndDate.setHours(23, 59, 59, 999);
 
-    const statisticsFutureDate = await generateStatistics(startDate, endDate);
+    // Lấy múi giờ hiện tại của máy chủ
+    const serverTimeZoneOffset = new Date().getTimezoneOffset() * 60000;
+
+    // Điều chỉnh ngày theo múi giờ của máy chủ
+    const adjustedStartDate = new Date(requestedStartDate.getTime() - serverTimeZoneOffset);
+    const adjustedEndDate = new Date(requestedEndDate.getTime() - serverTimeZoneOffset);
+
+    const statistics = await generateStatistics(
+      adjustedStartDate,
+      adjustedEndDate
+    );
 
     res.status(200).json({
       success: true,
-      message: "Daily statistics for the specified future date generated successfully",
-      statisticsFutureDate,
+      message: "lấy dữ liệu thành công",
+      statistics,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
+
+// Thống kê theo tháng
+export const generateStatisticsForSpecificOrCurrentMonth = async (req, res) => {
+  try {
+    const { month } = req.body;
+
+    let startDate, endDate;
+
+    if (month) {
+      const [year, monthNumber] = month.split("-");
+      startDate = new Date(Date.UTC(year, parseInt(monthNumber, 10) - 1, 1));
+      endDate = new Date(Date.UTC(year, parseInt(monthNumber, 10), 0, 23, 59, 59, 999));
+    } else {
+      // Default to the current month
+      const currentDate = new Date();
+      startDate = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), 1));
+      endDate = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59, 999));
+    }
+
+    const statistics = await generateStatistics(
+      startDate,
+      endDate
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Statistics for the specified or current month generated successfully",
+      statistics,
     });
   } catch (error) {
     console.error(error);
@@ -78,37 +75,33 @@ export const generateStatisticsFutureDate = async (req, res) => {
   }
 };
 
-// Hàm chung để thực hiện thống kê cho một khoảng thời gian cụ thể
+
+
 const generateStatistics = async (startDate, endDate) => {
     const orders = await Order.find({
-      createdAt: { $gte: startDate, $lt: endDate },
+        createdAt: { $gte: startDate, $lt: endDate },
     }).populate("products.productId", "name price");
-  
-    const statistics = [];
-  
-    let totalQuantity = 0; // tổng số lượng bán ra
-    let totalPrice = 0; // tổng số lượng bán ra
 
-  
+    let totalQuantity = 0; // tổng số lượng bán được
+    let totalRevenue = 0; // tổng doanh thu
+
+    const statistics = [];
+
     for (const order of orders) {
-      for (const product of order.products) {
-        const statistic = new Statistic({
-          date: startDate,  // Sử dụng startDate thay vì requestedDate
-          productId: product.productId?._id,
-          userId: order.userId,
-          quantity: product.quantity,
-          totalPrice: product.totalPrice
-        });
-  
-        statistics.push(statistic);
-  
-        // Cập nhật tổng số lượng sản phẩm đã mua
-        totalQuantity += product.quantity;
-        totalPrice +=product.totalPrice
-      }
+        for (const product of order.products) {
+            const statistic = {
+                date: startDate,
+                productId: product.productId?._id,
+                quantity: product.quantity,
+                
+            };
+            
+
+            statistics.push(statistic);
+            totalQuantity += product.quantity;
+        }
+        totalRevenue += order.totalPrice
     }
-  
-    await Statistic.insertMany(statistics);
-  
-    return { startDate, totalQuantity,orders };
-  };
+
+    return { startDate, totalQuantity, orders, totalRevenue,endDate };
+};
