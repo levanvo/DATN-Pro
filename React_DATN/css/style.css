@@ -2598,7 +2598,7 @@ ul.address li span {
     color: #888;
     display: inline-block;
     margin-left: 30px;
-    /* padding: 6px 20px; */
+    padding: 3px 20px 0px 20px;
     text-transform: uppercase;
     transition: all 0.3s ease 0s;
 }
