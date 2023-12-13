@@ -193,31 +193,31 @@ const AddProduct = () => {
             },
           ]}
         >
-         <Input/>
+          <Input />
         </Form.Item>
 
         <Form.Item
-        name="price"
-        label="Giá hiện tại"
-        rules={[
-          { required: true, message: 'Giá hiện tại không được để trống' },
-          {
-            validator: (_, values) => {
-              const originalPrice = form.getFieldValue('original_price');
-              if (!isNaN(values)) {
-                if (!isNaN(originalPrice) && parseFloat(values) > parseFloat(originalPrice)) {
-                  return Promise.reject(new Error('Giá hiện tại không được lớn hơn giá gốc'));
+          name="price"
+          label="Giá hiện tại"
+          rules={[
+            { required: true, message: 'Giá hiện tại không được để trống' },
+            {
+              validator: (_, values) => {
+                const originalPrice = form.getFieldValue('original_price');
+                if (!isNaN(values)) {
+                  if (!isNaN(originalPrice) && parseFloat(values) > parseFloat(originalPrice)) {
+                    return Promise.reject(new Error('Giá hiện tại không được lớn hơn giá gốc'));
+                  }
+                  return Promise.resolve();
+                } else {
+                  return Promise.reject(new Error('Giá hiện tại phải là số'));
                 }
-                return Promise.resolve();
-              } else {
-                return Promise.reject(new Error('Giá hiện tại phải là số'));
-              }
+              },
             },
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
+          ]}
+        >
+          <Input />
+        </Form.Item>
 
         <Form.Item label="Mô tả sản phẩm" name="description">
           <TextArea rows={4} />
@@ -248,7 +248,7 @@ const AddProduct = () => {
 
         <Form.Item wrapperCol={{ offset: 4, span: 11 }}>
           <Button
-          className="setSize-2"
+            className="setSize-2"
             type="primary"
             htmlType="submit"
             style={{ marginRight: 20 }}
