@@ -3,6 +3,7 @@ import Highcharts from 'highcharts';
 import { useGetAllOrdersQuery } from '../../Services/Api_Order';
 import Loading from '../../Component/Loading';
 import moment from 'moment';
+import {message} from "antd"
 
 const DashboardStatusBill = () => {
     const { data: dataGetOrder, isLoading: loadingOrder }: any = useGetAllOrdersQuery();
@@ -17,7 +18,7 @@ const DashboardStatusBill = () => {
         const status4 = totalstatusBill?.series[0].data[3].y;
         const status5 = totalstatusBill?.series[0].data[4].y;
         if (status1 + status2 + status3 + status4 + status5 == 0) {
-            alert("Không có dữ liệu về trạng thái đơn hàng nào phù hợp trong khoảng thời gian này !")
+            message.error("Không có dữ liệu về trạng thái đơn hàng nào phù hợp trong khoảng thời gian này !")
         }
     }
     const HandelViews = (): void => {

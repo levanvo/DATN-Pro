@@ -43,38 +43,39 @@ const user = JSON.parse(localStorage.getItem("user") || "{}")
 const isStaff = user?.role === "staff"
 
 const items: MenuItem[] = [
-  getItem("Thống kê", "0", <BarChartOutlined />, [
-    getItem("Doanh thu", "14", <FormatPainterOutlined />, undefined, "/admin/revenuePr"),
-    getItem("Số lượng bán", "15", <PieChartOutlined />, undefined, "/admin"),
-    getItem("Trạng thái đơn", "16", <PieChartOutlined />, undefined, "statusPr"),
+  getItem('Tổng quan', '0', <HomeOutlined />, undefined, '/admin'),
+  getItem("Thống kê", "1", <BarChartOutlined />, [
+    getItem("Doanh thu", "2", <FormatPainterOutlined />, undefined, "/admin/revenue-statistics"),
+    getItem("Sản phẩm đã bán", "3", <PieChartOutlined />, undefined, "/admin/product-statistics"),
+    getItem("Trạng thái đơn hàng", "4", <PieChartOutlined />, undefined, "/admin/statusPr"),
   ]),
   getItem("Kho", "sub1", <HddOutlined />, [
     getItem(
       "Sản phẩm",
-      "1",
+      "5",
       <DeploymentUnitOutlined />,
       undefined,
       "product/list"
     ),
-    getItem("Màu", "2", <FormatPainterOutlined />, undefined, "color/list"),
-    getItem("Kích thước", "3", <PieChartOutlined />, undefined, "size/list"),
+    getItem("Màu", "6", <FormatPainterOutlined />, undefined, "color/list"),
+    getItem("Kích thước", "7", <PieChartOutlined />, undefined, "size/list"),
     getItem(
       "Khôi phục sản phẩm",
-      "4",
+      "8",
       <ContainerOutlined />,
       undefined,
       "restore-product-data"
     ),
   ]),
-  getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
-  getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
-  getItem('Tài khoản', '7', <UserOutlined />, undefined, 'user/list'),
-  getItem('Hóa đơn', '8', <HddOutlined />, undefined, 'bill/list'),
-  getItem('Ảnh nền Web', '9', <PicCenterOutlined />, undefined, 'slide/list'),
+  getItem('Bình luận', '9', <EditOutlined />, undefined, 'comment/list'),
+  getItem('Danh mục', '10', <GoldOutlined />, undefined, 'category/list'),
+  getItem('Tài khoản', '11', <UserOutlined />, undefined, 'user/list'),
+  getItem('Hóa đơn', '12', <HddOutlined />, undefined, 'bill/list'),
+  getItem('Banner', '13', <PicCenterOutlined />, undefined, 'slide/list'),
   // getItem("New Sletter", "10", <MailOutlined />, undefined, "new-sletter/list"),
-  getItem("Giảm giá", "11", <MenuOutlined />, undefined, "discount/list"),
-  getItem("Bản tin", "12", <MailOutlined />, undefined, "new-sletter/list"),
-  getItem("Nhật ký web", "13", <CalendarOutlined />, undefined, "blog/list"),
+  getItem("Mã giảm giá", "14", <MenuOutlined />, undefined, "discount/list"),
+  getItem("Bản tin", "15", <MailOutlined />, undefined, "new-sletter/list"),
+  getItem("Nhật ký web", "16", <CalendarOutlined />, undefined, "blog/list"),
 ];
 
 const Layout_Admin: React.FC = () => {

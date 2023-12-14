@@ -1,41 +1,24 @@
-import React, { useState } from 'react';
-import { Table } from 'antd';
+import React, { useState, useEffect } from 'react';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import moment from 'moment';
-import { useStatisticsByDayMutation, useStatisticsByMonthMutation } from '../../Services/Api_Statistic';
-
-
+import { useStatisticsByDayMutation } from '../../Services/Api_Statistic';
+import { IProduct } from '../../Models/interfaces';
 
 const Dashboard = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [totalQuantitySold, setTotalQuantitySold] = useState(0);
-  const [totalRevenue, setTotalRevenue] = useState(0);
-  const [totalItems, setTotalItems] = useState(0);
-  const [statisticsByDay] = useStatisticsByDayMutation();
-  const [statisticsByMonth] = useStatisticsByMonthMutation();
-  const [isMonthSelected, setIsMonthSelected] = useState(false);
-  const [tableData, setTableData] = useState([]); 
   const [startDate, setStartDate] = useState('');
-const [endDate, setEndDate] = useState('');
-const [startMonth, setStartMonth] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [chartData, setChartData] = useState([]);
+  const [statisticsByDay] = useStatisticsByDayMutation()
+  const [totalQuantitySold,setTotalQuantitySold] = useState(0)
 
-// const handleStartMonthChange = (event) => {
-//   const selectedStartMonth = event.target.value;
-//   setStartMonth(selectedStartMonth);
-// };
-
-const handleStartDateChange = event => {
-  setStartDate(event.target.value);
-};
-
-const handleEndDateChange = event => {
-  setEndDate(event.target.value);
-};
-
-  const handleMonthChange = (date, dateString) => {
-    setSelectedDate(date);
-    setIsMonthSelected(true);
+  const handleStartDateChange = (event) => {
+    setStartDate(event.target.value);
   };
 
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+  };
 
   const handleSubmit = () => {
     handleSearch();
@@ -43,155 +26,94 @@ const handleEndDateChange = event => {
 
   const handleSearch = async () => {
     try {
-      if (isMonthSelected) {
-        const formattedStartMonth = moment(startMonth).startOf('month').format('YYYY-MM-DD');
-        const formattedEndMonth = moment(startMonth).endOf('month').format('YYYY-MM-DD');
-        const response = await statisticsByMonth({ startDate: formattedStartMonth, endDate: formattedEndMonth });
-        handleResponse(response);
-      } else {
-        const formattedStartDay = moment(startDate).startOf('day').format('YYYY-MM-DD');
-        const formattedEndDay = moment(endDate).endOf('day').format('YYYY-MM-DD');
+      // Assuming you are not handling month-based statistics in this example
+      const formattedStartDay = moment(startDate).startOf('day').format('YYYY-MM-DD');
+      const formattedEndDay = moment(endDate).endOf('day').format('YYYY-MM-DD');
   
-        console.log('Start Date:', formattedStartDay);
-        console.log('End Date:', formattedEndDay);
+      const response = await statisticsByDay({ startDate: formattedStartDay, endDate: formattedEndDay });
   
-        const response = await statisticsByDay({ startDate: formattedStartDay, endDate: formattedEndDay });
-        handleResponse(response);
-      }
+      handleResponse(response);
     } catch (error) {
       console.error('Error:', error);
     }
   };
   
 
-  const handleResponse = (response) => {
+  const handleResponse = (response:any) => {
     if (response.data && response.data.success) {
-      const {totalQuantity, orders, totalRevenue } = response.data.statistics;
-
-      if (orders.length > 0) {
-        const serverData = orders.map(order => {
-          return order.products.map(product => ({
-            key: product._id,
-            totalQuantity: totalQuantity,
-            productId: product.productId?._id,
-            productName: product.productId?.name,
-            quantity: product.quantity,
-            color: product.color,
-            size: product.size,
-            totalRevenue: totalRevenue,
-            imgUrl: product.imgUrl && product.imgUrl[0],
-          }));
-        }).flat();
-
-        setTotalQuantitySold(totalQuantity);
-        setTotalRevenue(totalRevenue);
-        setTotalItems(serverData.length);
-        setTableData(serverData);
-      }else{
-        setTotalQuantitySold(0);
-        setTotalRevenue(0);
-        setTotalItems(0);
-        setTableData([]);
-      }
+      const { totalQuantity, orders, totalRevenue } = response.data.statistics;
+  
+      // Tính tổng số lượng của từng sản phẩm dựa trên productId
+       const productQuantities: { [key: string]: { name: string; quantity: number } } = {};
+      orders.forEach((order:any) => {
+        order.products.forEach((product:any) => {
+          const productId = product.productId?._id
+          const productName = product.productId?.name
+          productQuantities[productId] = {
+          name: productName,
+          quantity: (productQuantities[productId] ? productQuantities[productId].quantity : 0) + product.quantity,
+        };
+        });
+      });
+  
+      // Chuyển object thành mảng để sử dụng trong biểu đồ
+      const newChartData = Object.values(productQuantities).map((product:any) => ({
+      name: product.name,
+      y: product.quantity,
+    }));
+  
+      setTotalQuantitySold(totalQuantity);
+      setChartData(newChartData);
     } else {
       console.error('Error fetching data from the server');
     }
   };
+  
+  
 
-  const columns = [
-    
-    {
-      title: 'Tên sản phẩm',
-      dataIndex: 'productName',
-      key: 'productName',
-      align: "center"
+  const options = {
+    chart: {
+      type: 'column',
     },
-    {
-      title: 'Hình ảnh',
-      dataIndex: 'imgUrl',
-      key: 'imgUrl',
-      align: "center",
-      render: (imgUrl:any) => <img src={imgUrl} alt="Product" style={{ width: '150px',marginLeft:50}} />,
+    title: {
+      text: 'Biểu đồ thống kê sản phẩm',
     },
-    {
-      title: 'Màu sắc',
-      dataIndex: 'color',
-      key: 'color',
-      align: "center",
-      render: (color: string) => (
-        <div style={{ backgroundColor: color, width: '20px', height: '20px', margin: '0 auto' }}></div>
-      ),
+    xAxis: {
+      categories: chartData.map((item:any) => item.name),
     },
-    {
-      title: 'Kích thước',
-      dataIndex: 'size',
-      key: 'size',
-      align: "center"
+    yAxis: {
+      title: {
+        text: 'Số lượng sản phẩm',
+      },
     },
-    {
-      title: 'Số lượng đã bán',
-      dataIndex: 'quantity',
-      key: 'quantity',
-      align: "center"
-    }
-  ];
+    series: [
+      {
+        name: 'Sản phẩm',
+        data: chartData,
+        colorByPoint: true,
+      },
+    ],
+  };
 
   return (
     <div>
-      {/* <div className="mb-4">
-  <label className="block text-sm font-bold mb-1" htmlFor="startMonth">
-    Start Month:
-  </label>
-  <input
-    className="border border-gray-300 p-2 w-full rounded"
-    type="month"
-    id="startMonth"
-    onChange={handleStartMonthChange}
-  />
-</div> */}
-
-      <div className="mb-4">
-  <label className="block text-sm font-bold mb-1" htmlFor="startDate">
-    Ngày bắt đầu:
-  </label>
-  <input
-    className="border border-gray-300 p-2 w-full rounded"
-    type="date"
-    id="startDate"
-    value={startDate}
-    onChange={handleStartDateChange}
-  />
-</div>
-<div className="mb-4">
-  <label className="block text-sm font-bold mb-1" htmlFor="endDate">
-   Ngày kết thúc:
-  </label>
-  <input
-    className="border border-gray-300 p-2 w-full rounded"
-    type="date"
-    id="endDate"
-    value={endDate}
-    onChange={handleEndDateChange}
-  />
-</div>
-<div>
-  <button
-    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 cursor-pointer"
-    type="button"
-    onClick={handleSubmit}
-  >
-    Submit
-  </button>
-</div>
-      <div style={{ marginLeft: '20px', flex: 1 }}>
-        <div style={{ textAlign: 'right', marginTop: '10px',color:"red",fontWeight:600, fontSize: 16 }}>
-          Tổng đã bán: {totalQuantitySold} sản phẩm
-        </div>
-        <div style={{ textAlign: 'right', marginTop: '10px',color:"red",fontWeight:600, fontSize: 16,marginBottom:10 }}>
-          Tổng doanh thu: {totalRevenue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-        </div>
-        <Table columns={columns} dataSource={tableData} />
+      <div>
+        <label htmlFor="startDate">Ngày bắt đầu:</label>
+        <input type="date" id="startDate" value={startDate} onChange={handleStartDateChange} />
       </div>
+      <div>
+        <label htmlFor="endDate">Ngày kết thúc:</label>
+        <input type="date" id="endDate" value={endDate} onChange={handleEndDateChange} />
+      </div>
+      <div>
+        <button type="button" onClick={handleSubmit}>
+          Submit
+        </button>
+      </div>
+      <div>
+        <div>Tổng số lượng sản phẩm đã bán: {totalQuantitySold} sản phẩm</div>
+      </div>
+        <HighchartsReact highcharts={Highcharts} options={options} />
     </div>
   );
 };
