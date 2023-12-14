@@ -8,8 +8,6 @@ import { Collapse } from 'antd';
 import { DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
-import { useGetColorsQuery } from '../../../Services/Api_Color';
-import { useGetAllSizeQuery } from '../../../Services/Api_Size';
 
 
 const { Search } = Input;
@@ -342,11 +340,6 @@ const ProductList = () => {
 
             <EditOutlined style={{ fontSize: "20px" }} />
           </Link>
-
-          <Link to={`/admin/product/${id}/variants`}>
-
-            <ClusterOutlined style={{ fontSize: "20px" }} />
-          </Link>
         </div>
       ),
       align: 'center',
@@ -357,6 +350,7 @@ const ProductList = () => {
     <div>
       {contextHolder}
       {isLoadingDelete && <Loading />}
+      
       <div>
         <Button
           className='setSize-1'
@@ -385,7 +379,8 @@ const ProductList = () => {
         </Dropdown>
       </div>
       <Divider />
-      <Table
+
+      {isLoading ? <Loading /> : <Table
         rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource}
         expandedRowRender={(record) => (
           <div  style={{ marginLeft: 20 }}>
@@ -398,7 +393,9 @@ const ProductList = () => {
             />
           </div>
         )}
-      />
+      />}
+      
+      
     </div>
 
   );

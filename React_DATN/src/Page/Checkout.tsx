@@ -13,6 +13,7 @@ import { IDiscount, IUser } from "../Models/interfaces"
 import { useGetAllUserQuery, useUpdateUserMutation } from "../Services/Api_User"
 import moment from "moment"
 import { Modal, Table, Button } from "antd"
+import Loading from "../Component/Loading"
 
 const Checkout = () => {
   const { data: users } = useGetAllUserQuery()
@@ -34,8 +35,9 @@ const Checkout = () => {
   const [selectedDistrict, setSelectedDistrict]:any = useState(null)
   const name = (document.getElementById("name") as HTMLInputElement)?.value
   const phone = (document.getElementById("phone") as HTMLInputElement)?.value
-  const address = (document.getElementById("address") as HTMLInputElement)
-    ?.value
+  const address = (document.getElementById("address") as HTMLInputElement)?.value
+  const [isLoadingSeen, setIsLoadingSeen] = useState(false);
+
 
   const [createPayment] = useCreatePaymentMutation()
   const [localCart, setLocalCart] = useState<any[]>(
@@ -66,6 +68,21 @@ const Checkout = () => {
   const currentUser = Array.isArray(users)
     ? users.find((user) => user.email === emailUser)
     : null
+
+    let userData = {};
+
+    if (storedUser) {
+      const { username, email,  address, phone} = JSON.parse(storedUser);
+      userData = {
+        name: username || "",
+        email: email || "",
+        address: address || "",
+        phone: phone || ""
+      };
+    }
+
+// Bây giờ bạn có thể sử dụng userData ở ngoài block if
+console.log(userData);
 
   const handleUseDiscount = (selectedDiscount: any) => {
     if (moment().isBefore(selectedDiscount.startDate)) {
@@ -290,10 +307,7 @@ const Checkout = () => {
 
       default:
         break
-    }
-    console.log("Field: ",field);
-    console.log("value: ",value);
-    
+    } 
   }
 
   const validatePhoneNumber = (phoneNumber: string) => {
@@ -363,6 +377,7 @@ const Checkout = () => {
   
   // Sử lý tạo đơn hàng
   const handlePlaceOrder = async () => {
+    setIsLoadingSeen(true);
     try {
       const token = localStorage.getItem("token")
       if (token) {
@@ -412,9 +427,10 @@ const Checkout = () => {
           window.location.href = urlPay.data.data
         } else {
           await addOrder(orderData)
-          message.success("Đặt hàng thành công, vui lòng đợi giây lát để về sảnh.");
+          message.success("Đặt hàng thành công");
+          setIsLoadingSeen(true);
           setTimeout(()=>{
-            navigate('/')
+            navigate('/order/view')
           },2000);
         }
 
@@ -493,7 +509,8 @@ const Checkout = () => {
         } else {
           await addOrder(orderItemData)
           message.success("Đặt hàng thành công")
-
+          setIsLoadingSeen(true);
+          
           const updatedLocalCart = localCart.filter(
             (item) => !cartId.includes(item.id)
           )
@@ -502,6 +519,7 @@ const Checkout = () => {
       }
     } catch (error) {
       console.log(error)
+      setIsLoadingSeen(true);
     }
   }
 
@@ -517,6 +535,7 @@ const Checkout = () => {
   return (
     <div className="w-[90vw] mx-auto mt-44">
       {contexHolder}
+      {isLoadingSeen && <Loading/>}
       <div className="checkout-area">
         <div className="container">
           <h2 className="checkout_title">Checkout</h2>
@@ -649,6 +668,7 @@ const Checkout = () => {
                 type="text"
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 // onBlur={() => handleInputBlur("name", name)}
+                defaultValue={userData.name}
                 id="name"
                 placeholder="Họ tên của bạn"
               />
@@ -665,6 +685,7 @@ const Checkout = () => {
                 type="text"
                 onChange={(e) => handleInputChange("phone", e.target.value)}
                 // onBlur={() => handleInputBlur("phone", phone)}
+                defaultValue={userData.phone}
                 id="phone"
                 placeholder="Số điện thoại của bạn"
               />
@@ -716,6 +737,7 @@ const Checkout = () => {
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("address", e.target.value)}
+                defaultValue={userData.address}
                 // onBlur={() => handleInputBlur("address", address)}
                 id="address"
                 placeholder="Ví dụ: Số 20, ngõ 20"
@@ -786,18 +808,6 @@ const Checkout = () => {
                       onChange={handlePaymentMethodChange}
                     />
                     <label htmlFor="transfer">Chuyển khoản ngân hàng</label>
-                    {/* <div
-                      className="transfer_extend"
-                      style={{
-                        display:
-                          selectedMethod === "transfer" ? "block" : "none",
-                      }}
-                    >
-                      <span>Quét mã qua ứng dụng Ngân hàng/ Ví điện tử</span>
-                      <div className="qr_code">
-                        <img src="../../img/codeqr_.png" alt="" />
-                      </div>
-                    </div> */}
                   </li>
                 </ul>
               </div>

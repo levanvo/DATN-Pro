@@ -53,7 +53,6 @@ const User = () => {
 
   const handleSave = () => {
     const updatedUserData: IUser = {
-      _id: data?.data._id,
       username,
       email,
       password,
@@ -63,7 +62,7 @@ const User = () => {
       gender,
     };
 
-    updateUser(updatedUserData)
+    updateUser({...updatedUserData,_id: id})
       .unwrap()
       .then(() => {
         message.success('Cập nhật thành công');

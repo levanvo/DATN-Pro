@@ -54,9 +54,9 @@ const productApi = createApi({
     // Xóa sản phẩm tạm thời Variant
     deleteVariant: builder.mutation<void, any>({
       query: (product) => ({
-        url: `/api/product/variant/delete`,
+        url: `/api/product-variant/${product._id}/delete`,
         method: "PUT",
-        body: product,
+        body: product
       }),
       invalidatesTags: ["Product"]
     }),
