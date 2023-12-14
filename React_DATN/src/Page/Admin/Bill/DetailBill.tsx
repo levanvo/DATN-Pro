@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetOneOrdersQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
+import { useGetOrderByIdQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
 import { useGetOneUserQuery } from '../../../Services/Api_User';
 import { Button, Popconfirm, message } from 'antd';
+import moment from 'moment';
+
 
 const DetailBill = () => {
     const { id } = useParams();
-    const { data } = useGetOneOrdersQuery(id || "");
+    const { data } = useGetOrderByIdQuery(id || "");
     // const { data: user } = useGetOneUserQuery(data?.userId)
     const navigate = useNavigate();
 

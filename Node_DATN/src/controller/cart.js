@@ -18,12 +18,6 @@ export const getCart = async (req, res) => {
         return res.status(404).json({ message: "Bạn chưa có sản phẩm nào trong giỏ hàng" });
       }
 
-      // Filter out products with zero inventory
-      // cart.products = cart.products.filter(product => product.productId.variants.some(variant => variant.inventory > 0));
-
-      // // Save the updated cart (optional, if you want to persist the changes in the cart)
-      // await cart.save();
-
       res.json(cart);
     }
   } catch (error) {

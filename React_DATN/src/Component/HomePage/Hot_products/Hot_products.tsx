@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {  useGetHotProductsQuery } from '../../../Services/Api_Product'
 import { IProduct } from '../../../Models/interfaces';
+import { Link } from 'react-router-dom';
 
 const Hot_products = () => {
     const { data: productData, isError, isLoading }: any = useGetHotProductsQuery()
@@ -48,7 +49,7 @@ const Hot_products = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="section-heading">
-                                <h2>Sản HOT</h2>
+                                <h2>Sản PHẨM HOT</h2>
                             </div>
                         </div>
                     </div>
@@ -59,8 +60,8 @@ const Hot_products = () => {
                                     {visibleProducts.map((product: IProduct) => {
                                         return (
                                             <div className='ml-2' key={product._id}>
-                                                <a href={`/product/${product._id}`} >
-                                                    <div className="single-product">
+                                                <Link to={`/product/${product._id}`} >
+                                                    <div className="single-product w-[280px] h-auto">
                                                         <div className="level-pro-new">
                                                             <span>HOT</span>
                                                         </div>
@@ -69,50 +70,17 @@ const Hot_products = () => {
                                                                 <img
                                                                     src={product.imgUrl?.[0]}
                                                                     alt=""
-                                                                    className="primary-img h-[300px] w-[250px]"
+                                                                    className="primary-img h-[300px] w-[280px]"
                                                                 />
                                                                 <img
                                                                     src={product.imgUrl?.[1]}
                                                                     alt=""
-                                                                    className="secondary-img"
+                                                                    className="secondary-img h-[300px] w-[280px]"
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="actions">
-                                                            <button
-                                                                type="submit"
-                                                                className="cart-btn"
-                                                                title="Add to cart"
-                                                            >
-                                                                add to cart
-                                                            </button>
-                                                            <ul className="add-to-link">
-                                                                <li>
-                                                                    <a
-                                                                        className="modal-view"
-                                                                        data-target="#productModal"
-                                                                        data-bs-toggle="modal"
-                                                                        href="#"
-                                                                    >
-                                                                        {" "}
-                                                                        <i className="fa fa-search"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fa fa-heart-o"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fa fa-refresh"></i>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                        <div className="product-price">
+                                                      
+                                                        <div className="product-price -mt-3">
                                                             <div className="product-name">
                                                                 <h1>{product.name}</h1>
                                                                 <p>Lượt xem: {product.views}</p>
@@ -131,7 +99,7 @@ const Hot_products = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </a>
+                                                </Link>
                                             </div>
                                         );
                                     })}

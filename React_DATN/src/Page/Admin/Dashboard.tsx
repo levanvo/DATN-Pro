@@ -1,139 +1,199 @@
-import React, { useState, useEffect } from 'react'
-import Highcharts from 'highcharts';
-import { useGetAllProductQuery } from '../../Services/Api_Product';
-import Loading from '../../Component/Loading';
+import React, { useState } from 'react';
+import { Table } from 'antd';
+import moment from 'moment';
+import { useStatisticsByDayMutation, useStatisticsByMonthMutation } from '../../Services/Api_Statistic';
+
+
 
 const Dashboard = () => {
-  const { data: dataGetViews, isLoading: loadingViews }: any = useGetAllProductQuery();
-  const [totalViews, setTotalViews]: any = useState(); // default views
-  const [totalAllViews, setTotalAllViews]: any = useState(0);
-  const [selectView, setSelectView]: any = useState("top10");
-  const HandelViews = (): void => {
-    Highcharts.chart({
-      chart: {
-        type: 'pie',
-        renderTo: 'StatictisViews'
-      },
-      plotOptions: {
-        pie: {
-          dataLabels: {
-            format: '{point.name}: {point.percentage:.1f} %'
-          },
-        }
-      },
-      tooltip: {
-        pointFormat: '{point.name}: <b>{point.y} lượt xem</b>'
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [totalQuantitySold, setTotalQuantitySold] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const [statisticsByDay] = useStatisticsByDayMutation();
+  const [statisticsByMonth] = useStatisticsByMonthMutation();
+  const [isMonthSelected, setIsMonthSelected] = useState(false);
+  const [tableData, setTableData] = useState([]); 
+  const [startDate, setStartDate] = useState('');
+const [endDate, setEndDate] = useState('');
+const [startMonth, setStartMonth] = useState('');
+
+// const handleStartMonthChange = (event) => {
+//   const selectedStartMonth = event.target.value;
+//   setStartMonth(selectedStartMonth);
+// };
+
+const handleStartDateChange = event => {
+  setStartDate(event.target.value);
+};
+
+const handleEndDateChange = event => {
+  setEndDate(event.target.value);
+};
+
+  const handleMonthChange = (date, dateString) => {
+    setSelectedDate(date);
+    setIsMonthSelected(true);
+  };
+
+
+  const handleSubmit = () => {
+    handleSearch();
+  };
+
+  const handleSearch = async () => {
+    try {
+      if (isMonthSelected) {
+        const formattedStartMonth = moment(startMonth).startOf('month').format('YYYY-MM-DD');
+        const formattedEndMonth = moment(startMonth).endOf('month').format('YYYY-MM-DD');
+        const response = await statisticsByMonth({ startDate: formattedStartMonth, endDate: formattedEndMonth });
+        handleResponse(response);
+      } else {
+        const formattedStartDay = moment(startDate).startOf('day').format('YYYY-MM-DD');
+        const formattedEndDay = moment(endDate).endOf('day').format('YYYY-MM-DD');
+  
+        console.log('Start Date:', formattedStartDay);
+        console.log('End Date:', formattedEndDay);
+  
+        const response = await statisticsByDay({ startDate: formattedStartDay, endDate: formattedEndDay });
+        handleResponse(response);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+
+  const handleResponse = (response) => {
+    if (response.data && response.data.success) {
+      const {totalQuantity, orders, totalRevenue } = response.data.statistics;
+
+      if (orders.length > 0) {
+        const serverData = orders.map(order => {
+          return order.products.map(product => ({
+            key: product._id,
+            totalQuantity: totalQuantity,
+            productId: product.productId?._id,
+            productName: product.productId?.name,
+            quantity: product.quantity,
+            color: product.color,
+            size: product.size,
+            totalRevenue: totalRevenue,
+            imgUrl: product.imgUrl && product.imgUrl[0],
+          }));
+        }).flat();
+
+        setTotalQuantitySold(totalQuantity);
+        setTotalRevenue(totalRevenue);
+        setTotalItems(serverData.length);
+        setTableData(serverData);
+      }else{
+        setTotalQuantitySold(0);
+        setTotalRevenue(0);
+        setTotalItems(0);
+        setTableData([]);
+      }
+    } else {
+      console.error('Error fetching data from the server');
+    }
+  };
+
+  const columns = [
+    
+    {
+      title: 'Tên sản phẩm',
+      dataIndex: 'productName',
+      key: 'productName',
+      align: "center"
     },
-      series: totalViews.series,
-    });
-
-  }
-  setTimeout(() => {
-    HandelViews();
-  }, 100);
-
-  const Top10_View = () => {
-    function getRandomColor() {
-      const letters = "0123456789ABCDEF";
-      let color = "#";
-      for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      return color;
+    {
+      title: 'Hình ảnh',
+      dataIndex: 'imgUrl',
+      key: 'imgUrl',
+      align: "center",
+      render: (imgUrl:any) => <img src={imgUrl} alt="Product" style={{ width: '150px',marginLeft:50}} />,
+    },
+    {
+      title: 'Màu sắc',
+      dataIndex: 'color',
+      key: 'color',
+      align: "center",
+      render: (color: string) => (
+        <div style={{ backgroundColor: color, width: '20px', height: '20px', margin: '0 auto' }}></div>
+      ),
+    },
+    {
+      title: 'Kích thước',
+      dataIndex: 'size',
+      key: 'size',
+      align: "center"
+    },
+    {
+      title: 'Số lượng đã bán',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      align: "center"
     }
-    setSelectView("top10");
-    if (!loadingViews) {
-      let arrayNew: any = [];
-      let countViews = 0;
-      dataGetViews.map((views: any) => {
-        if (views.views > 0) {
-          countViews += views.views
-          arrayNew.push({
-            name: views.name,
-            y: views.views,
-            color: getRandomColor()
-          });
-        };
-      });
-      setTotalAllViews(countViews);
-      let data: any = arrayNew.sort((a: any, b: any) => a.y - b.y)
-      data = data.slice(-10)
-      setTotalViews({
-        series: [{
-          data
-        }]
-      });
-    };
-  }
-
-  const Top5_View = () => {
-    setSelectView("top5");
-    const data = totalViews.series[0].data.slice(-5)
-    setTotalViews({
-      series: [{
-        data
-      }]
-    });
-  }
-
-  useEffect(() => {
-    function getRandomColor() {
-      const letters = "0123456789ABCDEF";
-      let color = "#";
-      for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      return color;
-    }
-    if (!loadingViews) {
-      let arrayNew: any = [];
-      let countViews = 0;
-      dataGetViews.map((views: any) => {
-        if (views.views > 0) {
-          countViews += views.views
-          arrayNew.push({
-            name: views.name,
-            y: views.views,
-            color: getRandomColor()
-          });
-        };
-      });
-      setTotalAllViews(countViews);
-      let data: any = arrayNew.sort((a: any, b: any) => a.y - b.y)
-      data = data.slice(-10)
-      setTotalViews({
-        series: [{
-          data
-        }]
-      });
-    };
-  }, [dataGetViews])
-
+  ];
 
   return (
-    <div className='h-[80vh] scrollDasboard'>
+    <div>
+      {/* <div className="mb-4">
+  <label className="block text-sm font-bold mb-1" htmlFor="startMonth">
+    Start Month:
+  </label>
+  <input
+    className="border border-gray-300 p-2 w-full rounded"
+    type="month"
+    id="startMonth"
+    onChange={handleStartMonthChange}
+  />
+</div> */}
 
-      <div className="flex justify-between border rounded-md VIEWS select-none">
-        <div className={`selector-Views`}>
-          <h3 className='mt-2 text-sky-600 ml-10'>Thống kê theo lượt xem:</h3>
-          <p className='ml-2'>(*) Mặc định 10 sản phẩm có lượt views cao nhất</p>
-          <p className='-mt-4 ml-2'>(*) Tổng lượt xem toàn bộ: <span className='text-orange-500'>{totalAllViews} views /{dataGetViews?.length} sản phẩm.</span></p>
-          <div className="flex space-x-2 ml-20 ">
-            {selectView == "top10" ? <input type="radio" id='top10' name='a' checked /> : <input type="radio" id='top10' name='a' disabled/>}
-            <label htmlFor='top10'><p className='m-0 cursor-pointer font-bold' onClick={() => Top10_View()}>Top 10 sản phẩm lượt xem cao nhất. </p></label>
-          </div>
-          <div className="flex space-x-2 ml-20 ">
-            {selectView == "top5" ? <input type="radio" id='top5' name='a' checked /> : <input type="radio" id='top5' name='a' disabled/>}
-            <label htmlFor='top5'><p className='m-0 cursor-pointer font-bold' onClick={() => Top5_View()}>Top 5 sản phẩm lượt xem cao nhất. </p></label>
-
-          </div>
+      <div className="mb-4">
+  <label className="block text-sm font-bold mb-1" htmlFor="startDate">
+    Ngày bắt đầu:
+  </label>
+  <input
+    className="border border-gray-300 p-2 w-full rounded"
+    type="date"
+    id="startDate"
+    value={startDate}
+    onChange={handleStartDateChange}
+  />
+</div>
+<div className="mb-4">
+  <label className="block text-sm font-bold mb-1" htmlFor="endDate">
+   Ngày kết thúc:
+  </label>
+  <input
+    className="border border-gray-300 p-2 w-full rounded"
+    type="date"
+    id="endDate"
+    value={endDate}
+    onChange={handleEndDateChange}
+  />
+</div>
+<div>
+  <button
+    className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 cursor-pointer"
+    type="button"
+    onClick={handleSubmit}
+  >
+    Submit
+  </button>
+</div>
+      <div style={{ marginLeft: '20px', flex: 1 }}>
+        <div style={{ textAlign: 'right', marginTop: '10px',color:"red",fontWeight:600, fontSize: 16 }}>
+          Tổng đã bán: {totalQuantitySold} sản phẩm
         </div>
-        {loadingViews ? <Loading /> : <div className='w-[900px] h-[500px]' id={`StatictisViews`}></div>}
-
+        <div style={{ textAlign: 'right', marginTop: '10px',color:"red",fontWeight:600, fontSize: 16,marginBottom:10 }}>
+          Tổng doanh thu: {totalRevenue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+        </div>
+        <Table columns={columns} dataSource={tableData} />
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

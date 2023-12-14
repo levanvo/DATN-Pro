@@ -16,14 +16,16 @@ import { ICategory, IProduct } from '../../../Models/interfaces';
 const Product = () => {
     const [getId, setId]: any = useState("");
     const { data: productData, isLoading }: any = useGetAllProductQuery();
-    const { data: categoryData, isLoading: loadingCT }: any = useGetAllCategoryQuery();
+    // const { data: categoryData, isLoading: loadingCT }: any = useGetAllCategoryQuery();
 
 
 
     const sortedProducts = productData?.slice()
     .sort((a: any, b: any) => (b.sell_quantity || 0) - (a.sell_quantity || 0))
-    .filter((product: IProduct) => !product.isDeleted && (product.sell_quantity || 0) > 0).slice(0, 9);
+    .filter((product: IProduct) => !product.isDeleted && (product.sell_quantity || 0) > 0).slice(0, 6);
 
+    console.log(sortedProducts);
+    
     
     return (
         <div className='w-[90vw] mx-auto'>
@@ -38,7 +40,7 @@ const Product = () => {
                                         <h2>Best seller <strong>Các Mẫu Giày</strong></h2>
                                     </div>
                                     <div className="side-menu">
-                                    {Array.isArray(categoryData) ? (
+                                    {/* {Array.isArray(categoryData) ? (
                                         categoryData?.map((category: ICategory) => (
                                         <ul className="nav tab-navigation" role="tablist" key={category._id}>
                                             <li role="presentation">
@@ -48,61 +50,82 @@ const Product = () => {
                                         ))
                                     ) : (
                                         <div>No categories available</div>
-                                    )}
+                                    )} */}
                                         <div>
                                             <img src="img/banner/banner-5.jpg" />
                                         </div>
-                                        {/* <ul className="nav tab-navigation" role="tablist">
-                                            <li role="presentation">
-                                                <a href="#tab5" aria-controls="tab5" role="tab" data-bs-toggle="tab">NIKE</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab6" aria-controls="tab6" role="tab" data-bs-toggle="tab">MLB</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab7" aria-controls="tab7" role="tab" data-bs-toggle="tab">ADIDAS</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tab8" aria-controls="tab8" role="tab" data-bs-toggle="tab">VANS</a>
-                                            </li>
-                                            <li></li>
-                                        </ul> */}
+
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="col-lg-9">
-                                <div className="row">
-                                    
-                                </div>
-                            </div> */}
-                            <div className="flex justify-center flex-wrap col-lg-9 mt-1">
-                                {
-                                    isLoading ?
-                                        <Loading />
-                                        :
-                                        sortedProducts?.map((items: any) => {
-                                            return (
-                                                <div className="w-[220px] h-[280px] mx-2 mb-5 " key={items._id}>
-                                                    <div className="imgPr h-[250px] w-[220px] overflow-hidden">
-                                                        <Link to={`/product/${items._id}`}><img className='h-[250px] w-[220px] hover:scale-125 duration-200' src={items.imgUrl[0]} alt="" /></Link>
-                                                    </div>
-                                                    <div className="content">
-                                                        <p className='text-center border-y border-gray-200 mt-1 text-orange-400 font-bold'>{items.name}</p>
-                                                        <div className="flex justify-between -mt-3">
-                                                            <div className="flex space-x-1">
-                                                                <span>{items.original_price?.toLocaleString()}</span>
-                                                                {/* <del className='text-xs'> {items.original_price > 0 ? (items.price + items.original_price).toLocaleString() : ""}</del> */}
-                                                                <span> VND</span>
+
+                            
+                        <div className='col-lg-9'>
+                            <div className="row-new">
+                                <div className="product-new">
+                                    {sortedProducts?.map((product: IProduct) => {
+                                        return (
+                                            <div
+                                                className="col-lg-4 col-md-6"
+                                                key={product._id}
+                                                // style={{margin: 12}}
+                                            >
+                                                <Link to={`/product/${product._id}`}>
+                                                    <div className="single-product">
+                                                        <div className="level-pro-new">
+                                                            <span>new</span>
+                                                        </div>
+                                                        <div className="product-img">
+                                                            <div>
+                                                                <img
+                                                                    src={product.imgUrl?.[0]}
+                                                                    alt=""
+                                                                    className="primary-img h-[300px] w-[250px]"
+                                                                />
+                                                                <img
+                                                                    src={product.imgUrl?.[1]}
+                                                                    alt=""
+                                                                    className="secondary-img"
+                                                                />
                                                             </div>
-                                                            <span>SL: {items.quantity}</span>
+                                                        </div>
+                                                        {/* <div className="actions">
+                                                            <button
+                                                                type="submit"
+                                                                className="cart-btn w-[300px]"
+                                                                title="Add to cart"
+                                                            >
+                                                                THÊM VÀO GIỎ HÀNG
+                                                            </button>
+                                                        </div> */}
+                                                        <div className="product-price -mt-3">
+                                                            <div className="product-name">
+                                                                <h1>{product.name}</h1>
+                                                            </div>
+                                                            <div className="price-rating">
+                                                                <span>
+                                                                    {product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                                                </span>
+                                                                <div className="ratings">
+                                                                    <i className="fa fa-star"></i>
+                                                                    <i className="fa fa-star"></i>
+                                                                    <i className="fa fa-star"></i>
+                                                                    <i className="fa fa-star"></i>
+                                                                    <i className="fa fa-star-half-o"></i>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            )
-                                        })
-                                }
+                                                </Link>
+                                            </div>
+                                        );
+                                    })}
 
+                                </div>
                             </div>
+                        </div>
+
+                            
                         </div>
                     </div>
                 </div>

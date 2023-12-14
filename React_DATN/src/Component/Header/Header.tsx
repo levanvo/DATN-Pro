@@ -208,10 +208,8 @@ const Header = () => {
             <div className="col-lg-3">
               <div className="logo">
                 <a href="/">
-                  <img
-                    className="w-36 h-[140px] mx-auto"
-                    src="../../../img/Logo DATN.png"
-                    alt=""
+                  <img style={{width: 280}}
+                    src="../../../img/logo.png"
                   />
                 </a>
               </div>
@@ -280,7 +278,7 @@ const Header = () => {
         visible={isLogoutModalVisible}
         onOk={() => handleLogoutConfirmation(true)}
         onCancel={() => handleLogoutConfirmation(false)}
-        okText="Đăng xuất"
+        okText={<span className='-ml-[6px]'>Đăng xuất</span>}
         cancelText="Hủy"
         okButtonProps={{ style: { backgroundColor: "red" } }}
       >

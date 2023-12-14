@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { IOrder } from '../Models/interfaces';
 import '../../css/user.css'
 import UserMenu from '../Component/UserMenu';
+import moment from 'moment';
 
 const Bill = () => {
   const { data, isLoading, error } = useGetUserOrdersQuery(undefined);
@@ -13,8 +14,8 @@ const Bill = () => {
   const dataSource = data?.map((order: IOrder) => ({
     key: order._id,
     code_order: order?.code_order,
-    userId: order?.userId?.username || "",
-    createdAt: new Date(order?.createdAt).toLocaleString(),
+    userId: order?.userId?.username || "Khách hàng",
+    createdAt: moment(order?.createdAt).format('DD-MM-YYYY | HH:mm'),
     status: order?.status,
   }));
 
@@ -38,14 +39,9 @@ const Bill = () => {
       dataIndex: 'code_order',
       key: 'code_order',
     },
-    // {
-    //   title: 'Address',
-    //   render: (record: any) =>
-    //     `${record.address.city}, ${record.address.district}, ${record.address.location}`,
-    //   key: 'address',
-    // },
+
     {
-      title: 'Người tạo',
+      title: 'Tên khách hàng',
       dataIndex: 'userId',
       key: 'userId',
     },

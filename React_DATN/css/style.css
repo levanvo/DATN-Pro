@@ -313,7 +313,6 @@ body {
 }
 
 .cart-img {
-    background-color: #f0f8ff;
     float: left;
 }
 
@@ -1090,7 +1089,8 @@ body {
 }
 
 .single-product button.cart-btn:hover {
-    color: #f6435b;
+    color: white;
+    background-color: #f6435b;
 }
 
 .single-product .add-to-link li {
@@ -2599,7 +2599,7 @@ ul.address li span {
     color: #888;
     display: inline-block;
     margin-left: 30px;
-    /* padding: 6px 20px; */
+    padding: 3px 20px 0px 20px;
     text-transform: uppercase;
     transition: all 0.3s ease 0s;
 }
@@ -3033,11 +3033,11 @@ button.check-button,
 .account-button a {
     background-color: transparent;
     border: 1px solid #eee;
-    color: #959595;
+    color: #040404;
     font-size: 12px;
     font-weight: 500;
     line-height: 34px;
-    padding: 0 15px;
+    width: 389px;
     text-transform: uppercase;
     font-family: "Montserrat", sans-serif;
     transition: all 0.3s ease 0s;
@@ -3096,7 +3096,7 @@ button.check-button:hover,
 
 .discount-code .shopping-button button,
 .estimate-shipping .shopping-button button {
-    float: right;
+    /* float: right; */
 }
 
 .form-name select {
@@ -3908,3 +3908,4 @@ button.check-button:hover,
 .panel-title {
     margin-bottom: 0;
 }
+
