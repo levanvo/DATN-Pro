@@ -43,7 +43,11 @@ const user = JSON.parse(localStorage.getItem("user") || "{}")
 const isStaff = user?.role === "staff"
 
 const items: MenuItem[] = [
-  getItem("Thống kê", "0", <BarChartOutlined />, undefined, "/admin"),
+  getItem("Thống kê", "0", <BarChartOutlined />, [
+    getItem("Doanh thu", "14", <FormatPainterOutlined />, undefined, "/admin/revenuePr"),
+    getItem("Số lượng bán", "15", <PieChartOutlined />, undefined, "/admin"),
+    getItem("Trạng thái", "16", <PieChartOutlined />, undefined, "/admin/statusPr"),
+  ]),
   getItem("Kho", "sub1", <HddOutlined />, [
     getItem(
       "Sản phẩm",
@@ -66,9 +70,9 @@ const items: MenuItem[] = [
   getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
   getItem('Tài khoản', '7', <UserOutlined />, undefined, 'user/list'),
   getItem('Hóa đơn', '8', <HddOutlined />, undefined, 'bill/list'),
-  getItem('Slide', '9', <PicCenterOutlined />, undefined, 'slide/list'),
+  getItem('Ảnh nền Web', '9', <PicCenterOutlined />, undefined, 'slide/list'),
   // getItem("New Sletter", "10", <MailOutlined />, undefined, "new-sletter/list"),
-  getItem("Discount", "11", <MenuOutlined />, undefined, "discount/list"),
+  getItem("Giảm giá", "11", <MenuOutlined />, undefined, "discount/list"),
   getItem("Bản tin", "12", <MailOutlined />, undefined, "new-sletter/list"),
   getItem("Nhật ký web", "13", <CalendarOutlined />, undefined, "blog/list"),
 ];
