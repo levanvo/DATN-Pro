@@ -54,6 +54,7 @@ import DetailBill from "./Page/Admin/Bill/DetailBill"
 import BillDetailHome from "./Page/detailBillHome"
 import CommentList from "./Page/Admin/comment"
 import CheckOutSuccess from "./Page/CheckOutSuccess"
+import ThongkeDThu from "./Page/Admin/ThongKe/ThongkeDThu"
 
 
 function App() {
@@ -96,6 +97,7 @@ function App() {
         }
       >
         <Route index element={<Dashboard />} />
+        <Route path="doanhthu" element={<ThongkeDThu />} />
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/:id/variants" element={<AddProductDetails />}/>
