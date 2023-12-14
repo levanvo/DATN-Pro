@@ -208,10 +208,8 @@ const Header = () => {
             <div className="col-lg-3">
               <div className="logo">
                 <a href="/">
-                  <img
-                    className="w-36 h-[140px] mx-auto"
-                    src="../../../img/Logo DATN.png"
-                    alt=""
+                  <img style={{width: 280}}
+                    src="../../../img/logo.png"
                   />
                 </a>
               </div>
