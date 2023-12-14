@@ -4,6 +4,7 @@ import { useGetOneProductQuery , useDeleteVariantMutation } from '../../../Servi
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { QuestionCircleOutlined, DeleteFilled} from '@ant-design/icons';
+import Loading from '../../../Component/Loading';
 
 const ProductListDetails = () => {
   const [removeVariant] = useDeleteVariantMutation()
@@ -27,19 +28,15 @@ const ProductListDetails = () => {
     };
   });
 
-  const confirm = (index: number) => {    
-    let body = {
-      productId: id ,
-      variantId: index
-    }
-    
-    removeVariant(body).unwrap().then(() => {
-      messageApi.open({
-        type: "success",
-        content: "Xóa sản phẩm thành công"
-      })
-    })
-  }
+  // const confirm = (id:number| string) => {    
+  //     console.log(id);
+  //   removeVariant(id).unwrap().then(() => {
+  //     messageApi.open({
+  //       type: "success",
+  //       content: "Xóa sản phẩm thành công"
+  //     })
+  //   })
+  // }
   
   // Define columns for the product details
   const columns: any[] = [
@@ -63,13 +60,13 @@ const ProductListDetails = () => {
       align: 'center',
     },
     {
-      title: 'Size',
+      title: 'Kích thước',
       dataIndex: 'size',
       key: 'size',
       align: 'center',
     },
     {
-      title: 'Color',
+      title: 'Màu sắc',
       dataIndex: 'color',
       key: 'color',
       align: 'center',
@@ -102,32 +99,32 @@ const ProductListDetails = () => {
       key: 'inventory',
       align: 'center',
     },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (text: any, record: any, index: number) => (
-        <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
-          <Popconfirm
-            title="Bạn có chắc chắn muốn xóa không?"
-            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-            onConfirm={() => confirm(index)}
-            okText={
-              <span style={{ color: 'black' }}>Yes</span>
-            }
-            cancelText="No"
-          >
-            <DeleteFilled style={{ color: '#FF0000', fontSize: "20px" }} />
-          </Popconfirm>
-        </div>
-      ),
-      align: 'center',
-    },
+    // {
+    //   title: 'Hành động',
+    //   key: 'action',
+    //   render: ({key: id}: any) => (
+    //     <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
+    //       <Popconfirm
+    //         title="Bạn có chắc chắn muốn xóa không?"
+    //         icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+    //         onConfirm={() => confirm(id)}
+    //         okText={
+    //           <span style={{ color: 'black' }}>Yes</span>
+    //         }
+    //         cancelText="No"
+    //       >
+    //         <DeleteFilled style={{ color: '#FF0000', fontSize: "20px" }} />
+    //       </Popconfirm>
+    //     </div>
+    //   ),
+    //   align: 'center',
+    // },
   ];
 
   return (
     <div>
       {isLoadingProduct ? (
-        <p>Loading...</p>
+        <Loading />
       ) : (
         <div>
           <Button className='setSize-1' type="primary" style={{ background: "blue" }}>

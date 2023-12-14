@@ -91,7 +91,7 @@ const Bill = () => {
   return (
     <div className='container_u'>
       <UserMenu />
-      <div className='user_profile'>
+      {isLoading ? <Loading /> : <div className='user_profile'>
         <div className="user_profile-head">
           <p>Đơn hàng Của Tôi</p>
         </div>
@@ -101,7 +101,8 @@ const Bill = () => {
             dataSource={dataSource}
           />
         </div>
-      </div>
+      </div>}
+      
     </div>
   );
 };
