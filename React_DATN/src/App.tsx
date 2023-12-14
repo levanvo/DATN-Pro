@@ -96,6 +96,9 @@ function App() {
         }
       >
         <Route index element={<Dashboard />} />
+        {/* <Route path="admin/statusPr" element={<Dashboard />} />
+        <Route path="admin/revenuePr" element={<Dashboard />} /> */}
+
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/:id/variants" element={<AddProductDetails />}/>
