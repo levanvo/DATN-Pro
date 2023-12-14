@@ -54,6 +54,7 @@ import DetailBill from "./Page/Admin/Bill/DetailBill"
 import BillDetailHome from "./Page/detailBillHome"
 import CommentList from "./Page/Admin/comment"
 import CheckOutSuccess from "./Page/CheckOutSuccess"
+import Chart from "./Page/Admin/Dashboard/highcharts"
 
 
 function App() {
@@ -85,6 +86,7 @@ function App() {
         <Route path="order/view" element={<Bill />} />
         <Route path="order/view/detail/:id" element={<BillDetailHome />} />
         <Route path="order/alert" element={<CheckOutSuccess />} />
+        {/* <Route path="chart" element={<Chart />} /> */}
       </Route >
 
       <Route
