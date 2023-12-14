@@ -87,6 +87,11 @@ const handleEndDateChange = event => {
         setTotalRevenue(totalRevenue);
         setTotalItems(serverData.length);
         setTableData(serverData);
+      }else{
+        setTotalQuantitySold(0);
+        setTotalRevenue(0);
+        setTotalItems(0);
+        setTableData([]);
       }
     } else {
       console.error('Error fetching data from the server');
@@ -153,6 +158,7 @@ const handleEndDateChange = event => {
     className="border border-gray-300 p-2 w-full rounded"
     type="date"
     id="startDate"
+    value={startDate}
     onChange={handleStartDateChange}
   />
 </div>
@@ -164,6 +170,7 @@ const handleEndDateChange = event => {
     className="border border-gray-300 p-2 w-full rounded"
     type="date"
     id="endDate"
+    value={endDate}
     onChange={handleEndDateChange}
   />
 </div>
@@ -183,7 +190,7 @@ const handleEndDateChange = event => {
         <div style={{ textAlign: 'right', marginTop: '10px',color:"red",fontWeight:600, fontSize: 16,marginBottom:10 }}>
           Tổng doanh thu: {totalRevenue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
         </div>
-        <Table columns={columns} dataSource={tableData} pagination={false} />
+        <Table columns={columns} dataSource={tableData} />
       </div>
     </div>
   );

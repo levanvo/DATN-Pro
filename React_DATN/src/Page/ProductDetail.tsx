@@ -299,6 +299,7 @@ const ProductDetail = () => {
   const { data: comments, refetch } = useGetCommentsByProductIdQuery(id);
   const [deleteCommentById] = useDeleteCommentByAdminMutation(); //delete của admin
 
+  
   const { data: order } = useGetUserOrdersQuery();
   const hasPurchased = order?.some((order: any) => {
     return (
@@ -515,7 +516,7 @@ const ProductDetail = () => {
                           |
                         </p>
                         <div className="evaluate">
-                          80 Đánh giá
+                          {comments.length} Đánh giá
                         </div>
                         <p style={{ fontSize: "20px" }}>
                           |
@@ -579,7 +580,7 @@ const ProductDetail = () => {
                                           onClick={() => {
                                             ChooseSize(size.name);
                                           }}
-                                          className={`w-14 h-7 cursor-pointer relative border-[1px] text-center 
+                                          className={`w-14 h-10 cursor-pointer relative border-[1px] text-center 
                                         ${getSize === size.name ? 'border-green-600' : ''
                                             } ${isSizeAvailable ? 'bg-transparent' : 'bg-slate-300'}`}
                                         >
@@ -608,6 +609,7 @@ const ProductDetail = () => {
                                 </div>
                               </div>
                             </div>
+                            
                             <div className="cart-item">
                               <div className="price-box">
                               </div>

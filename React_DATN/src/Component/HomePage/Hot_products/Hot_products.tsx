@@ -79,16 +79,8 @@ const Hot_products = () => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="actions">
-                                                            <button
-                                                                type="submit"
-                                                                className="cart-btn w-[280px]"
-                                                                title="Add to cart"
-                                                            >
-                                                                THÊM VÀO GIỎ HÀNG
-                                                            </button>
-                                                        </div>
-                                                        <div className="product-price">
+                                                      
+                                                        <div className="product-price -mt-3">
                                                             <div className="product-name">
                                                                 <h1>{product.name}</h1>
                                                                 <p>Lượt xem: {product.views}</p>
