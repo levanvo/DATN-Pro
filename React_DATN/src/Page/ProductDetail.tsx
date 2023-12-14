@@ -576,7 +576,7 @@ const ProductDetail = () => {
                                         <button
                                           key={size._id}
                                           disabled={!isSizeAvailable}
-                                          style={{ marginRight: 10 }}
+                                          style={{ marginRight: 10,paddingTop:8 }}
                                           onClick={() => {
                                             ChooseSize(size.name);
                                           }}
