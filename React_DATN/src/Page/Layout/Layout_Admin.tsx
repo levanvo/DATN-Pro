@@ -46,7 +46,7 @@ const items: MenuItem[] = [
   getItem("Thống kê", "0", <BarChartOutlined />, [
     getItem("Doanh thu", "14", <FormatPainterOutlined />, undefined, "/admin/revenuePr"),
     getItem("Số lượng bán", "15", <PieChartOutlined />, undefined, "/admin"),
-    getItem("Trạng thái", "16", <PieChartOutlined />, undefined, "/admin/statusPr"),
+    getItem("Trạng thái đơn", "16", <PieChartOutlined />, undefined, "statusPr"),
   ]),
   getItem("Kho", "sub1", <HddOutlined />, [
     getItem(
