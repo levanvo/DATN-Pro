@@ -42,6 +42,10 @@ const BillDetailHome = () => {
                 return 'Đã xác nhận';
             case '2':
                 return 'Đã hủy';
+            case '3':
+                return 'Đang giao hàng';
+            case '4':
+                return 'Đã nhận hàng';
             default:
                 return '';
         }
@@ -54,10 +58,16 @@ const BillDetailHome = () => {
                 return { color: 'green' };
             case '2':
                 return { color: 'red' };
+            case '3':
+                return { color: 'brown' };
+            case '4':
+                return { color: 'blue' };
             default:
                 return {};
         }
     };
+
+    const isCancelButtonDisabled = ['1', '2', '3', '4'].includes(data?.status);
 
     return (
         <div className='container_u'>
@@ -141,7 +151,7 @@ const BillDetailHome = () => {
                                                 <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.price.toLocaleString()}đ</td>
                                             </tr>
                                         ))}
-                                        <tr style={{marginTop: 20}}>
+                                        <tr style={{ marginTop: 20 }}>
                                             <td colSpan={6} style={{ textAlign: 'right', fontWeight: 'bold', borderTop: '1px solid #ddd', padding: '8px' }}>Tổng tiền:</td>
                                             <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>{data?.totalPrice.toLocaleString()}đ</td>
                                         </tr>
@@ -158,22 +168,16 @@ const BillDetailHome = () => {
                     })}>
                         Xác nhận
                     </button> */}
-                    {data?.status === '1' ? (
-                        <Button style={{ height: 40, marginRight: 20 }} disabled>
-                            Hủy
-                        </Button>
-                    ) : data?.status === '2' ? (
-                        <Button style={{ height: 40, marginRight: 20 }} disabled>
-                            Hủy
-                        </Button>
-                    ) : (
-                        <button style={{ borderRadius: 10, height: 40, marginRight: 20, backgroundColor: 'red', color: 'white' }} onClick={() => onFinish({
+                    <Button
+                        style={{ borderRadius: 10, height: 40, marginRight: 20, backgroundColor: isCancelButtonDisabled ? 'gray' : 'red', color: 'white' }}
+                        onClick={() => onFinish({
                             ...data,
                             status: "2"
-                        })}>
-                            Hủy
-                        </button>
-                    )}
+                        })}
+                        disabled={isCancelButtonDisabled} // Thêm disabled={isCancelButtonDisabled} ở đây
+                    >
+                        Hủy
+                    </Button>
                     <Button style={{ height: 40 }} htmlType="button" onClick={() => navigate("/order/view")}>
                         Quay lại
                     </Button>
