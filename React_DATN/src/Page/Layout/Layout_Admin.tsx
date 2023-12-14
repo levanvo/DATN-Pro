@@ -45,7 +45,7 @@ const isStaff = user?.role === "staff"
 const items: MenuItem[] = [
   getItem('Tổng quan', '0', <HomeOutlined />, undefined, '/admin'),
   getItem("Thống kê", "1", <BarChartOutlined />, [
-    getItem("Doanh thu", "2", <FormatPainterOutlined />, undefined, "/admin/revenuePr"),
+    getItem("Doanh thu", "2", <FormatPainterOutlined />, undefined, "/admin/revenue-statistics"),
     getItem("Sản phẩm đã bán", "3", <PieChartOutlined />, undefined, "/admin/product-statistics"),
     getItem("Trạng thái đơn hàng", "4", <PieChartOutlined />, undefined, "/admin/statusPr"),
   ]),
