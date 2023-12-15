@@ -111,7 +111,7 @@ const SizeList = () => {
           onClick={deleteSelectedSizes}
           disabled={selectedSizes.length === 0}
         >
-          Xóa các size đã chọn
+          Xóa mục đã chọn
         </Button>
         <Button className="setSize-1" type="primary" style={{ background: "blue", marginLeft: 20 }}>
           <Link to={`/admin/size/add`}>Thêm mới</Link>

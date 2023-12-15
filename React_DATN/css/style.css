@@ -3909,3 +3909,49 @@ button.check-button:hover,
     margin-bottom: 0;
 }
 
+
+.statistics {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .statistics div {
+    margin-bottom: 10px;
+  }
+  
+  .statistics label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #000000;
+  }
+  
+  .statistics input {
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+    width: 25%;
+  }
+
+  .statistics-btn {
+    margin-top: 10px;
+    margin-bottom: 20px; 
+  }
+  
+  .statistics-btn button {
+    border: 1px solid #3498db; 
+    background-color: #3498db; 
+    color: #fff; 
+    border-radius: 4px;
+    cursor: pointer; 
+  }
+  
+  .statistics-btn button:hover {
+    background-color: #2980b9; 
+    border-color: #2980b9; 
+  }
+  
+  
+
+
+
