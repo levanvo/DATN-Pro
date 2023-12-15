@@ -24,7 +24,7 @@ const Product = () => {
     .sort((a: any, b: any) => (b.sell_quantity || 0) - (a.sell_quantity || 0))
     .filter((product: IProduct) => !product.isDeleted && (product.sell_quantity || 0) > 0).slice(0, 6);
 
-    console.log(sortedProducts);
+    console.log("sortedProducts",sortedProducts);
     
     
     return (
@@ -89,6 +89,7 @@ const Product = () => {
                                                                 />
                                                             </div>
                                                         </div>
+                                                        
                                                         {/* <div className="actions">
                                                             <button
                                                                 type="submit"
@@ -101,18 +102,20 @@ const Product = () => {
                                                         <div className="product-price -mt-3">
                                                             <div className="product-name">
                                                                 <h1>{product.name}</h1>
+                                                                
                                                             </div>
-                                                            <div className="price-rating">
+                                                            <div className="price-rating flex justify-between">
                                                                 <span>
                                                                     {product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                                                 </span>
-                                                                <div className="ratings">
+                                                                {/* <div className="ratings">
                                                                     <i className="fa fa-star"></i>
                                                                     <i className="fa fa-star"></i>
                                                                     <i className="fa fa-star"></i>
                                                                     <i className="fa fa-star"></i>
                                                                     <i className="fa fa-star-half-o"></i>
-                                                                </div>
+                                                                </div> */}
+                                                                <p className=' mt-1'>Đã bán: {product.sell_quantity}</p>
                                                             </div>
                                                         </div>
                                                     </div>
