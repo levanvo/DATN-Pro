@@ -3,15 +3,22 @@ import Highcharts from 'highcharts';
 import { useGetAllOrdersQuery } from '../../Services/Api_Order';
 import Loading from '../../Component/Loading';
 import moment from 'moment';
-import {message} from "antd"
+import { message } from "antd"
 
 const DashboardStatusBill = () => {
     const { data: dataGetOrder, isLoading: loadingOrder }: any = useGetAllOrdersQuery();
     const [totalstatusBill, setTotalstatusBill]: any = useState(); // default views
     const [getStartDate, setStartDate]: any = useState("");// start time
     const [getEndDate, setEndDate]: any = useState("");// end time
+    const [totalBillTime, setTotalBillTime]: any = useState(0)
+
 
     if (!loadingOrder && getStartDate && getEndDate) {
+        const startTime: any = new Date(getStartDate);
+        const endTime: any = new Date(getEndDate);
+        const nowTime: any = new Date();
+
+
         const status1 = totalstatusBill?.series[0].data[0].y;
         const status2 = totalstatusBill?.series[0].data[1].y;
         const status3 = totalstatusBill?.series[0].data[2].y;
@@ -21,6 +28,7 @@ const DashboardStatusBill = () => {
             message.error("Không có dữ liệu về trạng thái đơn hàng nào phù hợp trong khoảng thời gian này !")
         }
     }
+
     const HandelViews = (): void => {
         Highcharts.chart({
             chart: {
@@ -29,6 +37,7 @@ const DashboardStatusBill = () => {
             },
             plotOptions: {
                 pie: {
+                    // innerSize: '30%',
                     dataLabels: {
                         format: '{point.name}: {point.percentage:.1f} %'
                     },
@@ -51,6 +60,7 @@ const DashboardStatusBill = () => {
             setStartDate(startTime);
         } else {
             setStartDate("");
+            setTotalBillTime(0)
         };
     }
 
@@ -60,6 +70,7 @@ const DashboardStatusBill = () => {
             setEndDate(endTime);
         } else {
             setEndDate("");
+            setTotalBillTime(0)
         };
     }
 
@@ -72,8 +83,6 @@ const DashboardStatusBill = () => {
             let bill4: any = 0;
             let timeStart = new Date(getStartDate);
             let timeEnd = new Date(getEndDate);
-            console.log("1", getStartDate);
-            console.log("2", getEndDate);
             let timeStart2: any = timeStart.getMonth();
             let timeStart3: any = timeStart.getDate();
             let timeEnd2: any = timeEnd.getMonth();
@@ -96,6 +105,8 @@ const DashboardStatusBill = () => {
                     bill4++
                 };
             });
+            const totalTime: any = bill0 + bill1 + bill2 + bill3 + bill4;
+            setTotalBillTime(totalTime);
 
             let data: any = [
                 {
@@ -197,7 +208,7 @@ const DashboardStatusBill = () => {
                     <h1 className='ml-5 text-2xl mb-2 text-gray-600'>Trạng thái các đơn hàng</h1><hr />
                     <p className='ml-2'>(*) Mặc định phân tích tất cả đơn hàng hiện có.</p>
                     <p className='-mt-4 ml-2 text-xl'>Tổng hiện có tất cả : <span className='text-orange-500'>{dataGetOrder?.length} đơn hàng.</span></p>
-                    <div className="flex ml-2">
+                    <div className="flex ml-5">
                         <div className="mb-4 mr-1">
                             <label className="block text-sm font-bold mb-1 ml-5" htmlFor="startDate">
                                 Ngày bắt đầu:
@@ -207,6 +218,8 @@ const DashboardStatusBill = () => {
                                 type="date"
                                 id="startDate"
                                 onChange={handleStartDateChange}
+                                value={getStartDate}
+                                max={getEndDate?getEndDate:new Date().toISOString().split('T')[0]}
                             />
                         </div>
                         <div className="mb-4">
@@ -218,10 +231,13 @@ const DashboardStatusBill = () => {
                                 type="date"
                                 id="endDate"
                                 onChange={handleEndDateChange}
+                                value={getEndDate}
+                                max={new Date().toISOString().split('T')[0]}
                             />
                         </div>
                     </div>
-                    <div className="border h-[285px] ml-2">
+                    {totalBillTime > 0 && <p className='ml-5'>Khoảng thời gian này có: <span className='text-green-600'>{totalBillTime} đơn hàng</span></p>}
+                    <div className="border h-[285px] ml-5">
                         <div className="flex space-x-2 m-3">
                             <input className='w-7' type="color" value={"#00B2EE"} disabled />
                             <p>Đang chờ xác nhận</p>
