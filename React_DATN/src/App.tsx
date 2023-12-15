@@ -56,6 +56,7 @@ import CommentList from "./Page/Admin/comment"
 import CheckOutSuccess from "./Page/CheckOutSuccess"
 import ProductStatistics from "./Page/Admin/Statistics/productStatistics"
 import RevenueStatistics from "./Page/Admin/Statistics/revenueStatistics"
+import Top10Product from "./Page/Admin/Statistics/top10Product"
 
 
 function App() {
@@ -101,6 +102,7 @@ function App() {
         {/* <Route path="admin/statusPr" element={<Dashboard />} />
         <Route path="admin/revenuePr" element={<Dashboard />} /> */}
         <Route path="product-statistics" element={<ProductStatistics />} />
+        <Route path="top10-product" element={<Top10Product />} />
         <Route path="revenue-statistics" element={<RevenueStatistics />} />
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/add" element={<AddProduct />} />

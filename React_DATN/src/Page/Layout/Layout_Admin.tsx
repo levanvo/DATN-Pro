@@ -48,6 +48,7 @@ const items: MenuItem[] = [
     getItem("Doanh thu", "2", <FormatPainterOutlined />, undefined, "/admin/revenue-statistics"),
     getItem("Sản phẩm đã bán", "3", <PieChartOutlined />, undefined, "/admin/product-statistics"),
     getItem("Trạng thái đơn hàng", "4", <PieChartOutlined />, undefined, "/admin/statusPr"),
+    getItem("Top 10 Sản Phẩm", "5", <PieChartOutlined />, undefined, "/admin/top10-product"),
   ]),
   getItem("Kho", "sub1", <HddOutlined />, [
     getItem(
