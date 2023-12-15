@@ -3953,5 +3953,32 @@ button.check-button:hover,
   
   
 
+  .satatic-box>.box{
+    border: 2px solid rgb(3, 135, 3);
+    width: 400px;
+    border-radius: 10px;
+    margin-right: 20px;
+    padding: 10px 0px 10px 10px;
+  }
+
+  .satatic-box>.box1{
+    border: 2px solid orange;
+    width: 400px;
+    border-radius: 10px;
+    margin-right: 20px;
+    padding: 10px 0px 10px 10px;
+  }
+
+  .satatic-box>.box2{
+    border: 2px solid red;
+    width: 400px;
+    border-radius: 10px;
+    margin-right: 20px;
+    padding: 10px 0px 10px 10px;
+    
+  }
+ 
+
+
 
 
