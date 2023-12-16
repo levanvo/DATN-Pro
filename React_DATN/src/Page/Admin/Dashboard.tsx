@@ -7,6 +7,7 @@ import HighchartsReact from 'highcharts-react-official';
 import { MdFreeCancellation } from "react-icons/md";
 import { LuCircleDollarSign } from "react-icons/lu";
 import { FaCartPlus } from "react-icons/fa";
+import { useGetAllOrdersQuery } from '../../Services/Api_Order';
 
 interface HighchartsChartProps {
     chartData: {
@@ -28,6 +29,10 @@ const Dashboard = () => {
         categories: [],
         series: [],
     });
+    const { data: allOrdersData, isLoading: isAllOrdersLoading } = useGetAllOrdersQuery();
+    // New state to manage the initial data fetching state
+  const [isInitialDataLoading, setInitialDataLoading] = useState(true);
+
 
 
 //Thống kê cột của HighChatrs
@@ -70,6 +75,37 @@ const Dashboard = () => {
             </div>
         );
     };
+
+
+    
+  useEffect(() => {
+    // Fetch initial data when the component mounts
+    const fetchInitialData = async () => {
+      try {
+        // Use moment to get the current date
+        const currentDate = moment().format('YYYY-MM-DD');
+
+        // Fetch orders for the current date
+        const response = await statisticsByDay({
+          startDate: currentDate,
+          endDate: currentDate,
+        });
+
+        // Handle the response
+        handleResponse(response);
+
+        // Set the initial data loading state to false
+        setInitialDataLoading(false);
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+      }
+    };
+
+    // Call the fetchInitialData function only if it's the initial loading
+    if (isInitialDataLoading) {
+      fetchInitialData();
+    }
+  }, [isInitialDataLoading, statisticsByDay]);
 //---------------------------------------------//
 
     const handleStartDateChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -301,9 +337,15 @@ const Dashboard = () => {
           </div>
        </div>
     </div>
-    <HighchartsChart chartData={chartData} />
+    {!isAllOrdersLoading && allOrdersData && (
+    <>
+      <HighchartsChart chartData={chartData} />
+      <Table columns={columns} dataSource={tableData} />
+    </>
+  )}
+    {/* <HighchartsChart chartData={chartData} />
       
-    <Table columns={columns} dataSource={tableData} />;
+    <Table columns={columns} dataSource={tableData} />; */}
       
   </div>
     );
