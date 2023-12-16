@@ -74,14 +74,12 @@ const Checkout = () => {
     if (storedUser) {
       const { username, email,  address, phone} = JSON.parse(storedUser);
       userData = {
-        name: username || "",
-        email: email || "",
-        address: address || "",
-        phone: phone || ""
+        name: username,
+        email: email,
+        address: address,
+        phone: phone
       };
     }
-
-// Bây giờ bạn có thể sử dụng userData ở ngoài block if
 
 
   const handleUseDiscount = (selectedDiscount: any) => {
@@ -400,6 +398,10 @@ const Checkout = () => {
           return
         }
 
+       
+
+        
+
         const orderData:any = {
           cartId: cartId,
           products: productId.map((id: string, index: number) => ({
@@ -432,7 +434,7 @@ const Checkout = () => {
           localStorage.setItem("orderData", JSON.stringify(orderData))
           window.location.href = urlPay.data.data
         } else {
-          await addOrder(orderData)
+          // await addOrder(orderData)
           message.success("Đặt hàng thành công");
           setIsLoadingSeen(false);
           setTimeout(()=>{
@@ -529,6 +531,7 @@ const Checkout = () => {
       setIsLoadingSeen(false);
     }
   }
+
 
   // lựa chọn hình thức tt
   const [selectedMethod, setSelectedMethod] = useState("cod")
@@ -692,7 +695,7 @@ const Checkout = () => {
                 type="text"
                 onChange={(e) => handleInputChange("phone", e.target.value)}
                 onBlur={() => handleInputBlur("phone", phone)}
-                defaultValue={userData.phone}
+                defaultValue={userData.phone || ""}
                 id="phone"
                 placeholder="Số điện thoại của bạn"
               />
@@ -744,7 +747,7 @@ const Checkout = () => {
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("address", e.target.value)}
-                defaultValue={userData.address}
+                defaultValue={userData.address || ""}
                 onBlur={() => handleInputBlur("address", address)}
                 id="address"
                 placeholder="Ví dụ: Số 20, ngõ 20"
