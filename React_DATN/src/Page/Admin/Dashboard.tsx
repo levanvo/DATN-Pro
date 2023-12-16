@@ -7,6 +7,7 @@ import HighchartsReact from 'highcharts-react-official';
 import { MdFreeCancellation } from "react-icons/md";
 import { LuCircleDollarSign } from "react-icons/lu";
 import { FaCartPlus } from "react-icons/fa";
+import { useGetAllOrdersQuery } from '../../Services/Api_Order';
 
 interface HighchartsChartProps {
     chartData: {
@@ -28,6 +29,12 @@ const Dashboard = () => {
         categories: [],
         series: [],
     });
+    const { data: allOrdersData, isLoading: isAllOrdersLoading } = useGetAllOrdersQuery();
+    // New state to manage the initial data fetching state
+  const [isInitialDataLoading, setInitialDataLoading] = useState(true);
+
+//   console.log(allOrdersData);
+  
 
 
 //Thống kê cột của HighChatrs
@@ -70,12 +77,56 @@ const Dashboard = () => {
             </div>
         );
     };
+
+    const fetchInitialData = async () => {
+        try {
+          const currentDate = moment().format('YYYY-MM-DD');
+          const response = await statisticsByDay({
+            startDate: currentDate,
+            endDate: currentDate,
+          });
+          handleResponse(response);
+          setInitialDataLoading(false);
+        } catch (error) {
+          console.error('Error fetching initial data:', error);
+        }
+      };
+
+      useEffect(() => {
+        if (isInitialDataLoading) {
+          fetchInitialData();
+        }
+      }, [isInitialDataLoading, statisticsByDay]);
+
 //---------------------------------------------//
 
-    const handleStartDateChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setStartDate(event.target.value);
-    };
+const handleStartDateChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setStartDate(event.target.value);
+  
+    // Fetch all orders when start date changes
+    const fetchAllOrders = async () => {
+      try {
+        
+        const currentDate = moment().format('YYYY-MM-DD');
+        const allOrders = allOrdersData;
 
+        // Fetch orders for the current date
+        const response = await statisticsByDay({
+          startDate: currentDate,
+          endDate: currentDate,
+          allOrders: allOrders, // Pass all orders to the statisticsByDay mutation
+        });
+  
+        // Handle the response
+        handleResponse(response);
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+      }
+    };
+  
+    fetchAllOrders();
+  };
+  
     const handleEndDateChange = (event: ChangeEvent<HTMLInputElement>) => {
         const selectedEndDate = event.target.value;
         if (selectedEndDate > new Date().toISOString().split('T')[0]) {
@@ -125,57 +176,64 @@ const Dashboard = () => {
           const { totalQuantity, orders, totalRevenue } = response.data.statistics;
   
           const dailyTotalRevenue: { [key: string]: number } = {};
-          const dailyTotalPrice: { [key: string]: number } = {}; // New object to store daily total price
+   
           const dailyTotalOrders: { [key: string]: number } = {};
-
+          let totalCanceledOrders = 0;
+          let totalQuantitySold = 0
 
           const selectedDates = getSelectedDates(startDate, endDate);
           setTableData(orders);
   
           // Lặp qua các ngày đã chọn
           selectedDates.forEach((selectedDate) => {
-              const orderDate = moment(selectedDate).format('DD/MM/YYYY');
-  
-              // Kiểm tra xem có đơn hàng cho ngày được chọn không
-              const matchingOrders = orders.filter((order: any) => moment(order.createdAt).format('DD/MM/YYYY') === orderDate);
-              const canceledOrders = orders.filter((order: any) => order.status === '2');
-
-              if (matchingOrders.length > 0) {
-                  // Nếu có đơn hàng, tính tổng doanh thu và tổng giá trị sản phẩm
-                  dailyTotalRevenue[orderDate] = matchingOrders.reduce((acc: number, order: any) => {
-                    return acc + order.products.reduce((productAcc: number, product: any) => productAcc + product.price, 0);
-                }, 0);
-
-                dailyTotalPrice[orderDate] = matchingOrders.reduce((acc: number, order: any) => {
-                    return acc + order.products.reduce((productAcc: number, product: any) => productAcc + product.price, 0);
-                }, 0);
-
-                dailyTotalOrders[orderDate] = matchingOrders.length;
-              } else {
-                   // Nếu không có đơn hàng, giá trị cột bằng 0
+            const orderDate = moment(selectedDate).format('DD/MM/YYYY');
+          
+            // Filter orders for the selected date
+            const matchingOrders = orders.filter((order: any) => moment(order.createdAt).format('DD/MM/YYYY') === orderDate);
+        
+            
+            const validOrders = matchingOrders.filter((order: any) => order.status === '4');
+        
+            // Calculate the total quantity for the day from valid orders
+            totalQuantitySold += validOrders.length
+        
+            // Accumulate total canceled orders
+            totalCanceledOrders += matchingOrders.filter((order: any) => order.status === '2').length;
+        
+            if (validOrders.length > 0) {
+                // If there are valid orders, calculate total revenue and total orders
+                dailyTotalRevenue[orderDate] = validOrders.reduce((acc: number, order: any) => acc + order.totalPrice, 0);
+                dailyTotalOrders[orderDate] = validOrders.length;
+            } else {
+                // If no valid orders, set values to 0
                 dailyTotalOrders[orderDate] = 0;
                 dailyTotalRevenue[orderDate] = 0;
-                dailyTotalPrice[orderDate] = 0;
-              }
-              // Calculate the total number of canceled orders
-              const totalCanceledOrders = canceledOrders.length;
-              setTotalCanceledOrders(totalCanceledOrders);
-          });
-  
+            }
+        });
+        
+        // Set the total canceled orders using setTotalCanceledOrders
+          setTotalCanceledOrders(totalCanceledOrders);
+            
+          setTotalQuantitySold(totalQuantitySold);
+
           const categories: string[] = Object.keys(dailyTotalRevenue);
           const series = [
               { name: 'Doanh thu', data: Object.values(dailyTotalRevenue) },
           ];
-  
+
+          const totalRevenueForAllDays = Object.values(dailyTotalRevenue).reduce((acc, revenue) => acc + revenue, 0);
+          
           setChartData({ categories, series });
-          setTotalQuantitySold(totalQuantity);
-          setTotalRevenue(totalRevenue);
-          setTotalItems(orders.length); // Số lượng đơn hàng, không phải là serverData.length
-          const aggregatedTableData = Object.keys(dailyTotalPrice).map((orderDate) => ({
+          setTotalRevenue(totalRevenueForAllDays);
+          // setTotalItems(orders.length); 
+          const aggregatedTableData = Object.keys(dailyTotalRevenue).map((orderDate) => ({
             time: orderDate,
             numberOrders: dailyTotalOrders[orderDate],
-            totalSales: dailyTotalPrice[orderDate].toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }),
+            totalRevenue: dailyTotalRevenue[orderDate].toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }),
         }));
+
+        console.log(aggregatedTableData);
+        
 
         setTableData(aggregatedTableData);
       } else {
@@ -213,8 +271,8 @@ const Dashboard = () => {
         },
         {
           title: 'Doanh số',
-          dataIndex: 'totalSales',
-          key: 'totalSales',
+          dataIndex: 'totalRevenue',
+          key: 'totalRevenue',
           align: 'center'
         },
       ];
@@ -282,7 +340,7 @@ const Dashboard = () => {
           </div>
           <div className='flex items-center justify-center ml-3'>
             <div>
-                <span style={{fontSize:15,color: "orange", fontWeight: 450}}>{totalItems}</span>
+                <span style={{fontSize:15,color: "orange", fontWeight: 450}}>{totalQuantitySold}</span>
                 <br />
                 <span style={{color: "orange", fontWeight: 450}}>Số lượng đơn bán ra</span>
             </div>
@@ -301,9 +359,14 @@ const Dashboard = () => {
           </div>
        </div>
     </div>
-    <HighchartsChart chartData={chartData} />
+
+
+        <HighchartsChart chartData={chartData} />
+        <Table columns={columns} dataSource={tableData} />
+ 
+    {/* <HighchartsChart chartData={chartData} />
       
-    <Table columns={columns} dataSource={tableData} />;
+    <Table columns={columns} dataSource={tableData} />; */}
       
   </div>
     );

@@ -74,15 +74,13 @@ const Checkout = () => {
     if (storedUser) {
       const { username, email,  address, phone} = JSON.parse(storedUser);
       userData = {
-        name: username || "",
-        email: email || "",
-        address: address || "",
-        phone: phone || ""
+        name: username,
+        email: email,
+        address: address,
+        phone: phone
       };
     }
 
-// Bây giờ bạn có thể sử dụng userData ở ngoài block if
-console.log(userData);
 
   const handleUseDiscount = (selectedDiscount: any) => {
     if (moment().isBefore(selectedDiscount.startDate)) {
@@ -316,61 +314,61 @@ console.log(userData);
   }
 
   //validate khi người dùng click ra ngoài
-  // const handleInputBlur = (field: any, value: any) => {
-  //   // Validate the field on blur
-  //   switch (field) {
-  //     case "name":
-  //       if (!value) {
-  //         setNameError("Họ và tên không được để trống.")
-  //       } else {
-  //         setNameError("")
-  //       }
-  //       break
-  //     case "phone":
-  //       if (!value) {
-  //         setPhoneError("Số điện thoại không để trống")
-  //       } else {
-  //         setPhoneError("")
-  //       }
-  //       break
-  //     case "city":
-  //       if (!value) {
-  //         setCityError("Vui lòng chọn tỉnh/thành phố")
-  //       } else {
-  //         setCityError("")
-  //       }
-  //       break
-  //     case "district":
-  //       if (!value) {
-  //         setDistrictError("Vui lòng chọn quận/huyện")
-  //       } else {
-  //         setDistrictError("")
-  //       }
-  //       break
-  //     case "address":
-  //       if (!value) {
-  //         setAddressError("Địa chỉ không được bỏ trống")
-  //       } else {
-  //         setAddressError("")
-  //       }
-  //       break
-  //     default:
-  //       break
-  //   }
-  // }
+  const handleInputBlur = (field: any, value: any) => {
+    // Validate the field on blur
+    switch (field) {
+      case "name":
+        if (!value) {
+          setNameError("Họ và tên không được để trống.")
+        } else {
+          setNameError("")
+        }
+        break
+      case "phone":
+        if (!value) {
+          setPhoneError("Số điện thoại không để trống")
+        } else {
+          setPhoneError("")
+        }
+        break
+      case "city":
+        if (!value) {
+          setCityError("Vui lòng chọn tỉnh/thành phố")
+        } else {
+          setCityError("")
+        }
+        break
+      case "district":
+        if (!value) {
+          setDistrictError("Vui lòng chọn quận/huyện")
+        } else {
+          setDistrictError("")
+        }
+        break
+      case "address":
+        if (!value) {
+          setAddressError("Địa chỉ không được bỏ trống")
+        } else {
+          setAddressError("")
+        }
+        break
+      default:
+        break
+    }
+  }
 
   //handleCityChange thực hiện onChange validate kết hợp chọn select
   const handleCityChange = (selectedOption: any) => {
     setSelectedCity(selectedOption)
     setSelectedDistrict(null) // Reset lựa chọn quận/huyện khi thay đổi tỉnh/thành phố
-    // handleInputBlur("city", selectedOption)
+    handleInputBlur("city", selectedOption)
   }
 
   //handleDistrictChange thực hiện onChange validate kết hợp chọn select
   const handleDistrictChange = (selectedOption: any) => {
     setSelectedDistrict(selectedOption)
     handleInputChange("district", selectedOption)
-    // handleInputBlur("district", selectedOption)
+    handleInputBlur("district", selectedOption)
   }
 
   // console.log(selectedProducts);
@@ -394,6 +392,10 @@ console.log(userData);
           setIsLoadingSeen(false)
           return
         }
+
+       
+
+        
 
         const orderData:any = {
           cartId: cartId,
@@ -427,12 +429,12 @@ console.log(userData);
           localStorage.setItem("orderData", JSON.stringify(orderData))
           window.location.href = urlPay.data.data
         } else {
-          await addOrder(orderData)
+          // await addOrder(orderData)
           message.success("Đặt hàng thành công");
-          setIsLoadingSeen(true);
-          setTimeout(()=>{
-            navigate('/order/view')
-          },2000);
+          setIsLoadingSeen(false);
+          // setTimeout(()=>{
+          //   navigate('/order/view')
+          // },2000);
         }
 
         if (currentUser) {
@@ -524,6 +526,7 @@ console.log(userData);
       setIsLoadingSeen(false);
     }
   }
+
 
   // lựa chọn hình thức tt
   const [selectedMethod, setSelectedMethod] = useState("cod")
@@ -669,7 +672,7 @@ console.log(userData);
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("name", e.target.value)}
-                // onBlur={() => handleInputBlur("name", name)}
+                onBlur={() => handleInputBlur("name", name)}
                 defaultValue={userData.name || ""}
                 id="name"
                 placeholder="Họ tên của bạn"
@@ -686,8 +689,8 @@ console.log(userData);
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("phone", e.target.value)}
-                // onBlur={() => handleInputBlur("phone", phone)}
-                defaultValue={userData.phone}
+                onBlur={() => handleInputBlur("phone", phone)}
+                defaultValue={userData.phone || ""}
                 id="phone"
                 placeholder="Số điện thoại của bạn"
               />
@@ -706,7 +709,7 @@ console.log(userData);
                     onChange={handleCityChange}
                     options={vietnamData}
                     placeholder="Chọn tỉnh thành phố"
-                    // onBlur={() => handleInputBlur("city", selectedCity)}
+                    onBlur={() => handleInputBlur("city", selectedCity)}
                   />
                 </div>
                 <div className="selection">
@@ -722,7 +725,7 @@ console.log(userData);
                     options={getDistricts() || []}
                     placeholder="Chọn quận huyện"
                     isDisabled={!selectedCity}
-                    // onBlur={() => handleInputBlur("district", selectedDistrict)}
+                    onBlur={() => handleInputBlur("district", selectedDistrict)}
                   />
                 </div>
               </div>
@@ -739,8 +742,8 @@ console.log(userData);
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("address", e.target.value)}
-                defaultValue={userData.address}
-                // onBlur={() => handleInputBlur("address", address)}
+                defaultValue={userData.address || ""}
+                onBlur={() => handleInputBlur("address", address)}
                 id="address"
                 placeholder="Ví dụ: Số 20, ngõ 20"
               />
