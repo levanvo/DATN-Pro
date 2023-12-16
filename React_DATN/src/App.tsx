@@ -54,6 +54,7 @@ import DetailBill from "./Page/Admin/Bill/DetailBill"
 import BillDetailHome from "./Page/detailBillHome"
 import CommentList from "./Page/Admin/comment"
 import CheckOutSuccess from "./Page/CheckOutSuccess"
+import DashboardStatusBill from "./Page/Admin/DashboardStatusBill"
 import ProductStatistics from "./Page/Admin/Statistics/productStatistics"
 import RevenueStatistics from "./Page/Admin/Statistics/revenueStatistics"
 
@@ -98,6 +99,9 @@ function App() {
         }
       >
         <Route index element={<Dashboard />} />
+        <Route path="statusPr" element={<DashboardStatusBill />} />
+        {/* <Route path="admin/revenuePr" element={<Dashboard />} /> */}
+
         {/* <Route path="admin/statusPr" element={<Dashboard />} />
         <Route path="admin/revenuePr" element={<Dashboard />} /> */}
         <Route path="product-statistics" element={<ProductStatistics />} />

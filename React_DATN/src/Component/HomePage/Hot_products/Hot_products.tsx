@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {  useGetHotProductsQuery } from '../../../Services/Api_Product'
 import { IProduct } from '../../../Models/interfaces';
 import { Link } from 'react-router-dom';
-
+import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
 const Hot_products = () => {
     const { data: productData, isError, isLoading }: any = useGetHotProductsQuery()
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -106,18 +106,18 @@ const Hot_products = () => {
                                 </div>
                             </div>
                             <div className=' text-2xl'>
-                                <button
-                                    className="absolute top-1/2 transform -translate-y-1/2 hover:bg-gray-300 left-[-20px] rounded-full shadow cursor-pointer"
+                                <div
+                                    className="absolute scale-150 top-1/2 transform -translate-y-1/2 left-[-20px] rounded-full shadow cursor-pointer"
                                     onClick={handlePrevClick}
                                 >
-                                    {'<'}
-                                </button>
-                                <button
-                                    className="absolute top-1/2 transform -translate-y-1/2  hover:bg-gray-300 right-[-20px] rounded-full shadow cursor-pointer"
+                                    <LeftCircleOutlined/>
+                                </div>
+                                <div
+                                    className="absolute scale-150 top-1/2 transform -translate-y-1/2  right-[-20px] rounded-full shadow cursor-pointer"
                                     onClick={handleNextClick}
                                 >
-                                    {'>'}
-                                </button>
+                                    <RightCircleOutlined />
+                                </div>
                             </div>
                         </div>
                     </div>
