@@ -51,11 +51,17 @@ const Product = () => {
                                     ) : (
                                         <div>No categories available</div>
                                     )} */}
-                                        <div>
-                                            <img src="img/banner/banner-5.jpg" />
-                                        </div>
-
+                                    <div>
+                                        <img className='w-[300px] h-60' src="img/banner/banner-5.jpg" />
                                     </div>
+                                        <div className=" h-[400px]">
+                                            <video autoPlay loop className='shadow-xl shadow-white'>
+                                                <source src="../../../../img/production_id_4380323 (1080p).mp4" type="video/mp4"/>
+                                            </video>
+                                        </div>
+                                        
+                                    </div>
+                                    
                                 </div>
                             </div>
 

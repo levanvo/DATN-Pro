@@ -14,6 +14,9 @@ import {
   CalendarOutlined,
   MailOutlined,
   MenuOutlined,
+  DollarOutlined,
+  FundViewOutlined,
+  ReconciliationOutlined
 } from "@ant-design/icons"
 import type { MenuProps } from "antd"
 import { Breadcrumb, Layout, Menu, theme } from "antd"
@@ -45,9 +48,9 @@ const isStaff = user?.role === "staff"
 const items: MenuItem[] = [
   getItem('Tổng quan', '0', <HomeOutlined />, undefined, '/admin'),
   getItem("Thống kê", "1", <BarChartOutlined />, [
-    getItem("Doanh thu", "2", <FormatPainterOutlined />, undefined, "/admin/revenue-statistics"),
-    getItem("Sản phẩm đã bán", "3", <PieChartOutlined />, undefined, "/admin/product-statistics"),
-    getItem("Trạng thái đơn hàng", "4", <PieChartOutlined />, undefined, "/admin/statusPr"),
+    getItem("Doanh thu", "2", <DollarOutlined />, undefined, "/admin/revenue-statistics"),
+    getItem("Sản phẩm đã bán", "3", <FundViewOutlined />, undefined, "/admin/product-statistics"),
+    getItem("Trạng thái đơn hàng", "4", <ReconciliationOutlined />, undefined, "/admin/statusPr"),
   ]),
   getItem("Kho", "sub1", <HddOutlined />, [
     getItem(
