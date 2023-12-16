@@ -239,28 +239,25 @@ const Dashboard = () => {
 
     return (
       <div>
-      <div className='statistics ml-9'>
-      <div>
-    <label htmlFor="startDate">Ngày bắt đầu:</label>
-    <input type="date" id="startDate" max={endDate ? endDate : new Date().toISOString().split('T')[0]} onChange={handleStartDateChange} />
-</div>
-<div>
-    <label htmlFor="endDate">Ngày kết thúc:</label>
-    <input
-        type="date"
+      
+
+    <div className='flex justify-center space-x-5 mb-5'>
+        <div className='flex'>
+          <p className='mt-[6px] text-sm mr-1 font-medium'>Ngày bắt đầu:</p>
+          <input className='w-56 border h-9 rounded-md outline-0' type="date" id="startDate" max={endDate ? endDate : new Date().toISOString().split('T')[0]} onChange={handleStartDateChange} />
+        </div>
+        <div className='flex'>
+          <p className='mt-[6px] text-sm mr-1 font-medium'>Ngày kết thúc:</p>
+          <input className='w-56 border h-9 rounded-md outline-0' type="date"
         id="endDate"
         max={new Date().toISOString().split('T')[0]}
         onChange={handleEndDateChange}
-        onBlur={handleEndDateBlur}
-    />
-</div>
-
-</div>
-    <div className='statistics-btn ml-9'>
-      <button type="button" onClick={handleSubmit}>
-        Tìm kiếm
-      </button>
-    </div>
+        onBlur={handleEndDateBlur} />
+        </div>
+        <button className='bg-sky-600 text-white rounded-md h-9' type="button" onClick={handleSubmit}>
+          Tìm kiếm
+        </button>
+      </div>
 
 
     <div className='satatic-box flex ml-8 mb-10'>

@@ -100,10 +100,6 @@ function App() {
       >
         <Route index element={<Dashboard />} />
         <Route path="statusPr" element={<DashboardStatusBill />} />
-        {/* <Route path="admin/revenuePr" element={<Dashboard />} /> */}
-
-        {/* <Route path="admin/statusPr" element={<Dashboard />} />
-        <Route path="admin/revenuePr" element={<Dashboard />} /> */}
         <Route path="product-statistics" element={<ProductStatistics />} />
         <Route path="revenue-statistics" element={<RevenueStatistics />} />
         <Route path="product/add" element={<AddProduct />} />
