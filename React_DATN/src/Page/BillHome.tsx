@@ -1,6 +1,6 @@
 import React from 'react';
-import { useGetAllOrdersQuery, useGetUserOrdersQuery } from '../Services/Api_Order';
-import { Divider, Table } from 'antd';
+import { useGetAllOrdersQuery, useGetUserOrdersQuery, useUpdateOrderMutation } from '../Services/Api_Order';
+import { Divider, Table, message } from 'antd';
 import Loading from '../Component/Loading';
 import { Link } from 'react-router-dom';
 import { IOrder } from '../Models/interfaces';
@@ -18,6 +18,20 @@ const Bill = () => {
     createdAt: moment(order?.createdAt).format('DD-MM-YYYY | HH:mm'),
     status: order?.status,
   }));
+
+  const [updateOrder] = useUpdateOrderMutation();
+
+  const handleConfirmOrder = (orderId: string) => {
+    updateOrder({ _id: orderId, status: "4" })
+      .unwrap()
+      .then(() => {
+        console.log("Đơn hàng đã được xác nhận thành công.");
+        message.success("Đơn hàng đã được xác nhận thành công.");
+      })
+      .catch((error) => {
+        console.error("Lỗi khi xác nhận đơn hàng:", error);
+      });
+  };
 
   const columns = [
     {
@@ -49,7 +63,12 @@ const Bill = () => {
     {
       title: 'Hành động',
       render: (record: any) => (
-        <Link to={`detail/${record.key}`}>Chi tiết</Link>
+        <>
+          <button style={{ width: 180, marginRight: 20, backgroundColor: record.status === '4' ? 'gray' : '#3F8CFF', color: 'white', borderRadius: 10 }} onClick={() => handleConfirmOrder(record.key)} disabled={record.status === '4'}>
+            Xác nhận đã nhận hàng
+          </button>
+          <Link style={{border: '1px solid white', padding: 10, borderRadius: 10, backgroundColor: '#3F8CFF', color: 'white'}} to={`detail/${record.key}`}>Chi tiết</Link>
+        </>
       ),
       key: 'actions',
     },

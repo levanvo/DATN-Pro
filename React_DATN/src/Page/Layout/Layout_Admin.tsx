@@ -147,15 +147,7 @@ const Layout_Admin: React.FC = () => {
             </a>
           </div>
           <hr />
-          <Menu
-            theme="dark"
-            selectedKeys={selectedKeys}
-            defaultOpenKeys={openKeys}
-            mode="inline"
-            items={isStaff ? items.filter((item: any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items}
-            onSelect={handleMenuSelect}
-            onOpenChange={handleOpenChange}
-          />
+          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter((item: any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7' && item.key !== '11' && item.key !== '10') : items} />
         </Sider>
         <Layout>
           <Header className="headerAdmin" style={{ height: 80, width: "100%" }} >
