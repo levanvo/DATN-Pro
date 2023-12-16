@@ -129,49 +129,47 @@ const RevenueStatistics = () => {
     handleSearch();
   };
 
-  const handleResponse = (response: any) => {
-    if (response.data && response.data.success) {
-      const { totalQuantity, orders, totalRevenue } = response.data.statistics;
+const handleResponse = (response: any) => {
+  if (response.data && response.data.success) {
+    const { totalQuantity, orders, totalRevenue } = response.data.statistics;
+  
+    const dailyTotalRevenue: { [key: string]: number } = {};
+    const matchingOrders: any[] = []; // Tạo một mảng mới để lưu trữ các đơn hàng đã nhận hàng
 
-      const dailyTotalRevenue: { [key: string]: number } = {};
-
-      const selectedDates = getSelectedDates(startDate, endDate);
-
-      // Lặp qua các ngày đã chọn
-      selectedDates.forEach((selectedDate) => {
-        const orderDate = moment(selectedDate).format('DD/MM/YYYY');
-
-        // Kiểm tra xem có đơn hàng cho ngày được chọn không
-        const matchingOrders = orders.filter((order: any) => {
-          const orderDateFormatted = moment(order.createdAt).format('DD/MM/YYYY');
-          return orderDateFormatted === orderDate;
-        });
-
-        if (matchingOrders.length > 0) {
-          // Nếu có đơn hàng, tính tổng doanh thu
-          dailyTotalRevenue[orderDate] = matchingOrders.reduce(
-            (acc: number, order: any) => acc + order.totalPrice,
-            0
-          );
-        } else {
-          // Nếu không có đơn hàng, giá trị cột bằng 0
-          dailyTotalRevenue[orderDate] = 0;
-        }
+    const selectedDates = getSelectedDates(startDate, endDate);
+  
+    // Lặp qua các ngày đã chọn
+    selectedDates.forEach((selectedDate) => {
+      const orderDate = moment(selectedDate).format('DD/MM/YYYY');
+  
+      // Kiểm tra xem có đơn hàng cho ngày được chọn không
+      const matchingOrdersForDate = orders.filter((order: any) => {
+        const orderDateFormatted = moment(order.createdAt).format('DD/MM/YYYY');
+        return orderDateFormatted === orderDate && order.status === '4'; // Lọc chỉ những đơn hàng đã nhận hàng
       });
 
-      const categories: string[] = Object.keys(dailyTotalRevenue);
-      const series = [{ name: 'Doanh thu', data: Object.values(dailyTotalRevenue) }];
+      matchingOrders.push(...matchingOrdersForDate); // Thêm các đơn hàng đã nhận hàng vào mảng matchingOrders
+  
+      // Tính tổng doanh thu của các đơn hàng đã nhận hàng
+      const totalRevenueReceived = matchingOrdersForDate.reduce((total, order) => total + order.totalPrice, 0);
+  
+      // Gán giá trị vào dailyTotalRevenue
+      dailyTotalRevenue[orderDate] = totalRevenueReceived;
+    });
+  
+    const categories: string[] = Object.keys(dailyTotalRevenue);
+    const series = [{ name: 'Doanh thu', data: Object.values(dailyTotalRevenue) }];
+  
+    setChartData({ categories, series });
+    setTotalQuantitySold(totalQuantity);
+    setTotalRevenue(matchingOrders.reduce((total, order) => total + order.totalPrice, 0)); // Tính tổng doanh thu từ các đơn hàng đã nhận hàng
+    setTotalItems(matchingOrders.length); // Sử dụng matchingOrders để tính tổng số lượng sản phẩm
+  } else {
+    console.error('Không bán được đơn này trong ngày');
+  }
+};
 
-      setChartData({ categories, series });
-      setTotalQuantitySold(totalQuantity);
-      setTotalRevenue(totalRevenue);
-      setTotalItems(orders.length);
-      setTableData(orders);
-    } else {
-      console.error('Không bán được đơn này trong ngày');
-    }
-  };
-
+  
 
   const getSelectedDates = (startDate: any, endDate: any) => {
     const start = moment(startDate);
@@ -207,7 +205,7 @@ const RevenueStatistics = () => {
       <HighchartsChart chartData={chartData} />
       <div className='ml-9'>
         <div style={{ fontSize: 16, color: 'black', fontWeight: 600 }}>
-          Tổng số lượng sản phẩm đã bán: {totalQuantitySold} sản phẩm
+          Tổng số lượng sản phẩm đã bán: {totalItems} sản phẩm
         </div>
       </div>
       <div className='ml-9'>
