@@ -687,7 +687,7 @@ console.log(userData);
                 type="text"
                 onChange={(e) => handleInputChange("phone", e.target.value)}
                 // onBlur={() => handleInputBlur("phone", phone)}
-                defaultValue={userData.phone}
+                defaultValue={userData.phone || ""}
                 id="phone"
                 placeholder="Số điện thoại của bạn"
               />
@@ -739,7 +739,7 @@ console.log(userData);
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("address", e.target.value)}
-                defaultValue={userData.address}
+                defaultValue={userData.address || ""}
                 // onBlur={() => handleInputBlur("address", address)}
                 id="address"
                 placeholder="Ví dụ: Số 20, ngõ 20"
