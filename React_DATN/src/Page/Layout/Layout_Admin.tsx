@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import {
   GoldOutlined,
   PieChartOutlined,
@@ -17,7 +17,8 @@ import {
 } from "@ant-design/icons"
 import type { MenuProps } from "antd"
 import { Breadcrumb, Layout, Menu, theme } from "antd"
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Link, useNavigate } from "react-router-dom";
+
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -53,44 +54,88 @@ const items: MenuItem[] = [
   getItem("Kho", "sub1", <HddOutlined />, [
     getItem(
       "Sản phẩm",
-      "5",
+      "6",
       <DeploymentUnitOutlined />,
       undefined,
       "product/list"
     ),
-    getItem("Màu", "6", <FormatPainterOutlined />, undefined, "color/list"),
-    getItem("Kích thước", "7", <PieChartOutlined />, undefined, "size/list"),
+    getItem("Màu", "7", <FormatPainterOutlined />, undefined, "color/list"),
+    getItem("Kích thước", "8", <PieChartOutlined />, undefined, "size/list"),
     getItem(
       "Khôi phục sản phẩm",
-      "8",
+      "9",
       <ContainerOutlined />,
       undefined,
       "restore-product-data"
     ),
   ]),
-  getItem('Bình luận', '9', <EditOutlined />, undefined, 'comment/list'),
-  getItem('Danh mục', '10', <GoldOutlined />, undefined, 'category/list'),
-  getItem('Tài khoản', '11', <UserOutlined />, undefined, 'user/list'),
-  getItem('Hóa đơn', '12', <HddOutlined />, undefined, 'bill/list'),
-  getItem('Banner', '13', <PicCenterOutlined />, undefined, 'slide/list'),
+  getItem('Bình luận', '10', <EditOutlined />, undefined, 'comment/list'),
+  getItem('Danh mục', '11', <GoldOutlined />, undefined, 'category/list'),
+  getItem('Tài khoản', '12', <UserOutlined />, undefined, 'user/list'),
+  getItem('Hóa đơn', '13', <HddOutlined />, undefined, 'bill/list'),
+  getItem('Banner', '14', <PicCenterOutlined />, undefined, 'slide/list'),
   // getItem("New Sletter", "10", <MailOutlined />, undefined, "new-sletter/list"),
-  getItem("Mã giảm giá", "14", <MenuOutlined />, undefined, "discount/list"),
-  getItem("Bản tin", "15", <MailOutlined />, undefined, "new-sletter/list"),
-  getItem("Nhật ký web", "16", <CalendarOutlined />, undefined, "blog/list"),
+  getItem("Mã giảm giá", "15", <MenuOutlined />, undefined, "discount/list"),
+  getItem("Bản tin", "16", <MailOutlined />, undefined, "new-sletter/list"),
+  getItem("Nhật ký web", "17", <CalendarOutlined />, undefined, "blog/list"),
 ];
 
 const Layout_Admin: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(["0"]);
+  const [openKeys, setOpenKeys] = useState<string[]>([]); // Thêm state để lưu trạng thái mở/rút mục con
+  const navigate = useNavigate();
+
   const {
     token: { colorBgContainer },
-  } = theme.useToken()
+  } = theme.useToken();
+
+
+  useEffect(() => {
+    // Lấy giá trị từ localStorage khi component được mount
+    const storedSelectedKeys = localStorage.getItem("selectedKeys");
+    const storedOpenKeys = localStorage.getItem("openKeys");
+  
+    if (storedSelectedKeys) {
+      setSelectedKeys(JSON.parse(storedSelectedKeys));
+    }
+    if (storedOpenKeys) {
+      setOpenKeys(JSON.parse(storedOpenKeys));
+    }
+  }, []);
+  
+
+
+
+  const handleMenuSelect = ({ key, keyPath }: any) => {
+    // Cập nhật trạng thái khi menu được chọn
+    setSelectedKeys([key]);
+    setOpenKeys(keyPath.slice(1));
+  
+    // Lưu vào localStorage
+    localStorage.setItem("selectedKeys", JSON.stringify([key]));
+    localStorage.setItem("openKeys", JSON.stringify(keyPath.slice(1)));
+  
+    // Chuyển hướng đến URL tương ứng khi chọn menu
+    const matchingItem = items.find((item) => item.key === key);
+    if (matchingItem && matchingItem.url) {
+      navigate(matchingItem.url);
+    }
+  };
+  
+
+  const handleOpenChange = (keys: string[]) => {
+    setOpenKeys(keys);
+    localStorage.setItem("openKeys", JSON.stringify(keys));
+  };
+  
 
 
   return (
     <div className="nav-left">
       <Layout style={{ minHeight: "100vh" }}>
         <Sider
-        style={{position:"fixed", zIndex:2,height: "100vh"}}
+          style={{ position: "fixed", zIndex: 2, height: "100vh" }}
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
@@ -102,14 +147,22 @@ const Layout_Admin: React.FC = () => {
             </a>
           </div>
           <hr />
-          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter((item: any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items} />
+          <Menu
+            theme="dark"
+            selectedKeys={selectedKeys}
+            defaultOpenKeys={openKeys}
+            mode="inline"
+            items={isStaff ? items.filter((item: any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items}
+            onSelect={handleMenuSelect}
+            onOpenChange={handleOpenChange}
+          />
         </Sider>
         <Layout>
-          <Header className="headerAdmin" style={{ height:80,width:"100%"}} >
+          <Header className="headerAdmin" style={{ height: 80, width: "100%" }} >
 
           </Header>
           <div className="h-20"></div>
-          <Content className="" style={{margin:"0 0 0 200px"}}>
+          <Content className="" style={{ margin: "0 0 0 200px" }}>
             {/* <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item>Bảng</Breadcrumb.Item>
               <Breadcrumb.Item></Breadcrumb.Item>
