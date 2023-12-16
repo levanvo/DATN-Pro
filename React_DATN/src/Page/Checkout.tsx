@@ -391,6 +391,7 @@ console.log(userData);
 
         if (!name || !phone || !selectedCity || !selectedDistrict || !address) {
           message.error("Vui lòng điền đầy đủ thông tin")
+          setIsLoadingSeen(false)
           return
         }
 
@@ -465,6 +466,7 @@ console.log(userData);
 
         if (!name || !phone || !selectedCity || !selectedDistrict || !address) {
           message.error("Vui lòng điền đầy đủ thông tin")
+          setIsLoadingSeen(false);
           return
         }
 
@@ -509,7 +511,7 @@ console.log(userData);
         } else {
           await addOrder(orderItemData)
           message.success("Đặt hàng thành công")
-          setIsLoadingSeen(true);
+          setIsLoadingSeen(false);
           
           const updatedLocalCart = localCart.filter(
             (item) => !cartId.includes(item.id)
@@ -519,7 +521,7 @@ console.log(userData);
       }
     } catch (error) {
       console.log(error)
-      setIsLoadingSeen(true);
+      setIsLoadingSeen(false);
     }
   }
 
@@ -668,7 +670,7 @@ console.log(userData);
                 type="text"
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 // onBlur={() => handleInputBlur("name", name)}
-                defaultValue={userData.name}
+                defaultValue={userData.name || ""}
                 id="name"
                 placeholder="Họ tên của bạn"
               />
