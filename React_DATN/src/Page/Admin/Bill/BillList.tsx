@@ -56,12 +56,13 @@ const BillList = () => {
           value={status}
           onChange={(value) => handleStatusChange(value, record.key)}
           style={{ width: 150 }}
+          disabled={status === "4"}
         >
           <Option value="0">Đang chờ xác nhận</Option>
           <Option value="1">Đã xác nhận</Option>
           <Option value="2">Đã hủy</Option>
           <Option value="3">Đang giao hàng</Option>
-          <Option value="4">Đã nhận hàng</Option>
+          <Option disabled value="4">Đã nhận hàng</Option>
         </Select>
       ),
     },
