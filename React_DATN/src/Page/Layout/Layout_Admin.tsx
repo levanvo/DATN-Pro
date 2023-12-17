@@ -14,6 +14,9 @@ import {
   CalendarOutlined,
   MailOutlined,
   MenuOutlined,
+  DollarOutlined,
+  FundViewOutlined,
+  ReconciliationOutlined
 } from "@ant-design/icons"
 import type { MenuProps } from "antd"
 import { Breadcrumb, Layout, Menu, theme } from "antd"

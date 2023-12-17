@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import parse from 'html-react-parser';
-import { useLocation  } from 'react-router-dom';
+import { useLocation ,useNavigate } from 'react-router-dom';
 import { useAddOrderMutation } from "../Services/Api_Order"
 
 const CheckOutSuccess = () => {
     const location = useLocation();    
+    const navigate=useNavigate();
     const [addOrder, { error }] = useAddOrderMutation();
     const [statusOrder, setStatusOrder] = useState(true);
     const [localCart, setLocalCart] = useState<any[]>(
@@ -33,6 +34,9 @@ const CheckOutSuccess = () => {
                     let dataOrder = JSON.parse(orderDataString);
                     await addOrder(dataOrder)
                     localStorage.removeItem('orderData');
+                    setTimeout(()=>{
+                        navigate("/")
+                    },2000)
                 }
 
                 // Thanh toán vnp với người không có tài khoản
@@ -47,6 +51,9 @@ const CheckOutSuccess = () => {
                     setLocalCart(updatedLocalCart);
                     localStorage.setItem('cart', JSON.stringify(updatedLocalCart));
                     localStorage.removeItem('orderItemData');
+                    setTimeout(()=>{
+                        navigate("/guests")
+                    },2000)
                 }
                 setStatusOrder(true);
             } else {
