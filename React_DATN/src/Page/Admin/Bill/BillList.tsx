@@ -6,6 +6,7 @@ import Loading from '../../../Component/Loading';
 import { Link } from 'react-router-dom';
 import { Option } from 'antd/es/mentions';
 import moment from 'moment';
+import Input from 'antd/es/input/Input';
 
 const BillList = () => {
   const { data, isLoading, error } = useGetAllOrdersQuery(undefined);
@@ -30,6 +31,27 @@ const BillList = () => {
       console.error("Lỗi khi cập nhật trạng thái:", error);
     });
   };
+
+  const [filterCode, setFilterCode] = useState('');
+
+  const [searchResultMessage, setSearchResultMessage] = useState('');
+
+  const handleCodeFilter = (e) => {
+    const searchValue = e.target?.value;
+    setFilterCode(searchValue);
+  
+    // Kiểm tra xem có đơn hàng phù hợp với tìm kiếm hay không
+    const hasSearchResult = dataSource?.some((order: IOrder) =>
+      order.code_order.includes(searchValue)
+    );
+  
+    if (!hasSearchResult) {
+      setSearchResultMessage('Đơn hàng bạn đang tìm không có');
+    } else {
+      setSearchResultMessage('');
+    }
+  };
+
 
   const columns = [
     {
@@ -56,13 +78,12 @@ const BillList = () => {
           value={status}
           onChange={(value) => handleStatusChange(value, record.key)}
           style={{ width: 150 }}
-          disabled={status === "4"}
         >
           <Option value="0">Đang chờ xác nhận</Option>
           <Option value="1">Đã xác nhận</Option>
           <Option value="2">Đã hủy</Option>
           <Option value="3">Đang giao hàng</Option>
-          <Option disabled value="4">Đã nhận hàng</Option>
+          <Option value="4">Đã nhận hàng</Option>
         </Select>
       ),
     },
@@ -79,7 +100,11 @@ const BillList = () => {
     setFilterStatus(value);
   };
 
-  const filteredData = filterStatus ? dataSource?.filter((order: IOrder) => order.status === filterStatus) : dataSource;
+  const filteredData = dataSource?.filter((order: IOrder) => {
+    const matchStatus = !filterStatus || order.status === filterStatus;
+    const matchCode = !filterCode || order.code_order.includes(filterCode);
+    return matchStatus && matchCode;
+  });
 
   return (
     <div>
@@ -99,7 +124,14 @@ const BillList = () => {
           <Option value="3">Đang giao hàng</Option>
           <Option value="4">Đã nhận hàng</Option>
         </Select>
+        <span style={{ marginRight: '8px', marginLeft: 20 }}>Tìm theo mã đơn hàng:</span>
+        <Input
+          value={filterCode}
+          onChange={handleCodeFilter}
+          style={{ width: 150 }}
+        />
       </div>
+      {searchResultMessage && <p style={{fontSize: 20, fontWeight: 'bold', color: 'red'}}>{searchResultMessage}</p>}
 
       {isLoading ? (
         <Loading />
