@@ -4,7 +4,7 @@ import { useStatisticsByDayMutation } from '../../../Services/Api_Statistic';
 import Highcharts from 'highcharts';
 import { message } from 'antd';
 import HighchartsReact from 'highcharts-react-official';
-
+import Loading from "../../../Component/Loading";
 interface HighchartsChartProps {
   chartData: {
     categories: string[];
@@ -21,6 +21,7 @@ const RevenueStatistics = () => {
   const [tableData, setTableData] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [loading , setLoading] = useState(false);
   const [autoFetch7Days, setAutoFetch7Days] = useState(true);
   const [chartData, setChartData] = useState({
     categories: [],
@@ -44,16 +45,18 @@ const RevenueStatistics = () => {
       const sevenDaysAgo = currentDate.clone().subtract(6, 'days').startOf('day');
       setStartDate(sevenDaysAgo.format('YYYY-MM-DD'));
       setEndDate(currentDate.format('YYYY-MM-DD'));
-      // Thực hiện tìm kiếm khi vào trang
-      await handleSubmit();
     };
   
     if (autoFetch7Days) {
       fetchLast7Days();
     }
-  }, [autoFetch7Days]);
+  }, []);
   
-
+  useEffect(()=>{
+    if(startDate){
+     handleSearch();
+    }
+  },[startDate, endDate])
 
 
 
@@ -105,12 +108,16 @@ const RevenueStatistics = () => {
   };
 
   const handleSearch = async () => {
+    setLoading(true)
     try {
       const formattedStartDay = moment(startDate).startOf('day').format('YYYY-MM-DD');
       const formattedEndDay = moment(endDate).endOf('day').format('YYYY-MM-DD');
 
       if (moment(formattedEndDay).isBefore(formattedStartDay)) {
         message.error('Không xác định được ngày');
+        setChartData({ categories: [], series: [] });
+        setTableData([]);
+        setLoading(false);
         return;
       }
 
@@ -118,16 +125,16 @@ const RevenueStatistics = () => {
         startDate: formattedStartDay,
         endDate: formattedEndDay,
       });
-
+      setLoading(false);
       handleResponse(response);
     } catch (error) {
       console.error('Error:', error);
     }
   };
 
-  const handleSubmit = () => {
-    handleSearch();
-  };
+  // const handleSubmit = () => {
+  //   handleSearch();
+  // };
 
 const handleResponse = (response: any) => {
   if (response.data && response.data.success) {
@@ -186,21 +193,22 @@ const handleResponse = (response: any) => {
 
   return (
     <div>
+      {<Loading/>&&loading}
       <div className='statistics ml-9'>
         <div>
           <label htmlFor='startDate'>Ngày bắt đầu:</label>
-          <input type='date' id='startDate' onChange={handleStartDateChange} />
+          <input type='date' id='startDate' onChange={handleStartDateChange} defaultValue={startDate}/>
         </div>
         <div>
           <label htmlFor='endDate'>Ngày kết thúc:</label>
-          <input type='date' id='endDate' onChange={handleEndDateChange} />
+          <input type='date' id='endDate' onChange={handleEndDateChange} defaultValue={endDate}/>
         </div>
       </div>
-      <div className='statistics-btn ml-9'>
+      {/* <div className='statistics-btn ml-9'>
         <button type='button' onClick={handleSubmit} ref={searchButtonRef}>
           Tìm kiếm
         </button>
-      </div>
+      </div> */}
       <p className='ml-10'>(*) Mặc định thống kê doanh số 7 ngày gần nhất</p>
       <HighchartsChart chartData={chartData} />
       <div className='ml-9'>
