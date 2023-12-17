@@ -1,13 +1,13 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import moment from "moment";
-import { useStatisticsByDayMutation } from "../../../Services/Api_Statistic";
+import { useStatisticsByDayMutation } from "../../Services/Api_Statistic";
 import Highcharts from "highcharts";
 import { message, Table } from "antd";
 import HighchartsReact from "highcharts-react-official";
 import { MdFreeCancellation } from "react-icons/md";
 import { LuCircleDollarSign } from "react-icons/lu";
 import { FaCartPlus } from "react-icons/fa";
-import Loading from "../../../Component/Loading";
+import Loading from "../../Component/Loading";
 
 interface HighchartsChartProps {
   chartData: {
@@ -19,7 +19,7 @@ interface HighchartsChartProps {
 const Dashboard = () => {
   const [totalQuantitySold, setTotalQuantitySold] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const [statisticsByDay] = useStatisticsByDayMutation();
+  const [statisticsByDay, {isLoading}] = useStatisticsByDayMutation();
   const [tableData, setTableData] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -255,7 +255,6 @@ const Dashboard = () => {
 
   return (
     <div>
-      {loading && <Loading />}
       <div className="statistics ml-9 mb-3">
         <div>
           <label htmlFor="startDate">Ngày bắt đầu:</label>
@@ -330,13 +329,10 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
-      <HighchartsChart chartData={chartData} />
-      <Table columns={columns} dataSource={tableData} />
-
-      {/* <HighchartsChart chartData={chartData} />
-      
-    <Table columns={columns} dataSource={tableData} />; */}
+      {isLoading ? <Loading /> : <div>
+          <HighchartsChart chartData={chartData} />
+          <Table columns={columns} dataSource={tableData} />
+        </div> }
     </div>
   );
 };

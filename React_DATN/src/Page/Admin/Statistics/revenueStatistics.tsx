@@ -4,7 +4,7 @@ import { useStatisticsByDayMutation } from '../../../Services/Api_Statistic';
 import Highcharts from 'highcharts';
 import { message } from 'antd';
 import HighchartsReact from 'highcharts-react-official';
-
+import Loading from "../../../Component/Loading";
 interface HighchartsChartProps {
   chartData: {
     categories: string[];
@@ -16,11 +16,10 @@ const RevenueStatistics = () => {
   const searchButtonRef = useRef<HTMLButtonElement | null>(null); //setup để khi vào trang sẽ tự động submit 1 lần
   const [totalQuantitySold, setTotalQuantitySold] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const [totalItems, setTotalItems] = useState(0);
-  const [statisticsByDay] = useStatisticsByDayMutation();
-  const [tableData, setTableData] = useState([]);
+  const [statisticsByDay, {isLoading}] = useStatisticsByDayMutation();
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [loading , setLoading] = useState(false);
   const [autoFetch7Days, setAutoFetch7Days] = useState(true);
   const [chartData, setChartData] = useState({
     categories: [],
@@ -41,19 +40,21 @@ const RevenueStatistics = () => {
   useEffect(() => {
     const fetchLast7Days = async () => {
       const currentDate = moment().endOf('day');
-      const sevenDaysAgo = currentDate.clone().subtract(6, 'days').startOf('day');
+      const sevenDaysAgo = currentDate.clone().subtract(7, 'days').startOf('day');
       setStartDate(sevenDaysAgo.format('YYYY-MM-DD'));
       setEndDate(currentDate.format('YYYY-MM-DD'));
-      // Thực hiện tìm kiếm khi vào trang
-      await handleSubmit();
     };
   
     if (autoFetch7Days) {
       fetchLast7Days();
     }
-  }, [autoFetch7Days]);
+  }, []);
   
-
+  useEffect(()=>{
+    if(startDate){
+     handleSearch();
+    }
+  },[startDate, endDate])
 
 
 
@@ -63,7 +64,7 @@ const RevenueStatistics = () => {
         type: 'column',
       },
       title: {
-        text: 'Thống kê doanh thu sản phẩm',
+        text: 'Thống kê doanh số sản phẩm',
       },
       xAxis: {
         categories: chartData.categories,
@@ -74,7 +75,7 @@ const RevenueStatistics = () => {
       yAxis: {
         min: 0,
         title: {
-          text: 'Doanh Thu (VND)',
+          text: 'Doanh Số (VND)',
         },
       },
       tooltip: {
@@ -105,12 +106,16 @@ const RevenueStatistics = () => {
   };
 
   const handleSearch = async () => {
+    setLoading(true)
     try {
       const formattedStartDay = moment(startDate).startOf('day').format('YYYY-MM-DD');
       const formattedEndDay = moment(endDate).endOf('day').format('YYYY-MM-DD');
 
       if (moment(formattedEndDay).isBefore(formattedStartDay)) {
         message.error('Không xác định được ngày');
+        setChartData({ categories: [], series: [] });
+        setTableData([]);
+        setLoading(false);
         return;
       }
 
@@ -118,20 +123,17 @@ const RevenueStatistics = () => {
         startDate: formattedStartDay,
         endDate: formattedEndDay,
       });
-
+      setLoading(false);
       handleResponse(response);
     } catch (error) {
       console.error('Error:', error);
     }
   };
 
-  const handleSubmit = () => {
-    handleSearch();
-  };
 
 const handleResponse = (response: any) => {
   if (response.data && response.data.success) {
-    const { totalQuantity, orders, totalRevenue } = response.data.statistics;
+    const { totalQuantity, orders } = response.data.statistics;
   
     const dailyTotalRevenue: { [key: string]: number } = {};
     const matchingOrders: any[] = []; // Tạo một mảng mới để lưu trữ các đơn hàng đã nhận hàng
@@ -150,20 +152,19 @@ const handleResponse = (response: any) => {
 
       matchingOrders.push(...matchingOrdersForDate); // Thêm các đơn hàng đã nhận hàng vào mảng matchingOrders
   
-      // Tính tổng doanh thu của các đơn hàng đã nhận hàng
-      const totalRevenueReceived = matchingOrdersForDate.reduce((total, order) => total + order.totalPrice, 0);
+      // Tính tổng doanh số của các đơn hàng đã nhận hàng
+      const totalRevenueReceived = matchingOrdersForDate.reduce((total:number, order) => total + order.totalPrice, 0);
   
       // Gán giá trị vào dailyTotalRevenue
       dailyTotalRevenue[orderDate] = totalRevenueReceived;
     });
   
     const categories: string[] = Object.keys(dailyTotalRevenue);
-    const series = [{ name: 'Doanh thu', data: Object.values(dailyTotalRevenue) }];
+    const series = [{ name: 'Doanh số', data: Object.values(dailyTotalRevenue),colorByPoint: true }];
   
     setChartData({ categories, series });
-    setTotalQuantitySold(totalQuantity);
-    setTotalRevenue(matchingOrders.reduce((total, order) => total + order.totalPrice, 0)); // Tính tổng doanh thu từ các đơn hàng đã nhận hàng
-    setTotalItems(matchingOrders.length); // Sử dụng matchingOrders để tính tổng số lượng sản phẩm
+    setTotalQuantitySold(matchingOrders.length);
+    setTotalRevenue(matchingOrders.reduce((total, order) => total + order.totalPrice, 0)); // Tính tổng doanh số từ các đơn hàng đã nhận hàng
   } else {
     console.error('Không bán được đơn này trong ngày');
   }
@@ -186,34 +187,31 @@ const handleResponse = (response: any) => {
 
   return (
     <div>
-      <div className='statistics ml-9'>
-        <div>
-          <label htmlFor='startDate'>Ngày bắt đầu:</label>
-          <input type='date' id='startDate' onChange={handleStartDateChange} />
+        <div className='statistics ml-9'>
+          <div>
+            <label htmlFor='startDate'>Ngày bắt đầu:</label>
+            <input type='date' id='startDate' onChange={handleStartDateChange} defaultValue={startDate}/>
+          </div>
+          <div>
+            <label htmlFor='endDate'>Ngày kết thúc:</label>
+            <input type='date' id='endDate' onChange={handleEndDateChange} defaultValue={endDate}/>
+          </div>
         </div>
-        <div>
-          <label htmlFor='endDate'>Ngày kết thúc:</label>
-          <input type='date' id='endDate' onChange={handleEndDateChange} />
-        </div>
+        {isLoading ? <Loading /> : <div>
+          <HighchartsChart chartData={chartData} />
+          <div className='ml-9'>
+            <div style={{ fontSize: 16, color: 'black', fontWeight: 600 }}>
+              Tổng số lượng đơn hàng đã bán: {totalQuantitySold} đơn hàng
+            </div>
+          </div>
+          <div className='ml-9'>
+            <div style={{ fontSize: 16, color: 'black', fontWeight: 600 }}>
+              Tổng doanh số: {totalRevenue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+            </div>
+          </div>
+        </div>}
+        
       </div>
-      <div className='statistics-btn ml-9'>
-        <button type='button' onClick={handleSubmit} ref={searchButtonRef}>
-          Tìm kiếm
-        </button>
-      </div>
-      <p className='ml-10'>(*) Mặc định thống kê doanh số 7 ngày gần nhất</p>
-      <HighchartsChart chartData={chartData} />
-      <div className='ml-9'>
-        <div style={{ fontSize: 16, color: 'black', fontWeight: 600 }}>
-          Tổng số lượng sản phẩm đã bán: {totalItems} sản phẩm
-        </div>
-      </div>
-      <div className='ml-9'>
-        <div style={{ fontSize: 16, color: 'black', fontWeight: 600 }}>
-          Tổng doanh thu: {totalRevenue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-        </div>
-      </div>
-    </div>
   );
 };
 
