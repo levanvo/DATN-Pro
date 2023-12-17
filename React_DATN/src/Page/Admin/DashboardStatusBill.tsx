@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Highcharts from 'highcharts';
 import { useGetAllOrdersQuery } from '../../Services/Api_Order';
 import Loading from '../../Component/Loading';
-import moment from 'moment';
 import { message } from "antd"
 
 const DashboardStatusBill = () => {
@@ -14,10 +13,6 @@ const DashboardStatusBill = () => {
 
 
     if (!loadingOrder && getStartDate && getEndDate) {
-        const startTime: any = new Date(getStartDate);
-        const endTime: any = new Date(getEndDate);
-        const nowTime: any = new Date();
-
 
         const status1 = totalstatusBill?.series[0].data[0].y;
         const status2 = totalstatusBill?.series[0].data[1].y;
@@ -117,12 +112,12 @@ const DashboardStatusBill = () => {
                 {
                     name: "Đã xác nhận",
                     y: bill1,
-                    color: "#FF9966"
+                    color: "#00FF00"
                 },
                 {
                     name: "Đã hủy",
                     y: bill2,
-                    color: "#00CC00"
+                    color: "#FF0000"
                 },
                 {
                     name: "Đang giao hàng",
@@ -173,12 +168,12 @@ const DashboardStatusBill = () => {
                     {
                         name: "Đã xác nhận",
                         y: bill1,
-                        color: "#FF9966"
+                        color: "#00FF00"
                     },
                     {
                         name: "Đã hủy",
                         y: bill2,
-                        color: "#00CC00"
+                        color: "#FF0000"
                     },
                     {
                         name: "Đang giao hàng",
@@ -202,15 +197,13 @@ const DashboardStatusBill = () => {
 
     return (
         <div className='h-[80vh] scrollDasboard'>
-
-            <div className="flex justify-between rounded-md ORDER select-none">
+            {loadingOrder ? <Loading /> : <div className="flex justify-between rounded-md ORDER select-none">
                 <div className={`selector-Views`}>
-                    <h1 className='ml-5 text-2xl mb-2 text-gray-600'>Trạng thái các đơn hàng</h1><hr />
-                    <p className='ml-2'>(*) Mặc định phân tích tất cả đơn hàng hiện có.</p>
-                    <p className='-mt-4 ml-2 text-xl'>Tổng hiện có tất cả : <span className='text-orange-500'>{dataGetOrder?.length} đơn hàng.</span></p>
-                    <div className="flex ml-5">
-                        <div className="mb-4 mr-1">
-                            <label className="block text-sm font-bold mb-1 ml-5" htmlFor="startDate">
+                    <h1 className='ml-4 text-xl mb-2 text-gray-600'>Trạng thái các đơn hàng</h1><hr />
+                    <p className='mt-1 ml-4 text-lg'>Hiện có tất cả : <span className='text-orange-500 font-bold'>{dataGetOrder?.length} đơn hàng</span></p>
+                    <div className="flex ml-4">
+                        <div className="mb-4 mr-3">
+                            <label className="block text-sm font-bold mb-2 ml-0" htmlFor="startDate">
                                 Ngày bắt đầu:
                             </label>
                             <input
@@ -223,7 +216,7 @@ const DashboardStatusBill = () => {
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-bold mb-1 ml-5" htmlFor="endDate">
+                            <label className="block text-sm font-bold mb-2 ml-0" htmlFor="endDate">
                                 Ngày kết thúc:
                             </label>
                             <input
@@ -236,18 +229,18 @@ const DashboardStatusBill = () => {
                             />
                         </div>
                     </div>
-                    {totalBillTime > 0 && <p className='ml-5'>Khoảng thời gian này có: <span className='text-green-600'>{totalBillTime} đơn hàng</span></p>}
+                    {totalBillTime > 0 && <p className='ml-5'>Khoảng thời gian này có: <span className='text-green-600 font-bold'>{totalBillTime} đơn hàng</span></p>}
                     <div className="border h-[285px] ml-5">
                         <div className="flex space-x-2 m-3">
                             <input className='w-7' type="color" value={"#00B2EE"} disabled />
                             <p>Đang chờ xác nhận</p>
                         </div>
                         <div className="flex space-x-2 m-3">
-                            <input className='w-7' type="color" value={"#FF9966"} disabled />
+                            <input className='w-7' type="color" value={"#00FF00"} disabled />
                             <p>Đã xác nhận</p>
                         </div>
                         <div className="flex space-x-2 m-3">
-                            <input className='w-7' type="color" value={"#00CC00"} disabled />
+                            <input className='w-7' type="color" value={"#FF0000"} disabled />
                             <p>Đã hủy</p>
                         </div>
                         <div className="flex space-x-2 m-3">
@@ -260,9 +253,11 @@ const DashboardStatusBill = () => {
                         </div>
                     </div>
                 </div>
-                {loadingOrder ? <Loading /> : <div className='w-[900px] h-[500px]' id={`StatictisOrder`}></div>}
+                <div className='w-[900px] h-[500px]' id={`StatictisOrder`}></div>
 
-            </div>
+            </div>}
+
+            
 
         </div>
     )

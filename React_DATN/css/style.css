@@ -3916,11 +3916,13 @@ button.check-button:hover,
   }
   
   .statistics div {
-    margin-bottom: 10px;
+    display: flex; /* Thêm flex cho mỗi div bên trong */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 25px;
   }
   
   .statistics label {
-    display: block;
+    margin-right: 10px;
     margin-bottom: 5px;
     font-weight: 600;
     color: #000000;
