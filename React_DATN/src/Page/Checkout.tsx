@@ -316,6 +316,7 @@ const Checkout = () => {
       setaddress(userData.address)
     }
   },[]);
+  
   const validatePhoneNumber = (phoneNumber: string) => {
     const phoneRegex = /^0[0-9]{9}$/
     return phoneRegex.test(phoneNumber)
@@ -403,6 +404,7 @@ const Checkout = () => {
           cartId: cartId,
           products: productId.map((id: string, index: number) => ({
             productId: id,
+            name:selectedProducts[index].name,
             quantity: quantity[index],
             price: selectedProducts[index].price,
             color: selectedProducts[index].color,
@@ -431,7 +433,7 @@ const Checkout = () => {
           localStorage.setItem("orderData", JSON.stringify(orderData))
           window.location.href = urlPay.data.data
         } else {
-          // await addOrder(orderData)
+          await addOrder(orderData)
           message.success("Đặt hàng thành công");
           setIsLoadingSeen(false);
           setTimeout(()=>{
@@ -479,6 +481,7 @@ const Checkout = () => {
           products: productId.map((id: string | number, index: number) => ({
             productId: id,
             quantity: quantity[index],
+            name:selectedProducts[index].name,
             price: selectedProducts[index].price,
             color: selectedProducts[index].color,
             size: selectedProducts[index].size,
@@ -511,50 +514,46 @@ const Checkout = () => {
         if (selectedMethod == "transfer") {
           const urlPay:any = await createPayment(orderItemData)
           window.location.href = urlPay.data.data
+          localStorage.setItem("orderItemData", JSON.stringify(orderItemData))
+
           let arrayGuests:any=[];
-          const getLocalStorege:any=localStorage.getItem("orderGuests");
-          if(getLocalStorege==null){
+          const getLocalStorege:any=localStorage.getItem("orderItemData");
+          const orderGuests:any=localStorage.getItem("orderGuests");
+          if(orderGuests==null){
             arrayGuests.push(orderItemData.products)
             localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
             message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
-            setTimeout(()=>{
-              navigate("/");
-            },2000)
           }else{
-            const dataGuests:any=JSON.parse(getLocalStorege);
+            const dataGuests:any=JSON.parse(orderGuests);
             arrayGuests=[...dataGuests,orderItemData.products]
             localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
             message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
-            setTimeout(()=>{
-              navigate("/");
-            },2000)
           }
         } else {
           await addOrder(orderItemData)
-          // message.success("Đặt hàng thành công")
           setIsLoadingSeen(false);
-          
           const updatedLocalCart = localCart.filter(
             (item) => !cartId.includes(item.id)
           )
           localStorage.setItem("cart", JSON.stringify(updatedLocalCart))
 
           let arrayGuests:any=[];
-          const getLocalStorege:any=localStorage.getItem("orderGuests");
-          if(getLocalStorege==null){
+          const getLocalStorege:any=localStorage.getItem("orderItemData");
+          const orderGuests:any=localStorage.getItem("orderGuests");
+          if(orderGuests==null){
             arrayGuests.push(orderItemData.products)
             localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
             message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
             setTimeout(()=>{
-              navigate("/");
+              navigate("/guests");
             },1500)
           }else{
-            const dataGuests:any=JSON.parse(getLocalStorege);
+            const dataGuests:any=JSON.parse(orderGuests);
             arrayGuests=[...dataGuests,orderItemData.products]
             localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
             message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
             setTimeout(()=>{
-              navigate("/");
+              navigate("/guests");
             },1500)
           }
         }

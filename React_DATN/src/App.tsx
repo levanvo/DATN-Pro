@@ -54,7 +54,7 @@ import DetailBill from "./Page/Admin/Bill/DetailBill"
 import BillDetailHome from "./Page/detailBillHome"
 import CommentList from "./Page/Admin/comment"
 import CheckOutSuccess from "./Page/CheckOutSuccess"
-import DashboardStatusBill from "./Page/Admin/DashboardStatusBill"
+import DashboardStatusBill from "./Page/Admin/Statistics/DashboardStatusBill"
 import ProductStatistics from "./Page/Admin/Statistics/productStatistics"
 import RevenueStatistics from "./Page/Admin/Statistics/revenueStatistics"
 import Top10Product from "./Page/Admin/Statistics/top10Product"
@@ -62,9 +62,11 @@ import Guests from "./Page/Guests"
 
 
 function App() {
-  !window.location.href.includes("checkout") && localStorage.removeItem("infoOrder.shoe");
-  !window.location.href.includes("checkout") && localStorage.removeItem("totalPrice.shoe");
-  
+  !window.location.href.includes("checkout") &&
+    localStorage.removeItem("infoOrder.shoe");
+  !window.location.href.includes("checkout") &&
+    localStorage.removeItem("totalPrice.shoe");
+
   Config();
   return (
     <Routes>
@@ -91,7 +93,7 @@ function App() {
         <Route path="order/view" element={<Bill />} />
         <Route path="order/view/detail/:id" element={<BillDetailHome />} />
         <Route path="order/alert" element={<CheckOutSuccess />} />
-      </Route >
+      </Route>
 
       <Route
         path="/admin"
@@ -108,7 +110,7 @@ function App() {
         <Route path="revenue-statistics" element={<RevenueStatistics />} />
         <Route path="product/add" element={<AddProduct />} />
         <Route path="product/add" element={<AddProduct />} />
-        <Route path="product/:id/variants" element={<AddProductDetails />}/>
+        <Route path="product/:id/variants" element={<AddProductDetails />} />
         <Route path="product/list" element={<ProductList />} />
         <Route path="product/details/:id" element={<ProductListDetails />} />
         <Route path="product/:id/update" element={<UpdateProduct />} />
@@ -147,7 +149,7 @@ function App() {
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
-  )
+  );
 }
 
 function NotFound() {
@@ -158,7 +160,7 @@ function NotFound() {
         Xin lỗi, trang bạn tìm kiếm không tồn tại.(<a href="/">Quay lại</a>)
       </p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

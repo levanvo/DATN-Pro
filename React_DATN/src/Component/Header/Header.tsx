@@ -211,7 +211,7 @@ const Header = () => {
                     <div className='dataGuests'>
                       <a href="/register" className='text-gray-300 hover:text-gray-100'><p className='text-center mt-[11px] mb-[2px] hover:text-gray-100'>Đăng kí</p></a>
                       <a href="/login" className='text-gray-300 hover:text-gray-100'><p className='text-center mb-[3px] hover:text-gray-100'>Đăng nhập</p></a>
-                      {/* <p onClick={()=>hasDataGuests()} className='text-center cursor-pointer hover:text-gray-100'>Đơn hàng đã đặt</p> */}
+                      <p onClick={()=>hasDataGuests()} className='text-center cursor-pointer hover:text-gray-100'>Đơn hàng đã đặt</p>
                     </div>
                   </div>
                 )}

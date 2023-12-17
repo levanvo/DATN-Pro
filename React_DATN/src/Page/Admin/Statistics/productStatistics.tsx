@@ -1,16 +1,42 @@
-import { useState,ChangeEvent } from 'react';
+import { useState,ChangeEvent,useEffect } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import moment from 'moment';
 import {message} from "antd"
 import { useStatisticsByDayMutation } from '../../../Services/Api_Statistic';
+import Loading from '../../../Component/Loading';
 
 const ProductStatistics = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [chartData, setChartData] = useState([]);
-  const [statisticsByDay] = useStatisticsByDayMutation()
+  const [statisticsByDay, {isLoading}] = useStatisticsByDayMutation()
   const [totalQuantitySold,setTotalQuantitySold] = useState(0)
+  const [loading, setLoading] = useState(false);
+
+
+  const fetchInitialData = () => {
+    // Calculate the start date as 7 days ago from the current date
+    const sevenDaysAgo = moment()
+      .subtract(3, "days")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const currentDate = moment().endOf("day").format("YYYY-MM-DD");
+    setStartDate(sevenDaysAgo);
+    setEndDate(currentDate);
+    
+  };
+
+  useEffect(()=>{
+    fetchInitialData();
+  },[])
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      handleSearch();
+    }
+  }, [startDate, endDate]);
+
 
   const handleStartDateChange = (event: ChangeEvent<HTMLInputElement>) => {
     setStartDate(event.target.value);
@@ -20,21 +46,21 @@ const ProductStatistics = () => {
     setEndDate(event.target.value);
   };
 
-  const handleSubmit = () => {
-    handleSearch();
-  };
 
   const handleSearch = async () => {
+    setLoading(true);
     try {
       const formattedStartDay = moment(startDate).startOf('day').format('YYYY-MM-DD');
       const formattedEndDay = moment(endDate).endOf('day').format('YYYY-MM-DD');
       // Kiểm tra nếu ngày kết thúc nhỏ hơn ngày bắt đầu
       if (moment(formattedEndDay).isBefore(formattedStartDay)) {
         message.error("Không xác định được ngày")
+        setChartData([])
+        setLoading(false);
         return;
       }
       const response = await statisticsByDay({ startDate: formattedStartDay, endDate: formattedEndDay });
-  
+      setLoading(false);
       handleResponse(response);
     } catch (error) {
       console.error('Error:', error);
@@ -85,7 +111,7 @@ const ProductStatistics = () => {
       type: 'column',
     },
     title: {
-      text: 'Biểu đồ thống kê sản phẩm',
+      text: 'Thống kê sản phẩm bán ra',
     },
     xAxis: {
       categories: chartData.map((item:any) => item.name),
@@ -106,24 +132,24 @@ const ProductStatistics = () => {
 
   return (
     <div>
-      <div className='flex justify-center space-x-5 mb-5'>
-        <div className='flex'>
-          <p className='mt-[6px] text-sm mr-1 font-medium'>Ngày bắt đầu:</p>
-          <input className='w-56 border h-9 rounded-md outline-0' type="date" id="startDate" value={startDate} onChange={handleStartDateChange} max={endDate ? endDate : new Date().toISOString().split('T')[0]}/>
-        </div>
-        <div className='flex'>
-          <p className='mt-[6px] text-sm mr-1 font-medium'>Ngày kết thúc:</p>
-          <input className='w-56 border h-9 rounded-md outline-0' type="date" id="endDate" value={endDate} onChange={handleEndDateChange} max={new Date().toISOString().split('T')[0]}/>
-        </div>
-        <button className='bg-sky-600 text-white rounded-md h-9' type="button" onClick={handleSubmit}>
-          Tìm kiếm
-        </button>
+      <div className='statistics ml-9 mb-3'>
+          <div>
+            <label htmlFor="startDate">Ngày bắt đầu:</label>
+            <input type="date" id="startDate" value={startDate} onChange={handleStartDateChange} />
+          </div>
+          <div>
+            <label htmlFor="endDate">Ngày kết thúc:</label>
+            <input type="date" id="endDate" value={endDate} onChange={handleEndDateChange} />
+          </div>
       </div>
       
+      {isLoading ? <Loading /> : <div>
         <HighchartsReact highcharts={Highcharts} options={options} />
         <div className='ml-9'>
-        <div style={{fontSize:16,color: "black",fontWeight: 600}}>Tổng số lượng sản phẩm đã bán: {totalQuantitySold} sản phẩm</div>
-      </div>
+          <div style={{fontSize:16,color: "black",fontWeight: 600}}>Tổng số lượng sản phẩm đã bán: {totalQuantitySold} sản phẩm</div>
+        </div>
+      </div>}
+      
     </div>
   );
 };
