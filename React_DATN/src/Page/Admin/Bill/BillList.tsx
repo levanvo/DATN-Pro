@@ -14,7 +14,7 @@ const BillList = () => {
 
   const [filterStatus, setFilterStatus] = useState('');
 
-  const [filterName, setFilterName] = useState('');
+  const [filterNameOrCode, setFilterNameOrCode] = useState('');
 
   const dataSource = data?.map((order: IOrder) => ({
     key: order._id,
@@ -35,16 +35,9 @@ const BillList = () => {
     });
   };
 
-  const [filterCode, setFilterCode] = useState('');
-
-  const handleCodeFilter = (e) => {
-    const filterValue = e.target?.value;
-    setFilterCode(filterValue);
-  };
-
-  const handleNameFilter = (e) => {
+  const handleNameOrCodeFilter = (e) => {
     const filterValue = deburr(e.target?.value); // Loại bỏ các dấu trong chuỗi
-    setFilterName(filterValue);
+    setFilterNameOrCode(filterValue);
   };
 
   const columns = [
@@ -96,30 +89,23 @@ const BillList = () => {
 
   const filteredData = dataSource?.filter((order: IOrder) => {
     const matchStatus = !filterStatus || order.status === filterStatus;
-    const matchCode = !filterCode || order.code_order.toLowerCase().includes(filterCode.toLowerCase());
-    const matchName = !filterName || deburr(order.userId).toLowerCase().includes(deburr(filterName).toLowerCase());
-    return matchStatus && matchCode && matchName;
+    const matchNameOrCode =
+      !filterNameOrCode ||
+      deburr(order.code_order.toLowerCase()).includes(deburr(filterNameOrCode.toLowerCase())) ||
+      deburr(order.userId.toLowerCase()).includes(deburr(filterNameOrCode.toLowerCase()));
+    return matchStatus && matchNameOrCode;
   });
 
   return (
     <div>
       <Divider />
 
-      <div style={{ marginBottom: '16px', display: 'flex' }}>
+      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'end' }}>
         <div>
-          <span style={{ marginRight: '8px' }}>Tìm theo mã đơn hàng:</span>
+          <span style={{ marginRight: '8px' }}>Tìm kiếm đơn hàng:</span>
           <Input
-            value={filterCode}
-            onChange={handleCodeFilter}
-            style={{ width: 150 }}
-          />
-        </div>
-
-        <div>
-          <span style={{ marginRight: '8px', marginLeft: 50 }}>Tìm theo tên khách hàng:</span>
-          <Input
-            value={filterName}
-            onChange={handleNameFilter}
+            value={filterNameOrCode}
+            onChange={handleNameOrCodeFilter}
             style={{ width: 150 }}
           />
         </div>
