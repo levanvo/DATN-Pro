@@ -1,9 +1,10 @@
-import { useState,ChangeEvent } from 'react';
+import { useState,ChangeEvent,useEffect } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import moment from 'moment';
 import {message} from "antd"
 import { useStatisticsByDayMutation } from '../../../Services/Api_Statistic';
+import Loading from '../../../Component/Loading';
 
 const ProductStatistics = () => {
   const [startDate, setStartDate] = useState('');
@@ -11,6 +12,31 @@ const ProductStatistics = () => {
   const [chartData, setChartData] = useState([]);
   const [statisticsByDay] = useStatisticsByDayMutation()
   const [totalQuantitySold,setTotalQuantitySold] = useState(0)
+  const [loading, setLoading] = useState(false);
+
+
+  const fetchInitialData = () => {
+    // Calculate the start date as 7 days ago from the current date
+    const sevenDaysAgo = moment()
+      .subtract(3, "days")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const currentDate = moment().endOf("day").format("YYYY-MM-DD");
+    setStartDate(sevenDaysAgo);
+    setEndDate(currentDate);
+    
+  };
+
+  useEffect(()=>{
+    fetchInitialData();
+  },[])
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      handleSearch();
+    }
+  }, [startDate, endDate]);
+
 
   const handleStartDateChange = (event: ChangeEvent<HTMLInputElement>) => {
     setStartDate(event.target.value);
@@ -20,21 +46,21 @@ const ProductStatistics = () => {
     setEndDate(event.target.value);
   };
 
-  const handleSubmit = () => {
-    handleSearch();
-  };
 
   const handleSearch = async () => {
+    setLoading(true);
     try {
       const formattedStartDay = moment(startDate).startOf('day').format('YYYY-MM-DD');
       const formattedEndDay = moment(endDate).endOf('day').format('YYYY-MM-DD');
       // Kiểm tra nếu ngày kết thúc nhỏ hơn ngày bắt đầu
       if (moment(formattedEndDay).isBefore(formattedStartDay)) {
         message.error("Không xác định được ngày")
+        setChartData([])
+        setLoading(false);
         return;
       }
       const response = await statisticsByDay({ startDate: formattedStartDay, endDate: formattedEndDay });
-  
+      setLoading(false);
       handleResponse(response);
     } catch (error) {
       console.error('Error:', error);
@@ -85,7 +111,7 @@ const ProductStatistics = () => {
       type: 'column',
     },
     title: {
-      text: 'Biểu đồ thống kê sản phẩm',
+      text: 'Thống kê sản phẩm đã bán',
     },
     xAxis: {
       categories: chartData.map((item:any) => item.name),
@@ -106,7 +132,8 @@ const ProductStatistics = () => {
 
   return (
     <div>
-      <div className='statistics ml-9'>
+      {loading && <Loading />}
+      <div className='statistics ml-9 mb-3'>
           <div>
             <label htmlFor="startDate">Ngày bắt đầu:</label>
             <input type="date" id="startDate" value={startDate} onChange={handleStartDateChange} />
@@ -116,11 +143,6 @@ const ProductStatistics = () => {
             <input type="date" id="endDate" value={endDate} onChange={handleEndDateChange} />
           </div>
       </div>
-          <div className='statistics-btn ml-9'>
-            <button type="button" onClick={handleSubmit}>
-              Tìm kiếm
-            </button>
-          </div>
       
         <HighchartsReact highcharts={Highcharts} options={options} />
         <div className='ml-9'>
