@@ -58,6 +58,7 @@ import DashboardStatusBill from "./Page/Admin/DashboardStatusBill"
 import ProductStatistics from "./Page/Admin/Statistics/productStatistics"
 import RevenueStatistics from "./Page/Admin/Statistics/revenueStatistics"
 import Top10Product from "./Page/Admin/Statistics/top10Product"
+import Guests from "./Page/Guests"
 
 
 function App() {
@@ -86,6 +87,7 @@ function App() {
         <Route path="category/:id/products" element={<ProductsCategory />} />
         <Route path="size/:id/products" element={<ProductsSize />} />
         <Route path="user/:id" element={<User />} />
+        <Route path="guests" element={<Guests />} />
         <Route path="order/view" element={<Bill />} />
         <Route path="order/view/detail/:id" element={<BillDetailHome />} />
         <Route path="order/alert" element={<CheckOutSuccess />} />

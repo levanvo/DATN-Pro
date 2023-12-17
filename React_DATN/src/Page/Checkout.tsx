@@ -33,9 +33,9 @@ const Checkout = () => {
   const [addressError, setAddressError]:any = useState("")
   const [selectedCity, setSelectedCity]:any = useState(null)
   const [selectedDistrict, setSelectedDistrict]:any = useState(null)
-  const name = (document.getElementById("name") as HTMLInputElement)?.value
-  const phone = (document.getElementById("phone") as HTMLInputElement)?.value
-  const address = (document.getElementById("address") as HTMLInputElement)?.value
+  const [phone, setphone]:any = useState(null)
+  const [name, setname]:any = useState(null)
+  const [address, setaddress]:any = useState(null)
   const [isLoadingSeen, setIsLoadingSeen] = useState(false);
 
 
@@ -69,7 +69,7 @@ const Checkout = () => {
     ? users.find((user) => user.email === emailUser)
     : null
 
-    let userData = {};
+    let userData:any = {};
 
     if (storedUser) {
       const { username, email,  address, phone} = JSON.parse(storedUser);
@@ -80,8 +80,6 @@ const Checkout = () => {
         phone: phone
       };
     }
-
-
   const handleUseDiscount = (selectedDiscount: any) => {
     if (moment().isBefore(selectedDiscount.startDate)) {
       message.warning("Mã giảm giá chưa đến thời gian sử dụng!")
@@ -283,6 +281,7 @@ const Checkout = () => {
         if (!value) {
           setNameError("Họ và tên không được để trống.")
         } else {
+          setname(value)
           setNameError("")
         }
         break
@@ -293,6 +292,7 @@ const Checkout = () => {
           setPhoneError("Số điện thoại không hợp lệ")
         } else {
           setPhoneError("")
+          setphone(value)
         }
         break
       case "address":
@@ -300,6 +300,7 @@ const Checkout = () => {
           setAddressError("Địa chỉ không được để trống")
         } else {
           setAddressError("")
+          setaddress(value)
         }
         break
 
@@ -308,6 +309,13 @@ const Checkout = () => {
     } 
   }
 
+  useEffect(()=>{
+    if(userData){
+      setname(userData.name)
+      setphone(userData.phone)
+      setaddress(userData.address)
+    }
+  },[]);
   const validatePhoneNumber = (phoneNumber: string) => {
     const phoneRegex = /^0[0-9]{9}$/
     return phoneRegex.test(phoneNumber)
@@ -371,8 +379,6 @@ const Checkout = () => {
     handleInputBlur("district", selectedOption)
   }
 
-  // console.log(selectedProducts);
-  
   // Sử lý tạo đơn hàng
   const handlePlaceOrder = async () => {
     setIsLoadingSeen(true);
@@ -387,20 +393,11 @@ const Checkout = () => {
           (product: any) => product.quantity
         )
 
-        // console.log("name",name);
-        //   console.log("phone",phone);
-        //   console.log("selectedCity",selectedCity);
-        //   console.log("selectedDistrict",selectedDistrict);
-        //   console.log("address",address);
         if (!name || !phone || !selectedCity || !selectedDistrict || !address) {
           message.error("Vui lòng điền đầy đủ thông tin")
           setIsLoadingSeen(false)
           return
         }
-
-       
-
-        
 
         const orderData:any = {
           cartId: cartId,
@@ -513,17 +510,53 @@ const Checkout = () => {
 
         if (selectedMethod == "transfer") {
           const urlPay:any = await createPayment(orderItemData)
-          localStorage.setItem("orderItemData", JSON.stringify(orderItemData))
           window.location.href = urlPay.data.data
+          let arrayGuests:any=[];
+          const getLocalStorege:any=localStorage.getItem("orderGuests");
+          if(getLocalStorege==null){
+            arrayGuests.push(orderItemData.products)
+            localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
+            message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
+            setTimeout(()=>{
+              navigate("/");
+            },2000)
+          }else{
+            const dataGuests:any=JSON.parse(getLocalStorege);
+            arrayGuests=[...dataGuests,orderItemData.products]
+            localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
+            message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
+            setTimeout(()=>{
+              navigate("/");
+            },2000)
+          }
         } else {
           await addOrder(orderItemData)
-          message.success("Đặt hàng thành công")
+          // message.success("Đặt hàng thành công")
           setIsLoadingSeen(false);
           
           const updatedLocalCart = localCart.filter(
             (item) => !cartId.includes(item.id)
           )
           localStorage.setItem("cart", JSON.stringify(updatedLocalCart))
+
+          let arrayGuests:any=[];
+          const getLocalStorege:any=localStorage.getItem("orderGuests");
+          if(getLocalStorege==null){
+            arrayGuests.push(orderItemData.products)
+            localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
+            message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
+            setTimeout(()=>{
+              navigate("/");
+            },1500)
+          }else{
+            const dataGuests:any=JSON.parse(getLocalStorege);
+            arrayGuests=[...dataGuests,orderItemData.products]
+            localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
+            message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
+            setTimeout(()=>{
+              navigate("/");
+            },1500)
+          }
         }
       }
     } catch (error) {

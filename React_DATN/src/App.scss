@@ -538,3 +538,18 @@
 .borderChooseColor{
   border: 3px solid rgb(246, 246, 246);
 }
+
+.dataGuestsShell:hover .dataGuests{
+  display: block;
+}
+
+.dataGuests{
+  position: absolute;
+  z-index: 10;
+  width: 160px;
+  background: #909090;
+  border-radius: 5px;
+  color: rgb(228, 228, 228);
+  align-items: center;
+  display: none;
+}
