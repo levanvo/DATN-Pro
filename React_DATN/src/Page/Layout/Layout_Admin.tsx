@@ -18,6 +18,9 @@ import {
 import type { MenuProps } from "antd"
 import { Breadcrumb, Layout, Menu, theme } from "antd"
 import { Outlet, Link, useNavigate } from "react-router-dom";
+import { FcSalesPerformance } from "react-icons/fc";
+import { MdInsertEmoticon } from "react-icons/md";
+import { AiOutlineThunderbolt } from "react-icons/ai";
 
 
 const { Header, Content, Footer, Sider } = Layout
@@ -46,10 +49,10 @@ const isStaff = user?.role === "staff"
 const items: MenuItem[] = [
   getItem('Tổng quan', '0', <HomeOutlined />, undefined, '/admin'),
   getItem("Thống kê", "1", <BarChartOutlined />, [
-    getItem("Doanh thu", "2", <FormatPainterOutlined />, undefined, "/admin/revenue-statistics"),
+    getItem("Doanh số", "2", <FcSalesPerformance />, undefined, "/admin/revenue-statistics"),
     getItem("Sản phẩm đã bán", "3", <PieChartOutlined />, undefined, "/admin/product-statistics"),
-    getItem("Trạng thái đơn hàng", "4", <PieChartOutlined />, undefined, "/admin/statusPr"),
-    getItem("Top 10 Sản Phẩm", "5", <PieChartOutlined />, undefined, "/admin/top10-product"),
+    getItem("Trạng thái đơn hàng", "4", <MdInsertEmoticon />, undefined, "/admin/statusPr"),
+    getItem("Top 10 Sản Phẩm", "5", <AiOutlineThunderbolt />, undefined, "/admin/top10-product"),
   ]),
   getItem("Kho", "sub1", <HddOutlined />, [
     getItem(
@@ -155,10 +158,6 @@ const Layout_Admin: React.FC = () => {
           </Header>
           <div className="h-20"></div>
           <Content className="" style={{ margin: "0 0 0 200px" }}>
-            {/* <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>Bảng</Breadcrumb.Item>
-              <Breadcrumb.Item></Breadcrumb.Item>
-            </Breadcrumb> */}
             <div
               style={{
                 padding: 24,
@@ -169,9 +168,6 @@ const Layout_Admin: React.FC = () => {
               <Outlet />
             </div>
           </Content>
-          {/* <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2023 Created by Ant UED
-          </Footer> */}
         </Layout>
       </Layout>
     </div>

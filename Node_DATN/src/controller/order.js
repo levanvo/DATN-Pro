@@ -133,7 +133,6 @@ export const createOrder = async (req, res) => {
 
 
             if (!existingProduct) {
-                console.log('không tìm thấy biến thể sản phẩm. Bỏ qua cập nhật cho:', product);
                 return null; 
             }
 
@@ -187,12 +186,8 @@ export const updateOrder = async (req, res) => {
         //         err
         //     });
         // };
-        console.log('body' , req.body);
 
         const order = await Order.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
-        
-        
-        console.log('order', order);
         
         return res.status(200).json({
             message: "Đã cập nhật xong order",

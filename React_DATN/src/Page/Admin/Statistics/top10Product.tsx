@@ -2,9 +2,10 @@ import { useGetAllProductQuery } from '../../../Services/Api_Product';
 import { IProduct } from '../../../Models/interfaces';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import Loading from '../../../Component/Loading';
 
 const Top10Product = () => {
-  const { data: productData }: any = useGetAllProductQuery();
+  const { data: productData,isLoading }: any = useGetAllProductQuery();
 
   const sortedProducts = productData
     ?.slice()
@@ -52,7 +53,7 @@ const Top10Product = () => {
 
   return (
     <div>
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      {isLoading ? <Loading /> : <HighchartsReact highcharts={Highcharts} options={options} />}
     </div>
   );
 };
