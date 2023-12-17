@@ -10,7 +10,7 @@ const ProductStatistics = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [chartData, setChartData] = useState([]);
-  const [statisticsByDay] = useStatisticsByDayMutation()
+  const [statisticsByDay, {isLoading}] = useStatisticsByDayMutation()
   const [totalQuantitySold,setTotalQuantitySold] = useState(0)
   const [loading, setLoading] = useState(false);
 
@@ -111,7 +111,7 @@ const ProductStatistics = () => {
       type: 'column',
     },
     title: {
-      text: 'Thống kê sản phẩm đã bán',
+      text: 'Thống kê sản phẩm bán ra',
     },
     xAxis: {
       categories: chartData.map((item:any) => item.name),
@@ -132,7 +132,6 @@ const ProductStatistics = () => {
 
   return (
     <div>
-      {loading && <Loading />}
       <div className='statistics ml-9 mb-3'>
           <div>
             <label htmlFor="startDate">Ngày bắt đầu:</label>
@@ -144,10 +143,13 @@ const ProductStatistics = () => {
           </div>
       </div>
       
+      {isLoading ? <Loading /> : <div>
         <HighchartsReact highcharts={Highcharts} options={options} />
         <div className='ml-9'>
-        <div style={{fontSize:16,color: "black",fontWeight: 600}}>Tổng số lượng sản phẩm đã bán: {totalQuantitySold} sản phẩm</div>
-      </div>
+          <div style={{fontSize:16,color: "black",fontWeight: 600}}>Tổng số lượng sản phẩm đã bán: {totalQuantitySold} sản phẩm</div>
+        </div>
+      </div>}
+      
     </div>
   );
 };
