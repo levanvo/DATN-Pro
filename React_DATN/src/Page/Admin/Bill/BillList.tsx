@@ -34,22 +34,8 @@ const BillList = () => {
 
   const [filterCode, setFilterCode] = useState('');
 
-  const [searchResultMessage, setSearchResultMessage] = useState('');
-
   const handleCodeFilter = (e) => {
-    const searchValue = e.target?.value;
-    setFilterCode(searchValue);
-  
-    // Kiểm tra xem có đơn hàng phù hợp với tìm kiếm hay không
-    const hasSearchResult = dataSource?.some((order: IOrder) =>
-      order.code_order.includes(searchValue)
-    );
-  
-    if (!hasSearchResult) {
-      setSearchResultMessage('Đơn hàng bạn đang tìm không có');
-    } else {
-      setSearchResultMessage('');
-    }
+    setFilterCode(e.target?.value);
   };
 
 
@@ -111,7 +97,13 @@ const BillList = () => {
       <Divider />
 
       <div style={{ marginBottom: '16px' }}>
-        <span style={{ marginRight: '8px' }}>Lọc theo trạng thái:</span>
+      <span style={{ marginRight: '8px' }}>Tìm theo mã đơn hàng:</span>
+        <Input
+          value={filterCode}
+          onChange={handleCodeFilter}
+          style={{ width: 150 }}
+        />
+        <span style={{ marginRight: '8px', marginLeft: 30 }}>Lọc theo trạng thái:</span>
         <Select
           value={filterStatus}
           onChange={handleStatusFilter}
@@ -124,14 +116,7 @@ const BillList = () => {
           <Option value="3">Đang giao hàng</Option>
           <Option value="4">Đã nhận hàng</Option>
         </Select>
-        <span style={{ marginRight: '8px', marginLeft: 20 }}>Tìm theo mã đơn hàng:</span>
-        <Input
-          value={filterCode}
-          onChange={handleCodeFilter}
-          style={{ width: 150 }}
-        />
       </div>
-      {searchResultMessage && <p style={{fontSize: 20, fontWeight: 'bold', color: 'red'}}>{searchResultMessage}</p>}
 
       {isLoading ? (
         <Loading />
