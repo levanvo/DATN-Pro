@@ -59,6 +59,8 @@ import ProductStatistics from "./Page/Admin/Statistics/productStatistics"
 import RevenueStatistics from "./Page/Admin/Statistics/revenueStatistics"
 import Top10Product from "./Page/Admin/Statistics/top10Product"
 import Guests from "./Page/Guests"
+import BillGuest from "./Page/BillGuest"
+import BillDetailGuest from "./Page/detailBillGuest"
 
 
 function App() {
@@ -91,7 +93,9 @@ function App() {
         <Route path="user/:id" element={<User />} />
         <Route path="guests" element={<Guests />} />
         <Route path="order/view" element={<Bill />} />
+        <Route path="order/view/guest" element={<BillGuest />} />
         <Route path="order/view/detail/:id" element={<BillDetailHome />} />
+        <Route path="order/view/detail/guest/:id" element={<BillDetailGuest />} />
         <Route path="order/alert" element={<CheckOutSuccess />} />
       </Route>
 
