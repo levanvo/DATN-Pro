@@ -38,7 +38,7 @@ const Newsleter = () => {
 
   return (
     <div className="w-[90vw] mx-auto">
-      <div className="newsleter-area">
+      {/* <div className="newsleter-area">
         <div className="container">
           <div className="row">
             <div className="col-lg-6">
@@ -100,7 +100,7 @@ const Newsleter = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

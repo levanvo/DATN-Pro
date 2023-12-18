@@ -3,7 +3,7 @@ import productApi from "./Services/Api_Product"
 import categoryApi from "./Services/Api_Category"
 import userApi from "./Services/Api_User"
 import sizeApi from "./Services/Api_Size"
-import { colorApi } from "./Services/Api_Color"
+import colorApi from "./Services/Api_Color"
 import cartApi from "./Services/Api_cart"
 import slideApi from "./Services/Api_Slide"
 import blogApi from "./Services/Api_Blogs"
@@ -20,7 +20,8 @@ export const store = configureStore({
     category: categoryApi.reducer,
     user: userApi.reducer,
     size: sizeApi.reducer,
-    colorApi: colorApi.reducer,
+    color: colorApi.reducer,
+    // colorApi: colorApi.reducer,
     cart: cartApi.reducer,
     slide: slideApi.reducer,
     order: orderApi.reducer,

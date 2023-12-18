@@ -1,17 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { IColor } from "../Models/interfaces"
+import { pause } from "../utils/pause";
 
 export const colorApi = createApi({
   reducerPath: "color",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080",
-    prepareHeaders(headers, api) {
-      const token = localStorage.getItem("token")
-      if (token) {
-        headers.set("authorization", token)
-      }
-      return headers
+    baseUrl: `http://localhost:8080`,
+    headers: {
+      
     },
+    fetchFn: async (...args) => (
+      await pause(1000),
+      fetch(...args)
+    )
   }),
   tagTypes: ["Color"],
   endpoints: (builder) => ({
@@ -56,3 +57,4 @@ export const {
   useRemoveColorMutation,
   useUpdateColorMutation,
 } = colorApi
+export default colorApi;
