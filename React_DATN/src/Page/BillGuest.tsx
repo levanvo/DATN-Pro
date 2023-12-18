@@ -139,8 +139,9 @@ const BillGuest = () => {
         <div className='container_u'>
             {isLoading ? <Loading /> : <div className='user_profile'>
                 <Divider />
-
+                <p className='text-center text-2xl mb-3 text-sky-500'>Bạn có thể tìm kiếm đơn hàng của bạn tại đây</p>
                 <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'end' }}>
+                    
                     <div>
                         <span style={{ marginRight: '8px' }}>Tìm kiếm đơn hàng:</span>
                         <Input value={filterNameOrCode} onChange={handleNameOrCodeChange} style={{ width: 150 }} />

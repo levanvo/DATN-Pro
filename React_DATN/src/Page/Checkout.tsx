@@ -545,7 +545,7 @@ const Checkout = () => {
             localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
             message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
             setTimeout(()=>{
-              navigate("/guests");
+              navigate("/order/view/guest");
             },1500)
           }else{
             const dataGuests:any=JSON.parse(orderGuests);
@@ -553,7 +553,7 @@ const Checkout = () => {
             localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
             message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
             setTimeout(()=>{
-              navigate("/guests");
+              navigate("/order/view/guest");
             },1500)
           }
         }

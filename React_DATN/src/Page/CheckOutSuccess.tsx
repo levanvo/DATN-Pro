@@ -52,7 +52,7 @@ const CheckOutSuccess = () => {
                     localStorage.setItem('cart', JSON.stringify(updatedLocalCart));
                     localStorage.removeItem('orderItemData');
                     setTimeout(()=>{
-                        navigate("/guests")
+                        navigate("/order/view/guest")
                     },2000)
                 }
                 setStatusOrder(true);
