@@ -168,8 +168,8 @@ const DetailBill = () => {
                                 height: 40,
                                 marginRight: 20
                             }}
-                            disabled={data?.status === "2" || data?.status === "4"}
-                            className={data?.status === "0" || data?.status === "1" || data?.status === "3" || data?.status === "4" ? "confirm-button" : "disabled-button"}
+                            disabled={data?.status === "2" || data?.status === "4" || data?.status === "3" || data?.status === "1"}
+                            className={data?.status === "0" ? "confirm-button" : "disabled-button"}
                         >
                             Xác nhận
                         </Button>

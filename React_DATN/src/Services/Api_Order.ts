@@ -70,9 +70,9 @@ export const {
   useGetUserOrdersQuery,
   useGetAllOrdersQuery,
   useAddOrderMutation,
-  useUpdateOrderMutation,
   useRemoveOrderMutation,
   useGetOneOrderUserQuery,
-  useGetOrderByIdQuery
+  useGetOrderByIdQuery,
+  useUpdateOrderMutation
 } = orderApi;
 export default orderApi;

@@ -6,6 +6,7 @@ import { IOrder } from '../Models/interfaces';
 import '../../css/user.css'
 import UserMenu from '../Component/UserMenu';
 import Loading from '../Component/Loading';
+import { useState } from 'react';
 
 
 const BillDetailHome = () => {
@@ -13,26 +14,26 @@ const BillDetailHome = () => {
 
     const { id } = useParams();
     const { data,isLoading } = useGetOrderByIdQuery(id || "");
-    console.log("dtaa", data)
-
+    const [loadingDelete,setLoadingDelete] = useState(false)
     const [updateOrder] = useUpdateOrderMutation();
     const [messageApi, contextHolder] = message.useMessage()
 
     const onFinish = (values: IOrder) => {
-        console.log("a", values);
-
+        setLoadingDelete(true)
         try {
             updateOrder({ ...values, _id: id }).unwrap().then(() => {
                 messageApi.open({
                     type: "success",
                     content: "Hủy thành công"
                 });
+                setLoadingDelete(false)
                 setTimeout(() => {
-                    window.location.href = 'http://localhost:5173/order/view';
+                    navigate("/order/view")
                 }, 2000);
             })
         } catch (error) {
             console.error("Lỗi khi cập nhật:", error);
+            setLoadingDelete(false)
         }
     };
 
@@ -73,6 +74,7 @@ const BillDetailHome = () => {
 
     return (
         <div className='container_u'>
+            {loadingDelete && <Loading />}
             {contextHolder}
             <UserMenu />
             {isLoading ? <Loading /> : <div className='user_profile'>

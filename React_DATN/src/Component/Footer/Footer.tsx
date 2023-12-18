@@ -9,7 +9,7 @@ const Footer = () => {
                         <div className="col-lg-3 col-md-6">
                             <div className="footer-contact">
                                 <img src="../../../img/logo-white.png" className='w-[250px]' />
-                                <p>Hệ thống giày sneaker tại Hà Nội</p>
+                                <p className='mt-4'>Hệ thống giày sneaker tại Hà Nội</p>
                                 <ul className="address">
                                     <li>
                                         <span className="fa fa-home" />
@@ -37,8 +37,8 @@ const Footer = () => {
                                     <img className="border  rounded-lg" src="../../../img/unnamed.png" alt="" />
                                 </div>
                                 <div className="contents">
-                                    <p className="text-bold text-lg -mb-10 mt-5">Dịch vụ giao hàng</p>
-                                    <img className="rounded-lg w-[180px]" src="../../../img/Untitled-1.png" alt="" />
+                                    <p className="text-bold text-base -mb-10 mt-5 ml-4">Dịch vụ giao hàng</p>
+                                    <img className="rounded-lg w-[80px] mt-4 ml-6" src="../../../img/Untitled-1.png" alt="" />
                                 </div>
                             </div>
                         </div>
