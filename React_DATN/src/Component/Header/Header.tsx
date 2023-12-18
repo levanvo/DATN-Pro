@@ -5,6 +5,7 @@ import { UserOutlined } from "@ant-design/icons"
 import { message, Modal } from "antd"
 import useSearch from '../UseSearch'
 import Loading from "../Loading"
+import { useGetCartQuery } from '../../Services/Api_cart'
 
 interface User {
   username: string
@@ -19,8 +20,54 @@ const Header = () => {
   const VerifyAccount = localStorage.getItem("token")
   const navigate = useNavigate()
   const [cartStatus,setCartStatus]:any=useState(false);
+  // const { data: getCartData, isLoading, isError } = useGetCartQuery();
+  const [cartQuantity,setCartQuantity] = useState<number | null>(null)
+  const [cartLocal,setCartLocal] = useState(null)
+  const localCartData = localStorage.getItem('cart');
 
 
+  // if(VerifyAccount){
+  //   const apiCartLength = getCartData.products.length;
+  //   if(apiCartLength.length>0){
+  //     setCartQuantity(apiCartLength);
+  //   }else{
+  //     setCartQuantity(null);
+  //   }
+  // }else{
+  //   if(localCartData){
+  //     const cartArray = JSON.parse(localCartData);
+  //     if(cartArray>0){
+  //       const cartLength = cartArray.length;
+  //       setCartLocal(cartLength)
+  //     }else{
+  //       setCartLocal(null)
+  //     }
+  //   }
+  // }
+
+
+  // useEffect(() => {
+  //   // Lấy dữ liệu từ localStorage
+  //   const localCartData = localStorage.getItem('cart');
+
+  //   if (localCartData) {
+  //     // Chuyển đổi chuỗi JSON thành mảng JavaScript
+  //     const cartArray = JSON.parse(localCartData);
+
+  //     // Lấy độ dài của mảng cartArray
+  //     const cartLength = cartArray.length;
+
+  //     setCartLocal(cartLength);
+  //   } else if (!isLoading && getCartData) {
+  //     // Nếu không có dữ liệu trong localStorage và có dữ liệu từ API
+  //     const apiCartLength = getCartData.products.length;
+  //     setCartQuantity(apiCartLength);
+  //   } else {
+  //     // Nếu không có dữ liệu từ cả localStorage và API
+  //     setCartQuantity(null);
+  //   }
+  // }, [isLoading, getCartData]);
+  
   if (userString) {
     user = JSON.parse(userString)
   }
@@ -119,13 +166,14 @@ const Header = () => {
 
                 }
                 <div className="cart-img">
-                  <a href="/cart">
-                    <img
-                      className="active:scale-90 "
-                      src="../../../img/icon-cart.png"
-                      alt=""
-                    />
-                  </a>
+                  <Link to={"/cart"}>
+                      <img
+                          className="active:scale-90"
+                          src="../../../img/icon-cart.png"
+                          alt=""
+                        />
+                        <span></span>
+                  </Link>
                 </div>
                 {user ? (
                   <div className="account-menu">

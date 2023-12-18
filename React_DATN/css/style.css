@@ -314,7 +314,20 @@ body {
 
 .cart-img {
     float: left;
+    position: relative;
 }
+
+.cart-img span {
+    position: absolute;
+    top: -10px; /* Đẩy lên cao 10px (tùy chỉnh giá trị) */
+    right: -13px; /* Lệch sang phải 10px (tùy chỉnh giá trị) */
+    background-color: black;
+    color: white;
+    font-size: 18px;
+    padding: 2px 7px 2px 7px;
+    border-radius: 50%;
+    transform: scale(0.7); /* Giảm kích thước xuống 80% */
+  }
 
 .cart-details {
     float: left;

@@ -168,7 +168,6 @@ const ProductDetail = () => {
         message.success("Đã thêm sản phẩm vào giỏ hàng")
       } else {
         const productItemIndex = cartData.products.findIndex((product: any) => product.productId?._id == productDataOne._id && product.color == getColor && product.size == getSize);
-        console.log(productItemIndex);
 
         const productItem = cartData.products[productItemIndex];
         if (productItemIndex !== -1) {
