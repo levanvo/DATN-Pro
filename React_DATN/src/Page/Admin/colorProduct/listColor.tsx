@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Button, Table, Popconfirm, message, Input } from "antd"
 
 import {
@@ -16,7 +16,7 @@ const ListColor = () => {
   const [selectedColorIds, setSelectedColorIds] = useState<React.Key[]>([])
   const [loading, setLoading] = useState(false)
 
-  const { data, isLoading, error } = useGetColorsQuery(undefined)
+  const { data, isLoading, error } = useGetColorsQuery()
   const [removeColor] = useRemoveColorMutation()
 
   if (isLoading) return <Loading />
@@ -32,6 +32,7 @@ const ListColor = () => {
       </div>
     )
   }
+  
 
   const dataSource = data?.map((item: IColor, index) => ({
     index: index + 1,
@@ -106,7 +107,6 @@ const ListColor = () => {
    * *! Initialize the function to delete multiple Colors
    */
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys)
     setSelectedColorIds(newSelectedRowKeys)
   }
 
