@@ -25,6 +25,7 @@ const BillList = () => {
     userId: order?.userId?.username || "Khách hàng",
     createdAt: moment(order?.createdAt).format('HH:mm | DD-MM-YYYY'),
     status: order?.status,
+    phone: order?.phone
   }));
 
 
@@ -75,6 +76,7 @@ const BillList = () => {
           options.push(<Option key="1" value="1" hidden>Đã xác nhận</Option>);
           options.push(<Option key="3" value="3">Đang giao hàng</Option>);
         } else if (status === '3') {
+          options.push(<Option key="2" value="2">Đã hủy</Option>);
           options.push(<Option key="3" value="3" hidden>Đang giao hàng</Option>);
           options.push(<Option key="4" value="4">Đã nhận hàng</Option>);
         } else if (status === '4') {
@@ -111,7 +113,8 @@ const BillList = () => {
     const matchNameOrCode =
       !filterNameOrCode ||
       deburr(order.code_order.toLowerCase()).includes(deburr(filterNameOrCode.toLowerCase())) ||
-      deburr(order.userId.toLowerCase()).includes(deburr(filterNameOrCode.toLowerCase()));
+      deburr(order.userId.toLowerCase()).includes(deburr(filterNameOrCode.toLowerCase())) ||
+      deburr(order.phone.toLowerCase()).includes(deburr(filterNameOrCode.toLowerCase()));
     return matchStatus && matchNameOrCode;
   });
 
