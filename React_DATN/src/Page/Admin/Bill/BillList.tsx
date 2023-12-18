@@ -37,7 +37,7 @@ const BillList = () => {
     });
   };
 
-  const handleNameOrCodeFilter = (e) => {
+  const handleNameOrCodeFilter = (e: any) => {
     const filterValue = deburr(e.target?.value); // Loại bỏ các dấu trong chuỗi
     setFilterNameOrCode(filterValue);
   };
@@ -62,19 +62,36 @@ const BillList = () => {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
-      render: (status: any, record: IOrder) => (
-        <Select
-          value={status}
-          onChange={(value) => handleStatusChange(value, record.key)}
-          style={{ width: 150 }}
-        >
-          <Option value="0">Đang chờ xác nhận</Option>
-          <Option value="1">Đã xác nhận</Option>
-          <Option value="2">Đã hủy</Option>
-          <Option value="3">Đang giao hàng</Option>
-          <Option value="4">Đã nhận hàng</Option>
-        </Select>
-      ),
+      render: (status: any, record: IOrder) => {
+        let options: JSX.Element[] = [];
+  
+        if (status === '0') {
+          options.push(<Option key="0" value="0" hidden>Đang chờ xác nhận</Option>);
+          options.push(<Option key="1" value="1">Đã xác nhận</Option>);
+          options.push(<Option key="2" value="2">Đã hủy</Option>);
+        } else if (status === '2') {
+          options.push(<Option key="2" value="2" disabled>Đã hủy</Option>);
+        } else if (status === '1') {
+          options.push(<Option key="1" value="1" hidden>Đã xác nhận</Option>);
+          options.push(<Option key="3" value="3">Đang giao hàng</Option>);
+        } else if (status === '3') {
+          options.push(<Option key="3" value="3" hidden>Đang giao hàng</Option>);
+          options.push(<Option key="4" value="4">Đã nhận hàng</Option>);
+        } else if (status === '4') {
+          options.push(<Option key="4" value="4" disabled>Đã nhận hàng</Option>);
+        }
+  
+        return (
+          <Select
+            value={status}
+            onChange={(value) => handleStatusChange(value, record.key)}
+            style={{ width: 150 }}
+            disabled={status === '2' || status === '4'}
+          >
+            {options}
+          </Select>
+        );
+      },
     },
     {
       title: 'Hành động',
