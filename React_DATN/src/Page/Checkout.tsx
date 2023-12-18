@@ -849,7 +849,7 @@ const Checkout = () => {
                       checked={selectedMethod === "transfer"}
                       onChange={handlePaymentMethodChange}
                     />
-                    <label htmlFor="transfer">Chuyển khoản ngân hàng</label>
+                    <label htmlFor="transfer">Thanh toán vnpay</label>
                   </li>
                 </ul>
               </div>

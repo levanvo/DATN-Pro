@@ -5,7 +5,7 @@ export const createComment = async (req, res) => {
   try {
     const { userId, productId, orderId, content } = req.body;
 
-    console.log(orderId);
+    // console.log(orderId);
 
     // Kiểm tra xem người dùng đã bình luận trước đó chưa
     const existingComment = await Comment.findOne({ userId, productId });

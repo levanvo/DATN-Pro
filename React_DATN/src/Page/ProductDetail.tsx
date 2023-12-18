@@ -22,6 +22,9 @@ import { useGetUserOrdersQuery } from "../Services/Api_Order";
 import { MdDeleteForever } from "react-icons/md";
 import { FaTools } from "react-icons/fa";
 import parse from 'html-react-parser';
+import { format } from "date-fns";
+
+
 type Variant = {
   color_id: {
     unicode: string;
@@ -300,7 +303,10 @@ const ProductDetail = () => {
   const { data: comments, refetch } = useGetCommentsByProductIdQuery(id);
   const [deleteCommentById] = useDeleteCommentByAdminMutation(); //delete của admin
 
-  
+  const [displayedComments, setDisplayedComments] = useState<any[]>([]);
+  const [loadMoreVisible, setLoadMoreVisible] = useState(false);
+
+
   const { data: order } = useGetUserOrdersQuery();
   const hasPurchased = order?.some((order: any) => {
     return (
@@ -425,6 +431,25 @@ const ProductDetail = () => {
   };
 
   const [updatedContent, setUpdatedContent] = useState('');
+
+  useEffect(() => {
+    const initialComments = comments?.slice(0, 2);
+    setDisplayedComments(initialComments);
+
+    if (comments?.length > 2) {
+      setLoadMoreVisible(true);
+    }
+  }, [comments]);
+
+  // Hàm xử lý khi nhấp vào nút "Load More"
+  const handleLoadMore = () => {
+    const remainingComments = comments?.slice(displayedComments.length, displayedComments.length + 2);
+    setDisplayedComments([...displayedComments, ...remainingComments]);
+
+    if (displayedComments.length + 2 >= comments.length) {
+      setLoadMoreVisible(false);
+    }
+  };
   return (
     <div>
       {isLoadingProduct ? <Loading /> :
@@ -517,7 +542,7 @@ const ProductDetail = () => {
                           |
                         </p>
                         <div className="evaluate">
-                          {comments.length} Đánh giá
+                          {comments?.length} Đánh giá
                         </div>
                         <p style={{ fontSize: "20px" }}>
                           |
@@ -577,7 +602,7 @@ const ProductDetail = () => {
                                         <button
                                           key={size._id}
                                           disabled={!isSizeAvailable}
-                                          style={{ marginRight: 10,paddingTop:8 }}
+                                          style={{ marginRight: 10, paddingTop: 8 }}
                                           onClick={() => {
                                             ChooseSize(size.name);
                                           }}
@@ -610,7 +635,7 @@ const ProductDetail = () => {
                                 </div>
                               </div>
                             </div>
-                            
+
                             <div className="cart-item">
                               <div className="price-box">
                               </div>
@@ -661,7 +686,7 @@ const ProductDetail = () => {
                       role="tablist"
                     >
                       <li role="presentation" className="text-xl font-medium">
-                        Product Description
+                        Mô tả sản phẩm
                       </li>
                     </ul>
 
@@ -685,17 +710,17 @@ const ProductDetail = () => {
           </div>
 
           <div className="single-product-tab-area cm">
-            <h2 className="cm_title">Comments</h2>
+            <h2 className="cm_title">Đánh giá</h2>
 
             <div className="comments">
-              {comments?.map((comment: any) => (
+              {displayedComments?.map((comment: any) => (
                 <div className="comment_detail" key={comment._id}>
                   <div className="comment_detail_header">
                     <div className="user_cm">
                       <img className="user_cm_avt" src={comment.userId.imgUrl} alt="" />
                       <div className="user_cm_inf">
                         <p className="user_cm_name">@ {comment.userId.username}</p>
-                        <p className="date_created">{comment.createdAt}</p>
+                        <p className="date_created">{format(new Date(comment.createdAt), "dd/MM/yyyy HH:mm:ss")}</p>
                       </div>
                     </div>
                     {currentUser && currentUser?.role == 'admin' ? (
@@ -763,11 +788,15 @@ const ProductDetail = () => {
                 </div>
               ))}
 
+              {loadMoreVisible && (
+                 <button className="loadmore_btn" onClick={handleLoadMore} style={{backgroundColor: '#00b7ff', color: 'white', display: 'block', margin: '0 auto'}}>Xem thêm...</button>
+              )}
+               
               <div className="comment_form">
                 {currentUser?._id ?
                   (<form onSubmit={handleSubmit}>
-                    <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your comment" maxLength={200} cols={110} rows={2} />
-                    <button type="submit" disabled={isLoadingcm}>Send</button>
+                    <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your comment" maxLength={200} cols={174} rows={5} />
+                    <button type="submit" disabled={isLoadingcm} >Gửi</button>
                     {messagecm && <p>{messagecm}</p>}
                   </form>) : (<p>Vui lòng đăng nhập để bình luận.</p>)}
 
@@ -778,7 +807,7 @@ const ProductDetail = () => {
           </div>
           {/* ============================================ khu SP liên quan */}
           <div className="container mb-20 -mt-16 productsRelative text-black">
-            <h3 style={{ marginTop: '300px' }}>Sản phẩm liên quan</h3>
+            <h3>Sản phẩm liên quan</h3>
             <div className={`productShow mt-4 flex flex-wrap space-x-5 ${arrayPR.length > 3 ? "justify-center" : ""}`}>
               {arrayPR.length ? arrayPR?.map((items: any) => {
                 return (
