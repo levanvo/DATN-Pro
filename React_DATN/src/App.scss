@@ -11,7 +11,8 @@
   z-index: 10;
   top: 0;
   width: 100vw;
-  background-color: rgba(240, 248, 255, 0.835);
+  // background-color: rgba(240, 248, 255, 0.835);
+  background-color: rgb(240, 248, 255);
 }
 
 .image-banner,
@@ -423,6 +424,7 @@
 .product-new {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 30px;
 }
 
 .row-new {
@@ -533,6 +535,42 @@
 .cancel-button {
   background-color: red;
   color: white;
+}
+
+// header admin
+
+.account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  float: right;
+  cursor: pointer;
+}
+
+.account_avt {
+  width: 45px;
+  height: 45px;
+  border-radius: 999px;
+}
+
+.account_logout {
+  display: none;
+  position: absolute;
+  top: 100%;
+  width: 120px;
+  background-color: white;
+  margin-top: 10px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  font-weight: 600;
+  transition: all 1s ease-out;
+}
+
+.account_hover {
+  position: relative;
+}
+
+.account_hover:hover .account_logout {
+  display: flex;
 }
 
 .borderChooseColor{
