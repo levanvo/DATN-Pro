@@ -4,7 +4,7 @@ import { Button, Table, Popconfirm, message, Input } from "antd"
 import {
   useRemoveColorMutation,
   useGetColorsQuery,
-} from "../../../Services/api_Color"
+} from "../../../Services/Api_Color"
 import { Link } from "react-router-dom"
 import { IColor } from "../../../Models/interfaces"
 import Loading from "../../../Component/Loading"
@@ -141,6 +141,7 @@ const ListColor = () => {
       <div style={{ marginBottom: 16 }}>
         <Button
           type="primary"
+          className="setSize-1"
           onClick={handleBatchDelete}
           loading={loading}
           danger
@@ -148,7 +149,7 @@ const ListColor = () => {
           Xoá Nhiều Màu
         </Button>
         <Link to={`/admin/color/create`}>
-          <Button style={{ margin: "0 0 0 8px" }}>Tạo Màu Mới</Button>
+          <Button className="setSize-1" style={{ margin: "0 0 0 8px" }}>Tạo Màu Mới</Button>
         </Link>
         <Input
           placeholder="Search by color name"

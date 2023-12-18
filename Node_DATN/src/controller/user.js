@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs"
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
-import { signupSchema, signinSchema } from "../schema/user.js";
+import { signupSchema, signinSchema, userSchema } from "../schema/user.js";
 import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
@@ -106,7 +106,11 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: `${EMAIL}`,
     pass: `${PASSWORD_EMAIL}`
-  }
+  },
+  //rejectUnauthorized = false để bỏ qua thao tác SSL của gmail
+  tls: {
+    rejectUnauthorized: false,
+  },
 })
 
 
@@ -312,19 +316,36 @@ export const addUser = async (req, res) => {
 // cập nhật 1 user
 export const updateUser = async (req, res) => {
   try {
-    const { error } = signupSchema.validate(req.body, { abortEarly: false })
+    const { error } = userSchema.validate(req.body, { abortEarly: false });
     if (error) {
-      const errDetails = error.details.map((err) => err.message)
+      const errDetails = error.details.map((err) => err.message);
       return res.status(400).json({
-        message: errDetails
-      })
-    };
-    req.body.password = await bcrypt.hash(req.body.password, 10);
-    const data = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    return res.status(200).json({ message: "Đã updated user:", data });
+        message: errDetails,
+      });
+    }
+
+    // Lấy dữ liệu người dùng hiện tại từ cơ sở dữ liệu
+    const currentUser = await User.findById(req.params.id);
+
+    // Kiểm tra từng trường và chỉ cập nhật nếu giá trị đã thay đổi
+    Object.keys(req.body).forEach((key) => {
+      if (currentUser[key] !== req.body[key]) {
+        // Nếu là trường password và có thay đổi, thì mã hóa mới
+        if (key === 'password') {
+          req.body[key] = bcrypt.hashSync(req.body[key], 10);
+        }
+        // Cập nhật giá trị mới
+        currentUser[key] = req.body[key];
+      }
+    });
+
+    // Lưu trạng thái mới của người dùng
+    const updatedUser = await currentUser.save();
+
+    return res.status(200).json({ message: "Đã updated user:", data: updatedUser });
   } catch (error) {
     return res.status(500).json({
       message: error.message,
     });
   }
-}
+};

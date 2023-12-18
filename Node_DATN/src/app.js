@@ -9,6 +9,15 @@ import productRouter from "./router/product.js"
 import uploadRouter from "./router/upload.js"
 import connectDB from "../configs/database.js"
 import cartRouter from "./router/cart.js"
+import newSletterRouter from "./router/newSletter.js"
+import slideRouter from "./router/slider.js"
+import blogRouter from "./router/blog.js"
+import orderRouter from "./router/order.js"
+import discountRouter from "./router/discountCode.js"
+import statisticRouter from "./router/statistic.js"
+import vnpRouter from "./router/vnp.js"
+import commentRouter from "./router/comment.js"
+
 
 dotenv.config()
 const app = express()
@@ -26,6 +35,16 @@ app.use("/api", categoryRouter)
 app.use("/api", productRouter)
 app.use("/api", uploadRouter)
 app.use("/api", cartRouter)
+app.use("/api", newSletterRouter)
+app.use("/api", slideRouter)
+app.use("/api", blogRouter)
+app.use("/api", orderRouter)
+app.use("/api", discountRouter)
+app.use("/api",vnpRouter)
+app.use("/api", commentRouter)
+app.use("/api", statisticRouter)
+
+
 
 
 

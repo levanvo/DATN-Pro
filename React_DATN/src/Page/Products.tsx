@@ -1,87 +1,101 @@
-import { ICategory, IProduct, ISize } from "../Models/interfaces";
-import { Link } from "react-router-dom";
+import { ICategory, IColor, IProduct, ISize } from "../Models/interfaces";
 import { useGetAllProductQuery } from "../Services/Api_Product";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useGetAllCategoryQuery } from "../Services/Api_Category";
+import { useGetColorsQuery } from "../Services/Api_Color";
+import { Button } from "antd";
+import { Link, useLocation } from "react-router-dom";
+import Loading from "../Component/Loading";
 import { useGetAllSizeQuery } from "../Services/Api_Size";
 
-const Products = ({ searchKeyword }: { searchKeyword: string }) => {
-  const { data: producData, isLoading, error } = useGetAllProductQuery();
-  const {
-    data: categoryData,
-    isLoading: isLoadingCategory,
-    error: errorCategory
-  } = useGetAllCategoryQuery();
-  const {
-    data: sizeData,
-    isLoading: isLoadingSize,
-    error: errorSize,
-  } = useGetAllSizeQuery();
+const Products = () => {
+  const { data: producData, isLoading: isLoadingData, error } = useGetAllProductQuery();
+  const { data: categoryData, error: errorCategory } = useGetAllCategoryQuery();
+  const { data: sizeData, error: errorSize } = useGetAllSizeQuery();
+  const { data: colorData, error: errorColor } = useGetColorsQuery();
 
-  const [isApplyClicked, setIsApplyClicked] = useState(false);
-  const [priceRange, setPriceRange] = useState({ min: "", max: "" });
-  const [sortOption, setSortOption] = useState("ascending");
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchTerm = searchParams.get('search');
+  // console.log("searchKeyWord: ", searchTerm);
 
-  let filteredProducts: IProduct[] | undefined;
+  useEffect(() => {
+    // Cập nhật lại searchTerm mỗi khi searchTerm hoặc location.search thay đổi
+    // console.log('Search term changed:', searchTerm);
+  }, [searchTerm, location.search]);
 
-  if (isApplyClicked || searchKeyword) {
-    filteredProducts = producData?.filter((product: IProduct) => {
-      const productName = product.name.toLowerCase();
-      console.log("productName", productName)
-      const productPrice = product.price;
-      console.log(productName.includes(searchKeyword.toLowerCase()))
-      const isNameMatch = productName.includes(searchKeyword.toLowerCase());
-      const isPriceMatch =
-        (!priceRange.min || productPrice >= parseInt(priceRange.min)) &&
-        (!priceRange.max || productPrice <= parseInt(priceRange.max));
+  //Lọc sản phẩm theo bộ lọc
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
+  const [selectedPriceRange, setSelectedPriceRange] = useState<string | undefined>(undefined);
 
-      return isNameMatch && isPriceMatch;
-    });
-  } else {
-    filteredProducts = producData;
-  }
+
+  const handlePriceRangeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedPriceRange(selectedValue);
+    // Đây là nơi bạn sẽ áp dụng bộ lọc dựa trên khoảng giá
+    // Bạn có thể thêm logic lọc vào ở đây
+  };
+
+  const isPriceInRange = (price: number, priceRange: string) => {
+    if (priceRange === "0-500000") {
+      return price < 500000;
+    } else if (priceRange === "500000-1000000") {
+      return price >= 500000 && price <= 1000000;
+    } else if (priceRange === "1000000") {
+      return price > 1000000;
+    }
+    // Thêm các khoảng giá khác ở đây
+    return true; // Mặc định hiển thị sản phẩm nếu không có khoảng giá nào được chọn
+  };
+
+  const filteredProduct = producData ? producData.filter((product: IProduct) => {
+
+    const isCategoryMatch = !selectedCategory || product.categoryId === selectedCategory;
+    const isSizeMatch = !selectedSize || product.variants?.some((variant: any) => variant.size_id._id === selectedSize);
+    const isColorMatch = !selectedColor || product.variants?.some((variant: any) => variant.color_id._id === selectedColor);
+    const isPriceRangeMatch = !selectedPriceRange || isPriceInRange(product.price, selectedPriceRange);
+    const isNameMatch = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return isCategoryMatch && isSizeMatch && isColorMatch && isPriceRangeMatch && isNameMatch;
+  })
+    : [];
+
+
+  // const productsToDisplay: IProduct[] | undefined = filteredProduct ? filteredProduct : producData;
+
+
+  const sortedProducts = [...filteredProduct];
+
+  const [sortOption, setSortOption] = useState("ascending"); // Mặc định sắp xếp theo giá tăng dần
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSortOption(event.target.value);
+    const selectedValue = event.target.value;
+    setSortOption(selectedValue);
   };
-  if (filteredProducts) {
-    const sortedProducts = [...filteredProducts];
 
-    sortedProducts.sort((a: IProduct, b: IProduct) => {
-      if (sortOption === "ascending") {
-        return a.price - b.price;
-      } else {
-        return b.price - a.price;
-      }
-    });
-
-    filteredProducts = sortedProducts;
+  if (sortOption === "ascending") {
+    sortedProducts.sort((a, b) => a.price - b.price);
+  } else if (sortOption === "decrease") {
+    sortedProducts.sort((a, b) => b.price - a.price);
   }
 
-  const handleApplyClick = () => {
-    setIsApplyClicked(true);
-  };
-
-  const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsApplyClicked(false);
-    setPriceRange((prevState) => ({
-      ...prevState,
-      min: event.target.value,
-    }));
-  };
-
-  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsApplyClicked(false);
-    setPriceRange((prevState) => ({
-      ...prevState,
-      max: event.target.value,
-    }));
-  };
 
   // Phân trang
   const [currentPage, setCurrentPage] = useState(0);
-  const [productsPerPage, setProductsPerPage] = useState(5);
+  const [productsPerPage, setProductsPerPage] = useState(6);
 
+
+  const totalProducts = sortedProducts?.length || 0;
+  const pageCount = Math.ceil(totalProducts / productsPerPage);
+  const startIndex = currentPage * productsPerPage;
+  const endIndex = startIndex + productsPerPage;
+  const displayedProducts = sortedProducts?.slice(startIndex, endIndex);
+
+  const handlePageChange = ({ selected }: { selected: number }) => {
+    setCurrentPage(selected);
+  };
   const handleProductsPerPageChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -90,36 +104,27 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
     setCurrentPage(0); // Đặt lại về trang đầu tiên khi thay đổi số lượng sản phẩm trên mỗi trang
   };
 
-  const pageCount = Math.ceil(
-    (filteredProducts?.length || 0) / productsPerPage
-  );
-
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setCurrentPage(selected);
-  };
-
-  const offset = currentPage * productsPerPage;
-  const currentProducts = filteredProducts?.slice(
-    offset,
-    offset + productsPerPage
-  );
-
   const numberFormat = (value: number) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(value);
 
-  if (isLoadingCategory) return <div>Loading...Category</div>;
-  if (errorCategory) return <div>Error: Category</div>;
 
-  if (isLoadingSize) return <div>Loading...Size</div>;
-  if (errorSize) return <div>Error: Size</div>;
+  if (errorCategory || errorSize || errorColor || error) {
+    return <div>Error</div>;
+  }
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error</div>;
+  // Xử lý sự kiện khi click vào nút reset filter
+  const handleResetFilter = () => {
+    setSelectedCategory(undefined);
+    setSelectedSize(undefined);
+    setSelectedColor(undefined);
+    setSelectedPriceRange(undefined);
+  };
   return (
-    <div className="w-[90vw] mx-auto mt-44">
+    <div className="w-[90vw] mx-auto" style={{ marginTop: '10%' }}>
+      {isLoadingData && <Loading />}
       <div className="product-banner">
         <img src="img/product/banner.jpg" alt="" />
       </div>
@@ -150,40 +155,33 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                 </div>
                 <div className="single-sidebar">
                   <div className="single-sidebar-title">
-                    <h3>Sản Phảm</h3>
+                    <h3>Thương hiệu</h3>
                   </div>
                   {/*Load dữ liệu Category */}
                   <div className="single-sidebar-content">
                     {categoryData?.map((category: ICategory) => {
+                      const isSelected = selectedCategory === category._id;
                       return (
-                        <ul key={category._id}>
-                          <li>
-                            <Link to={`/category/${category._id}/products`}>{category.name}</Link>
-                          </li>
-                        </ul>
-                      )
+                        <button
+                          style={{
+                            backgroundColor: isSelected ? "#FF0000" : "white",
+                            border: isSelected ? "1px solid #FF0000" : "1px solid",
+                            color: isSelected ? "white" : "black",
+                          }}
+                          className={`hover:bg-red-500 hover:text-white m-1 ${isSelected ? "bg-red-500 text-white" : ""}`}
+                          key={category._id}
+                          onClick={() => {
+                            if (selectedCategory === category._id) {
+                              setSelectedCategory(undefined);
+                            } else {
+                              setSelectedCategory(category._id?.toString());
+                            }
+                          }}
+                        >
+                          {category.name}
+                        </button>
+                      );
                     })}
-                  </div>
-                </div>
-                <div className="single-sidebar">
-                  <div className="single-sidebar-title">
-                    <h3>Màu Sắc</h3>
-                  </div>
-                  <div className="single-sidebar-content">
-                    <ul>
-                      <li>
-                        <a href="#">Đen (2)</a>
-                      </li>
-                      <li>
-                        <a href="#">Xanh (2)</a>
-                      </li>
-                      <li>
-                        <a href="#">Đỏ (4)</a>
-                      </li>
-                      <li>
-                        <a href="#">Trắng (2)</a>
-                      </li>
-                    </ul>
                   </div>
                 </div>
                 <div className="single-sidebar">
@@ -192,47 +190,76 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                   </div>
                   <div className="single-sidebar-content">
                     {sizeData?.map((size: ISize) => {
+                      const isSelected = selectedSize === size._id;
                       return (
-                        <ul key={size._id}>
-                          <li>
-                            <Link to={`/size/${size._id}/products`}>{size.name}</Link>
-                          </li>
-                        </ul>
+                        <button
+                          style={{
+                            backgroundColor: isSelected ? "#FF0000" : "white",
+                            border: isSelected ? "1px solid #FF0000" : "1px solid",
+                            color: isSelected ? "white" : "black",
+                          }}
+                          className={`hover:bg-red-500 hover:text-white m-1 ${isSelected ? "bg-red-500 text-white" : ""}`}
+                          key={size._id}
+                          onClick={() => {
+                            if (selectedSize === size._id) {
+                              setSelectedSize(undefined);
+                            } else {
+                              setSelectedSize(size._id?.toString());
+                            }
+                          }}
+                        >
+                          {size.name}
+                        </button>
                       );
                     })}
                   </div>
                 </div>
+                <div className="single-sidebar">
+                  <div className="single-sidebar-title">
+                    <h3>Màu Sắc</h3>
+                  </div>
+                  <div className="single-sidebar-content" >
+                    {colorData?.map((color: IColor) => {
+                      const isSelected = selectedColor === color._id;
+                      return (
+                        <button
+                          style={{ marginRight: 9, marginBottom: 10, backgroundColor: color.unicode, boxShadow: isSelected ? "0 0 5px 2px rgba(255, 0, 0, 0.5)" : "none", }}
+                          className={`hover:bg-red-500 ${selectedColor === color._id ? "bg-red-500 text-white" : ""}`}
+                          key={color._id}
+                          onClick={() => {
+                            if (selectedColor === color._id) {
+                              setSelectedColor(undefined);
+                            } else {
+                              setSelectedColor(color._id);
+                            }
+                          }}
+                        >
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div className="single-sidebar price">
                   <div className="single-sidebar-title">
                     <h3>Khoảng giá</h3>
                   </div>
                   <div className="single-sidebar-content">
-                    <div className="price-range">
-                      <div className="price-filter d-flex align-items-center">
-                        <input
-                          type="text"
-                          name="priceFrom"
-                          placeholder="₫ TỪ"
-                          value={priceRange.min}
-                          onChange={handleMinPriceChange}
-                          maxLength={13}
-                        />
-                        <div className="price-filter_line"></div>
-                        <input
-                          type="text"
-                          name="priceTo"
-                          placeholder="₫ Đến"
-                          value={priceRange.max}
-                          onChange={handleMaxPriceChange}
-                          maxLength={13}
-                        />
-                      </div>
-                      <button type="submit" onClick={handleApplyClick}>
-                        <span>Áp dụng</span>
-                      </button>
-                    </div>
+                    <select
+                      className="w-[90%] px-4 py-2 border border-gray-300 rounded-md text-base bg-white"
+                      name="priceRange"
+                      onChange={handlePriceRangeChange}
+                      value={selectedPriceRange}
+                    >
+                      <option value="">Tất cả</option>
+                      <option value="0-500000">Dưới 500k</option>
+                      <option value="500000-1000000">500k - 1 triệu</option>
+                      <option value="1000000">Trên 1 triệu</option>
+                      {/* Thêm các khoảng giá khác tại đây */}
+                    </select>
                   </div>
                 </div>
+                <button onClick={handleResetFilter} style={{width: '90%', backgroundColor: 'red', color: 'white', marginTop: '20px'}}>Đặt lại</button>
                 <div className="banner-left">
                   <a href="#">
                     <img src="img/product/banner_left.jpg" alt="" />
@@ -243,16 +270,16 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
             <div className="col-lg-9">
               <div className="product-bar">
                 <div className="sort-by">
-                  <label>Sort By Price: </label>
+                  <label>Giá: </label>
                   <select
                     name="sort"
                     onChange={handleSortChange}
                     value={sortOption}
                   >
                     <option value="ascending" selected>
-                      Ascending
+                      Thấp đến cao
                     </option>
-                    <option value="decrease">Decrease</option>
+                    <option value="decrease">Cao đến thấp </option>
                   </select>
                 </div>
                 <div className="limit-product">
@@ -262,12 +289,11 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                     onChange={handleProductsPerPageChange}
                     value={productsPerPage}
                   >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
+                    <option value="6">6</option>
+                    <option value="9">9</option>
+                    <option value="12">12</option>
                     <option value="15">15</option>
-                    <option value="20">20</option>
                   </select>
-                  per page
                 </div>
               </div>
               {/* Nhập dữ liệu category */}
@@ -280,14 +306,14 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                       id="gird"
                     >
                       <div className="row">
-                        {currentProducts && currentProducts.length > 0 ? (
-                          currentProducts.map((product: IProduct) => {
+                        {displayedProducts && displayedProducts.length > 0 ? (
+                          displayedProducts.map((product: IProduct) => {
                             return (
                               <div
                                 className="col-lg-4 col-md-6"
                                 key={product._id}
                               >
-                                <a href={`/product/${product._id}`}>
+                                <Link to={`/product/${product._id}`}>
                                   <div className="single-product">
                                     <div className="level-pro-new">
                                       <span>new</span>
@@ -306,40 +332,7 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                                         />
                                       </div>
                                     </div>
-                                    <div className="actions">
-                                      <button
-                                        type="submit"
-                                        className="cart-btn"
-                                        title="Add to cart"
-                                      >
-                                        add to cart
-                                      </button>
-                                      <ul className="add-to-link">
-                                        <li>
-                                          <a
-                                            className="modal-view"
-                                            data-target="#productModal"
-                                            data-bs-toggle="modal"
-                                            href="#"
-                                          >
-                                            {" "}
-                                            <i className="fa fa-search"></i>
-                                          </a>
-                                        </li>
-                                        <li>
-                                          <a href="#">
-                                            {" "}
-                                            <i className="fa fa-heart-o"></i>
-                                          </a>
-                                        </li>
-                                        <li>
-                                          <a href="#">
-                                            {" "}
-                                            <i className="fa fa-refresh"></i>
-                                          </a>
-                                        </li>
-                                      </ul>
-                                    </div>
+
                                     <div className="product-price">
                                       <div className="product-name">
                                         <h1>{product.name}</h1>
@@ -353,12 +346,12 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                                           <i className="fa fa-star"></i>
                                           <i className="fa fa-star"></i>
                                           <i className="fa fa-star"></i>
-                                          <i className="fa fa-star-half-o"></i>
+                                          <i className="fa fa-star"></i>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                </a>
+                                </Link>
                               </div>
                             );
                           })
@@ -377,10 +370,10 @@ const Products = ({ searchKeyword }: { searchKeyword: string }) => {
                     breakClassName={"break-me"}
                     pageCount={pageCount}
                     marginPagesDisplayed={2}
-                    pageRangeDisplayed={productsPerPage}
+                    pageRangeDisplayed={6}
                     onPageChange={handlePageChange}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
+                    containerClassName={"paginations"}
+                    activeClassName={"actives"}
                   />
                 </div>
               </div>

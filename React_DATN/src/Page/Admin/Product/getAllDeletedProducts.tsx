@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Divider, Table, Popconfirm, message, Button, Input, Menu, Dropdown } from 'antd';
-import { useGetAllDeletedProductsQuery, useRemoveProductMutation, useRestoreProductMutation } from '../../../Services/Api_Product';
+import { useGetAllDeletedProductsQuery, useGetAllProductQuery, useRemoveProductMutation, useRestoreProductMutation } from '../../../Services/Api_Product';
 import { IProduct } from '../../../Models/interfaces';
 import { QuestionCircleOutlined, FilterOutlined,ReloadOutlined } from '@ant-design/icons';
 import Loading from '../../../Component/Loading';
 import { DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
-import { useGetColorsQuery } from '../../../Services/api_Color';
+import { useGetColorsQuery } from '../../../Services/Api_Color';
 import { useGetAllSizeQuery } from '../../../Services/Api_Size';
 import { useNavigate } from 'react-router';
 
@@ -27,9 +27,8 @@ const GetAllDeletedProducts = () => {
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [isResetClicked, setIsResetClicked] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
-  const { data:getAllColor } = useGetColorsQuery()
-  const {data: getAllSize} = useGetAllSizeQuery()
-  const {data: getAllDeletedProducts,isLoading} = useGetAllDeletedProductsQuery()
+  const { data: getAllProduct, isLoading, error } = useGetAllProductQuery()
+
   const [restore] = useRestoreProductMutation()
   const [isLoadingScreen,setIsLoadingScreen] = useState(false)
 
@@ -55,15 +54,14 @@ const GetAllDeletedProducts = () => {
       message.success("Xóa thành công")
       setIsLoadingScreen(false)
 
-      setTimeout(() => {
-        window.location.reload()
-      },2500)
     } catch (error) {
       message.error("Đã có lỗi xảy ra vui lòng thử lại")
       setIsLoadingScreen(false)
     }
   }
 
+
+  // Khôi phục mục đã chọn
   const restoreMultipleProducts = async () => {
     try {
       
@@ -77,10 +75,6 @@ const GetAllDeletedProducts = () => {
       await Promise.all(productIdAll.map((productId) => restore(productId)))
       message.success("Khôi phục sản phẩm thành công")
       setIsLoadingScreen(false)
-
-      setTimeout(() => {
-        window.location.reload()
-      },2500)
       
     } catch (error) {
       message.error("Đã có lỗi xảy ra vui lòng thử lại")
@@ -88,16 +82,20 @@ const GetAllDeletedProducts = () => {
     }
   }
 
+  
+  const filteredDeletedProducts = (getAllProduct || []).filter(
+    (product: IProduct) => product.isDeleted === true
+  );
+  console.log(filteredDeletedProducts);
+  
   //data trả về
-  const dataSource = getAllDeletedProducts?.map(({ _id, name, original_price, price, imgUrl, categoryId,color_id,size_id }: IProduct) => ({
+  const dataSource = filteredDeletedProducts?.map(({ _id, name, original_price, price, imgUrl, categoryId }: IProduct) => ({
     key: _id,
     name,
     original_price,
     price,
     imgUrl,
     categoryId,
-    color_id,
-    size_id
   }))
 
   // hàm thực hiện đóng và mở chức năng lọc theo giá
@@ -238,56 +236,7 @@ const GetAllDeletedProducts = () => {
       },
       align: 'center',
     },
-    {
-      title: 'Màu xắc',
-      dataIndex: 'color_id',
-      key: 'color_id',
-      render: (colorIds: string[]) => {
-        if (getAllColor) {       
-          const colorElements = colorIds?.map(colorId => {
-            const color = getAllColor.find(c => c._id === colorId);
-            return color ? (
-              <span
-                key={color._id}
-                style={{
-                  background: color.unicode,
-                  width: "25px",
-                  height: "25px",
-                  borderRadius: "50%",
-                  marginRight:5
-                }}
-              ></span>
-            ) : null;
-          });
-          return (
-            <div style={{ display: 'flex',justifyContent: "center",alignItems: "center" }}>
-              {colorElements}
-            </div>
-          );
-        }
-        return "Không xác định";
-      },
-      align: 'center',
-    },
-    
-    {
-      title: 'Kích thước',
-      dataIndex: 'size_id',
-      key: 'size_id',
-      render: (sizeIds: string[]) => {
-       if(getAllSize){
-          const sizeElements = sizeIds.map(sizeID => {
-            const size = getAllSize.find(s => s._id === sizeID)
-            return size ? size.name : ""
-          })
-          if(sizeElements){
-            return sizeElements.join(", ")
-          }    
-      }
-        return "Không xác định"
-      },
-      align: 'center',
-    },
+
     
     {
       title: 'Giá hiện tại',
@@ -308,7 +257,7 @@ const GetAllDeletedProducts = () => {
     },
 
     {
-      title: 'Action',
+      title: 'Hành động',
       key: 'action',
       render: ({ key: id }: any) => (
         <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
@@ -348,7 +297,7 @@ const GetAllDeletedProducts = () => {
       {isLoadingScreen && <Loading />}
       <div>
         <Button
-         
+         className='setSize-1'
           type="primary"
           onClick={deleteMultipleProducts}
           danger
@@ -358,6 +307,7 @@ const GetAllDeletedProducts = () => {
         </Button>
 
         <Button
+        className='w-[20%]'
           onClick={restoreMultipleProducts}
         >
           Khôi phục sản phẩm đã chọn

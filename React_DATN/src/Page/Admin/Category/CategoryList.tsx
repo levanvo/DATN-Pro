@@ -18,24 +18,22 @@ const CategoryList = () => {
   if (isLoading) return <Loading />
   if (error) return <div>Error...</div>
 
-  if (!data || !Array.isArray(data)) {
-    return <div>No data available.</div>
-  }
+  const dataSource = Array.isArray(data)
+  ? data.map((item: ICategory, index) => ({
+      index: index + 1,
+      key: item._id,
+      name: item.name,
+    })): [];
 
-  const dataSource = data?.map((item: ICategory, index) => ({
-    index: index + 1,
-    key: item._id,
-    name: item.name,
-  }))
 
   const handleSearch = (value: string) => {
     // Update the search query state when the user types in the search bar
     setSearchQuery(value)
   }
 
-  const filteredData = dataSource.filter((item) =>
+  const filteredData = dataSource?.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  ) || [];
   const comfim = (_id: string | number)=>{
     removeCategory(_id)
     messageApi.open({
@@ -120,6 +118,7 @@ const CategoryList = () => {
       <div style={{ marginBottom: 16 }}>
         <Button
           type="primary"
+          className="setSize-1"
           onClick={handleBatchDelete}
           loading={loading}
           danger
@@ -127,7 +126,7 @@ const CategoryList = () => {
           Xoá Nhiều category
         </Button>
         <Link to={`/admin/category/add`}>
-          <Button style={{ margin: "0 0 0 8px" }}>Tạo category Mới</Button>
+          <Button className="setSize-1" style={{ margin: "0 0 0 8px" }}>Tạo category Mới</Button>
         </Link>
         <Input
           placeholder="Tìm kiếm danh mục"
@@ -135,12 +134,14 @@ const CategoryList = () => {
           style={{ width: 280, marginLeft: 8 }}
         />
       </div>
+
       <Table
         rowSelection={rowSelection}
         columns={columns}
         dataSource={filteredData}
         tableLayout="fixed"
       />
+   
     </div>
   )
 }

@@ -11,6 +11,7 @@ const ForgotPassword = () => {
     const [forgotPassword, { error }] = useForgotPasswordMutation()
     const [messageApi, contexHolder] = message.useMessage()
     const [isLoadingSeen, setIsLoadingSeen] = useState(false)
+    
     useEffect(() => {
         if (error && "data" in error) {
             const errorData = error.data as { message: string }
@@ -18,30 +19,27 @@ const ForgotPassword = () => {
                 type: "error",
                 content: errorData.message
             })
+            setIsLoadingSeen(false)
         }
     }, [error])
-    const onFinish = async (values: IUser) => {
+
+    const onFinish =async (values: IUser) => {
         setIsLoadingSeen(true)
-        try {
+        if(!error){
             const response = await forgotPassword(values);
             if ("data" in response) {
-                const message = response.data.message;
+                const message = response.data as {message: string};
                 messageApi.open({
                     type: "success",
-                    content: message
+                    content: message.message
                 });
-            }
-            setTimeout(() => {
-                navigate("/verification-codes")
-            }, 1500)
-        } catch (error) {
-            messageApi.open({
-                type: "error",
-                content: "Đã có lỗi xảy ra vui lòng thử lại"
-            })
+                setIsLoadingSeen(false)
+                setTimeout(() => {
+                    navigate("/verification-codes")
+                }, 2000)
+        }   
         }
-        setIsLoadingSeen(false)
-    }
+        }
 
 
     const onFinishFailed = (errorInfo: any) => {
@@ -73,7 +71,10 @@ const ForgotPassword = () => {
                         label={<span style={{ color: '#2b2b2b' }}>Email</span>}
                         name="email"
                         style={{ color: 'lightgray' }}
-                        rules={[{ required: true, message: 'Email không được để trống!' }]}
+                        rules={[{ required: true, message: 'Email không được để trống!',}, {
+                            type: 'email',
+                            message: 'Email không hợp lệ!',
+                        },]}
                     >
                         <Input style={{ height: 40, width: 500 }} placeholder='nhập địa chỉ email' />
                     </Form.Item>

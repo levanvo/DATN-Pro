@@ -1,8 +1,13 @@
-import React from 'react'
+
+import { useGetAllBlogsQuery } from '../../../Services/Api_Blogs'
+import { IBlog } from '../../../Models/interfaces'
+import parse from 'html-react-parser';
 
 
 
 const Blog = () => {
+    const { data: blogData }:any = useGetAllBlogsQuery()
+
     return (
         <div className='w-[90vw] mx-auto'>
             <div className="blog-area">
@@ -17,59 +22,26 @@ const Blog = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="blog-post">
-                                <div className="single-blog-post">
-                                    <div className="blog-img">
-                                        <a href="blog-details.html">
-                                            <img src="img/blog/1.jpg" />
-                                        </a>
-                                    </div>
-                                    <div className="blog-content">
-                                        <a href="blog-details.html" className="blog-title">Lorem ipsum dolor sit amet</a>
-                                        <span><a href="#">By plaza themes - </a>17 Aug 2015 ( 0 comments )</span>
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna...</p>
-                                        <a href="blog-details.html" className="readmore">read more &gt;</a>
-                                    </div>
-                                </div>
-                                <div className="single-blog-post">
-                                    <div className="blog-img">
-                                        <a href="blog-details.html">
-                                            <img src="img/blog/2.jpg" />
-                                        </a>
-                                    </div>
-                                    <div className="blog-content">
-                                        <a href="blog-details.html" className="blog-title">Lorem ipsum dolor sit amet</a>
-                                        <span><a href="#">By plaza themes - </a>17 Aug 2015 ( 0 comments )</span>
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna...</p>
-                                        <a href="blog-details.html" className="readmore">read more &gt;</a>
-                                    </div>
-                                </div>
+                                {blogData?.data?.map((blog: IBlog) => {
+                                    return (
+                                        <div className="single-blog-post relative h-[330px]">
+                                            <div className="blog-img">
+                                                <a href={`blog/${blog._id}/detail`}>
+                                                    <img className="w-[200px] h-[200px]" src={blog.imgUrl?.[0]} />
+                                                </a>
+                                            </div>
+                                            <div className="blog-content">
+                                                <a href={`blog/${blog._id}/detail`} className="blog-title">{blog.title}</a>
+                                                <span><a href="#">By {blog?.author}</a>- {blog?.createdAt} ( 0 comments )</span>
+                                                <div className="h-[150px] objectfit-cover"><p className="h-[150px]" >{parse(blog?.description)}</p></div>
+                                                <a href={`blog/${blog._id}/detail`} className="readmore mt-3 absolute text-black rounded ">Read more &gt;</a>
+                                            </div>
+                                        </div>
+
+                                    )
+                                })}
                             </div>
-                            <div className="single-blog-post">
-                                <div className="blog-img">
-                                    <a href="blog-details.html">
-                                        <img className='w-44' src="img/blog/3.jpg" />
-                                    </a>
-                                </div>
-                                <div className="blog-content">
-                                    <a href="blog-details.html" className="blog-title">Lorem ipsum dolor sit amet</a>
-                                    <span><a href="#">By plaza themes - </a>17 Aug 2015 ( 0 comments )</span>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna...</p>
-                                    <a href="blog-details.html" className="readmore">read more &gt;</a>
-                                </div>
-                            </div>
-                            <div className="single-blog-post">
-                                <div className="blog-img">
-                                    <a href="blog-details.html">
-                                        <img className='w-44' src="img/blog/4.jpg" />
-                                    </a>
-                                </div>
-                                <div className="blog-content">
-                                    <a href="blog-details.html" className="blog-title">Lorem ipsum dolor sit amet</a>
-                                    <span><a href="#">By plaza themes - </a>17 Aug 2015 ( 0 comments )</span>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna...</p>
-                                    <a href="blog-details.html" className="readmore">read more &gt;</a>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>

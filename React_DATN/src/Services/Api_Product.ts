@@ -6,10 +6,11 @@ const productApi = createApi({
   reducerPath: "products",
   tagTypes: ["Product"],
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:8080`,
+    // baseUrl: `https://server-node-api-bd6916c462f7.herokuapp.com`,
+    baseUrl: "http://localhost:8080",
     fetchFn: async (...args) => (
-        await pause(1000),
-        fetch(...args)
+      await pause(1000),
+      fetch(...args)
     )
   }),
   endpoints: (builder) => ({
@@ -32,16 +33,35 @@ const productApi = createApi({
       invalidatesTags: ["Product"]
     }),
 
-    // Xóa sản phẩm tạm thời
-    deleteProduct: builder.mutation<void,number | string>({
-        query: (id) => ({
-            url: `/api/product/${id}`,
-            method: "DELETE",
-        }),
+    addProductDetails: builder.mutation({
+      query: (product) => ({
+        url: `/api/product/${product._id}/variants`,
+        method: "POST",
+        body: product,
+      }),
       invalidatesTags: ["Product"]
     }),
 
-    updateProduct: builder.mutation<IProduct,IProduct>({
+    // Xóa sản phẩm tạm thời
+    deleteProduct: builder.mutation<void, number | string>({
+      query: (id) => ({
+        url: `/api/product/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Product"]
+    }),
+
+    // Xóa sản phẩm tạm thời Variant
+    deleteVariant: builder.mutation<void, any>({
+      query: (product) => ({
+        url: `/api/product-variant/${product._id}/delete`,
+        method: "PUT",
+        body: product
+      }),
+      invalidatesTags: ["Product"]
+    }),
+
+    updateProduct: builder.mutation<IProduct, IProduct>({
       query: (product) => ({
         url: `/api/product/${product._id}`,
         method: "PATCH",
@@ -64,6 +84,11 @@ const productApi = createApi({
       }),
       invalidatesTags: ["Product"]
     }),
+    //Lấy ra các sản phẩm HOT
+    getHotProducts: builder.query<IProduct[], void>({
+      query: () => `/api/hot-product`,
+      providesTags: ["Product"]
+    }),
 
     //API Xóa sản phẩm vĩnh viễn
     removeProduct: builder.mutation({
@@ -76,14 +101,17 @@ const productApi = createApi({
   })
 });
 
-export const { 
+export const {
+  useAddProductDetailsMutation,
   useGetAllProductQuery,
-   useAddProductMutation,
-   useDeleteProductMutation, 
-   useGetOneProductQuery, 
-   useUpdateProductMutation,
-   useGetAllDeletedProductsQuery,
-   useRestoreProductMutation,
-   useRemoveProductMutation
-   } = productApi;
+  useAddProductMutation,
+  useDeleteProductMutation,
+  useDeleteVariantMutation,
+  useGetOneProductQuery,
+  useUpdateProductMutation,
+  useGetAllDeletedProductsQuery,
+  useRestoreProductMutation,
+  useRemoveProductMutation,
+  useGetHotProductsQuery
+} = productApi;
 export default productApi;

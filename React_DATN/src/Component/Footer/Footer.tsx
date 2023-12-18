@@ -21,7 +21,7 @@ const Footer = () => {
                                     </li>
                                     <li>
                                         <span className="fa fa-envelope-o" />
-                                        admin@bootexperts.com
+                                        vole543215@gmail.com
                                     </li>
                                 </ul>
                             </div>
@@ -44,16 +44,18 @@ const Footer = () => {
                         </div>
                         <div className="col-lg-3 col-md-6">
                             <div className="footer-support">
-                                <div className="footer-title">
-                                    <h3>Hỗ Trợ Khách Hàng</h3>
+                                <div className="footer-title ">
+                                    <h3 className=''>HỖ TRỢ KHÁCH HÀNG</h3>
                                 </div>
                                 <div className="footer-menu">
                                     <ul>
-                                        <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
-                                        <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
-                                        <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
-                                        <li><a href="#">Sẽ Hiện bài blog hướng dẫn hỗ trợ</a></li>
-
+                                        <a href="#" className='text-gray-400'><li>- Chính sách khách hàng thân thiết</li></a>
+                                        <a href="#" className='text-gray-400'><li>- Chính sách đổi trả</li></a>
+                                        <a href="#" className='text-gray-400'><li>- Chính sách bảo hành</li></a>
+                                        <a href="#" className='text-gray-400'><li>- Chính sách bảo mật</li></a>
+                                        <a href="#" className='text-gray-400'><li>- Câu hỏi thường gặp</li></a>
+                                        <a href="#" className='text-gray-400'><li>- Hướng dẫn mua hàng online</li></a>
+                                        <a href="#" className='text-gray-400'><li>- Hướng dẫn kiểm tra hạng thẻ thành viên</li></a>
                                     </ul>
                                 </div>
                             </div>
@@ -61,83 +63,22 @@ const Footer = () => {
                         <div className="col-lg-3 col-md-6">
                             <div className="footer-info">
                                 <div className="footer-title">
-                                    <h3>DỊCH VỤ KHÁC HÀNG</h3>
+                                    <h3>THÔNG TIN CỬA HÀNG</h3>
                                 </div>
-                                <div className="footer-menu">
-                                    <ul>
-                                        <li><a href="#">Chính sách đổi trả</a></li>
-                                        <li><a href="#">Chính sách đổi trả</a></li>
-                                        <li><a href="#">Chính sách đổi trả</a></li>
-                                        <li><a href="#">Chính sách đổi trả</a></li>
-                                        <li><a href="#">Chính sách đổi trả</a></li>
-                                    </ul>
+                                <div className="footer-menu mb-4">
+                                    <p className='text-sm underline'>Địa chỉ 1</p>
+                                    <li className='text-xs mt-2'>F15 tầng 1 AEON Mall Tân Phú, 30 Bờ Bao Tân Thắng, Phường Sơn Kỳ, TP Hồ Chí Minh</li>
+
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                <div className="footer-menu mb-4">
+                                    <p className='text-sm underline'>Địa chỉ 2</p>
+                                    <li className='text-xs mt-2'>809 Giải Phóng, Phường Giáp Bát, Quận Hoàng Mai, TP Hà Nội</li>
 
-            </div>
-            <footer className="footer-area">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-6">
-                            <div className="footer-copyright">
-                                <p>Copyright © 2022 <a href="#"> Bootexperts</a>. All Rights Reserved</p>
-                            </div>
-                        </div>
+                                </div>
+                                <div className="footer-menu mb-4">
+                                    <p className='text-sm underline'>Địa chỉ 3</p>
+                                    <li className='text-xs mt-2'>192 - 194 Hoa Lan, Phường 2, Quận Phú Nhuận, TP Hồ Chí Minh</li>
 
-                    </div>
-                </div>
-                <a href="#" id="scrollUp"><i className="fa fa fa-arrow-up" /></a>
-            </footer>
-            <div id="quickview-wrapper">
-                {/* Modal */}
-                <div className="modal fade" id="productModal" tabIndex={-1} role="dialog">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                            </div>
-                            <div className="modal-body">
-                                <div className="modal-product">
-                                    <div className="product-images">
-                                        <div className="main-image images">
-                                            <img src="img/product/quick-view.jpg" />
-                                        </div>
-                                    </div>
-                                    <div className="product-info">
-                                        <h1>Diam quis cursus</h1>
-                                        <div className="price-box">
-                                            <p className="price"><span className="special-price"><span className="amount">$132.00</span></span></p>
-                                        </div>
-                                        <a href="shop.html" className="see-all">See all features</a>
-                                        <div className="quick-add-to-cart">
-                                            <form method="post" className="cart">
-                                                <div className="numbers-row">
-                                                    <input type="number" id="french-hens" defaultValue={3} />
-                                                </div>
-                                                <button className="single_add_to_cart_button" type="submit">Add to cart</button>
-                                            </form>
-                                        </div>
-                                        <div className="quick-desc">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum. Morbi ornare lectus quis justo gravida semper. Nulla tellus mi, vulputate adipiscing cursus eu, suscipit id nulla.</p>
-                                        </div>
-                                        <div className="share-post">
-                                            <div className="share-title">
-                                                <h3>share this product</h3>
-                                            </div>
-                                            <div className="share-social">
-                                                <ul>
-                                                    <li><a href="#"> <i className="fa fa-facebook" /> </a></li>
-                                                    <li><a href="#"> <i className="fa fa-twitter" /> </a></li>
-                                                    <li><a href="#"> <i className="fa fa-pinterest" /> </a></li>
-                                                    <li><a href="#"> <i className="fa fa-google-plus" /> </a></li>
-                                                    <li><a href="#"> <i className="fa fa-linkedin" /> </a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
