@@ -150,7 +150,8 @@ const ProductList = () => {
           unicode: variant.color_id?.unicode || 'N/A',
         },
         quantity: variant.quantity || 0,
-        inventory: variant.inventory || 0
+        inventory: variant.inventory || 0,
+        sell_quantity: variant.sell_quantity || 0
       };
     });
     
@@ -207,13 +208,29 @@ const ProductList = () => {
       ),
     },
     {
+      dataIndex: 'quantity',
+      key: 'quantity',
+      align: 'center',
+      render: (quantity: any) => (
+        <span>SL: {quantity}</span>
+      ),
+    },
+    {
       dataIndex: 'inventory',
       key: 'inventory',
       align: 'center',
       render: (inventory: any) => (
-        <span>SL: {inventory}</span>
+        <span>SL tồn kho: {inventory}</span>
       ),
     },
+    {
+      dataIndex: 'sell_quantity',
+      key: 'sell_quantity',
+      align: 'center',
+      render: (sell_quantity: any) => (
+        <span>SL đã bán : {sell_quantity}</span>
+      ),
+    }
   ];
 
 
