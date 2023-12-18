@@ -4051,3 +4051,6 @@ button.check-button:hover,
     color: white; /* Đặt màu chữ trắng cho trang active */
   }
 
+  .ant-btn.css-dev-only-do-not-override-p7e5j5.ant-btn-primary.ant-btn-sm {
+    background-color: red;
+  }
