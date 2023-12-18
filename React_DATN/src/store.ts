@@ -20,7 +20,7 @@ export const store = configureStore({
     category: categoryApi.reducer,
     user: userApi.reducer,
     size: sizeApi.reducer,
-    colorApi: colorApi.reducer,
+    color: colorApi.reducer,
     cart: cartApi.reducer,
     slide: slideApi.reducer,
     order: orderApi.reducer,

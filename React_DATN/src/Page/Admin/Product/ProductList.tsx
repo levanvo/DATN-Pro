@@ -291,11 +291,14 @@ const ProductList = () => {
       key: "categoryId",
       render: (categoryId: string) => {
         if (categories) {
-          const categoryName = categories.find((c) => c._id === categoryId)
-          return categoryName ? categoryName.name : "không xác định"
+          const categoryName = categories.find((c) => c._id === categoryId);
+          return categoryName ? categoryName.name : 'không xác định';
         }
       },
       align: 'center',
+      filters: categories?.map((category) => ({ text: category.name, value: category._id })),
+      onFilter: (value: string, record: any) => record.categoryId === value,
+      filterMultiple: false,
     },
 
     {
@@ -385,8 +388,8 @@ const ProductList = () => {
         <Search
           onSearch={handleSearch} placeholder="tìm từ khóa" allowClear style={{ width: 300, marginLeft: 50 }} />
         <Dropdown
-          visible={filterVisible}
-          onVisibleChange={handleFilterVisibleChange}
+          open={filterVisible}
+          onOpenChange={handleFilterVisibleChange}
           overlay={filterMenu}
           trigger={['click']}
         >
