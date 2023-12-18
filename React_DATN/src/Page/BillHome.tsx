@@ -10,6 +10,7 @@ import moment from 'moment';
 
 const Bill = () => {
   const { data, isLoading, error } = useGetUserOrdersQuery(undefined);
+  const [updateOrder] = useUpdateOrderMutation();
 
   const dataSource = data?.map((order: IOrder) => ({
     key: order._id,
@@ -19,7 +20,6 @@ const Bill = () => {
     status: order?.status,
   }));
 
-  const [updateOrder] = useUpdateOrderMutation();
 
   const handleConfirmOrder = (orderId: string) => {
     updateOrder({ _id: orderId, status: "4" })
@@ -64,10 +64,12 @@ const Bill = () => {
       title: 'Hành động',
       render: (record: any) => (
         <>
-          <button style={{ width: 180, marginRight: 20, backgroundColor: record.status === '4' ? 'gray' : '#3F8CFF', color: 'white', borderRadius: 10 }} onClick={() => handleConfirmOrder(record.key)} disabled={record.status === '4'}>
+          <button
+            style={{ width: 180, marginRight: 20, backgroundColor: record.status === '4' || record.status === '0' || record.status === '1' || record.status === '2' ? 'gray' : '#3F8CFF', color: 'white', borderRadius: 10 }}
+            onClick={() => handleConfirmOrder(record.key)} disabled={record.status === '0' || record.status === '1' || record.status === '2' || record.status === '4'}>
             Xác nhận đã nhận hàng
           </button>
-          <Link style={{border: '1px solid white', padding: 10, borderRadius: 10, backgroundColor: '#3F8CFF', color: 'white'}} to={`detail/${record.key}`}>Chi tiết</Link>
+          <Link style={{ border: '1px solid white', padding: 10, borderRadius: 10, backgroundColor: '#3F8CFF', color: 'white' }} to={`detail/${record.key}`}>Chi tiết</Link>
         </>
       ),
       key: 'actions',
@@ -121,7 +123,7 @@ const Bill = () => {
           />
         </div>
       </div>}
-      
+
     </div>
   );
 };

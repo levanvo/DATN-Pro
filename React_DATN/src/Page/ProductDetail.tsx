@@ -429,6 +429,10 @@ const ProductDetail = () => {
     }
   };
 
+  const ChangeProducts=(id:any)=>{
+    window.location.href="/product/"+id
+  }
+  
   const [updatedContent, setUpdatedContent] = useState('');
 
   useEffect(() => {
@@ -810,10 +814,10 @@ const ProductDetail = () => {
             <div className={`productShow mt-4 flex flex-wrap space-x-5 ${arrayPR.length > 3 ? "justify-center" : ""}`}>
               {arrayPR.length ? arrayPR?.map((items: any) => {
                 return (
-                  <div className="border rounded-2xl w-56 m-2 relative" key={items._id}>
+                  <div className="border rounded-2xl w-56 m-2 relative overflow-hidden" key={items._id}>
 
-                    <Link to={`/product/${items._id}`}><img className="w-56 h-48 rounded-lg hover:scale-110 duration-200" src={items.imgUrl[0]} alt="" /></Link>
-                    <p className="ml-2  text-gray-500">{items.name} <span className="float-right mr-2 text-gray-400 text-xs mt-2">SL: {items.quantity}</span></p>
+                    <Link to={`/product/${items._id}`}><img onClick={()=>ChangeProducts(items._id)} className="w-56 h-48 rounded-lg hover:scale-110 duration-200 mb-2" src={items.imgUrl[0]} alt="" /></Link>
+                    <p className="ml-2  text-gray-500">{items.name} <span className="float-right mr-2 text-gray-400 text-xs mt-2">SL: {items.quantityTotal}</span></p>
                     <div className="flex space-x-2">
                       <p className="text-xs ml-2">{items.price.toLocaleString()} (VND)</p>
                       {items.original_price > 0 && <p className="text-xs"><del>{items.original_price.toLocaleString()}</del></p>}

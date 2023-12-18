@@ -6,10 +6,10 @@ import { message, Modal } from "antd"
 import useSearch from '../UseSearch'
 import Loading from "../Loading"
 import { useGetCartQuery } from '../../Services/Api_cart'
+import { IProduct } from '../../Models/interfaces'
 
 interface User {
   username: string
-  // Các thuộc tính khác của người dùng (nếu có)
 }
 const Header = () => {
   const [messageApi, contexHolder] = message.useMessage()
@@ -17,56 +17,25 @@ const Header = () => {
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false)
   let user: User | any = null
   const userString = localStorage.getItem("user")
-  const VerifyAccount = localStorage.getItem("token")
+  const token = localStorage.getItem("token")
   const navigate = useNavigate()
   const [cartStatus,setCartStatus]:any=useState(false);
-  // const { data: getCartData, isLoading, isError } = useGetCartQuery();
+  const { data: getCartById, isLoading, isError } = useGetCartQuery();
   const [cartQuantity,setCartQuantity] = useState<number | null>(null)
   const [cartLocal,setCartLocal] = useState(null)
   const localCartData = localStorage.getItem('cart');
 
+  
+  useEffect(() => {
+    if ( getCartById) {
+      const totalCartLength = getCartById.products.length;
+      setCartQuantity(totalCartLength);          
+    }
+    if (localCartData) {
+    setCartLocal(JSON.parse(localCartData).length);
+    }
+  },[localCartData,getCartById])
 
-  // if(VerifyAccount){
-  //   const apiCartLength = getCartData.products.length;
-  //   if(apiCartLength.length>0){
-  //     setCartQuantity(apiCartLength);
-  //   }else{
-  //     setCartQuantity(null);
-  //   }
-  // }else{
-  //   if(localCartData){
-  //     const cartArray = JSON.parse(localCartData);
-  //     if(cartArray>0){
-  //       const cartLength = cartArray.length;
-  //       setCartLocal(cartLength)
-  //     }else{
-  //       setCartLocal(null)
-  //     }
-  //   }
-  // }
-
-
-  // useEffect(() => {
-  //   // Lấy dữ liệu từ localStorage
-  //   const localCartData = localStorage.getItem('cart');
-
-  //   if (localCartData) {
-  //     // Chuyển đổi chuỗi JSON thành mảng JavaScript
-  //     const cartArray = JSON.parse(localCartData);
-
-  //     // Lấy độ dài của mảng cartArray
-  //     const cartLength = cartArray.length;
-
-  //     setCartLocal(cartLength);
-  //   } else if (!isLoading && getCartData) {
-  //     // Nếu không có dữ liệu trong localStorage và có dữ liệu từ API
-  //     const apiCartLength = getCartData.products.length;
-  //     setCartQuantity(apiCartLength);
-  //   } else {
-  //     // Nếu không có dữ liệu từ cả localStorage và API
-  //     setCartQuantity(null);
-  //   }
-  // }, [isLoading, getCartData]);
   
   if (userString) {
     user = JSON.parse(userString)
@@ -172,7 +141,7 @@ const Header = () => {
                           src="../../../img/icon-cart.png"
                           alt=""
                         />
-                        <span></span>
+                        <span>{token ? cartQuantity : cartLocal}</span>
                   </Link>
                 </div>
                 {user ? (
