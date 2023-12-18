@@ -171,32 +171,84 @@ export const createOrder = async (req, res) => {
 
 
 
-
+// Cập nhật trạng thái đơn hàng.Nếu status == 2 tương đương là đơn hủy thì cập nhật lại số lượng đã bán và tồn kho của variants sản phẩm
 export const updateOrder = async (req, res) => {
     try {
         if (!req.params.id) {
             return res.status(400).json("Không tìm thấy order cần update !");
-        };
+        }
 
-        // const { error } = JoiOrder.validate(req.body, { abortEarly: false });
-        // if (error) {
-        //     const err = error.details[0].message;
-        //     return res.status(400).json({
-        //         message: "Lỗi joi ==> ",
-        //         err
-        //     });
-        // };
+        const orderId = req.params.id;
+        const newStatus = req.body.status;
 
-        const order = await Order.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
+        const order = await Order.findById(orderId);
+
+        if (!order) {
+            return res.status(404).json({
+                message: "Không tìm thấy Order!",
+            });
+        }
+
+        // Check if the order status is being updated
+        if (newStatus !== undefined && newStatus !== order.status) {
+            // Update order status
+            order.status = newStatus;
+            await order.save();
+
+            // Check if the new status is '2' (completed)
+            if (newStatus === '2') {
+                // Update product quantities for completed orders
+                await Promise.all(order.products.map(async (product) => {
+                    const colorId = await Color.findOne({ unicode: product.color }).select('_id');
+                    const sizeId = await Size.findOne({ name: product.size }).select('_id');
+
+                    const filter = {
+                        _id: product.productId,
+                        'variants.size_id': sizeId,
+                        'variants.color_id': colorId
+                    };
+
+                    const existingProduct = await Product.findOne(filter);
+
+                    if (!existingProduct) {
+                        return null;
+                    }
+
+                    const updatedProduct = await Product.findOneAndUpdate(
+                        {
+                            _id: product.productId,
+                            'variants': {
+                                $elemMatch: {
+                                    'size_id': sizeId,
+                                    'color_id': colorId
+                                }
+                            }
+                        },
+                        {
+                            $inc: {
+                                'variants.$.sell_quantity': -product.quantity,
+                                'variants.$.inventory': product.quantity
+                            }
+                        },
+                        { new: true }
+                    );
+
+                    updatedProduct.save();
+                }));
+            }
+        }
+
+        // Continue with the rest of the update logic...
         
         return res.status(200).json({
             message: "Đã cập nhật xong order",
             order
         });
     } catch (error) {
-        return res.status(404).json({ mesage: "lỗi update order !", error: error.message })
+        return res.status(404).json({ mesage: "lỗi update order !", error: error.message });
     }
 };
+
 
 export const removeOrder = async (req, res) => {
     try {
