@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetOrderByIdQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
-import { useGetOneUserQuery } from '../../../Services/Api_User';
+// import { useGetOneUserQuery } from '../../../Services/Api_User';
 import { Button, Popconfirm, message } from 'antd';
-import moment from 'moment';
+import Loading from '../../../Component/Loading';
+// import moment from 'moment';
 
 
 const DetailBill = () => {
     const { id } = useParams();
-    const { data } = useGetOrderByIdQuery(id || "");
+    const { data,isLoading } = useGetOrderByIdQuery(id || "");
     // const { data: user } = useGetOneUserQuery(data?.userId)
     const navigate = useNavigate();
 
@@ -60,7 +61,7 @@ const DetailBill = () => {
             case '2':
                 return { color: 'red' };
             case '3':
-                return { color: 'brown' };
+                return { color: '#FFD700' };
             case '4':
                 return { color: 'blue' };
             default:
@@ -70,135 +71,136 @@ const DetailBill = () => {
 
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div>
-                {data && (
-                    <div className='order' >
-                        <div style={{ margin: 25 }}>
-                            <div style={{ display: 'flex' }}>
-                                <div style={{ marginBottom: 40, marginRight: 200 }}>
-                                    <h2>Thông tin đơn hàng</h2>
-                                    <p>Mã đơn hàng: {data?.code_order}</p>
-                                    {/* <p>Tên khách hàng: {data?.userId?.username}</p> */}
-                                    <p>Tên khách hàng: {data?.name}</p>
-                                    <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
-                                    <p>Tổng giá trị đơn hàng: {data?.totalPrice.toLocaleString()}đ</p>
-                                    <p>Thời gian: {`${new Date(data?.createdAt).toLocaleTimeString()} | ${new Date(data?.createdAt).toLocaleDateString()}`}</p>
-                                    {/* <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p> */}
-                                </div>
-                                <div>
-                                    <h2>Địa chỉ giao hàng</h2>
-                                    {data?.address && (
-                                        <div>
-                                            <p>Thành phố: {data?.address?.city}</p>
-                                            <p>Quận/Huyện: {data?.address?.district}</p>
-                                            <p>Địa chỉ: {data?.address?.location}</p>
-                                        </div>
-                                    )}
-                                    <p>Người nhận: {data?.name}</p>
-                                    <p>Số điện thoại: {data?.phone}</p>
-                                    <p>Ghi chú: {data?.note}</p>
+            {isLoading ? <Loading /> : <div>
+                <div>
+                    {data && (
+                        <div className='order' >
+                            <div style={{ margin: 25 }}>
+                                <div style={{ display: 'flex' }}>
+                                    <div style={{ marginBottom: 40, marginRight: 200 }}>
+                                        <h3>Thông tin đơn hàng</h3>
+                                        <p style={{fontSize: 18}}>Mã đơn hàng: {data?.code_order}</p>
+                                        <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
+                                        <p style={{fontSize: 18}}>Tổng giá trị đơn hàng: {data?.totalPrice.toLocaleString()}đ</p>
+                                        <p style={{fontSize: 18}}>Thời gian: {`${new Date(data?.createdAt).toLocaleTimeString()} | ${new Date(data?.createdAt).toLocaleDateString()}`}</p>
+                                        {/* <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p> */}
+                                    </div>
+                                    <div style={{display: "block", margin: "0 auto"}}>
+                                        <h3>Địa chỉ giao hàng</h3>
+                                        {data?.address && (
+                                            <div>
+                                                <p style={{fontSize: 18}}>Thành phố: {data?.address?.city}</p>
+                                                <p style={{fontSize: 18}}>Quận/Huyện: {data?.address?.district}</p>
+                                                <p style={{fontSize: 18}}>Địa chỉ: {data?.address?.location}</p>
+                                            </div>
+                                        )}
+                                        <p style={{fontSize: 18}}>Người nhận: {data?.name}</p>
+                                        <p style={{fontSize: 18}}>Số điện thoại: {data?.phone}</p>
+                                        <p style={{fontSize: 18}}>Ghi chú: {data?.note}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div style={{ marginRight: 30, marginLeft: 30 }}>
-                            {/* <h2>Sản phẩm trong đơn hàng</h2> */}
-                            <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Mã sản phẩm</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Tên sản phẩm</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '15%', textAlign: 'center' }}>Ảnh</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '8%', textAlign: 'center' }}>Màu sắc</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%', textAlign: 'center' }}>Size</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '7%', textAlign: 'center' }}>Số lượng</th>
-                                        <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%', textAlign: 'center' }}>Giá</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data?.products?.map((product: any) => (
-                                        <tr key={product?._id}>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?._id}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?.name}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                                                {product?.productId?.imgUrl && (
-                                                    <img
-                                                        src={product?.productId?.imgUrl?.[0]}
-                                                        alt={product?.productId?.name}
-                                                        style={{ width: '100px', height: '100px' }}
-                                                    />
-                                                )}
-                                            </td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                                                <div
-                                                    style={{
-                                                        backgroundColor: product?.color,
-                                                        width: '20px',
-                                                        height: '20px',
-                                                        marginLeft: 'auto',
-                                                        marginRight: 'auto',
-                                                    }}
-                                                ></div>
-                                            </td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.size}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.quantity}</td>
-                                            <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.price.toLocaleString()}đ</td>
+                            <div style={{ marginRight: 30, marginLeft: 30 }}>
+                                {/* <h2>Sản phẩm trong đơn hàng</h2> */}
+                                <table style={{ borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed' }}>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Mã sản phẩm</th>
+                                            <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '20%', textAlign: 'center' }}>Tên sản phẩm</th>
+                                            <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '15%', textAlign: 'center' }}>Ảnh</th>
+                                            <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '8%', textAlign: 'center' }}>Màu sắc</th>
+                                            <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '5%', textAlign: 'center' }}>Size</th>
+                                            <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '7%', textAlign: 'center' }}>Số lượng</th>
+                                            <th style={{ border: '1px solid #ddd', padding: '8px', background: '#f2f2f2', width: '10%', textAlign: 'center' }}>Giá</th>
                                         </tr>
-                                    ))}
-                                    <tr style={{ marginTop: 20 }}>
-                                        <td colSpan={6} style={{ textAlign: 'right', fontWeight: 'bold', borderTop: '1px solid #ddd', padding: '8px' }}>Tổng tiền:</td>
-                                        <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>{data?.totalPrice.toLocaleString()}đ</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {data?.products?.map((product: any) => (
+                                            <tr key={product?._id}>
+                                                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?._id}</td>
+                                                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?.name}</td>
+                                                <td style={{ border: '1px solid #ddd', padding: '8px', display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                    {product?.productId?.imgUrl && (
+                                                        <img
+                                                            src={product?.productId?.imgUrl?.[0]}
+                                                            alt={product?.productId?.name}
+                                                            style={{ width: '100px', height: '100px' }}
+                                                        />
+                                                    )}
+                                                </td>
+                                                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
+                                                    <div
+                                                        style={{
+                                                            backgroundColor: product?.color,
+                                                            width: '20px',
+                                                            height: '20px',
+                                                            marginLeft: 'auto',
+                                                            marginRight: 'auto',
+                                                        }}
+                                                    ></div>
+                                                </td>
+                                                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.size}</td>
+                                                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.quantity}</td>
+                                                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.price.toLocaleString()}đ</td>
+                                            </tr>
+                                        ))}
+                                        <tr>
+                                            <td colSpan={6} style={{paddingTop: 30,textAlign: 'right', fontWeight: 600, borderTop: '1px solid #ddd', fontSize:18,color:"black" }}>Tổng tiền:</td>
+                                            <td style={{paddingTop: 30, textAlign: 'center', fontWeight: 600, fontSize:18,color:"black"}}>{data?.totalPrice.toLocaleString()}đ</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                )}
-            </div>
-            <div style={{ marginTop: 25 }}>
-                <Popconfirm
-                    title="Bạn có chắc chắn muốn xác nhận đơn hàng này?"
-                    onConfirm={() => handleConfirm()}
-                    okText="Yes"
-                    cancelText="No"
-                    disabled={data?.status === "2"}
-                >
-                    <Button
-                        style={{
-                            borderRadius: 10,
-                            height: 40,
-                            marginRight: 20
-                        }}
+                    )}
+                </div>
+                <div style={{ marginTop: 25,marginLeft:30 }}>
+                    <Popconfirm
+                        title="Bạn có chắc chắn muốn xác nhận đơn hàng này?"
+                        onConfirm={() => handleConfirm()}
+                        okText="Yes"
+                        cancelText="No"
                         disabled={data?.status === "2"}
-                        className={data?.status === "0" ? "confirm-button" : "disabled-button"}
                     >
-                        Xác nhận
-                    </Button>
-                </Popconfirm>
-                <Popconfirm
-                    title="Bạn có chắc chắn muốn hủy đơn hàng này?"
-                    onConfirm={() => handleCancel()}
-                    okText="Yes"
-                    cancelText="No"
-                    disabled={data?.status === "2"}
-                >
-                    <Button
-                        style={{
-                            borderRadius: 10,
-                            height: 40,
-                            marginRight: 20,
-                            marginTop: 10,
-                            marginBottom: 10
-                        }}
+                        <Button
+                            style={{
+                                borderRadius: 10,
+                                height: 40,
+                                marginRight: 20
+                            }}
+                            disabled={data?.status === "2" || data?.status === "4"}
+                            className={data?.status === "0" || data?.status === "1" || data?.status === "3" || data?.status === "4" ? "confirm-button" : "disabled-button"}
+                        >
+                            Xác nhận
+                        </Button>
+                    </Popconfirm>
+                    <Popconfirm
+                        title="Bạn có chắc chắn muốn hủy đơn hàng này?"
+                        onConfirm={() => handleCancel()}
+                        okText="Yes"
+                        cancelText="No"
                         disabled={data?.status === "2"}
-                        className={data?.status === "0" ? "cancel-button" : "disabled-button"}
                     >
-                        Hủy
+                        <Button
+                            style={{
+                                borderRadius: 10,
+                                height: 40,
+                                marginRight: 20,
+                                marginTop: 10,
+                                marginBottom: 10
+                            }}
+                            disabled={data?.status === "1" || data?.status === "2" || data?.status === '3' || data?.status === '4'}
+                            className={data?.status === "0" ? "cancel-button" : "disabled-button"}
+                        >
+                            Hủy
+                        </Button>
+                    </Popconfirm>
+                    <Button style={{ height: 40 }} htmlType="button" onClick={() => navigate("/admin/bill/list")}>
+                        Quay lại
                     </Button>
-                </Popconfirm>
-                <Button style={{ height: 40 }} htmlType="button" onClick={() => navigate("/admin/bill/list")}>
-                    Quay lại
-                </Button>
-            </div>
+                </div>
+            </div>}
+            
         </div>
     );
 };

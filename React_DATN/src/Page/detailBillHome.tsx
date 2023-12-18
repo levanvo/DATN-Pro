@@ -5,13 +5,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { IOrder } from '../Models/interfaces';
 import '../../css/user.css'
 import UserMenu from '../Component/UserMenu';
-import moment from 'moment';
+import Loading from '../Component/Loading';
+
 
 const BillDetailHome = () => {
     const navigate = useNavigate()
 
     const { id } = useParams();
-    const { data } = useGetOrderByIdQuery(id || "");
+    const { data,isLoading } = useGetOrderByIdQuery(id || "");
     console.log("dtaa", data)
 
     const [updateOrder] = useUpdateOrderMutation();
@@ -60,7 +61,7 @@ const BillDetailHome = () => {
             case '2':
                 return { color: 'red' };
             case '3':
-                return { color: 'brown' };
+                return { color: '#FFD700' };
             case '4':
                 return { color: 'blue' };
             default:
@@ -74,7 +75,7 @@ const BillDetailHome = () => {
         <div className='container_u'>
             {contextHolder}
             <UserMenu />
-            <div className='user_profile'>
+            {isLoading ? <Loading /> : <div className='user_profile'>
                 <div className="user_profile-head">
                     {/* <p style={{fontSize: 30}}>Đơn hàng Của Tôi</p> */}
                 </div>
@@ -84,27 +85,27 @@ const BillDetailHome = () => {
                             <div style={{ margin: 25 }}>
                                 <div style={{ display: 'flex' }}>
                                     <div style={{ marginBottom: 40, marginRight: 200 }}>
-                                        <h2>Thông tin đơn hàng</h2>
-                                        <p>Mã đơn hàng: {data?.code_order}</p>
+                                        <h3>Thông tin đơn hàng</h3>
+                                        <p style={{fontSize: 18}}>Mã đơn hàng: {data?.code_order}</p>
                                         {/* <p>Tên khách hàng: {data?.userId?.username}</p> */}
-                                        <p>Tên khách hàng: {data?.name}</p>
+                                        <p style={{fontSize: 18}}>Tên khách hàng: {data?.name}</p>
                                         <p style={getStatusColor(data?.status)}>Trạng thái: {getStatusText(data?.status)}</p>
-                                        <p>Tổng giá trị đơn hàng: {data?.totalPrice.toLocaleString()}đ</p>
+                                        <p style={{fontSize: 18}}>Tổng giá trị đơn hàng: {data?.totalPrice.toLocaleString()}đ</p>
                                         <p>Thời gian: {`${new Date(data?.createdAt).toLocaleTimeString()} | ${new Date(data?.createdAt).toLocaleDateString()}`}</p>
                                         {/* <p>Ngày cập nhật: {new Date(data?.updatedAt).toLocaleString()}</p> */}
                                     </div>
-                                    <div>
-                                        <h2>Địa chỉ giao hàng</h2>
+                                    <div style={{display: "block", margin: "0 auto"}}>
+                                        <h3>Địa chỉ giao hàng</h3>
                                         {data?.address && (
                                             <div>
-                                                <p>Thành phố: {data?.address?.city}</p>
-                                                <p>Quận/Huyện: {data?.address?.district}</p>
-                                                <p>Địa chỉ: {data?.address?.location}</p>
+                                                <p style={{fontSize: 18}}>Thành phố: {data?.address?.city}</p>
+                                                <p style={{fontSize: 18}}>Quận/Huyện: {data?.address?.district}</p>
+                                                <p style={{fontSize: 18}}>Địa chỉ: {data?.address?.location}</p>
                                             </div>
                                         )}
-                                        <p>Người nhận: {data?.name}</p>
-                                        <p>Số điện thoại: {data?.phone}</p>
-                                        <p>Ghi chú: {data?.note}</p>
+                                        <p style={{fontSize: 18}}>Người nhận: {data?.name}</p>
+                                        <p style={{fontSize: 18}}>Số điện thoại: {data?.phone}</p>
+                                        <p style={{fontSize: 18}}>Ghi chú: {data?.note}</p>
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +128,7 @@ const BillDetailHome = () => {
                                             <tr key={product?._id}>
                                                 <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?._id}</td>
                                                 <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.productId?.name}</td>
-                                                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
+                                                <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center',display: "flex", alignItems: "center", justifyContent: "center" }}>
                                                     {product?.productId?.imgUrl && (
                                                         <img
                                                             src={product?.productId?.imgUrl?.[0]}
@@ -152,9 +153,9 @@ const BillDetailHome = () => {
                                                 <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>{product?.price.toLocaleString()}đ</td>
                                             </tr>
                                         ))}
-                                        <tr style={{ marginTop: 20 }}>
-                                            <td colSpan={6} style={{ textAlign: 'right', fontWeight: 'bold', borderTop: '1px solid #ddd', padding: '8px' }}>Tổng tiền:</td>
-                                            <td style={{ padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>{data?.totalPrice.toLocaleString()}đ</td>
+                                        <tr>
+                                            <td colSpan={6} style={{ textAlign: 'right', fontWeight: 600, borderTop: '1px solid #ddd', paddingTop: 30,fontSize:18,color:"black" }}>Tổng tiền:</td>
+                                            <td style={{ paddingTop: 30, textAlign: 'center', fontWeight: 600,fontSize:18, color:"black" }}>{data?.totalPrice.toLocaleString()}đ</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -163,12 +164,6 @@ const BillDetailHome = () => {
                     )}
                 </div>
                 <div style={{ marginLeft: 30 }}>
-                    {/* <button style={{ borderRadius: 10, height: 40, marginRight: 20, backgroundColor: 'blue', color: 'white' }} onClick={() => onFinish({
-                    ...data,
-                    status: "1"
-                    })}>
-                        Xác nhận
-                    </button> */}
                     <Button
                         style={{ borderRadius: 10, height: 40, marginRight: 20, backgroundColor: isCancelButtonDisabled ? 'gray' : 'red', color: 'white' }}
                         onClick={() => onFinish({
@@ -177,13 +172,14 @@ const BillDetailHome = () => {
                         })}
                         disabled={isCancelButtonDisabled}
                     >
-                        Hủy mua
+                        Hủy
                     </Button>
                     <Button style={{ height: 40 }} htmlType="button" onClick={() => navigate("/order/view")}>
                         Quay lại
                     </Button>
                 </div>
-            </div>
+            </div>}
+            
         </div>
     );
 };

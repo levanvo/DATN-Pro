@@ -45,18 +45,9 @@ const orderApi = createApi({
       invalidatesTags: ["Order"]
     }),
 
-    updateOrder: builder.mutation<IOrder, IOrder>({
-      query: (order:IOrder) => ({
-        url: `/api/order/${order._id}/update`,
-        method: "PUT",
-        body: order,
-      }),
-      invalidatesTags: ["Order"]
-    }),
-
-    updatePatchOrder: builder.mutation<any, any>({
+    updateOrder: builder.mutation<any, any>({
       query: (order:any) => ({
-        url: `/api/orders/${order._id}/update`,
+        url: `/api/order/${order._id}/update`,
         method: "PATCH",
         body: order,
       }),
@@ -82,7 +73,6 @@ export const {
   useUpdateOrderMutation,
   useRemoveOrderMutation,
   useGetOneOrderUserQuery,
-  useUpdatePatchOrderMutation,
   useGetOrderByIdQuery
 } = orderApi;
 export default orderApi;
