@@ -18,7 +18,6 @@ router.get("/order/:id/user",checkPermissionOrder, getOneOrderUser);
 router.get("/order/:id", getOrdersById);
 router.post("/order",checkPermissionOrder, createOrder);
 router.delete("/order/:id", removeOrder);
-router.patch("/orders/:id/update", updateOrder);
-router.put("/order/:id/update", updateOrder);
+router.patch("/order/:id/update", updateOrder);
 
 export default router
