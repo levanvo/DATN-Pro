@@ -200,13 +200,13 @@ const handleResponse = (response: any) => {
         {isLoading ? <Loading /> : <div>
           <HighchartsChart chartData={chartData} />
           <div className='ml-9'>
-            <div style={{ fontSize: 16, color: 'black', fontWeight: 600 }}>
-              Tổng số lượng đơn hàng đã bán: {totalQuantitySold} đơn hàng
+            <div style={{ fontSize: 20, color: 'black', fontWeight: 600 }}>
+              Tổng số lượng đơn hàng đã bán: <samp className='text-red-600'>{totalQuantitySold} đơn hàng</samp>
             </div>
           </div>
-          <div className='ml-9'>
-            <div style={{ fontSize: 16, color: 'black', fontWeight: 600 }}>
-              Tổng doanh số: {totalRevenue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+          <div className='ml-9 mt-2'>
+            <div style={{ fontSize: 25, color: 'black', fontWeight: 600 }}>
+              Tổng doanh số: <samp className='text-red-600'> {totalRevenue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</samp>
             </div>
           </div>
         </div>}
