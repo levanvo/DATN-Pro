@@ -15,7 +15,7 @@ const Blog = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="blog-heading">
-                                <h2>From <strong> The Blog</strong></h2>
+                                <h2 className='front-bold text-sky-500'>Biến động hot các mẫu giày 2023</h2>
                             </div>
                         </div>
                     </div>

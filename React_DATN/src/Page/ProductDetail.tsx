@@ -142,7 +142,8 @@ const ProductDetail = () => {
       return;
     }
 
-    const totalAvailableQuantity = selectedVariant.quantity;
+    // const totalAvailableQuantity = selectedVariant.quantity;
+    const totalAvailableQuantity = selectedVariant.inventory
 
     if (getQuantityBuy < 1 || getQuantityBuy > totalAvailableQuantity) {
       message.error(`Số lượng không được vượt quá ${totalAvailableQuantity}`);
