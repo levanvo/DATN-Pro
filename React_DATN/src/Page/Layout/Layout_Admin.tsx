@@ -84,7 +84,7 @@ const items: MenuItem[] = [
   getItem('Banner', '14', <PicCenterOutlined />, undefined, 'slide/list'),
   // getItem("New Sletter", "10", <MailOutlined />, undefined, "new-sletter/list"),
   getItem("Mã giảm giá", "15", <MenuOutlined />, undefined, "discount/list"),
-  getItem("Bản tin", "16", <MailOutlined />, undefined, "new-sletter/list"),
+  // getItem("Bản tin", "16", <MailOutlined />, undefined, "new-sletter/list"),
   getItem("Nhật ký web", "17", <CalendarOutlined />, undefined, "blog/list"),
 ];
 
@@ -125,7 +125,7 @@ const Layout_Admin: React.FC = () => {
     localStorage.setItem("openKeys", JSON.stringify(keyPath.slice(1)));
   
     // Chuyển hướng đến URL tương ứng khi chọn menu
-    const matchingItem = items.find((item) => item.key === key);
+    const matchingItem:any = items.find((item:any) => item.key === key);
     if (matchingItem && matchingItem.url) {
       navigate(matchingItem.url);
     }

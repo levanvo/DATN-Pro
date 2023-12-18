@@ -17,8 +17,9 @@ const UserList = () => {
     const { data, isLoading }: any = useGetAllUserQuery();
 
     const [removeUser] = useRemoveUserMutation();
-
-    const dataUser = data?.data?.map(({ _id, username, password, email, role, imgUrl,phone,address }: any) => ({
+    const {_id}:any=localStorage.getItem("user")?JSON.parse(localStorage.getItem("user")):null;
+    
+    let dataUser = data?.data?.map(({ _id, username, password, email, role, imgUrl,phone,address }: any) => ({
         _id,
         username,
         password,
@@ -26,6 +27,9 @@ const UserList = () => {
         role,
         imgUrl,phone,address
     }))
+    if(!isLoading){
+        dataUser=dataUser.filter((items:any)=>items._id!=_id);
+    }
 
     const RemoveUser = (_id: string) => {
         removeUser(_id).unwrap().then(() => {

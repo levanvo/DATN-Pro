@@ -18,7 +18,7 @@ const ProductStatistics = () => {
   const fetchInitialData = () => {
     // Calculate the start date as 7 days ago from the current date
     const sevenDaysAgo = moment()
-      .subtract(3, "days")
+      .subtract(7, "days")
       .startOf("day")
       .format("YYYY-MM-DD");
     const currentDate = moment().endOf("day").format("YYYY-MM-DD");
@@ -154,7 +154,7 @@ const ProductStatistics = () => {
       {isLoading ? <Loading /> : <div>
         <HighchartsReact highcharts={Highcharts} options={options} />
         <div className='ml-9'>
-          <div style={{fontSize:16,color: "black",fontWeight: 600}}>Tổng số lượng sản phẩm đã bán: {totalQuantitySold} sản phẩm</div>
+          <div style={{fontSize:25,color: "black",fontWeight: 600}}>Tổng số lượng sản phẩm đã bán: <samp className='text-red-600'>{totalQuantitySold} sản phẩm</samp></div>
         </div>
       </div>}
       
