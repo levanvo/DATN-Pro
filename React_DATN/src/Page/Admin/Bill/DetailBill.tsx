@@ -60,7 +60,7 @@ const DetailBill = () => {
             case '2':
                 return { color: 'red' };
             case '3':
-                return { color: 'brown' };
+                return { color: '#FFD700' };
             case '4':
                 return { color: 'blue' };
             default:
