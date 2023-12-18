@@ -180,7 +180,7 @@ select option:checked {
 .comments {}
 
 .comment_detail {
-  width: 65%;
+  /* width: 65%; */
   border-bottom: 1px solid #efefef;
 margin-bottom: 22px;
 }
@@ -242,7 +242,7 @@ margin-bottom: 22px;
 }
 
 .comment_form {
-  width: 65%;
+  /* width: 65%; */
   margin-top: 20px;
 }
 
@@ -253,13 +253,15 @@ margin-bottom: 22px;
 
 .comment_form button {
   display: block;
-  background-color: #a4e5ff;
+  background-color: #00b7ff;
   float: right;
   padding: 10px 20px;
   margin-top: 10px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   border-radius: 6px;
   overflow: hidden;
+  color: white;
+  font-weight: bold;
 }
 
 .ratings{

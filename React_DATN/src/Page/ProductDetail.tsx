@@ -686,7 +686,7 @@ const ProductDetail = () => {
                       role="tablist"
                     >
                       <li role="presentation" className="text-xl font-medium">
-                        Product Description
+                        Mô tả sản phẩm
                       </li>
                     </ul>
 
@@ -710,7 +710,7 @@ const ProductDetail = () => {
           </div>
 
           <div className="single-product-tab-area cm">
-            <h2 className="cm_title">Comments</h2>
+            <h2 className="cm_title">Đánh giá</h2>
 
             <div className="comments">
               {displayedComments?.map((comment: any) => (
@@ -789,14 +789,14 @@ const ProductDetail = () => {
               ))}
 
               {loadMoreVisible && (
-                 <button className="loadmore_btn" onClick={handleLoadMore}>Load More...</button>
+                 <button className="loadmore_btn" onClick={handleLoadMore} style={{backgroundColor: '#00b7ff', color: 'white', display: 'block', margin: '0 auto'}}>Xem thêm...</button>
               )}
                
               <div className="comment_form">
                 {currentUser?._id ?
                   (<form onSubmit={handleSubmit}>
-                    <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your comment" maxLength={200} cols={110} rows={2} />
-                    <button type="submit" disabled={isLoadingcm}>Send</button>
+                    <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your comment" maxLength={200} cols={174} rows={5} />
+                    <button type="submit" disabled={isLoadingcm} >Gửi</button>
                     {messagecm && <p>{messagecm}</p>}
                   </form>) : (<p>Vui lòng đăng nhập để bình luận.</p>)}
 

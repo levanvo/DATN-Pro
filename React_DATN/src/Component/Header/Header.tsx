@@ -122,7 +122,7 @@ const Header = () => {
                   <a href="/cart">
                     <img
                       className="active:scale-90 "
-                      src="img/icon-cart.png"
+                      src="../../../img/icon-cart.png"
                       alt=""
                     />
                   </a>

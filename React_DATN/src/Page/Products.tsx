@@ -259,7 +259,7 @@ const Products = () => {
                     </select>
                   </div>
                 </div>
-                <button onClick={handleResetFilter} style={{width: '90%', backgroundColor: 'red', color: 'white', marginTop: '20px'}}>Reset Filter</button>
+                <button onClick={handleResetFilter} style={{width: '90%', backgroundColor: 'red', color: 'white', marginTop: '20px'}}>Đặt lại</button>
                 <div className="banner-left">
                   <a href="#">
                     <img src="img/product/banner_left.jpg" alt="" />
