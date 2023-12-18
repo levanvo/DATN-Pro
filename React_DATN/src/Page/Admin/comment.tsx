@@ -151,7 +151,7 @@ import {
         ),
       },
       {
-        title: "Content",
+        title: "Nội dung",
         dataIndex: "content",
         key: "content",
         filterDropdown: ({
@@ -177,7 +177,7 @@ import {
               ref={searchInputRef}
             />
             <Button
-              type="primary"
+              
               onClick={() => handleSearch(selectedKeys, confirm, "content")}
               size="small"
               style={{ width: 90, marginRight: 8 }}
@@ -230,7 +230,7 @@ import {
                 style={{ width: "50px", marginRight: "10px" }}
               />
             )}
-            {product?.name ?? "N/A"}
+            {<a className="text-gray-500" href={`/product/${product._id}`}>{product?.name}</a> ?? "N/A"}
           </div>
         ),
         filterDropdown: ({
@@ -258,7 +258,6 @@ import {
               ref={searchInputRef}
             />
             <Button
-              type="primary"
               onClick={() => handleSearch(selectedKeys, confirm, "productId")}
               size="small"
               style={{ width: 90, marginRight: 8 }}
@@ -332,7 +331,6 @@ import {
               ref={searchInputRef}
             />
             <Button
-              type="primary"
               onClick={() => handleSearch(selectedKeys, confirm, "userId")}
               size="small"
               style={{ width: 90, marginRight: 8 }}
