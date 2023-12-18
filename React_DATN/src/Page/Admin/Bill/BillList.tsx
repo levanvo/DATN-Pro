@@ -35,7 +35,7 @@ const BillList = () => {
     });
   };
 
-  const handleNameOrCodeFilter = (e) => {
+  const handleNameOrCodeFilter = (e: any) => {
     const filterValue = deburr(e.target?.value); // Loại bỏ các dấu trong chuỗi
     setFilterNameOrCode(filterValue);
   };

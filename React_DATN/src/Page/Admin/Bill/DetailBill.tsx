@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetOrderByIdQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
-import { useGetOneUserQuery } from '../../../Services/Api_User';
+// import { useGetOneUserQuery } from '../../../Services/Api_User';
 import { Button, Popconfirm, message } from 'antd';
-import moment from 'moment';
+// import moment from 'moment';
 
 
 const DetailBill = () => {
