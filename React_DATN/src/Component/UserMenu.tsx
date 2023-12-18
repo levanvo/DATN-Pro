@@ -28,8 +28,8 @@ const UserMenu = () => {
         <div className="menu_list">
         <Link to={`/user/${id}`} className='df mb-2'><MdManageAccounts className="icon_profile"/> <span className='menu_list-name'>Hồ sơ</span></Link>
         <Link to="/order/view" className='df mb-2'><img src="https://down-vn.img.susercontent.com/file/f0049e9df4e536bc3e7f140d071e9078" className='menu_list-img' alt="" /> <span className='menu_list-name'>Đơn hàng</span></Link>
-        <Link to="/user" className='df mb-2'><MdNotificationsActive className="icon_profile"/> <span className='menu_list-name'>Thông báo</span></Link>
-        <Link to="/user" className='df mb-2'><img src="https://down-vn.img.susercontent.com/file/84feaa363ce325071c0a66d3c9a88748" className='menu_list-img' alt="" /> <span className='menu_list-name'>Voucher</span></Link>
+        {/* <Link to="/user" className='df mb-2'><MdNotificationsActive className="icon_profile"/> <span className='menu_list-name'>Thông báo</span></Link>
+        <Link to="/user" className='df mb-2'><img src="https://down-vn.img.susercontent.com/file/84feaa363ce325071c0a66d3c9a88748" className='menu_list-img' alt="" /> <span className='menu_list-name'>Voucher</span></Link> */}
         </div>
       </div>
     </>

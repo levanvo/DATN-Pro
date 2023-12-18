@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
 import Select from "react-select"
 import vietnamData from "../Services/vietnamData"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { message } from "antd"
 import { useAddOrderMutation } from "../Services/Api_Order"
-import { useAddOrderItemMutation } from "../Services/Api_OrderItem"
-import { useCreatePaymentMutation } from "../Services/Api_VNP";
+import { useCreatePaymentMutation } from "../Services/Api_VNP"
 import {
   useGetDiscountsQuery,
   useUpdateDiscountMutation,
@@ -14,34 +13,36 @@ import { IDiscount, IUser } from "../Models/interfaces"
 import { useGetAllUserQuery, useUpdateUserMutation } from "../Services/Api_User"
 import moment from "moment"
 import { Modal, Table, Button } from "antd"
+import Loading from "../Component/Loading"
 
 const Checkout = () => {
   const { data: users } = useGetAllUserQuery()
   const [updateUser] = useUpdateUserMutation()
   const [updateDiscount] = useUpdateDiscountMutation()
+  const navigate=useNavigate();
   // kiểm tra ng dùng có chọn sử dụng mã giảm giá không
   const [isVisible, setIsVisible] = useState(false)
   const location = useLocation()
   const { selectedProducts } = location.state || {}
-  const [addOrder, { error }] = useAddOrderMutation()
-  const [messageApi, contexHolder] = message.useMessage()
-  const [nameError, setNameError] = useState("")
-  const [phoneError, setPhoneError] = useState("")
-  const [cityError, setCityError] = useState("")
-  const [districtError, setDistrictError] = useState("")
-  const [addressError, setAddressError] = useState("")
-  const [selectedCity, setSelectedCity] = useState(null)
-  const [selectedDistrict, setSelectedDistrict] = useState(null)
-  const name = (document.getElementById("name") as HTMLInputElement)?.value
-  const phone = (document.getElementById("phone") as HTMLInputElement)?.value
-  const address = (document.getElementById("address") as HTMLInputElement)
-    ?.value
-  const [addOrderItem] = useAddOrderItemMutation()
+  const [addOrder, { error }]:any = useAddOrderMutation()
+  const [messageApi, contexHolder]:any = message.useMessage()
+  const [nameError, setNameError]:any = useState("")
+  const [phoneError, setPhoneError]:any = useState("")
+  const [cityError, setCityError]:any = useState("")
+  const [districtError, setDistrictError]:any = useState("")
+  const [addressError, setAddressError]:any = useState("")
+  const [selectedCity, setSelectedCity]:any = useState(null)
+  const [selectedDistrict, setSelectedDistrict]:any = useState(null)
+  const [phone, setphone]:any = useState(null)
+  const [name, setname]:any = useState(null)
+  const [address, setaddress]:any = useState(null)
+  const [isLoadingSeen, setIsLoadingSeen] = useState(false);
+
+
   const [createPayment] = useCreatePaymentMutation()
   const [localCart, setLocalCart] = useState<any[]>(
     JSON.parse(localStorage.getItem("cart") || "[]")
   )
-
 
   //-----  DISCOUNT
 
@@ -49,7 +50,9 @@ const Checkout = () => {
   const [discountCode, setDiscountCode] = useState("")
   const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null) // Update initial state value
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const enteredDiscount = Array.isArray(discounts) ? discounts?.find((d) => d.code === discountCode) : "không có data discount"
+  const enteredDiscount:any = Array.isArray(discounts)
+    ? discounts?.find((d) => d.code === discountCode)
+    : "không có data discount"
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -60,11 +63,28 @@ const Checkout = () => {
   }
 
   const storedUser = localStorage.getItem("user")
-  const emailUser = storedUser ? JSON.parse(storedUser).email : "";
+  const emailUser = storedUser ? JSON.parse(storedUser).email : ""
 
-  const currentUser = Array.isArray(users) ? users.find((user) => user.email === emailUser) : null;
+  const currentUser = Array.isArray(users)
+    ? users.find((user) => user.email === emailUser)
+    : null
 
+    let userData:any = {};
+
+    if (storedUser) {
+      const { username, email,  address, phone} = JSON.parse(storedUser);
+      userData = {
+        name: username,
+        email: email,
+        address: address,
+        phone: phone
+      };
+    }
   const handleUseDiscount = (selectedDiscount: any) => {
+    if (moment().isBefore(selectedDiscount.startDate)) {
+      message.warning("Mã giảm giá chưa đến thời gian sử dụng!")
+      return
+    }
     // Cập nhật giá trị discountCode
     setDiscountCode(selectedDiscount.code)
 
@@ -74,11 +94,12 @@ const Checkout = () => {
 
   const handleApplyDiscount = () => {
     if (enteredDiscount) {
-      if (moment().isBefore(enteredDiscount?.startDate)) {
-        message.warning("Mã giảm giá chưa đến thời gian sử dụng!")
+      if (moment().isAfter(enteredDiscount?.expiresAt)) {
+        message.warning("Mã giảm giá hết thời gian sử dụng!")
         return
       }
-      const isDiscountUsed = currentUser?.discountUsed.includes(discountCode) || false
+      const isDiscountUsed =
+        currentUser?.discountUsed.includes(discountCode) || false
       if (isDiscountUsed) {
         message.warning("Mã giảm giá đã được sử dụng.")
       } else if (enteredDiscount.quantity > 0) {
@@ -104,13 +125,10 @@ const Checkout = () => {
     }
   }
 
-  // tổng tiền 
+  // tổng tiền
   const calculateTotalPrice = () => {
     let totalPrice = Array.isArray(selectedProducts)
-      ? selectedProducts.reduce(
-        (acc, product) => acc + product.price,
-        0
-      )
+      ? selectedProducts.reduce((acc, product) => acc + product.price, 0)
       : 0
 
     let discountType = null
@@ -166,9 +184,9 @@ const Checkout = () => {
           {" "}
           {amountDiscount
             ? amountDiscount.toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })
+                style: "currency",
+                currency: "VND",
+              })
             : "0 ₫"}
         </p>
       ),
@@ -181,9 +199,9 @@ const Checkout = () => {
           Giá trị đơn hàng tối thiểu có thể áp dụng:{" "}
           {minimumOrderAmount
             ? minimumOrderAmount.toLocaleString("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            })
+                style: "currency",
+                currency: "VND",
+              })
             : "0₫"}
         </p>
       ),
@@ -234,7 +252,7 @@ const Checkout = () => {
   ]
 
   const dataDiscounts = Array.isArray(discounts)
-    ? discounts.filter((item: IDiscount) => moment().isAfter(item.startDate))
+    ? discounts.filter((item: IDiscount) => moment().isBefore(item.expiresAt))
     : []
 
   const subtotal = Array.isArray(selectedProducts)
@@ -248,15 +266,13 @@ const Checkout = () => {
   // Lấy danh sách quận/huyện dựa trên tỉnh/thành phố đã chọn
   const getDistricts = () => {
     if (selectedCity) {
-      const city = vietnamData.find((item) => item.value === selectedCity.value);
+      const city = vietnamData.find((item) => item.value === selectedCity.value)
       if (city) {
-        return city.districts;
+        return city.districts
       }
     }
-    return null; // Hoặc trả về một mảng trống hoặc xử lý phù hợp
-  };
-
-
+    return null // Hoặc trả về một mảng trống hoặc xử lý phù hợp
+  }
 
   //validate khi người dùng nhập dữ liệu từ bàn phím
   const handleInputChange = (field: any, value: any) => {
@@ -265,6 +281,7 @@ const Checkout = () => {
         if (!value) {
           setNameError("Họ và tên không được để trống.")
         } else {
+          setname(value)
           setNameError("")
         }
         break
@@ -275,6 +292,7 @@ const Checkout = () => {
           setPhoneError("Số điện thoại không hợp lệ")
         } else {
           setPhoneError("")
+          setphone(value)
         }
         break
       case "address":
@@ -282,14 +300,23 @@ const Checkout = () => {
           setAddressError("Địa chỉ không được để trống")
         } else {
           setAddressError("")
+          setaddress(value)
         }
         break
 
       default:
         break
-    }
+    } 
   }
 
+  useEffect(()=>{
+    if(userData){
+      setname(userData.name)
+      setphone(userData.phone)
+      setaddress(userData.address)
+    }
+  },[]);
+  
   const validatePhoneNumber = (phoneNumber: string) => {
     const phoneRegex = /^0[0-9]{9}$/
     return phoneRegex.test(phoneNumber)
@@ -355,6 +382,7 @@ const Checkout = () => {
 
   // Sử lý tạo đơn hàng
   const handlePlaceOrder = async () => {
+    setIsLoadingSeen(true);
     try {
       const token = localStorage.getItem("token")
       if (token) {
@@ -368,17 +396,20 @@ const Checkout = () => {
 
         if (!name || !phone || !selectedCity || !selectedDistrict || !address) {
           message.error("Vui lòng điền đầy đủ thông tin")
+          setIsLoadingSeen(false)
           return
         }
 
-        const orderData = {
+        const orderData:any = {
           cartId: cartId,
           products: productId.map((id: string, index: number) => ({
             productId: id,
+            name:selectedProducts[index].name,
             quantity: quantity[index],
             price: selectedProducts[index].price,
             color: selectedProducts[index].color,
             size: selectedProducts[index].size,
+            imgUrl: selectedProducts[index].imgUrl
           })),
           name:
             (document.getElementById("name") as HTMLInputElement)?.value || "",
@@ -397,13 +428,17 @@ const Checkout = () => {
           totalPrice: totalPrice,
         }
 
-        if (selectedMethod == 'transfer') {
-            const urlPay = await createPayment(orderData);
-            localStorage.setItem('orderData', JSON.stringify(orderData));
-            window.location.href = urlPay.data.data;
-        }else{
-          // console.log(orderData);
+        if (selectedMethod == "transfer") {
+          const urlPay:any = await createPayment(orderData)
+          localStorage.setItem("orderData", JSON.stringify(orderData))
+          window.location.href = urlPay.data.data
+        } else {
           await addOrder(orderData)
+          message.success("Đặt hàng thành công");
+          setIsLoadingSeen(false);
+          setTimeout(()=>{
+            navigate('/order/view')
+          },2000);
         }
 
         if (currentUser) {
@@ -414,7 +449,7 @@ const Checkout = () => {
               password: currentUser.password,
               email: currentUser.email,
               discountUsed: [...currentUser.discountUsed, String(discountCode)],
-            });
+            })
           }
         }
         if (enteredDiscount) {
@@ -437,6 +472,7 @@ const Checkout = () => {
 
         if (!name || !phone || !selectedCity || !selectedDistrict || !address) {
           message.error("Vui lòng điền đầy đủ thông tin")
+          setIsLoadingSeen(false);
           return
         }
 
@@ -445,9 +481,11 @@ const Checkout = () => {
           products: productId.map((id: string | number, index: number) => ({
             productId: id,
             quantity: quantity[index],
+            name:selectedProducts[index].name,
             price: selectedProducts[index].price,
             color: selectedProducts[index].color,
             size: selectedProducts[index].size,
+            imgUrl: selectedProducts[index].imgUrl
           })),
           name:
             (document.getElementById("name") as HTMLInputElement)?.value || "",
@@ -472,31 +510,74 @@ const Checkout = () => {
             0
           ),
         }
-        // await addOrderItem(orderItemData)
-        await addOrder(orderItemData)
 
-        message.success("Đặt hàng thành công")
-        const updatedLocalCart = localCart.filter(
-          (item) => !cartId.includes(item.id)
-        )
-        localStorage.setItem("cart", JSON.stringify(updatedLocalCart))
+        if (selectedMethod == "transfer") {
+          const urlPay:any = await createPayment(orderItemData)
+          window.location.href = urlPay.data.data
+          localStorage.setItem("orderItemData", JSON.stringify(orderItemData))
+
+          let arrayGuests:any=[];
+          const getLocalStorege:any=localStorage.getItem("orderItemData");
+          const orderGuests:any=localStorage.getItem("orderGuests");
+          if(orderGuests==null){
+            arrayGuests.push(orderItemData.products)
+            localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
+            message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
+          }else{
+            const dataGuests:any=JSON.parse(orderGuests);
+            arrayGuests=[...dataGuests,orderItemData.products]
+            localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
+            message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
+          }
+        } else {
+          await addOrder(orderItemData)
+          setIsLoadingSeen(false);
+          const updatedLocalCart = localCart.filter(
+            (item) => !cartId.includes(item.id)
+          )
+          localStorage.setItem("cart", JSON.stringify(updatedLocalCart))
+
+          let arrayGuests:any=[];
+          const getLocalStorege:any=localStorage.getItem("orderItemData");
+          const orderGuests:any=localStorage.getItem("orderGuests");
+          if(orderGuests==null){
+            arrayGuests.push(orderItemData.products)
+            localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
+            message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
+            setTimeout(()=>{
+              navigate("/guests");
+            },1500)
+          }else{
+            const dataGuests:any=JSON.parse(orderGuests);
+            arrayGuests=[...dataGuests,orderItemData.products]
+            localStorage.setItem("orderGuests", JSON.stringify(arrayGuests))
+            message.success("Đặt hàng thành công, quay lại sảnh trong giây lát")
+            setTimeout(()=>{
+              navigate("/guests");
+            },1500)
+          }
+        }
       }
     } catch (error) {
-      console.log(error);
-      
+      console.log(error)
+      setIsLoadingSeen(false);
     }
   }
+
 
   // lựa chọn hình thức tt
   const [selectedMethod, setSelectedMethod] = useState("cod")
 
-  const handlePaymentMethodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePaymentMethodChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSelectedMethod(event.target.value)
   }
 
   return (
     <div className="w-[90vw] mx-auto mt-44">
       {contexHolder}
+      {isLoadingSeen && <Loading/>}
       <div className="checkout-area">
         <div className="container">
           <h2 className="checkout_title">Checkout</h2>
@@ -586,14 +667,14 @@ const Checkout = () => {
                         {appliedDiscount.percentage > 0
                           ? `Bạn được giảm ${appliedDiscount.percentage}%`
                           : appliedDiscount.amountDiscount > 0
-                            ? `Bạn được giảm ${appliedDiscount.amountDiscount.toLocaleString(
+                          ? `Bạn được giảm ${appliedDiscount.amountDiscount.toLocaleString(
                               "vi-VN",
                               {
                                 style: "currency",
                                 currency: "VND",
                               }
                             )}`
-                            : "Không xác định"}
+                          : "Không xác định"}
                         )
                         <button onClick={handleRemoveDiscount} className="ml-2">
                           Xóa
@@ -629,6 +710,7 @@ const Checkout = () => {
                 type="text"
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 onBlur={() => handleInputBlur("name", name)}
+                defaultValue={userData.name || ""}
                 id="name"
                 placeholder="Họ tên của bạn"
               />
@@ -645,6 +727,7 @@ const Checkout = () => {
                 type="text"
                 onChange={(e) => handleInputChange("phone", e.target.value)}
                 onBlur={() => handleInputBlur("phone", phone)}
+                defaultValue={userData.phone || ""}
                 id="phone"
                 placeholder="Số điện thoại của bạn"
               />
@@ -696,6 +779,7 @@ const Checkout = () => {
                 className="form_checkout-inp"
                 type="text"
                 onChange={(e) => handleInputChange("address", e.target.value)}
+                defaultValue={userData.address || ""}
                 onBlur={() => handleInputBlur("address", address)}
                 id="address"
                 placeholder="Ví dụ: Số 20, ngõ 20"
@@ -766,18 +850,6 @@ const Checkout = () => {
                       onChange={handlePaymentMethodChange}
                     />
                     <label htmlFor="transfer">Chuyển khoản ngân hàng</label>
-                    <div
-                      className="transfer_extend"
-                      style={{
-                        display:
-                          selectedMethod === "transfer" ? "block" : "none",
-                      }}
-                    >
-                      <span>Quét mã qua ứng dụng Ngân hàng/ Ví điện tử</span>
-                      <div className="qr_code">
-                        <img src="../../img/codeqr_.png" alt="" />
-                      </div>
-                    </div>
                   </li>
                 </ul>
               </div>

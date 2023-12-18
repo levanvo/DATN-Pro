@@ -489,7 +489,14 @@
 .selector-Views {
 
   & h3{
-    font-family: fantasy;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+}
+
+.selector-Products {
+
+  & h3{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
 }
 
@@ -566,3 +573,21 @@
   display: flex;
 }
 
+.borderChooseColor{
+  border: 3px solid rgb(246, 246, 246);
+}
+
+.dataGuestsShell:hover .dataGuests{
+  display: block;
+}
+
+.dataGuests{
+  position: absolute;
+  z-index: 10;
+  width: 160px;
+  background: #909090;
+  border-radius: 5px;
+  color: rgb(228, 228, 228);
+  align-items: center;
+  display: none;
+}

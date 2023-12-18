@@ -1,6 +1,5 @@
 import Product from "../models/product.js"
 import Category from "../models/category.js"
-import DeletedProduct from "../models/deletedData.js"
 import { productSchema } from "../schema/product.js"
 import mongoose from "mongoose"
 import Color from "../models/color.js"
@@ -52,6 +51,8 @@ export const getProduct = async (req, res) => {
   }
 }
 
+
+// thêm biến thể sản phẩm
 export const createProductVariant = async (req, res) => {
   const productId = req.params.id;
 
@@ -65,12 +66,17 @@ export const createProductVariant = async (req, res) => {
       });
     }
 
-    // Assuming you have the variant data in the request body
     const variantData = req.body;
     
-    // Add the variant to the variants array in the product
-    product.variants.push(variantData);
-    product.variants.isDeleted = false;
+    const newVariant = {
+      ...variantData,
+      _id: new mongoose.Types.ObjectId(), 
+      isDeleted: false,
+    };
+
+  
+    product.variants.push(newVariant);
+   
     if (variantData.imgUrl && Array.isArray(variantData.imgUrl)) {
       product.imgUrl = product.imgUrl.concat(variantData.imgUrl);
     }
@@ -196,7 +202,6 @@ export const createProduct = async (req, res) => {
 export const removeProduct = async (req, res) => {
   try {
     const { id } = req.params
-    console.log(req.body)
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         message: "Không tìm thấy sản phẩm cần xóa",
@@ -212,12 +217,6 @@ export const removeProduct = async (req, res) => {
 
     productToBeDeleted.isDeleted = true;
     await productToBeDeleted.save();
-
-    // await Cart.updateMany(
-    //   { "products.productId": productToBeDeleted._id },
-    //   { $pull: { products: { productId: productToBeDeleted._id } } }
-    // ).exec();
-
 
     return res.status(200).json({
       message: "Xóa sản phẩm thành công",
@@ -359,118 +358,29 @@ export const getHotProducts = async (req, res) => {
 }
 
 
-export const getProductList = async (req, res) => {
-  try {
-    const products = await Product.find({})
-        .populate({
-          path: 'variants',
-          populate: [
-            { path: 'size_id', model: 'Size' },
-            { path: 'color_id', model: 'Color' }
-          ]
-        }).exec();
-
-    if (products.length === 0) {
-      return res.status(400).json({
-        message: "Không có sản phẩm nào",
-      });
-    }
-    for (const product of products) {
-      let quantityTotal = 0;
-      let sell_quantity = 0;
-
-      // Iterate through each variant of the product
-      for (const variant of product.variants) {
-        // Calculate total quantities for each product
-        quantityTotal += variant.quantity || 0;
-        sell_quantity += variant.sell_quantity || 0;
-
-        // Calculate inventory for each variant
-        variant.inventory = (variant.quantity || 0) - (variant.sell_quantity || 0);
-      }
-
-      // Set total quantities for each product
-      product.quantityTotal = quantityTotal;
-      product.sell_quantity = sell_quantity;
-
-      // Calculate and set inventoryTotal for each product
-      product.inventoryTotal = quantityTotal - sell_quantity;
-    }
-
-
-    return res.status(200).json(products);
-  } catch (error) {
-    return res.status(404).json({
-      message: error.message,
-    });
-  }
-};
-
-export const toggleProductStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        message: "Không tìm thấy sản phẩm cần cập nhật" + id,
-      });
-    }
-
-    const existingProduct = await Product.findById(id);
-
-    if (!existingProduct) {
-      return res.status(400).json({
-        message: "Sản phẩm không tồn tại trong database",
-      });
-    }
-
-    // Kiểm tra nếu trường isDeleted là true thì đặt thành false, ngược lại
-    existingProduct.isDeleted = existingProduct.isDeleted ? false : true;
-
-    const updatedProduct = await existingProduct.save();
-
-    return res.status(200).json({
-      message: `Sản phẩm đã được ${existingProduct.isDeleted ? 'xóa' : 'khôi phục'}`,
-      productUpdated: updatedProduct,
-    });
-  } catch (error) {
-    return res.status(404).json({
-      message: error.message,
-    });
-  }
-};
-
-
+// xóa biến thể sản phẩm
 export const deleteVariant = async (req, res) => {
   try {
-    const { productId, variantId } = req.body;
+    const { id } = req.params;
+    const { variantId } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(productId) || isNaN(parseInt(variantId)) || parseInt(variantId) < 0) {
+    const result = await Product.updateOne(
+      { _id: id, "variants._id": variantId },
+      { $set: { "variants.$.isDeleted": true } }
+    );
+
+    if (result.nModified === 0) {
       return res.status(400).json({
-        message: "ID sản phẩm hoặc ID variant không hợp lệ",
-        data: req.body
+        message: "Biến thể không tồn tại trong sản phẩm",
       });
     }
 
-
-    const product = await Product.findById(productId);
-
-    if (!product) {
-      return res.status(400).json({
-        message: "Không tìm thấy sản phẩm cần xóa variant",
-      });
-    }
-
-    // Lọc ra các variants có id không phải là variantId
-
-    // Gán lại mảng variants mới cho product
-    product.variants = product.variants.splice(variantId, 1);
-
-    await product.save();
+    // Lấy sản phẩm sau khi cập nhật
+    const updatedProduct = await Product.findById(id);
 
     return res.status(200).json({
-      message: "Xóa variant thành công",
-      data: product
+      message: "Xóa biến thể thành công",
+      product: updatedProduct,
     });
   } catch (error) {
     return res.status(500).json({
@@ -479,41 +389,3 @@ export const deleteVariant = async (req, res) => {
   }
 };
 
-
-export const reportProduct = async (req, res) => {
-  try {
-    const product = await Product.findById({ _id: req.params.id })
-      .exec();
-
-    if (!product) {
-      return res.status(400).json({
-        message: "Không có sản phẩm nào",
-      });
-    }
-
-    // Thêm trường quantityTotal, sell_quantity_total, inventory_total cho sản phẩm
-    product.quantityTotal = 0;
-    product.sell_quantity = 0;
-
-    // Duyệt qua từng biến thể và tính tổng
-    for (const variant of product.variants) {
-      // Thiết lập giá trị mặc định cho sell_quantity nếu không tồn tại
-      variant.sell_quantity = variant.sell_quantity || 0;
-
-      // Tính tổng quantityTotal và sell_quantity
-      product.quantityTotal += variant.quantity;
-      product.sell_quantity += variant.sell_quantity;
-
-      // Thêm trường inventory cho mỗi biến thể
-      variant.inventory = variant.quantity - variant.sell_quantity;
-    }
-
-    // Thêm trường inventory_total cho sản phẩm
-    product.inventoryTotal = product.quantityTotal - product.sell_quantity;
-    return res.status(200).json(product);
-  } catch (error) {
-    return res.status(404).json({
-      message: error.message,
-    });
-  }
-};

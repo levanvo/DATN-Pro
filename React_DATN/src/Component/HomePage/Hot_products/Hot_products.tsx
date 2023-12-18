@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import {  useGetHotProductsQuery } from '../../../Services/Api_Product'
 import { IProduct } from '../../../Models/interfaces';
-
+import { Link } from 'react-router-dom';
+import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
 const Hot_products = () => {
     const { data: productData, isError, isLoading }: any = useGetHotProductsQuery()
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -48,19 +49,19 @@ const Hot_products = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="section-heading">
-                                <h2>Sản phẩm HOT</h2>
+                                <h2>Sản PHẨM HOT</h2>
                             </div>
                         </div>
                     </div>
                     <div className="row">
                         <div className="relative">
                             <div className="overflow-hidden">
-                                <div className="flex justify-center product_host">
+                                <div className="flex justify-center">
                                     {visibleProducts.map((product: IProduct) => {
                                         return (
-                                            <div className='product_host-items' key={product._id}>
-                                                <a href={`/product/${product._id}`} >
-                                                    <div className="single-product">
+                                            <div className='ml-2' key={product._id}>
+                                                <Link to={`/product/${product._id}`} >
+                                                    <div className="single-product w-[280px] h-auto">
                                                         <div className="level-pro-new">
                                                             <span>HOT</span>
                                                         </div>
@@ -69,52 +70,19 @@ const Hot_products = () => {
                                                                 <img
                                                                     src={product.imgUrl?.[0]}
                                                                     alt=""
-                                                                    className="primary-img h-[300px] w-[250px]"
+                                                                    className="primary-img h-[300px] w-[280px]"
                                                                 />
                                                                 <img
                                                                     src={product.imgUrl?.[1]}
                                                                     alt=""
-                                                                    className="secondary-img"
+                                                                    className="secondary-img h-[300px] w-[280px]"
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="actions">
-                                                            <button
-                                                                type="submit"
-                                                                className="cart-btn"
-                                                                title="Add to cart"
-                                                            >
-                                                                add to cart
-                                                            </button>
-                                                            <ul className="add-to-link">
-                                                                <li>
-                                                                    <a
-                                                                        className="modal-view"
-                                                                        data-target="#productModal"
-                                                                        data-bs-toggle="modal"
-                                                                        href="#"
-                                                                    >
-                                                                        {" "}
-                                                                        <i className="fa fa-search"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fa fa-heart-o"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fa fa-refresh"></i>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                        <div className="product-price">
+                                                      
+                                                        <div className="product-price -mt-3">
                                                             <div className="product-name">
-                                                                <h1 className='product-name-overflow'>{product.name}</h1>
+                                                                <h1>{product.name}</h1>
                                                                 <p>Lượt xem: {product.views}</p>
                                                             </div>
                                                             <div className="price-rating">
@@ -131,25 +99,25 @@ const Hot_products = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </a>
+                                                </Link>
                                             </div>
                                         );
                                     })}
                                 </div>
                             </div>
                             <div className=' text-2xl'>
-                                <button
-                                    className="absolute top-1/2 transform -translate-y-1/2 hover:bg-gray-300 left-[-20px] rounded-full shadow cursor-pointer"
+                                <div
+                                    className="absolute scale-150 top-1/2 transform -translate-y-1/2 left-[-20px] rounded-full shadow cursor-pointer"
                                     onClick={handlePrevClick}
                                 >
-                                    {'<'}
-                                </button>
-                                <button
-                                    className="absolute top-1/2 transform -translate-y-1/2  hover:bg-gray-300 right-[-20px] rounded-full shadow cursor-pointer"
+                                    <LeftCircleOutlined/>
+                                </div>
+                                <div
+                                    className="absolute scale-150 top-1/2 transform -translate-y-1/2  right-[-20px] rounded-full shadow cursor-pointer"
                                     onClick={handleNextClick}
                                 >
-                                    {'>'}
-                                </button>
+                                    <RightCircleOutlined />
+                                </div>
                             </div>
                         </div>
                     </div>

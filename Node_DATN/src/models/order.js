@@ -18,8 +18,12 @@ const orderSchema = new mongoose.Schema({
           },
           quantity: Number,
           price: Number,
+          name:String,
           color: String,
-          size: String
+          size: String,
+          imgUrl: [
+            {type: String}
+          ]
         }
       ],
     name: String,

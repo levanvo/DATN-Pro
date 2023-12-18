@@ -3,14 +3,14 @@ import { useGetAllProductQuery } from "../Services/Api_Product";
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useGetAllCategoryQuery } from "../Services/Api_Category";
-import { useGetAllSizeQuery } from "../Services/Api_Size";
 import { useGetColorsQuery } from "../Services/Api_Color";
 import { Button } from "antd";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Loading from "../Component/Loading";
+import { useGetAllSizeQuery } from "../Services/Api_Size";
 
 const Products = () => {
-  const { data: producData, isLoading:isLoadingData, error } = useGetAllProductQuery();
+  const { data: producData, isLoading: isLoadingData, error } = useGetAllProductQuery();
   const { data: categoryData, error: errorCategory } = useGetAllCategoryQuery();
   const { data: sizeData, error: errorSize } = useGetAllSizeQuery();
   const { data: colorData, error: errorColor } = useGetColorsQuery();
@@ -30,7 +30,7 @@ const Products = () => {
   const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
   const [selectedPriceRange, setSelectedPriceRange] = useState<string | undefined>(undefined);
-  
+
 
   const handlePriceRangeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
@@ -52,10 +52,10 @@ const Products = () => {
   };
 
   const filteredProduct = producData ? producData.filter((product: IProduct) => {
-  
+
     const isCategoryMatch = !selectedCategory || product.categoryId === selectedCategory;
-    const isSizeMatch = !selectedSize || product.variants?.some(variant => variant.size_id._id === selectedSize)
-    const isColorMatch = !selectedColor || product.variants?.some(variant => variant.color_id._id === selectedColor);
+    const isSizeMatch = !selectedSize || product.variants?.some((variant: any) => variant.size_id._id === selectedSize);
+    const isColorMatch = !selectedColor || product.variants?.some((variant: any) => variant.color_id._id === selectedColor);
     const isPriceRangeMatch = !selectedPriceRange || isPriceInRange(product.price, selectedPriceRange);
     const isNameMatch = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -84,7 +84,7 @@ const Products = () => {
 
   // Phân trang
   const [currentPage, setCurrentPage] = useState(0);
-  const [productsPerPage, setProductsPerPage] = useState(5);
+  const [productsPerPage, setProductsPerPage] = useState(6);
 
 
   const totalProducts = sortedProducts?.length || 0;
@@ -114,8 +114,16 @@ const Products = () => {
   if (errorCategory || errorSize || errorColor || error) {
     return <div>Error</div>;
   }
+
+  // Xử lý sự kiện khi click vào nút reset filter
+  const handleResetFilter = () => {
+    setSelectedCategory(undefined);
+    setSelectedSize(undefined);
+    setSelectedColor(undefined);
+    setSelectedPriceRange(undefined);
+  };
   return (
-    <div className="w-[90vw] mx-auto">
+    <div className="w-[90vw] mx-auto" style={{ marginTop: '10%' }}>
       {isLoadingData && <Loading />}
       <div className="product-banner">
         <img src="img/product/banner.jpg" alt="" />
@@ -147,15 +155,20 @@ const Products = () => {
                 </div>
                 <div className="single-sidebar">
                   <div className="single-sidebar-title">
-                    <h3>Sản Phảm</h3>
+                    <h3>Thương hiệu</h3>
                   </div>
                   {/*Load dữ liệu Category */}
                   <div className="single-sidebar-content">
                     {categoryData?.map((category: ICategory) => {
+                      const isSelected = selectedCategory === category._id;
                       return (
-                        <Button
-                          className={`hover:bg-red-500 ${selectedCategory === category._id ? "bg-red-500 text-white" : ""
-                            }`}
+                        <button
+                          style={{
+                            backgroundColor: isSelected ? "#FF0000" : "white",
+                            border: isSelected ? "1px solid #FF0000" : "1px solid",
+                            color: isSelected ? "white" : "black",
+                          }}
+                          className={`hover:bg-red-500 hover:text-white m-1 ${isSelected ? "bg-red-500 text-white" : ""}`}
                           key={category._id}
                           onClick={() => {
                             if (selectedCategory === category._id) {
@@ -166,31 +179,7 @@ const Products = () => {
                           }}
                         >
                           {category.name}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="single-sidebar">
-                  <div className="single-sidebar-title">
-                    <h3>Màu Sắc</h3>
-                  </div>
-                  <div className="single-sidebar-content">
-                    {colorData?.map((color: IColor) => {
-                      return (
-                        <Button
-                          className={`hover:bg-red-500 ${selectedColor === color._id ? "bg-red-500 text-white" : ""}`}
-                          key={color._id}
-                          onClick={() => {
-                            if (selectedColor === color._id) {
-                              setSelectedColor(undefined);
-                            } else {
-                              setSelectedColor(color._id);
-                            }
-                          }}
-                        >
-                          {color.name}
-                        </Button>
+                        </button>
                       );
                     })}
                   </div>
@@ -201,10 +190,15 @@ const Products = () => {
                   </div>
                   <div className="single-sidebar-content">
                     {sizeData?.map((size: ISize) => {
+                      const isSelected = selectedSize === size._id;
                       return (
-                        <Button
-                          className={`hover:bg-red-500 ${selectedSize === size._id ? "bg-red-500 text-white" : ""
-                            }`}
+                        <button
+                          style={{
+                            backgroundColor: isSelected ? "#FF0000" : "white",
+                            border: isSelected ? "1px solid #FF0000" : "1px solid",
+                            color: isSelected ? "white" : "black",
+                          }}
+                          className={`hover:bg-red-500 hover:text-white m-1 ${isSelected ? "bg-red-500 text-white" : ""}`}
                           key={size._id}
                           onClick={() => {
                             if (selectedSize === size._id) {
@@ -215,17 +209,44 @@ const Products = () => {
                           }}
                         >
                           {size.name}
-                        </Button>
+                        </button>
                       );
                     })}
                   </div>
                 </div>
+                <div className="single-sidebar">
+                  <div className="single-sidebar-title">
+                    <h3>Màu Sắc</h3>
+                  </div>
+                  <div className="single-sidebar-content" >
+                    {colorData?.map((color: IColor) => {
+                      const isSelected = selectedColor === color._id;
+                      return (
+                        <button
+                          style={{ marginRight: 9, marginBottom: 10, backgroundColor: color.unicode, boxShadow: isSelected ? "0 0 5px 2px rgba(255, 0, 0, 0.5)" : "none", }}
+                          className={`hover:bg-red-500 ${selectedColor === color._id ? "bg-red-500 text-white" : ""}`}
+                          key={color._id}
+                          onClick={() => {
+                            if (selectedColor === color._id) {
+                              setSelectedColor(undefined);
+                            } else {
+                              setSelectedColor(color._id);
+                            }
+                          }}
+                        >
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div className="single-sidebar price">
                   <div className="single-sidebar-title">
                     <h3>Khoảng giá</h3>
                   </div>
                   <div className="single-sidebar-content">
                     <select
+                      className="w-[90%] px-4 py-2 border border-gray-300 rounded-md text-base bg-white"
                       name="priceRange"
                       onChange={handlePriceRangeChange}
                       value={selectedPriceRange}
@@ -238,6 +259,7 @@ const Products = () => {
                     </select>
                   </div>
                 </div>
+                <button onClick={handleResetFilter} style={{width: '90%', backgroundColor: 'red', color: 'white', marginTop: '20px'}}>Reset Filter</button>
                 <div className="banner-left">
                   <a href="#">
                     <img src="img/product/banner_left.jpg" alt="" />
@@ -248,16 +270,16 @@ const Products = () => {
             <div className="col-lg-9">
               <div className="product-bar">
                 <div className="sort-by">
-                  <label>Sort By Price: </label>
+                  <label>Giá: </label>
                   <select
                     name="sort"
                     onChange={handleSortChange}
                     value={sortOption}
                   >
                     <option value="ascending" selected>
-                      Ascending
+                      Thấp đến cao
                     </option>
-                    <option value="decrease">Decrease</option>
+                    <option value="decrease">Cao đến thấp </option>
                   </select>
                 </div>
                 <div className="limit-product">
@@ -267,12 +289,11 @@ const Products = () => {
                     onChange={handleProductsPerPageChange}
                     value={productsPerPage}
                   >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
+                    <option value="6">6</option>
+                    <option value="9">9</option>
+                    <option value="12">12</option>
                     <option value="15">15</option>
-                    <option value="20">20</option>
                   </select>
-                  per page
                 </div>
               </div>
               {/* Nhập dữ liệu category */}
@@ -292,7 +313,7 @@ const Products = () => {
                                 className="col-lg-4 col-md-6"
                                 key={product._id}
                               >
-                                <a href={`/product/${product._id}`}>
+                                <Link to={`/product/${product._id}`}>
                                   <div className="single-product">
                                     <div className="level-pro-new">
                                       <span>new</span>
@@ -311,40 +332,7 @@ const Products = () => {
                                         />
                                       </div>
                                     </div>
-                                    <div className="actions">
-                                      <button
-                                        type="submit"
-                                        className="cart-btn"
-                                        title="Add to cart"
-                                      >
-                                        add to cart
-                                      </button>
-                                      <ul className="add-to-link">
-                                        <li>
-                                          <a
-                                            className="modal-view"
-                                            data-target="#productModal"
-                                            data-bs-toggle="modal"
-                                            href="#"
-                                          >
-                                            {" "}
-                                            <i className="fa fa-search"></i>
-                                          </a>
-                                        </li>
-                                        <li>
-                                          <a href="#">
-                                            {" "}
-                                            <i className="fa fa-heart-o"></i>
-                                          </a>
-                                        </li>
-                                        <li>
-                                          <a href="#">
-                                            {" "}
-                                            <i className="fa fa-refresh"></i>
-                                          </a>
-                                        </li>
-                                      </ul>
-                                    </div>
+
                                     <div className="product-price">
                                       <div className="product-name">
                                         <h1>{product.name}</h1>
@@ -358,12 +346,12 @@ const Products = () => {
                                           <i className="fa fa-star"></i>
                                           <i className="fa fa-star"></i>
                                           <i className="fa fa-star"></i>
-                                          <i className="fa fa-star-half-o"></i>
+                                          <i className="fa fa-star"></i>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                </a>
+                                </Link>
                               </div>
                             );
                           })
@@ -382,10 +370,10 @@ const Products = () => {
                     breakClassName={"break-me"}
                     pageCount={pageCount}
                     marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
+                    pageRangeDisplayed={6}
                     onPageChange={handlePageChange}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
+                    containerClassName={"paginations"}
+                    activeClassName={"actives"}
                   />
                 </div>
               </div>

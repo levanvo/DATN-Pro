@@ -1,7 +1,6 @@
 import Order from "../models/order.js"
 import Cart from "../models/cart.js"
 import Product from "../models/product.js"
-import mongoose from "mongoose";
 import Color from "../models/color.js"
 import Size from "../models/size.js"
 
@@ -21,7 +20,9 @@ export const getAllOrders = async (req, res) => {
     }
 };
 
-export const getOneOrders = async (req, res) => {
+
+//lấy ra chi tiết đơn hàng theo id
+export const getOrdersById = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id).populate("products.productId").populate({path: "userId", select: "username"});
         if (!order) {
@@ -42,7 +43,7 @@ export const getUserOrders = async (req, res) => {
 
     try {
         if(req.user){
-            const orders = await Order.find({ userId }).populate("products.productId").populate({path: "userId", select: "username"});
+            const orders = await Order.find({ userId }).populate("products.productId").populate({path: "userId", select: "username"}).sort({ createdAt: -1 });
             if(orders.length === 0){
                 return res.status(400).json({
                     message: "Bạn chưa có đơn hàng nào"
@@ -57,8 +58,8 @@ export const getUserOrders = async (req, res) => {
 };
 
 
-
-export const getOneOrder = async (req, res) => {
+// lấy ra đơn hàng theo user
+export const getOneOrderUser = async (req, res) => {
     const userId = req.user ? req.user._id : null;
     const orderId = req.params.id;
 
@@ -102,7 +103,9 @@ export const createOrder = async (req, res) => {
 
         const codeOrder = generateRandomCode();
 
-        const order = await Order.create({ ...req.body, userId, code_order: codeOrder });
+       
+        const order = await Order.create({ ...req.body, userId, code_order: codeOrder});
+
         const productIdsToDelete = req.body.cartId;
 
         if (req.user) {
@@ -130,7 +133,6 @@ export const createOrder = async (req, res) => {
 
 
             if (!existingProduct) {
-                console.log('không tìm thấy biến thể sản phẩm. Bỏ qua cập nhật cho:', product);
                 return null; 
             }
 
@@ -184,12 +186,8 @@ export const updateOrder = async (req, res) => {
         //         err
         //     });
         // };
-        console.log('body' , req.body);
 
         const order = await Order.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true });
-        
-        
-        console.log('order', order);
         
         return res.status(200).json({
             message: "Đã cập nhật xong order",

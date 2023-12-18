@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import {
   GoldOutlined,
   PieChartOutlined,
@@ -14,12 +14,19 @@ import {
   CalendarOutlined,
   MailOutlined,
   MenuOutlined,
+  DollarOutlined,
+  FundViewOutlined,
+  ReconciliationOutlined
 } from "@ant-design/icons"
 import type { MenuProps } from "antd"
 import { Breadcrumb, Layout, Menu, Modal, message, theme } from "antd"
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Link, useNavigate } from "react-router-dom"
 import { FaAngleDown } from "react-icons/fa"
 import { IoMdLogOut } from "react-icons/io"
+import { FcSalesPerformance } from "react-icons/fc";
+import { MdInsertEmoticon } from "react-icons/md";
+import { AiOutlineThunderbolt } from "react-icons/ai";
+
 
 const { Header, Content, Footer, Sider } = Layout
 
@@ -45,41 +52,91 @@ const user = JSON.parse(localStorage.getItem("user") || "{}")
 const isStaff = user?.role === "staff"
 
 const items: MenuItem[] = [
-  getItem("Thống kê", "0", <BarChartOutlined />, undefined, "/admin"),
+  getItem('Tổng quan', '0', <HomeOutlined />, undefined, '/admin'),
+  getItem("Thống kê", "1", <BarChartOutlined />, [
+    getItem("Doanh số", "2", <FcSalesPerformance />, undefined, "/admin/revenue-statistics"),
+    getItem("Sản phẩm đã bán", "3", <PieChartOutlined />, undefined, "/admin/product-statistics"),
+    getItem("Trạng thái đơn hàng", "4", <MdInsertEmoticon />, undefined, "/admin/statusPr"),
+    getItem("Top 10 Sản Phẩm", "5", <AiOutlineThunderbolt />, undefined, "/admin/top10-product"),
+  ]),
   getItem("Kho", "sub1", <HddOutlined />, [
     getItem(
       "Sản phẩm",
-      "1",
+      "6",
       <DeploymentUnitOutlined />,
       undefined,
       "product/list"
     ),
-    getItem("Màu", "2", <FormatPainterOutlined />, undefined, "color/list"),
-    getItem("Kích thước", "3", <PieChartOutlined />, undefined, "size/list"),
+    getItem("Màu", "7", <FormatPainterOutlined />, undefined, "color/list"),
+    getItem("Kích thước", "8", <PieChartOutlined />, undefined, "size/list"),
     getItem(
       "Khôi phục sản phẩm",
-      "4",
+      "9",
       <ContainerOutlined />,
       undefined,
       "restore-product-data"
     ),
   ]),
-  getItem('Bình luận', '5', <EditOutlined />, undefined, 'comment/list'),
-  getItem('Danh mục', '6', <GoldOutlined />, undefined, 'category/list'),
-  getItem('Tài khoản', '7', <UserOutlined />, undefined, 'user/list'),
-  getItem('Hóa đơn', '8', <HddOutlined />, undefined, 'bill/list'),
-  getItem('Slide', '9', <PicCenterOutlined />, undefined, 'slide/list'),
+  getItem('Bình luận', '10', <EditOutlined />, undefined, 'comment/list'),
+  getItem('Danh mục', '11', <GoldOutlined />, undefined, 'category/list'),
+  getItem('Tài khoản', '12', <UserOutlined />, undefined, 'user/list'),
+  getItem('Hóa đơn', '13', <HddOutlined />, undefined, 'bill/list'),
+  getItem('Banner', '14', <PicCenterOutlined />, undefined, 'slide/list'),
   // getItem("New Sletter", "10", <MailOutlined />, undefined, "new-sletter/list"),
-  getItem("Discount", "11", <MenuOutlined />, undefined, "discount/list"),
-  getItem("Bản tin", "12", <MailOutlined />, undefined, "new-sletter/list"),
-  getItem("Nhật ký web", "13", <CalendarOutlined />, undefined, "blog/list"),
+  getItem("Mã giảm giá", "15", <MenuOutlined />, undefined, "discount/list"),
+  getItem("Bản tin", "16", <MailOutlined />, undefined, "new-sletter/list"),
+  getItem("Nhật ký web", "17", <CalendarOutlined />, undefined, "blog/list"),
 ];
 
 const Layout_Admin: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(["0"]);
+  const [openKeys, setOpenKeys] = useState<string[]>([]); // Thêm state để lưu trạng thái mở/rút mục con
+  const navigate = useNavigate();
+
   const {
     token: { colorBgContainer },
-  } = theme.useToken()
+  } = theme.useToken();
+
+
+  useEffect(() => {
+    // Lấy giá trị từ localStorage khi component được mount
+    const storedSelectedKeys = localStorage.getItem("selectedKeys");
+    const storedOpenKeys = localStorage.getItem("openKeys");
+  
+    if (storedSelectedKeys) {
+      setSelectedKeys(JSON.parse(storedSelectedKeys));
+    }
+    if (storedOpenKeys) {
+      setOpenKeys(JSON.parse(storedOpenKeys));
+    }
+  }, []);
+  
+
+
+
+  const handleMenuSelect = ({ key, keyPath }: any) => {
+    // Cập nhật trạng thái khi menu được chọn
+    setSelectedKeys([key]);
+    setOpenKeys(keyPath.slice(1));
+  
+    // Lưu vào localStorage
+    localStorage.setItem("selectedKeys", JSON.stringify([key]));
+    localStorage.setItem("openKeys", JSON.stringify(keyPath.slice(1)));
+  
+    // Chuyển hướng đến URL tương ứng khi chọn menu
+    const matchingItem = items.find((item) => item.key === key);
+    if (matchingItem && matchingItem.url) {
+      navigate(matchingItem.url);
+    }
+  };
+  
+
+  const handleOpenChange = (keys: string[]) => {
+    setOpenKeys(keys);
+    localStorage.setItem("openKeys", JSON.stringify(keys));
+  };
+  
 
   // logout
   const [visible, setVisible] = useState(false);
@@ -122,7 +179,7 @@ const Layout_Admin: React.FC = () => {
             </a>
           </div>
           <hr />
-          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter((item: any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7') : items} />
+          <Menu theme="dark" defaultSelectedKeys={['0']} mode="inline" items={isStaff ? items.filter((item: any) => item.key !== 'sub1' && item.key !== '6' && item.key !== '7' && item.key !== '11' && item.key !== '10') : items} />
         </Sider>
         <Layout>
           <Header className="headerAdmin" style={{ height: 80, width: "100%" }} >
@@ -168,9 +225,6 @@ const Layout_Admin: React.FC = () => {
               <Outlet />
             </div>
           </Content>
-          {/* <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2023 Created by Ant UED
-          </Footer> */}
         </Layout>
       </Layout>
     </div>

@@ -18,6 +18,7 @@ const Header = () => {
   const userString = localStorage.getItem("user")
   const VerifyAccount = localStorage.getItem("token")
   const navigate = useNavigate()
+  const [cartStatus,setCartStatus]:any=useState(false);
 
 
   if (userString) {
@@ -57,7 +58,7 @@ const Header = () => {
   useEffect(() => {
     // Lấy dữ liệu từ localStorage
     const storedUser = localStorage.getItem('user');
-
+    const cartST:any=localStorage.getItem("orderGuests");
     if (storedUser) {
       // Chuyển đổi chuỗi JSON thành đối tượng JavaScript
       const userObj = JSON.parse(storedUser);
@@ -68,8 +69,19 @@ const Header = () => {
       // Đặt giá trị _id vào state
       setUserId(_id);
     }
+    if(cartST){
+      setCartStatus(true)
+    }else{
+      setCartStatus(false)
+    }
   }, []);
 
+  const hasDataGuests=()=>{
+    cartStatus ?
+    window.location.href="/guests"
+    :
+    message.warning("Bạn chưa có đơn hàng nào, hãy mua sản phẩm hoặc đăng kí 1 tài khoản !")
+  }
 
   return (
     <header className="_header-web">
@@ -179,12 +191,18 @@ const Header = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="account-menu">
+                  <div className={`account-menu relative dataGuestsShell`}>
                     <Link to={`/login`}>
                       <UserOutlined
                         style={{ fontSize: "24px", color: "black" }}
                       />
                     </Link>
+                    
+                    <div className='dataGuests'>
+                      <a href="/register" className='text-gray-300 hover:text-gray-100'><p className='text-center mt-[11px] mb-[2px] hover:text-gray-100'>Đăng kí</p></a>
+                      <a href="/login" className='text-gray-300 hover:text-gray-100'><p className='text-center mb-[3px] hover:text-gray-100'>Đăng nhập</p></a>
+                      <p onClick={()=>hasDataGuests()} className='text-center cursor-pointer hover:text-gray-100'>Đơn hàng đã đặt</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -198,10 +216,8 @@ const Header = () => {
             <div className="col-lg-3">
               <div className="logo">
                 <a href="/">
-                  <img
-                    className="w-36 h-[140px] mx-auto"
-                    src="../../../img/Logo DATN.png"
-                    alt=""
+                  <img style={{width: 280}}
+                    src="../../../img/logo.png"
                   />
                 </a>
               </div>
@@ -270,7 +286,7 @@ const Header = () => {
         open={isLogoutModalVisible}
         onOk={() => handleLogoutConfirmation(true)}
         onCancel={() => handleLogoutConfirmation(false)}
-        okText="Đăng xuất"
+        okText={<span className='-ml-[6px]'>Đăng xuất</span>}
         cancelText="Hủy"
         okButtonProps={{ style: { backgroundColor: "red" } }}
       >

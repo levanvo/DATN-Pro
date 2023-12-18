@@ -1,11 +1,12 @@
 import React from 'react';
-import { useGetAllOrdersQuery, useGetUserOrdersQuery } from '../Services/Api_Order';
-import { Divider, Table } from 'antd';
+import { useGetAllOrdersQuery, useGetUserOrdersQuery, useUpdateOrderMutation } from '../Services/Api_Order';
+import { Divider, Table, message } from 'antd';
 import Loading from '../Component/Loading';
 import { Link } from 'react-router-dom';
 import { IOrder } from '../Models/interfaces';
 import '../../css/user.css'
 import UserMenu from '../Component/UserMenu';
+import moment from 'moment';
 
 const Bill = () => {
   const { data, isLoading, error } = useGetUserOrdersQuery(undefined);
@@ -13,35 +14,44 @@ const Bill = () => {
   const dataSource = data?.map((order: IOrder) => ({
     key: order._id,
     code_order: order?.code_order,
-    userId: order?.userId?.username || "",
-    createdAt: order?.createdAt,
+    userId: order?.userId?.username || "Khách hàng",
+    createdAt: moment(order?.createdAt).format('DD-MM-YYYY | HH:mm'),
     status: order?.status,
   }));
 
+  const [updateOrder] = useUpdateOrderMutation();
+
+  const handleConfirmOrder = (orderId: string) => {
+    updateOrder({ _id: orderId, status: "4" })
+      .unwrap()
+      .then(() => {
+        console.log("Đơn hàng đã được xác nhận thành công.");
+        message.success("Đơn hàng đã được xác nhận thành công.");
+      })
+      .catch((error) => {
+        console.error("Lỗi khi xác nhận đơn hàng:", error);
+      });
+  };
+
   const columns = [
     {
-      title: 'Code_order',
+      title: 'Mã đơn hàng',
       dataIndex: 'code_order',
       key: 'code_order',
     },
-    // {
-    //   title: 'Address',
-    //   render: (record: any) =>
-    //     `${record.address.city}, ${record.address.district}, ${record.address.location}`,
-    //   key: 'address',
-    // },
+
     {
-      title: 'Create by',
+      title: 'Tên khách hàng',
       dataIndex: 'userId',
       key: 'userId',
     },
     {
-      title: 'Created At',
+      title: 'Ngày tạo đơn hàng',
       dataIndex: 'createdAt',
       key: 'createdAt',
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (status: any) => (
@@ -51,9 +61,14 @@ const Bill = () => {
       ),
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       render: (record: any) => (
-        <Link to={`detail/${record.key}`}>Chi tiết</Link>
+        <>
+          <button style={{ width: 180, marginRight: 20, backgroundColor: record.status === '4' ? 'gray' : '#3F8CFF', color: 'white', borderRadius: 10 }} onClick={() => handleConfirmOrder(record.key)} disabled={record.status === '4'}>
+            Xác nhận đã nhận hàng
+          </button>
+          <Link style={{border: '1px solid white', padding: 10, borderRadius: 10, backgroundColor: '#3F8CFF', color: 'white'}} to={`detail/${record.key}`}>Chi tiết</Link>
+        </>
       ),
       key: 'actions',
     },
@@ -95,7 +110,7 @@ const Bill = () => {
   return (
     <div className='container_u'>
       <UserMenu />
-      <div className='user_profile'>
+      {isLoading ? <Loading /> : <div className='user_profile'>
         <div className="user_profile-head">
           <p>Đơn hàng Của Tôi</p>
         </div>
@@ -105,7 +120,8 @@ const Bill = () => {
             dataSource={dataSource}
           />
         </div>
-      </div>
+      </div>}
+      
     </div>
   );
 };

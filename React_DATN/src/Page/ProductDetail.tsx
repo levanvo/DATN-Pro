@@ -21,6 +21,9 @@ import { useCreateCommentMutation, useDeleteCommentByAdminMutation, useDeleteCom
 import { useGetUserOrdersQuery } from "../Services/Api_Order";
 import { MdDeleteForever } from "react-icons/md";
 import { FaTools } from "react-icons/fa";
+import parse from 'html-react-parser';
+import { format } from "date-fns";
+
 
 type Variant = {
   color_id: {
@@ -29,7 +32,6 @@ type Variant = {
   size_id: {
     name: string;
   };
-  // Other properties of your variant
 }
 
 const ProductDetail = () => {
@@ -41,19 +43,19 @@ const ProductDetail = () => {
   const [getColor, setColor]: any = useState("");
   const [getSize, setSize]: any = useState("");
   const { id } = useParams();
-  const { data: allProducts }: any = useGetAllProductQuery();
+  const { data: allProducts, isLoading: loadingProducts }: any = useGetAllProductQuery();
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
   const [addToCart] = useAddToCartMutation()
   const { data: cartData, error } = useGetCartQuery()
   const { data: getAllSize } = useGetAllSizeQuery()
   const [imgUrl, setImgUrl] = useState<any[]>([]);
+  const [totalVariant, setTotalVariant]: any = useState(0); //sau khi chọn size lập tức hiện số lượng của biến thể đó
 
 
-  
   useEffect(() => {
     let arrSize = [];
     arrSize = productDataOne?.variants.map((variant: any) => {
-      if(variant.color_id.unicode === getColor){
+      if (variant.color_id.unicode === getColor) {
         return variant.size_id.name;
       }
     });
@@ -64,45 +66,61 @@ const ProductDetail = () => {
 
 
   let arrayPR: any = [];
-  const arrayRelate = productDataOne?.categoryId.products;
-  if (arrayRelate) {
+  const arrayRelate = productDataOne?.categoryId;
+  if (!isLoadingProduct && !loadingProducts) {
     for (let i = 0; i < arrayRelate.length; i++) {
       allProducts?.map((product: any) => {
-        if (product._id == arrayRelate[i]) {
+        if (product.categoryId == arrayRelate) {
           arrayPR.push(product);
         };
       });
     };
   };
   arrayPR = arrayPR.filter((item: any) => item._id != id);
+  function filterUniqueObjectsById(array: any, key: any) {
+    return array.filter((obj: any, index: any, self: any) =>
+      index === self.findIndex((o: any) => o[key] === obj[key])
+    );
+  }
 
+  arrayPR = filterUniqueObjectsById(arrayPR, '_id');
+
+
+  // Sử lý chọn màu sắc hiện ra size tương ứng
   const ChooseColor = (color: any, indColor: number) => {
     setColor(color);
     setIndexSlider(indColor);
-  
+
     // Find the corresponding image URL for the selected color
     const selectedVariant = productDataOne?.variants.find(
       (variant: any) => variant.color_id.unicode === color
     );
     const selectedImgUrl = selectedVariant ? selectedVariant.imgUrl : "";
-  
+
     setImgUrl(selectedImgUrl);
-    
+
     const sizesForColor = productDataOne?.variants
       .filter((variant: any) => variant.color_id.unicode === color)
       .map((variant: any) => variant.size_id.name);
-  
     setSizeByColor(sizesForColor);
   };
 
-
+  // Chọn size
   const ChooseSize = (size: any) => {
     setSize(size);
+    const selectedVariant = productDataOne?.variants.find(
+      (variant: Variant) => variant.color_id.unicode === getColor && variant.size_id.name === size
+    );
+    const totalAvailableQuantity = selectedVariant.quantity;
+    setTotalVariant(totalAvailableQuantity);
   };
 
+  // giảm số lượng
   const Minus = () => {
     getQuantityBuy > 1 && setQuantityBuy(getQuantityBuy - 1)
   };
+
+  // tăng số lượng
   const Plus = () => {
     setQuantityBuy(getQuantityBuy + 1)
   };
@@ -115,16 +133,16 @@ const ProductDetail = () => {
     }
 
     const selectedVariant = productDataOne?.variants.find(
-      (variant:Variant) => variant.color_id.unicode === getColor && variant.size_id.name === getSize
+      (variant: Variant) => variant.color_id.unicode === getColor && variant.size_id.name === getSize
     );
-  
+
     if (!selectedVariant) {
       message.error("Không tìm thấy biến thể phù hợp. Vui lòng kiểm tra lại.");
       return;
     }
-  
+
     const totalAvailableQuantity = selectedVariant.quantity;
-  
+
     if (getQuantityBuy < 1 || getQuantityBuy > totalAvailableQuantity) {
       message.error(`Số lượng không được vượt quá ${totalAvailableQuantity}`);
       return;
@@ -137,7 +155,7 @@ const ProductDetail = () => {
 
       // thực hiện lần đầu tiên kiểm tra khi tài khoản chưa thêm vào giỏ hàng thực hiện thêm mới
       if (cartData === undefined || cartData?.products.length === 0) {
-         addToCart({
+        addToCart({
           productId: productDataOne._id,
           imgUrl: imgUrl,
           color: getColor,
@@ -148,7 +166,7 @@ const ProductDetail = () => {
 
         message.success("Đã thêm sản phẩm vào giỏ hàng")
       } else {
-        const productItemIndex = cartData.products.findIndex((product: any) => product.productId._id == productDataOne._id && product.color == getColor && product.size == getSize);
+        const productItemIndex = cartData.products.findIndex((product: any) => product.productId?._id == productDataOne._id && product.color == getColor && product.size == getSize);
         console.log(productItemIndex);
 
         const productItem = cartData.products[productItemIndex];
@@ -179,7 +197,6 @@ const ProductDetail = () => {
       // Xử lý khi chưa đăng nhập, tương tự như trước
       const existingCartJSON = localStorage.getItem('cart');
       const existingCart = existingCartJSON ? JSON.parse(existingCartJSON) : [];
-      console.log(existingCart);
 
 
       // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
@@ -197,7 +214,7 @@ const ProductDetail = () => {
         // Sản phẩm đã tồn tại trong giỏ hàng với cùng productId, color và size
         // Chỉ cập nhật giá trị quantity cho sản phẩm này
         existingCart[existingProductIndex].quantity += getQuantityBuy;
-        existingCart[existingProductIndex].price += existingCart[existingProductIndex].priceItem *getQuantityBuy;
+        existingCart[existingProductIndex].price += existingCart[existingProductIndex].priceItem * getQuantityBuy;
 
       } else {
         // Nếu sản phẩm không tồn tại trong giỏ hàng, tạo sản phẩm mới và thêm vào mảng giỏ hàng
@@ -209,7 +226,7 @@ const ProductDetail = () => {
           quantity: getQuantityBuy,
           color: getColor,
           size: getSize,
-          price: productDataOne.price*getQuantityBuy,
+          price: productDataOne.price * getQuantityBuy,
           priceItem: productDataOne.price
         });
       }
@@ -234,9 +251,8 @@ const ProductDetail = () => {
           <button
             key={colorId}
             onClick={() => ChooseColor(colorId, indColor + 1)}
-            className={`w-8 h-8 rounded-full border ${getColor === colorId ? 'border-solid border-3 border-red' : ''
-              }`}
-            style={{ background: variant.color_id?.unicode}}
+            className={`w-8 h-8 rounded-full ${getColor === colorId ? 'borderChooseColor' : ''}`}
+            style={{ background: variant.color_id?.unicode, boxShadow: `0 0 6px 0.5px ${variant.color_id?.unicode}` }}
           ></button>
         );
 
@@ -246,21 +262,26 @@ const ProductDetail = () => {
     }, []);
 
 
-    // nhập số lượng
-    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const inputValue = parseInt(e.target.value, 10);
-      
-      // Kiểm tra xem inputValue có phải là số hợp lệ và nằm trong phạm vi cho phép không
-      if (!isNaN(inputValue) && inputValue >= 1) {
-        setQuantityBuy(inputValue);
-      }
-    };
+  // nhập số lượng
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = parseInt(e.target.value, 10);
+
+    // Kiểm tra xem inputValue có phải là số hợp lệ và nằm trong phạm vi cho phép không
+    if (!isNaN(inputValue) && inputValue >= 1) {
+      setQuantityBuy(inputValue);
+    }
 
 
-     // comment
-  // console.log("productId", id);
+  };
 
-  const [currentUser, setCurrentUser] = useState(null);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.keyCode === 8) {
+      setQuantityBuy(0);
+    }
+  };
+
+
+  const [currentUser, setCurrentUser]: any = useState(null);
 
   useEffect(() => {
     // Lấy dữ liệu từ localStorage
@@ -274,35 +295,24 @@ const ProductDetail = () => {
     }
   }, []);
 
-  // console.log("currentUser", currentUser);
-
-
-
-
-
   const [content, setContent] = useState("");
   const [createComment] = useCreateCommentMutation();
   const [messagecm, setMessagecm] = useState('');
-  const [isLoadingcm, setIsLoadingcm] = useState(false);
+  const [isLoadingcm, setIsLoadingcm]: any = useState(false);
   const { data: comments, refetch } = useGetCommentsByProductIdQuery(id);
   const [deleteCommentById] = useDeleteCommentByAdminMutation(); //delete của admin
 
-  // console.log("comments", comments)
+  const [displayedComments, setDisplayedComments] = useState<any[]>([]);
+  const [loadMoreVisible, setLoadMoreVisible] = useState(false);
+
 
   const { data: order } = useGetUserOrdersQuery();
-  // console.log("data_", order);
-
-  
-
   const hasPurchased = order?.some((order: any) => {
-    
     return (
       order.userId?._id === currentUser?._id &&
       order.products.some((product: any) => product.productId?._id === id)
     );
   });
-  // console.log("hasPurchased", hasPurchased);
-  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -389,7 +399,6 @@ const ProductDetail = () => {
   };
 
   const handleUpdateConfirmation = (commentId: any, content: string) => {
-    // console.log("content", content);
 
     updateCommentByIdMutation({ id: commentId, content, userId: currentUser?._id })
       .unwrap()
@@ -421,10 +430,29 @@ const ProductDetail = () => {
   };
 
   const [updatedContent, setUpdatedContent] = useState('');
+
+  useEffect(() => {
+    const initialComments = comments?.slice(0, 2);
+    setDisplayedComments(initialComments);
+
+    if (comments?.length > 2) {
+      setLoadMoreVisible(true);
+    }
+  }, [comments]);
+
+  // Hàm xử lý khi nhấp vào nút "Load More"
+  const handleLoadMore = () => {
+    const remainingComments = comments?.slice(displayedComments.length, displayedComments.length + 2);
+    setDisplayedComments([...displayedComments, ...remainingComments]);
+
+    if (displayedComments.length + 2 >= comments.length) {
+      setLoadMoreVisible(false);
+    }
+  };
   return (
     <div>
-      {isLoadingProduct ? <Loading /> : 
-      
+      {isLoadingProduct ? <Loading /> :
+
         <div className="w-[90vw] mx-auto mt-36 relative">
           <div className="Single-product-location home2">
             <div className="container">
@@ -469,7 +497,7 @@ const ProductDetail = () => {
                     >
                       {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
                         <SwiperSlide key={index} >
-                          <img src={productDataOne?.imgUrl[index]} />
+                          <img className="h-96" src={productDataOne?.imgUrl[index]} />
                         </SwiperSlide>
                       ))}
                     </Swiper>
@@ -488,7 +516,7 @@ const ProductDetail = () => {
                     >
                       {productDataOne?.imgUrl.map((itemImg: any, index: any) => (
                         <SwiperSlide key={index}>
-                          <img src={productDataOne?.imgUrl[index]} onClick={() => setIndexSlider(index)}/>
+                          <img src={productDataOne?.imgUrl[index]} onClick={() => setIndexSlider(index)} />
                         </SwiperSlide>
                       ))}
                     </Swiper>
@@ -497,33 +525,33 @@ const ProductDetail = () => {
                 <div className="col-lg-6">
                   <div className="single-product-details">
                     <p className="product-name">{productDataOne?.name}</p>
-                    <div className="list-product-info">
+                    <div className="list-product-info mt-2 mb-3">
                       <div className="price-rating flex">
                         <div className="star">
-                          <p style={{color: "#ffb21e",fontWeight:"bold"}}>5.0</p>
+                          <p style={{ color: "#ffb21e", fontWeight: "bold" }}>5.0</p>
                         </div>
                         <div className="ratings">
-                          <i className="fa fa-star" style={{fontSize:14}}></i>
-                          <i className="fa fa-star "style={{fontSize:14}}></i>
-                          <i className="fa fa-star" style={{fontSize:14}}></i>
-                          <i className="fa fa-star" style={{fontSize:14}}></i>
-                          <i className="fa fa-star" style={{fontSize:14}}></i>
+                          <i className="fa fa-star" style={{ fontSize: 14 }}></i>
+                          <i className="fa fa-star " style={{ fontSize: 14 }}></i>
+                          <i className="fa fa-star" style={{ fontSize: 14 }}></i>
+                          <i className="fa fa-star" style={{ fontSize: 14 }}></i>
+                          <i className="fa fa-star" style={{ fontSize: 14 }}></i>
                         </div>
-                        <p style={{fontSize: "20px"}}>
+                        <p style={{ fontSize: "20px" }}>
                           |
                         </p>
                         <div className="evaluate">
-                          80 Đánh giá
+                          {comments?.length} Đánh giá
                         </div>
-                        <p style={{fontSize: "20px"}}>
+                        <p style={{ fontSize: "20px" }}>
                           |
                         </p>
                         <div className="sold">
-                          <p>{productDataOne.sell_quantity} Đã Bán</p>
+                          <p>{productDataOne.sell_quantity || 0} Đã Bán</p>
                         </div>
                       </div>
                     </div>
-                        <p className="view">Số lượt truy cập: {productDataOne?.views}</p>
+                    <p className="view">Số lượt truy cập: {productDataOne?.views}</p>
                     <div className="avalable">
                       <p>
                         Tình trạng: <span> {productDataOne?.inventoryTotal > 0 ? "còn hàng" : "hết hàng"}</span>
@@ -536,107 +564,116 @@ const ProductDetail = () => {
                       <p className="price">{productDataOne?.price.toLocaleString()} VND</p>
                       <p className="original_price">{productDataOne?.original_price.toLocaleString()} VND</p>
                     </div>
-                    <div className="single-product-info">
-                      <p>{productDataOne?.description}</p>
-                      <div className="share">
-                        <img src="img/product/share.png" alt="" />
-                      </div>
-                    </div>
 
 
-   {/* sử lý kiểm tra sản phẩm tồn kho và  sản phẩm còn hoạt động hay không isDeleted===true là không bán còn isDeleted===false là đang bán */}
-                  {
-                    productDataOne?.isDeleted===true ? (
-                      <div>
-                        <p className="text-red-500" style={{ fontSize: "25px" }}>
-                          Sản phẩm đã ngừng bán
-                        </p>
-                      </div>
-                    ) : (
-                    productDataOne?.inventoryTotal === 0 ? (
-                      <div>
-                        <p className="text-red-500" style={{fontSize: "25px"}}>Hết hàng</p>
-                      </div>
-                    ) : (
-                      <div>
-                          <h3 className="-mt-4">Chọn màu:</h3>
-                          <div className="flex space-x-2 my-4">{uniqueColorButtons}</div>
+                    {
+                      productDataOne?.isDeleted === true ? (
+                        <div>
+                          <p className="text-red-500" style={{ fontSize: "25px" }}>
+                            Sản phẩm đã ngừng bán
+                          </p>
+                        </div>
+                      ) : (
+                        productDataOne?.inventoryTotal === 0 ? (
+                          <div>
+                            <p className="text-red-500" style={{ fontSize: "25px" }}>Hết hàng</p>
+                          </div>
+                        ) : (
+                          <div>
+                            <h3 className="mt-4">Chọn màu:</h3>
+                            <div className="flex space-x-2 my-4">{uniqueColorButtons}</div>
 
-                          <div className="select-catagory">
-                            <div>
-                              <h3 className="mt-3">Chọn kích cỡ:</h3>
-                              <div className="mb-3 space-x-3 flex">
-                                {getAllSize ? (
-                                  getAllSize?.map((size: any) => (
-                                    <button
-                                      disabled={!getColor || !getSizeByColor.includes(size.name)}
-                                      style={{ marginRight: 10 }}
-                                      onClick={() => ChooseSize(size.name)}
-                                      className={`w-14 h-7 cursor-pointer relative border-[1px] text-center ${
-                                        getSize === size.name ? 'border-green-600' : '' 
-                                      } ${
-                                          getColor && getSizeByColor.includes(size.name) ?  'bg-transparent' : 'bg-slate-300'
-                                      }`}
-                                    >
-                                      <p>{size.name}</p>
-                                      {getSize === size.name && (
-                                        <img
-                                          className="absolute top-[-7px] right-[-5px] w-3 h-3"
-                                          src="../../img/icons/correct.png"
-                                          alt=""
-                                        />
-                                      )}
-                                    </button>
-                                  ))
-                                ) : (
-                                  <p>Loading...</p>
-                                )}
+                            <div className="select-catagory">
+                              <div>
+                                <h3 className="mt-3 mb-4">Chọn kích cỡ:</h3>
+                                <div className="mb-3 space-x-3 flex">
+                                  {getAllSize ? (
+                                    getAllSize?.map((size: any) => {
+                                      const isSizeAvailable = getColor && getSizeByColor.includes(size.name) &&
+                                        productDataOne?.variants.some(
+                                          (variant: any) =>
+                                            variant.color_id.unicode === getColor &&
+                                            variant.size_id.name === size.name &&
+                                            variant.inventory > 0
+                                        );
+
+                                      return (
+                                        <button
+                                          key={size._id}
+                                          disabled={!isSizeAvailable}
+                                          style={{ marginRight: 10, paddingTop: 8 }}
+                                          onClick={() => {
+                                            ChooseSize(size.name);
+                                          }}
+                                          className={`w-14 h-10 cursor-pointer relative border-[1px] text-center 
+                                        ${getSize === size.name ? 'border-green-600' : ''
+                                            } ${isSizeAvailable ? 'bg-transparent' : 'bg-slate-300'}`}
+                                        >
+                                          <p>{size.name}</p>
+                                          {getSize === size.name && (
+                                            <img
+                                              className="absolute top-[-7px] right-[-5px] w-3 h-3"
+                                              src="../../img/icons/correct.png"
+                                              alt=""
+                                            />
+                                          )}
+                                        </button>
+                                      );
+                                    })
+                                  ) : (
+                                    <p>Loading...</p>
+                                  )}
+                                </div>
+                                <div className="mt-4 -mb-4">
+                                  {
+                                    totalVariant > 0 ?
+                                      <p>{totalVariant} sản phẩm có sẵn</p>
+                                      :
+                                      <p>Vui lòng chọn màu và kích cỡ của sản phẩm !</p>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="cart-item">
+                              <div className="price-box">
+                              </div>
+                              <div className="single-cart">
+                                <div className="cart-plus-minus">
+                                  <div className="quantity-cart">
+                                    <span style={{ fontSize: "16px" }}>Số lượng: </span>
+                                    <div className="inp_group">
+                                      <button>
+                                        <MinusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Minus()} />
+                                      </button>
+                                      <input
+                                        className="cart-plus-minus-box outline-0 h-10"
+                                        type="text"
+                                        name="qtybutton"
+                                        id="quanityBuy"
+                                        value={getQuantityBuy}
+                                        onChange={(e) => handleQuantityChange(e)}
+                                        onKeyDown={(e) => handleKeyDown(e)}
+                                      />
+                                      <button>
+                                        <PlusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Plus()} />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <button className="cart-btn" onClick={handleAddToCart}>Thêm vào giỏ</button>
                               </div>
                             </div>
                           </div>
-
-                          <div className="cart-item">
-                      <div className="price-box">
-                      </div>
-                      <div className="single-cart">
-                        <div className="cart-plus-minus">
-                          <div className="quantity-cart">
-                            <span style={{ fontSize: "16px" }}>Số lượng: </span>
-                            <div className="inp_group">
-                              <button>
-                                <MinusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Minus()} />
-                              </button>
-                              <input
-                                className="cart-plus-minus-box outline-0 h-10"
-                                type="text"
-                                name="qtybutton"
-                                // readOnly
-                                id="quanityBuy"
-                                value={getQuantityBuy}
-                                // max={productDataOne?.quantity}
-                                min={1}
-                                onChange={(e) => handleQuantityChange(e)}
-                              />
-                              <button>
-                                <PlusOutlined className="borderQuantity p-[3px] mt-1 border" onClick={() => Plus()} />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <button className="cart-btn" onClick={handleAddToCart}>Thêm vào giỏ</button>
-                      </div>
-                          </div>
-                      </div>
-                    )
-                    ) 
-                  }
-                    {/* kết th sử lý kiểm tra sản phẩm tồn kho  */}      
+                        )
+                      )
+                    }
+                    {/* kết th sử lý kiểm tra sản phẩm tồn kho  */}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          {/* mô tả + đánh giá + comment */}
           {/* mô tả + đánh giá + comment */}
           <div className="single-product-tab-area">
             <div className="container">
@@ -647,16 +684,8 @@ const ProductDetail = () => {
                       className="nav single-product-tab-navigation"
                       role="tablist"
                     >
-                      <li role="presentation">
-                        <a
-                          className="active"
-                          href="#tab1"
-                          aria-controls="tab1"
-                          role="tab"
-                          data-bs-toggle="tab"
-                        >
-                          Product Description
-                        </a>
+                      <li role="presentation" className="text-xl font-medium">
+                        Product Description
                       </li>
                     </ul>
 
@@ -668,24 +697,11 @@ const ProductDetail = () => {
                         id="tab1"
                       >
                         <div className="single-p-tab-content">
-                          <p>
-                            Nunc facilisis sagittis ullamcorper. Proin lectus ipsum,
-                            gravida et mattis vulputate, tristique ut lectus. Sed et
-                            lorem nunc. Vestibulum ante ipsum primis in faucibus
-                            orci luctus et ultrices posuere cubilia Curae; Aenean
-                            eleifend laoreet congue. Vivamus adipiscing nisl ut
-                            dolor dignissim semper. Nulla luctus malesuada
-                            tincidunt. Class aptent taciti sociosqu ad litora
-                            torquent per conubia nostra, per inceptos himenaeos.
-                            Integer enim purus, posuere at ultricies eu, placerat a
-                            felis. Suspendisse aliquet urna pretium eros convallis
-                            interdum. Quisque in arcu id dui vulputate mollis eget
-                            non arcu. Aenean et nulla purus. Mauris vel tellus non
-                            nunc mattis lobortis.{" "}
-                          </p>
+                          <p>{parse(productDataOne?.description || "")} .</p>
                         </div>
                       </div>
                     </div>
+
                   </div>
                 </div>
               </div>
@@ -696,14 +712,14 @@ const ProductDetail = () => {
             <h2 className="cm_title">Comments</h2>
 
             <div className="comments">
-              {comments?.map((comment: any) => (
+              {displayedComments?.map((comment: any) => (
                 <div className="comment_detail" key={comment._id}>
                   <div className="comment_detail_header">
                     <div className="user_cm">
                       <img className="user_cm_avt" src={comment.userId.imgUrl} alt="" />
                       <div className="user_cm_inf">
                         <p className="user_cm_name">@ {comment.userId.username}</p>
-                        <p className="date_created">{comment.createdAt}</p>
+                        <p className="date_created">{format(new Date(comment.createdAt), "dd/MM/yyyy HH:mm:ss")}</p>
                       </div>
                     </div>
                     {currentUser && currentUser?.role == 'admin' ? (
@@ -771,6 +787,10 @@ const ProductDetail = () => {
                 </div>
               ))}
 
+              {loadMoreVisible && (
+                 <button className="loadmore_btn" onClick={handleLoadMore}>Load More...</button>
+              )}
+               
               <div className="comment_form">
                 {currentUser?._id ?
                   (<form onSubmit={handleSubmit}>
@@ -785,8 +805,8 @@ const ProductDetail = () => {
 
           </div>
           {/* ============================================ khu SP liên quan */}
-          <div className="container mb-20 productsRelative text-black">
-            <h3 style={{ marginTop: '300px' }}>Sản phẩm liên quan</h3>
+          <div className="container mb-20 -mt-16 productsRelative text-black">
+            <h3>Sản phẩm liên quan</h3>
             <div className={`productShow mt-4 flex flex-wrap space-x-5 ${arrayPR.length > 3 ? "justify-center" : ""}`}>
               {arrayPR.length ? arrayPR?.map((items: any) => {
                 return (
@@ -816,4 +836,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default ProductDetail;  

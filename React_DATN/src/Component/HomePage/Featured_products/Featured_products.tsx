@@ -2,6 +2,7 @@
 // import "../../../../lib/home"
 
 // import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { IProduct } from "../../../Models/interfaces";
 import { useGetAllProductQuery } from "../../../Services/Api_Product";
 import Loading from "../../Loading";
@@ -32,12 +33,12 @@ const Featured_products = () => {
                                 {getProduct?.slice(0, 4).map((product: IProduct) => {
                                     return (
                                         <div
-                                            className="product-items-hover"
+                                            // className="col-lg-4 col-md-6"
                                             key={product._id}
-                                            style={{margin: 12, flex: '1'}}
+                                            style={{margin: 12}}
                                         >
-                                            <a href={`/product/${product._id}`}>
-                                                <div className="single-product mt-0">
+                                            <Link to={`/product/${product._id}`}>
+                                                <div className="single-product">
                                                     <div className="level-pro-new">
                                                         <span>new</span>
                                                     </div>
@@ -55,43 +56,10 @@ const Featured_products = () => {
                                                             />
                                                         </div>
                                                     </div>
-                                                    <div className="actions">
-                                                        <button
-                                                            type="submit"
-                                                            className="cart-btn"
-                                                            title="Add to cart"
-                                                        >
-                                                            add to cart
-                                                        </button>
-                                                        <ul className="add-to-link">
-                                                            <li>
-                                                                <a
-                                                                    className="modal-view"
-                                                                    data-target="#productModal"
-                                                                    data-bs-toggle="modal"
-                                                                    href="#"
-                                                                >
-                                                                    {" "}
-                                                                    <a href={`/product/${product._id}`}><i className="fa fa-search"></i></a>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">
-                                                                    {" "}
-                                                                    <i className="fa fa-heart-o"></i>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">
-                                                                    {" "}
-                                                                    <i className="fa fa-refresh"></i>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    <div className="product-price">
-                                                        <div className="product-name ">
-                                                            <h1 className="product-name-overflow">{product.name}</h1>
+                                                    
+                                                    <div className="product-price -mt-3">
+                                                        <div className="product-name">
+                                                            <h1>{product.name}</h1>
                                                         </div>
                                                         <div className="price-rating">
                                                             <span>
@@ -107,7 +75,7 @@ const Featured_products = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </a>
+                                            </Link>
                                         </div>
                                     );
                                 })}
