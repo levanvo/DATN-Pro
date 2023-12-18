@@ -108,7 +108,8 @@ const ProductDetail = () => {
     const selectedVariant = productDataOne?.variants.find(
       (variant: Variant) => variant.color_id.unicode === getColor && variant.size_id.name === size
     );
-    const totalAvailableQuantity = selectedVariant.quantity;
+    
+    const totalAvailableQuantity = selectedVariant.inventory;
     setTotalVariant(totalAvailableQuantity);
   };
 

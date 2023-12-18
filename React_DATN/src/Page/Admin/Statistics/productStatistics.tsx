@@ -75,15 +75,16 @@ const ProductStatistics = () => {
       if(Array.isArray(orders) && orders.length>0){
         // Tính tổng số lượng của từng sản phẩm dựa trên productId
          const productQuantities: { [key: string]: { name: string; quantity: number } } = {};
-        orders.forEach((order:any) => {
-          order.products.forEach((product:any) => {
-            const productId = product.productId?._id
-            const productName = product.productId?.name
-            productQuantities[productId] = {
-            name: productName,
-            quantity: (productQuantities[productId] ? productQuantities[productId].quantity : 0) + product.quantity,
-          };
-          });
+         const validOrders = orders.filter((order: any) => order.status !== '2');
+         validOrders.forEach((order:any) => {      
+            order.products.forEach((product:any) => {
+              const productId = product.productId?._id
+              const productName = product.productId?.name
+              productQuantities[productId] = {
+              name: productName,
+              quantity: (productQuantities[productId] ? productQuantities[productId].quantity : 0) + product.quantity,
+            };
+            });
         });
         // Chuyển object thành mảng để sử dụng trong biểu đồ
         const newChartData = Object.values(productQuantities).map((product:any) => ({
@@ -91,7 +92,14 @@ const ProductStatistics = () => {
         y: product.quantity,
       }));
     
-        setTotalQuantitySold(totalQuantity);
+      const newTotalQuantity = validOrders.reduce((sum: number, order: any) => {
+        order.products.forEach((product: any) => {
+          sum += product.quantity;
+        });
+        return sum;
+      }, 0);
+
+      setTotalQuantitySold(newTotalQuantity);
         setChartData(newChartData);
       }else{
         console.log("Không có dữ liệu");
