@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { IColor } from "../Models/interfaces"
 
 export const colorApi = createApi({
-  reducerPath: "colorApi",
+  reducerPath: "color",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080",
     prepareHeaders(headers, api) {

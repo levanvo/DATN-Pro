@@ -11,10 +11,13 @@ import { deburr } from 'lodash';
 
 const BillList = () => {
   const { data, isLoading, error } = useGetAllOrdersQuery(undefined);
+  const [updateOrder] = useUpdateOrderMutation();
 
   const [filterStatus, setFilterStatus] = useState('');
 
   const [filterNameOrCode, setFilterNameOrCode] = useState('');
+
+  
 
   const dataSource = data?.map((order: IOrder) => ({
     key: order._id,
@@ -24,7 +27,6 @@ const BillList = () => {
     status: order?.status,
   }));
 
-  const [updateOrder] = useUpdateOrderMutation();
 
   const handleStatusChange = (value: string, orderId: string) => {
     updateOrder({ _id: orderId, status: value }).unwrap().then(() => {

@@ -10,6 +10,7 @@ import moment from 'moment';
 
 const Bill = () => {
   const { data, isLoading, error } = useGetUserOrdersQuery(undefined);
+  const [updateOrder] = useUpdateOrderMutation();
 
   const dataSource = data?.map((order: IOrder) => ({
     key: order._id,
@@ -19,7 +20,6 @@ const Bill = () => {
     status: order?.status,
   }));
 
-  const [updateOrder] = useUpdateOrderMutation();
 
   const handleConfirmOrder = (orderId: string) => {
     updateOrder({ _id: orderId, status: "4" })

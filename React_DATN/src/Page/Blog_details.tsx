@@ -1,7 +1,8 @@
-import React from 'react'
+
 import { useParams } from "react-router-dom"
 import { useGetOneBlogQuery } from '../Services/Api_Blogs'
 import parse from 'html-react-parser';
+import Loading from "../Component/Loading";
 
 const Blog_details = () => {
     const { id } = useParams()
@@ -10,7 +11,7 @@ const Blog_details = () => {
 
     return (
         <div className='w-[90vw] mx-auto mt-36'>
-            <div className="blog-details-main">
+            {isLoading ? <Loading /> : <div className="blog-details-main">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
@@ -168,7 +169,8 @@ const Blog_details = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>}
+            
         </div>
     )
 }

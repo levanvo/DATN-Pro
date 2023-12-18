@@ -23,8 +23,6 @@ const Product = () => {
     const sortedProducts = productData?.slice()
     .sort((a: any, b: any) => (b.sell_quantity || 0) - (a.sell_quantity || 0))
     .filter((product: IProduct) => !product.isDeleted && (product.sell_quantity || 0) > 0).slice(0, 6);
-
-    console.log("sortedProducts",sortedProducts);
     
     
     return (

@@ -5,10 +5,11 @@ import { UserOutlined } from "@ant-design/icons"
 import { message, Modal } from "antd"
 import useSearch from '../UseSearch'
 import Loading from "../Loading"
+import { useGetCartQuery } from '../../Services/Api_cart'
+import { IProduct } from '../../Models/interfaces'
 
 interface User {
   username: string
-  // Các thuộc tính khác của người dùng (nếu có)
 }
 const Header = () => {
   const [messageApi, contexHolder] = message.useMessage()
@@ -16,11 +17,26 @@ const Header = () => {
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false)
   let user: User | any = null
   const userString = localStorage.getItem("user")
-  const VerifyAccount = localStorage.getItem("token")
+  const token = localStorage.getItem("token")
   const navigate = useNavigate()
   const [cartStatus,setCartStatus]:any=useState(false);
+  const { data: getCartById, isLoading, isError } = useGetCartQuery();
+  const [cartQuantity,setCartQuantity] = useState<number | null>(null)
+  const [cartLocal,setCartLocal] = useState(null)
+  const localCartData = localStorage.getItem('cart');
 
+  
+  useEffect(() => {
+    if ( getCartById) {
+      const totalCartLength = getCartById.products.length;
+      setCartQuantity(totalCartLength);          
+    }
+    if (localCartData) {
+    setCartLocal(JSON.parse(localCartData).length);
+    }
+  },[localCartData,getCartById])
 
+  
   if (userString) {
     user = JSON.parse(userString)
   }
@@ -119,13 +135,14 @@ const Header = () => {
 
                 }
                 <div className="cart-img">
-                  <a href="/cart">
-                    <img
-                      className="active:scale-90 "
-                      src="../../../img/icon-cart.png"
-                      alt=""
-                    />
-                  </a>
+                  <Link to={"/cart"}>
+                      <img
+                          className="active:scale-90"
+                          src="../../../img/icon-cart.png"
+                          alt=""
+                        />
+                        <span>{token ? cartQuantity : cartLocal}</span>
+                  </Link>
                 </div>
                 {user ? (
                   <div className="account-menu">
