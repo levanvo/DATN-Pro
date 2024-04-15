@@ -36,7 +36,7 @@ const Testimonial = () => {
                                 {getComment.slice(0, 5).map(comment => (
                                     <div className="single-testimonial" key={comment._id}>
                                         <div className="spech">
-                                            <a href={`/product/${comment.productId._id}`}>{comment.content}</a>
+                                            <a href={`/product/${comment.productId?._id}`}>{comment.content}</a>
                                         </div>
                                         <div className="avater">
                                             <img className='mx-auto' src={comment.userId.imgUrl} alt={comment.userId.username} />

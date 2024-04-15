@@ -110,7 +110,8 @@ const Product = () => {
                                                             </div>
                                                             <div className="price-rating flex justify-between">
                                                                 <span>
-                                                                    {product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                                                    {product.price} VND
+                                                                    {/* {product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} */}
                                                                 </span>
                                                                 {/* <div className="ratings">
                                                                     <i className="fa fa-star"></i>

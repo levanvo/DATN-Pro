@@ -566,8 +566,10 @@ const ProductDetail = () => {
                       </p>
                     </div>
                     <div className="item-price flex">
-                      <p className="price">{productDataOne?.price.toLocaleString()} VND</p>
-                      <p className="original_price">{productDataOne?.original_price.toLocaleString()} VND</p>
+                      <p className="price">{productDataOne?.price} VND</p>
+                      <p className="original_price">{productDataOne?.original_price} VND</p>
+                      {/* <p className="price">{productDataOne?.price.toLocaleString()} VND</p>
+                      <p className="original_price">{productDataOne?.original_price.toLocaleString()} VND</p> */}
                     </div>
 
 
