@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Select, Table, message } from 'antd';
+import { Divider, Select, Table, message, Spin } from 'antd';
 import { useGetAllOrdersQuery, useUpdateOrderMutation } from '../../../Services/Api_Order';
 import { IOrder } from '../../../Models/interfaces';
 import Loading from '../../../Component/Loading';
@@ -19,7 +19,7 @@ const BillList = () => {
 
   
 
-  const dataSource = data?.map((order: IOrder) => ({
+  const dataSource:any = data?.map((order: IOrder) => ({
     key: order._id,
     code_order: order?.code_order,
     userId: order?.userId?.username || "Khách hàng",
@@ -31,7 +31,6 @@ const BillList = () => {
 
   const handleStatusChange = (value: string, orderId: string) => {
     updateOrder({ _id: orderId, status: value }).unwrap().then(() => {
-      console.log("Trạng thái đã được cập nhật thành công.");
       message.success("Trạng thái đã được cập nhật thành công.");
     }).catch((error) => {
       console.error("Lỗi khi cập nhật trạng thái:", error);
@@ -150,7 +149,7 @@ const BillList = () => {
       </div>
 
       {isLoading ? (
-        <Loading />
+        <Spin />
       ) : (
         <>
           <Table columns={columns} dataSource={filteredData} />

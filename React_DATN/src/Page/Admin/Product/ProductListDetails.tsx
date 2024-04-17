@@ -12,7 +12,6 @@ const ProductListDetails = () => {
   const [messageApi, contextHolder] = message.useMessage()
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
   const flattenedData = productDataOne?.variants?.map((variant:any) => {
-    console.log("Variant Object:", variant);
     return {
       key: variant._id,
       name: productDataOne.name,
@@ -28,17 +27,6 @@ const ProductListDetails = () => {
     };
   });
 
-  // const confirm = (id:number| string) => {    
-  //     console.log(id);
-  //   removeVariant(id).unwrap().then(() => {
-  //     messageApi.open({
-  //       type: "success",
-  //       content: "Xóa sản phẩm thành công"
-  //     })
-  //   })
-  // }
-  
-  // Define columns for the product details
   const columns: any[] = [
     {
       title: 'Tên sản phẩm',

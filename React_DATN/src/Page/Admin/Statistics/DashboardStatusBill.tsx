@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Highcharts from "highcharts";
 import { useGetAllOrdersQuery } from "../../../Services/Api_Order";
 import Loading from "../../../Component/Loading";
-import { message } from "antd";
+import { message, Spin } from "antd";
 
 const DashboardStatusBill = () => {
   const { data: dataGetOrder, isLoading: loadingOrder }: any =
@@ -249,7 +249,7 @@ const DashboardStatusBill = () => {
   return (
     <div className="h-[80vh] scrollDasboard">
       {loadingOrder ? (
-        <Loading />
+        <Spin />
       ) : (
         <div className="flex justify-between rounded-md ORDER select-none">
           <div className={`selector-Views`}>

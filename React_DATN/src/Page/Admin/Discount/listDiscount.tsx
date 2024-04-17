@@ -53,7 +53,7 @@ const ListDiscount = () => {
   if (!data || !Array.isArray(data)) {
     return (
       <div>
-        No data available.
+        {/* No data available. */}
         <Link to={`/admin/discount/create`}>
           <Button
             style={{

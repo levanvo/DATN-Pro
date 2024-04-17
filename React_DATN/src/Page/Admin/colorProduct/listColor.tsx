@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Button, Table, Popconfirm, message, Input } from "antd"
+import { Button, Table, Popconfirm, message, Input, Spin } from "antd"
 
 import {
   useRemoveColorMutation,
@@ -19,15 +19,15 @@ const ListColor = () => {
   const { data, isLoading, error } = useGetColorsQuery()
   const [removeColor] = useRemoveColorMutation()
 
-  if (isLoading) return <Loading />
-  if (error) return <div>Error...</div>
+  if (isLoading) return <Spin />
+  // if (error) return <div>Error...</div>
 
   if (!data || !Array.isArray(data)) {
     return (
       <div>
-        No data available.
+        {/* No data available. */}
         <Link to={`/admin/color/create`}>
-          <Button style={{ margin: "0 0 0 8px" }}>Tạo Màu Mới</Button>
+          <Button className="w-[200px]" style={{ margin: "0 0 0 8px" }}>Tạo Màu Mới</Button>
         </Link>
       </div>
     )

@@ -2,7 +2,7 @@ import React, { useState, useEffect, ChangeEvent } from "react";
 import moment from "moment";
 import { useStatisticsByDayMutation } from "../../Services/Api_Statistic";
 import Highcharts from "highcharts";
-import { message, Table } from "antd";
+import { message, Table, Spin } from "antd";
 import HighchartsReact from "highcharts-react-official";
 import { MdFreeCancellation } from "react-icons/md";
 import { LuCircleDollarSign } from "react-icons/lu";
@@ -184,8 +184,8 @@ const Dashboard = () => {
 
       setTotalQuantitySold(totalQuantitySold);
 
-      const categories: string[] = Object.keys(dailyTotalRevenue);
-      const series = [
+      const categories:any = Object.keys(dailyTotalRevenue);
+      const series:any = [
         {
           name: "Doanh số",
           data: Object.values(dailyTotalRevenue),
@@ -201,7 +201,7 @@ const Dashboard = () => {
       setChartData({ categories, series });
       setTotalRevenue(totalRevenueForAllDays);
       // setTotalItems(orders.length);
-      const aggregatedTableData = Object.keys(dailyTotalRevenue).map(
+      const aggregatedTableData:any = Object.keys(dailyTotalRevenue).map(
         (orderDate) => ({
           time: orderDate,
           numberOrders: dailyTotalOrders[orderDate],
@@ -232,7 +232,7 @@ const Dashboard = () => {
     return selectedDates;
   };
 
-  const columns = [
+  const columns:any = [
     {
       title: "Ngày",
       dataIndex: "time",
@@ -329,7 +329,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      {isLoading ? <Loading /> : <div>
+      {isLoading ? <Spin /> : <div>
           <HighchartsChart chartData={chartData} />
           <Table columns={columns} dataSource={tableData} />
         </div> }

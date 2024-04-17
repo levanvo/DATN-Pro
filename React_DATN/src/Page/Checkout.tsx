@@ -45,10 +45,9 @@ const Checkout = () => {
   )
 
   //-----  DISCOUNT
-
   const { data: discounts } = useGetDiscountsQuery()
   const [discountCode, setDiscountCode] = useState("")
-  const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null) // Update initial state value
+  const [appliedDiscount, setAppliedDiscount] = useState<IDiscount | null>(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const enteredDiscount:any = Array.isArray(discounts)
     ? discounts?.find((d) => d.code === discountCode)
@@ -85,10 +84,8 @@ const Checkout = () => {
       message.warning("Mã giảm giá chưa đến thời gian sử dụng!")
       return
     }
-    // Cập nhật giá trị discountCode
     setDiscountCode(selectedDiscount.code)
 
-    // Áp dụng mã giảm giá tự động
     setIsModalVisible(false)
   }
 
@@ -125,7 +122,6 @@ const Checkout = () => {
     }
   }
 
-  // tổng tiền
   const calculateTotalPrice = () => {
     let totalPrice = Array.isArray(selectedProducts)
       ? selectedProducts.reduce((acc, product) => acc + product.price, 0)
@@ -263,7 +259,6 @@ const Checkout = () => {
     setIsVisible(!isVisible)
   }
 
-  // Lấy danh sách quận/huyện dựa trên tỉnh/thành phố đã chọn
   const getDistricts = () => {
     if (selectedCity) {
       const city = vietnamData.find((item) => item.value === selectedCity.value)
@@ -271,10 +266,9 @@ const Checkout = () => {
         return city.districts
       }
     }
-    return null // Hoặc trả về một mảng trống hoặc xử lý phù hợp
+    return null
   }
 
-  //validate khi người dùng nhập dữ liệu từ bàn phím
   const handleInputChange = (field: any, value: any) => {
     switch (field) {
       case "name":
@@ -322,9 +316,7 @@ const Checkout = () => {
     return phoneRegex.test(phoneNumber)
   }
 
-  //validate khi người dùng click ra ngoài
   const handleInputBlur = (field: any, value: any) => {
-    // Validate the field on blur
     switch (field) {
       case "name":
         if (!value) {
@@ -366,21 +358,18 @@ const Checkout = () => {
     }
   }
 
-  //handleCityChange thực hiện onChange validate kết hợp chọn select
   const handleCityChange = (selectedOption: any) => {
     setSelectedCity(selectedOption)
-    setSelectedDistrict(null) // Reset lựa chọn quận/huyện khi thay đổi tỉnh/thành phố
+    setSelectedDistrict(null)
     handleInputBlur("city", selectedOption)
   }
 
-  //handleDistrictChange thực hiện onChange validate kết hợp chọn select
   const handleDistrictChange = (selectedOption: any) => {
     setSelectedDistrict(selectedOption)
     handleInputChange("district", selectedOption)
     handleInputBlur("district", selectedOption)
   }
 
-  // Sử lý tạo đơn hàng
   const handlePlaceOrder = async () => {
     setIsLoadingSeen(true);
     try {
@@ -559,13 +548,11 @@ const Checkout = () => {
         }
       }
     } catch (error) {
-      console.log(error)
       setIsLoadingSeen(false);
     }
   }
 
 
-  // lựa chọn hình thức tt
   const [selectedMethod, setSelectedMethod] = useState("cod")
 
   const handlePaymentMethodChange = (

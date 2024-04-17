@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Button, Table, Popconfirm, message, Input } from "antd"
+import { Button, Table, Popconfirm, message, Input, Spin } from "antd"
 import { Link, useNavigate } from "react-router-dom"
 import { ICategory } from "../../../Models/interfaces"
 import Loading from "../../../Component/Loading"
@@ -15,8 +15,8 @@ const CategoryList = () => {
   const [removeCategory] = useRemoveCategoryMutation()
   const navigate = useNavigate()
 
-  if (isLoading) return <Loading />
-  if (error) return <div>Error...</div>
+  if (isLoading) return <Spin />
+  // if (error) return <div>Error...</div>
 
   const dataSource = Array.isArray(data)
   ? data.map((item: ICategory, index) => ({

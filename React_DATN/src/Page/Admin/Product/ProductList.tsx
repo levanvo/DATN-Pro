@@ -4,7 +4,7 @@ import { useDeleteProductMutation, useGetAllProductQuery } from '../../../Servic
 import { IProduct } from '../../../Models/interfaces';
 import { QuestionCircleOutlined, FilterOutlined, ClusterOutlined } from '@ant-design/icons';
 import Loading from '../../../Component/Loading';
-import { Collapse } from 'antd';
+import { Collapse, Spin } from 'antd';
 import { DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
@@ -12,10 +12,6 @@ import { useGetAllCategoryQuery } from '../../../Services/Api_Category';
 
 const { Search } = Input;
 const { Panel } = Collapse;
-
-
-// rowSelection object indicates the need for row selection
-
 
 const ProductList = () => {
   const { data: getAllProduct, isLoading, error } = useGetAllProductQuery()
@@ -29,9 +25,6 @@ const ProductList = () => {
   const [isResetClicked, setIsResetClicked] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<React.Key[]>([])
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
-
-  console.log("getAllProduct",getAllProduct);
-  
 
   const rowSelection = {
     selectedRowKeys: selectedProductId,
@@ -139,7 +132,6 @@ const ProductList = () => {
 
   const getVariant = (record: any) => {
     var variants = record?.variants?.map((variant: any) => {
-      console.log("Variant Object:", variant);
       return {
         key: variant._id,
         name: record.name,
@@ -369,7 +361,7 @@ const ProductList = () => {
   return (
     <div>
       {contextHolder}
-      {isLoadingDelete && <Loading />}
+      {isLoadingDelete && <Spin />}
       
       <div>
         <Button
@@ -400,7 +392,7 @@ const ProductList = () => {
       </div>
       <Divider />
 
-      {isLoading ? <Loading /> : <Table
+      {isLoading ? <Spin /> : <Table
         rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource}
         expandedRowRender={(record) => (
           <div  style={{ marginLeft: 20 }}>

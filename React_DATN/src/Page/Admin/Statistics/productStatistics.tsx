@@ -2,7 +2,7 @@ import { useState,ChangeEvent,useEffect } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import moment from 'moment';
-import {message} from "antd"
+import {message, Spin} from "antd"
 import { useStatisticsByDayMutation } from '../../../Services/Api_Statistic';
 import Loading from '../../../Component/Loading';
 
@@ -87,7 +87,7 @@ const ProductStatistics = () => {
             });
         });
         // Chuyển object thành mảng để sử dụng trong biểu đồ
-        const newChartData = Object.values(productQuantities).map((product:any) => ({
+        const newChartData:any = Object.values(productQuantities).map((product:any) => ({
         name: product.name,
         y: product.quantity,
       }));
@@ -102,7 +102,6 @@ const ProductStatistics = () => {
       setTotalQuantitySold(newTotalQuantity);
         setChartData(newChartData);
       }else{
-        console.log("Không có dữ liệu");
         setTotalQuantitySold(0);
         setChartData([]);
       }
@@ -151,7 +150,7 @@ const ProductStatistics = () => {
           </div>
       </div>
       
-      {isLoading ? <Loading /> : <div>
+      {isLoading ? <Spin /> : <div>
         <HighchartsReact highcharts={Highcharts} options={options} />
         <div className='ml-9'>
           <div style={{fontSize:25,color: "black",fontWeight: 600}}>Tổng số lượng sản phẩm đã bán: <samp className='text-red-600'>{totalQuantitySold} sản phẩm</samp></div>

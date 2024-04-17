@@ -18,11 +18,9 @@ const Products = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchTerm = searchParams.get('search');
-  // console.log("searchKeyWord: ", searchTerm);
 
   useEffect(() => {
     // Cập nhật lại searchTerm mỗi khi searchTerm hoặc location.search thay đổi
-    // console.log('Search term changed:', searchTerm);
   }, [searchTerm, location.search]);
 
   //Lọc sản phẩm theo bộ lọc

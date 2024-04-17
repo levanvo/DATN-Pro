@@ -38,7 +38,6 @@ const ChangePassword = () => {
         setIsLoadingSeen(false)
     }
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
     };
 
     return (

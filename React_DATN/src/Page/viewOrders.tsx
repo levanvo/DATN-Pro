@@ -40,7 +40,6 @@
 // ];
 
 // const {data:viewOrder} = useGetUserOrdersQuery()
-// console.log(viewOrder);
 
 // // const data = viewOrder.map()
 // const ViewOrder = () => <Table columns={columns}  />;

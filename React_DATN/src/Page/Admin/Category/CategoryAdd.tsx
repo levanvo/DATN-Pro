@@ -49,7 +49,7 @@ const AddCategory = () => {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log("Failed:", errorInfo);
+        
     };
     // biến bắt buộc phải nhập chữ cái và số
     const alphaNumericRegExp = /^(?![\s])[\p{L}0-9\s]*[\p{L}0-9](?<![\s])$/u;

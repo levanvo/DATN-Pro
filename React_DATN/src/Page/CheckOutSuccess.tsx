@@ -23,13 +23,11 @@ const CheckOutSuccess = () => {
     };
 
     useEffect(() => {
-        // Tạo một đối tượng URLSearchParams từ chuỗi truy vấn của URL   
         const fetchData = async () => {
             if (location.search.includes('vnp_ResponseCode=00')) {
                 let orderDataString = localStorage.getItem('orderData')
                 let orderItemData= localStorage.getItem('orderItemData')
 
-                // Thanh toán vnp với người có tài khoản
                 if(orderDataString){
                     let dataOrder = JSON.parse(orderDataString);
                     await addOrder(dataOrder)
@@ -39,13 +37,9 @@ const CheckOutSuccess = () => {
                     },2000)
                 }
 
-                // Thanh toán vnp với người không có tài khoản
                 if(orderItemData){
                     let dataOrder = JSON.parse(orderItemData);
-                    console.log(dataOrder);
                     await addOrder(dataOrder)
-                
-                    
                     const cartId = dataOrder.cartId
                     const updatedLocalCart = localCart.filter((item) => !cartId.includes(item.id));
                     setLocalCart(updatedLocalCart);

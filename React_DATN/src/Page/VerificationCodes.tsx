@@ -61,7 +61,7 @@ const VerificationCodes = () => {
     }
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+        
     };
     return (
         <div className='mt-36'>

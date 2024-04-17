@@ -26,34 +26,23 @@ const Cart = () => {
     selectedRowKeys: selectedProductId,
     onChange: (selectedRowKeys: React.Key[]) => {
       setSelectedProductId(selectedRowKeys);
-
-      // Lấy danh sách sản phẩm được chọn
       const selectedProducts = dataSource.filter((product) => selectedRowKeys.includes(product.key));
-      console.log(selectedProducts);
-
       setSelectedProducts(selectedProducts);
     },
   };
 
 
-  // Khai báo biến dataSource
   let dataSource: any[] = [];
-
-
-  // thực hiện tính tổng tiền với người dùng k có tài khoản
   const calculateTotal = () => {
     if (token) {
       let total = 0;
-
       selectedProducts.forEach((product) => {
         total += product.price;
       });
 
       return total;
     } else {
-      // Nếu không có token, thực hiện tính tổng tiền từ localCart
       let total = 0;
-
       selectedProducts.forEach((product) => {
         total += product.price * (product.quantity);
       });
@@ -66,18 +55,14 @@ const Cart = () => {
   const [totalAmount, setTotalAmount] = useState<number>(calculateTotal());
 
   useEffect(() => {
-    // Gọi hàm updateTotalAmount khi selectedProducts thay đổi
     updateTotalAmount();
   }, [selectedProducts]);
 
-  //Cập nhật tổng tiền mỗi khi thực hiện chọn sản phẩm
   const updateTotalAmount = () => {
     const total = calculateTotal();
     setTotalAmount(total);
   };
 
-
-  //cập nhật tăng số lượng với người dùng có tk
   const handleIncrease = (productId: string) => {
     const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
 
@@ -100,7 +85,6 @@ const Cart = () => {
   };
 
 
-  //cập nhật giảm số lượng với người dùng có tk
   const handleMinus = (productId: string) => {
     const productToUpdate = cartData?.products.find((product: any) => product._id === productId);
     
@@ -122,7 +106,6 @@ const Cart = () => {
     }
   };
 
-  // Hàm giảm số lượng khi người dùng không có tài khoản
   const handleTru = (productId: string) => {
     const productToUpdate = localCart.find((product: any) => product.id === productId);
 
@@ -143,7 +126,6 @@ const Cart = () => {
     }
   };
 
-  // Hàm tăng số lượng khi người dùng có tài khoản
   const handleCong = (productId: string) => {
     const productToUpdate = localCart.find((product: any) => product.id === productId);
 
@@ -166,9 +148,7 @@ const Cart = () => {
   };
 
 
-  // Hàm thực hiện xóa sản phẩm của người dùng có tài khoản
   const confirm = (productId: string) => {
-
     deleteCart(productId)
       .unwrap()
       .then(() => {
@@ -182,11 +162,7 @@ const Cart = () => {
       });
   };
 
-
-  // Hàm thực hiện xóa sản phẩm của người dùng không có tài khoản
   const confirmCart = (productId: string) => {
-
-    // Thực hiện xóa sản phẩm khỏi localStorage khi không có token
     const deleteCart = localCart.filter((product: any) => product.id !== productId);
     localStorage.setItem('cart', JSON.stringify(deleteCart));
     setLocalCart(deleteCart);
@@ -196,7 +172,6 @@ const Cart = () => {
     });
   };
 
-  // kiểm tra token
   if (token) {
     dataSource = cartData?.products.map((product: any) => {
       return {
@@ -279,9 +254,9 @@ const Cart = () => {
             className="quantity-button"
             onClick={() => {
               if (token) {
-                handleMinus(record.key); // Thực hiện handleMinus nếu có token
+                handleMinus(record.key);
               } else {
-                handleTru(record.key); // Thực hiện handleTru nếu không có token
+                handleTru(record.key);
               }
             }}
           >
@@ -297,9 +272,9 @@ const Cart = () => {
             className="quantity-button"
             onClick={() => {
               if (token) {
-                handleIncrease(record.key); // Thực hiện handleIncrease nếu có token
+                handleIncrease(record.key);
               } else {
-                handleCong(record.key); // Thực hiện handleCong nếu không có token
+                handleCong(record.key);
               }
             }}
           >
@@ -330,9 +305,9 @@ const Cart = () => {
             icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
             onConfirm={() => {
               if (token) {
-                confirm(id); // Thực hiện confirm nếu có token
+                confirm(id);
               } else {
-                confirmCart(id); // Thực hiện confirmCart nếu không có token
+                confirmCart(id);
               }
             }}
             okText={<span style={{ color: 'black' }}>Yes</span>}

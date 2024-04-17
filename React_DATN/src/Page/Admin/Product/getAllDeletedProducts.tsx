@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Table, Popconfirm, message, Button, Input, Menu, Dropdown } from 'antd';
+import { Divider, Table, Popconfirm, message, Button, Input, Menu, Dropdown, Spin } from 'antd';
 import { useGetAllDeletedProductsQuery, useGetAllProductQuery, useRemoveProductMutation, useRestoreProductMutation } from '../../../Services/Api_Product';
 import { IProduct } from '../../../Models/interfaces';
 import { QuestionCircleOutlined, FilterOutlined,ReloadOutlined } from '@ant-design/icons';
@@ -86,7 +86,6 @@ const GetAllDeletedProducts = () => {
   const filteredDeletedProducts = (getAllProduct || []).filter(
     (product: IProduct) => product.isDeleted === true
   );
-  console.log(filteredDeletedProducts);
   
   //data trả về
   const dataSource = filteredDeletedProducts?.map(({ _id, name, original_price, price, imgUrl, categoryId }: IProduct) => ({
@@ -294,7 +293,7 @@ const GetAllDeletedProducts = () => {
   return (
     <div>
       {contextHolder}
-      {isLoadingScreen && <Loading />}
+      {isLoadingScreen && <Spin />}
       <div>
         <Button
          className='setSize-1'
@@ -330,7 +329,7 @@ const GetAllDeletedProducts = () => {
 
       </div>
       <Divider />
-      {isLoading ? <Loading /> : <Table rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource} />}
+      {isLoading ? <Spin /> : <Table rowSelection={{ ...rowSelection, }} columns={columns} dataSource={filteredAndPricedDataSource} />}
 
     </div>
   );

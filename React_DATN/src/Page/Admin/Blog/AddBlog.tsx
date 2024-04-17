@@ -77,7 +77,6 @@ const AddBlog = () => {
                 "http://localhost:8080/api/images/upload",
                 formData
             )
-            console.log("result-images: ", response);
 
             const imageUrls = response.data.urls.map((urls: urlObject) => urls.url);
 

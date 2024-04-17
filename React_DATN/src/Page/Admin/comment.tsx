@@ -49,7 +49,7 @@ import {
     //   hàm chọn tất cả comment
     const handleSelectAll = () => {
       setSelectedComments((prevSelected) => {
-        if (prevSelected.length === comments.length) {
+        if (prevSelected?.length === comments?.length) {
           return [];
         } else {
           return comments.map((comment: any) => comment._id);
@@ -136,7 +136,7 @@ import {
         title: (
           <input
             type="checkbox"
-            checked={selectedComments.length === comments.length}
+            checked={selectedComments?.length === comments?.length}
             onChange={handleSelectAll}
           />
         ),
@@ -279,7 +279,6 @@ import {
           <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
         ),
         onFilter: (value: string, record: any) =>
-          //   console.log(record),
   
           record.productId?.name.toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (open: boolean) => {

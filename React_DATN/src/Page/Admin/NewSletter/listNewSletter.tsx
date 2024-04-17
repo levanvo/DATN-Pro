@@ -67,7 +67,6 @@ const ListNewSletter = () => {
   ]
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys)
     setSelectedEmailIds(newSelectedRowKeys)
   }
 

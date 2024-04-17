@@ -25,7 +25,6 @@ const Guests = () => {
 
     useEffect(()=>{
         const dataAll:any=[...idPr,...idPrMany];
-        console.log("idPr: ",dataAll);
         setDataGuests(dataAll)
     },[idPrMany,idPr]);
 

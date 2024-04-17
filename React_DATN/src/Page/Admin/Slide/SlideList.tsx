@@ -1,5 +1,5 @@
 import React from 'react'
-import { Divider, Table, Popconfirm, message, Button, Input, Image } from 'antd';
+import { Divider, Table, Popconfirm, message, Button, Input, Image, Spin } from 'antd';
 import { DeleteFilled, EditOutlined, CheckOutlined, CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -21,14 +21,6 @@ const SlideList = () => {
     const RemoveSlide = async ({ _id }: any) => {
 
         if (data?.slider.length > 4) {
-            // console.log(data.slider);
-            // let Allowed = false;
-            // data?.slider.map((items: any) => {
-            //     if (items.status != true && items._id != _id) {
-            //         Allowed = true;
-            //     };
-            // });
-            // console.log("Allowed: ", Allowed);
             removeSlide(_id)
                 .unwrap()
                 .then(() => {
@@ -189,7 +181,7 @@ const SlideList = () => {
                 </div>
             </div>
             <Divider />
-            {isLoading ? <Loading /> : <Table columns={columns} dataSource={dataSlide} pagination={{ pageSize: 5 }} />}
+            {isLoading ? <Spin /> : <Table columns={columns} dataSource={dataSlide} pagination={{ pageSize: 5 }} />}
         </div>
     )
 }

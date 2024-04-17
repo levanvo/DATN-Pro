@@ -20,7 +20,6 @@ const EmailSendingForm = () => {
   }
 
   const onFinish = (values: any) => {
-    console.log(values)
     emailjs.send(
       "service_acqr9th",
       "template_0k1pge9",

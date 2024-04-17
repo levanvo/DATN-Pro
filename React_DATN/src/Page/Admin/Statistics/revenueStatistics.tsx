@@ -2,7 +2,7 @@ import React, { useState, useEffect, ChangeEvent, useRef, useLayoutEffect } from
 import moment from 'moment';
 import { useStatisticsByDayMutation } from '../../../Services/Api_Statistic';
 import Highcharts from 'highcharts';
-import { message } from 'antd';
+import { message, Spin } from 'antd';
 import HighchartsReact from 'highcharts-react-official';
 import Loading from "../../../Component/Loading";
 interface HighchartsChartProps {
@@ -197,7 +197,7 @@ const handleResponse = (response: any) => {
             <input type='date' id='endDate' onChange={handleEndDateChange} defaultValue={endDate}/>
           </div>
         </div>
-        {isLoading ? <Loading /> : <div>
+        {isLoading ? <Spin /> : <div>
           <HighchartsChart chartData={chartData} />
           <div className='ml-9'>
             <div style={{ fontSize: 20, color: 'black', fontWeight: 600 }}>

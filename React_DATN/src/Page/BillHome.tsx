@@ -25,7 +25,6 @@ const Bill = () => {
     updateOrder({ _id: orderId, status: "4" })
       .unwrap()
       .then(() => {
-        console.log("Đơn hàng đã được xác nhận thành công.");
         message.success("Đơn hàng đã được xác nhận thành công.");
       })
       .catch((error) => {

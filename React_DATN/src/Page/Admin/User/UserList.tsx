@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from "react-router-dom";
 import { useGetAllUserQuery } from "../../../Services/Api_User";
-import { Divider, Table, Popconfirm, message, Select, Button, Input, Image } from 'antd';
+import { Divider, Table, Popconfirm, message, Select, Button, Input, Image, Spin } from 'antd';
 import { DeleteFilled, EditOutlined, RetweetOutlined } from '@ant-design/icons';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import Loading from "../../../Component/Loading";
@@ -28,7 +28,7 @@ const UserList = () => {
         imgUrl,phone,address
     }))
     if(!isLoading){
-        dataUser=dataUser.filter((items:any)=>items._id!=_id);
+        dataUser=dataUser?.filter((items:any)=>items._id!=_id);
     }
 
     const RemoveUser = (_id: string) => {
@@ -182,7 +182,7 @@ const UserList = () => {
                 </div>
             </div>
             <Divider />
-            {isLoading ? <Loading /> : <Table columns={columns} dataSource={dataUsers} />}
+            {isLoading ? <Spin /> : <Table columns={columns} dataSource={dataUsers} />}
         </div>
     )
 }

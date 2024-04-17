@@ -19,7 +19,7 @@ const BillGuest = () => {
 
     const [dataNew, setdataNew] = useState('');
 
-    const dataSource = data?.map((order: IOrder) => ({
+    const dataSource:any = data?.map((order: IOrder) => ({
         key: order._id,
         code_order: order?.code_order,
         userId: order?.userId?.username || "Khách hàng",
@@ -30,7 +30,6 @@ const BillGuest = () => {
 
     const handleStatusChange = (value: string, orderId: string) => {
         updateOrder({ _id: orderId, status: value }).unwrap().then(() => {
-            console.log("Trạng thái đã được cập nhật thành công.");
             message.success("Trạng thái đã được cập nhật thành công.");
         }).catch((error) => {
             console.error("Lỗi khi cập nhật trạng thái:", error);
@@ -87,7 +86,7 @@ const BillGuest = () => {
             title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
-            render: (status: any, record: IOrder) => (
+            render: (status: any, record: any) => (
                 <Select
                     value={status}
                     onChange={(value) => handleStatusChange(value, record.key)}
@@ -115,7 +114,7 @@ const BillGuest = () => {
         setFilterStatus(value);
     };
 
-    const filteredData = dataSource?.filter((order: IOrder) => {
+    const filteredData:any = dataSource?.filter((order: any) => {
         const matchStatus = !filterStatus || order.status === filterStatus;
         const matchNameOrCode =
             !filterNameOrCode ||
@@ -126,7 +125,7 @@ const BillGuest = () => {
         return matchStatus && matchNameOrCode && matchUserId;
     });
 
-    const handleNameOrCodeChange = (e) => {
+    const handleNameOrCodeChange = (e:any) => {
         const inputValue = e.target.value;
         let formattedValue = inputValue;
 

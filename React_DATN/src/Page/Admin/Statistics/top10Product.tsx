@@ -2,7 +2,7 @@ import { useState,ChangeEvent,useEffect } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import moment from 'moment';
-import {message} from "antd"
+import {message, Spin} from "antd"
 import { useStatisticsByDayMutation } from '../../../Services/Api_Statistic';
 import Loading from '../../../Component/Loading';
 
@@ -87,7 +87,7 @@ const Top10Product = () => {
             });
         });
         // Chuyển object thành mảng để sử dụng trong biểu đồ
-        const newChartData = Object.values(productQuantities)
+        const newChartData:any = Object.values(productQuantities)
         .sort((a, b) => b.quantity - a.quantity) // Sắp xếp giảm dần
         .slice(0, 10) // Chỉ lấy 10 sản phẩm
         .map((product: any) => ({
@@ -106,7 +106,6 @@ const Top10Product = () => {
       setTotalQuantitySold(newTotalQuantity);
         setChartData(newChartData);
       }else{
-        console.log("Không có dữ liệu");
         setTotalQuantitySold(0);
         setChartData([]);
       }
@@ -164,7 +163,7 @@ const Top10Product = () => {
           </div>
       </div>
       
-      {isLoading ? <Loading /> : <div>
+      {isLoading ? <Spin /> : <div>
         <HighchartsReact highcharts={Highcharts} options={options} />
       </div>}
       

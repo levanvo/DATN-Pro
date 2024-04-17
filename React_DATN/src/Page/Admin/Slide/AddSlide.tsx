@@ -72,7 +72,6 @@ const AddSlide = () => {
             contentSlider: values.contentSlider,
             imgSlider: response.data.urls[0].url,
           };
-          console.log("result - getImage: ", newdataSlide);
           addSlide(newdataSlide);
           messageApi.open({
             type: "success",

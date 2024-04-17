@@ -327,17 +327,10 @@ const ProductDetail = () => {
       });
 
       if (purchasedOrder) {
-        // setMessagecm('Người dùng đã đặt mua sản phẩm này');
         const orderId = purchasedOrder._id;
-        // setMessagecm(`OrderId của đơn hàng đã mua: ${orderId}`);
-
-        // Gửi yêu cầu tạo bình luận với orderId
         createComment({ userId: currentUser?._id, productId: id, orderId, content })
           .unwrap()
           .then((response) => {
-            // Xử lý phản hồi thành công
-            console.log('Bình luận đã được tạo:', response);
-            // Cập nhật danh sách bình luận hiển thị
             refetch();
           })
           .catch((error) => {
@@ -352,7 +345,6 @@ const ProductDetail = () => {
       setMessagecm('Bạn chưa mua sản phẩm này. Hãy mua sản phẩm để có thể bình luận!');
     }
 
-    // Đặt lại nội dung bình luận
     setContent('');
   };
 

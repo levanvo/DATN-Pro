@@ -1,5 +1,5 @@
 
-import { Divider, Table, Popconfirm, message, Button } from 'antd';
+import { Divider, Table, Popconfirm, message, Button, Spin } from 'antd';
 import { useDeleteBlogMutation, useGetAllBlogsQuery } from '../../../Services/Api_Blogs';
 import { IBlog } from '../../../Models/interfaces';
 import { QuestionCircleOutlined, DeleteFilled, EditOutlined } from '@ant-design/icons';
@@ -9,12 +9,12 @@ import Loading from '../../../Component/Loading';
 
 const rowSelection = {
     onChange: (selectedRowKeys:any, selectedRows:any) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        
     },
 };
 
 const BlogList = () => {
-    const { data: getAllBlogs, isLoading } = useGetAllBlogsQuery();
+    const { data: getAllBlogs, isLoading }:any = useGetAllBlogsQuery();
     const [removeBlog] = useDeleteBlogMutation();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -35,7 +35,7 @@ const BlogList = () => {
         });
     };
 
-    const columns = [
+    const columns:any = [
         {
             title: 'Tiêu đề',
             dataIndex: 'title',
@@ -88,7 +88,7 @@ const BlogList = () => {
                 </Button>
             </div>
             <Divider />
-            {isLoading ? <Loading /> : <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource} />}
+            {isLoading ? <Spin /> : <Table rowSelection={rowSelection} columns={columns} dataSource={dataSource} />}
         </div>
     );
 };

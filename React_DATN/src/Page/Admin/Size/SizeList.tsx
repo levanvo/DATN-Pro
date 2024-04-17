@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Table, Popconfirm, message, Button, Input } from 'antd';
+import { Divider, Table, Popconfirm, message, Button, Input, Spin } from 'antd';
 import { ISize } from '../../../Models/interfaces';
 import { QuestionCircleOutlined, DeleteFilled, EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -125,7 +125,7 @@ const SizeList = () => {
       </div>
       <Divider />
       {isLoading ?
-        <Loading />
+        <Spin />
         :
         <Table rowSelection={{
           selectedRowKeys: selectedSizes.map(size => size.key),

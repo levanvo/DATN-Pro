@@ -35,7 +35,6 @@ const CreateDiscount = () => {
       startDate: values.startDate,
       expiresAt: values.expiresAt,
     }
-    console.log(discountData)
     createDiscount(discountData)
     message.success("Tạo mã giảm giá thành công")
     navigate("/admin/discount/list")

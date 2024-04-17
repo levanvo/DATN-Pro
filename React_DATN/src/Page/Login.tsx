@@ -23,9 +23,6 @@ const Login = () => {
                 type: "success",
                 content: "Đăng nhập thành công"
             });
-            // setTimeout(()=>{
-            //     window.location.href=window.location.origin;
-            // },2000);
             const { role } = data.user;
 
             if (role === "admin" || role === "staff") {
@@ -39,7 +36,7 @@ const Login = () => {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+
     };
     useEffect(() => {
         if (error) {

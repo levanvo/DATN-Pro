@@ -10,7 +10,6 @@ import { Modal } from 'antd';
 
 const User = () => {
   const { id } = useParams<{ id: string }>();
-  console.log(id);
   const { data, isLoading, error }: any = useGetOneUserQuery(id!);
   const [updateUser] = useUpdateUserMutation();
 
@@ -34,7 +33,6 @@ const User = () => {
       setAddress(data?.data.address || '');
       setImgUrl(data?.data.imgUrl || '');
       setGender(data?.data.gender || '');
-      console.log('Data from API:', data?.data);
     }
   }, [data]);
 
@@ -68,7 +66,6 @@ const User = () => {
         message.success('Cập nhật thành công');
       })
       .catch((error) => {
-        console.log(error);
         message.error('Cập nhật thất bại. Vui lòng thử lại.');
       });
   };
