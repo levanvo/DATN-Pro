@@ -18,36 +18,31 @@ import statisticRouter from "./router/statistic.js"
 import vnpRouter from "./router/vnp.js"
 import commentRouter from "./router/comment.js"
 
+dotenv.config();
+const app = express();
 
-dotenv.config()
-const app = express()
+app.use(express.json());
+app.use(cors());
+
+app.use("/api", userRouter);
+app.use("/api", sizeRouter);
+app.use("/api", colorRouter);
+app.use("/api", categoryRouter);
+app.use("/api", productRouter);
+app.use("/api", uploadRouter);
+app.use("/api", cartRouter);
+app.use("/api", newSletterRouter);
+app.use("/api", slideRouter);
+app.use("/api", blogRouter);
+app.use("/api", orderRouter);
+app.use("/api", discountRouter);
+app.use("/api",vnpRouter);
+app.use("/api", commentRouter);
+app.use("/api", statisticRouter);
+
+
+connectDB();
 const PORT = process.env.PORT || 3000
-
-// kết nối database
-connectDB()
-
-app.use(cors())
-app.use(express.json())
-app.use("/api", userRouter)
-app.use("/api", sizeRouter)
-app.use("/api", colorRouter)
-app.use("/api", categoryRouter)
-app.use("/api", productRouter)
-app.use("/api", uploadRouter)
-app.use("/api", cartRouter)
-app.use("/api", newSletterRouter)
-app.use("/api", slideRouter)
-app.use("/api", blogRouter)
-app.use("/api", orderRouter)
-app.use("/api", discountRouter)
-app.use("/api",vnpRouter)
-app.use("/api", commentRouter)
-app.use("/api", statisticRouter)
-
-
-
-
-
 app.listen(PORT, () => {
   console.log("Server running on port", PORT)
 })

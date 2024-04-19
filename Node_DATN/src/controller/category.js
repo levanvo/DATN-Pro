@@ -49,14 +49,13 @@ export const get = async (req, res) => {
 
 export const create = async (req, res) => {
   try {
-
     const categorys = await Category.create(req.body);
-
     if (!categorys) {
       return res.json({
         message: "Thêm Category không thành công!",
       });
     }
+
     return res.status(200).json({
       message: "Thêm Category thành công!",
       data: categorys,

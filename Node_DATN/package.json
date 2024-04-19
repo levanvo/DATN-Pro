@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "nodemon ./src/app.js",
+    "dev": "nodemon ./src/app.js",
     "build": "vite build",
     "preview": "vite preview"
   },
