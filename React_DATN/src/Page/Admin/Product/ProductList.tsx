@@ -348,7 +348,8 @@ const ProductList = () => {
             <DeleteFilled style={{ color: '#FF0000', fontSize: "20px" }} />
           </Popconfirm>
 
-          <Link to={`/admin/product/${id}/update`}>
+          {/* <Link to={`/admin/product/${id}/update`}> */}
+          <Link to={`/admin/product/details/${id}`}>
 
             <EditOutlined style={{ fontSize: "20px" }} />
           </Link>

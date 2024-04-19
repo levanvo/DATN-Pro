@@ -5,11 +5,11 @@ import mongoose from 'mongoose';
 export const getAll = async (req, res) => {
   try {
     const categorys = await Category.find();
-    if (categorys.length === 0) {
-      return res.json({
-        message: "Không lấy được danh sách Category!",
-      });
-    }
+    // if (categorys.length === 0) {
+    //   return res.json({
+    //     message: "Không lấy được danh sách Category!",
+    //   });
+    // }
     return res.status(200).json(categorys);
   } catch (error) {
     return res.status(400).json({
@@ -70,10 +70,8 @@ export const create = async (req, res) => {
 export const remove = async (req, res) => {
   try {
     const categoryId = req.params.id;
-
-    const { id } = req.params
-
-    // Kiểm tra trong mongoose nếu id không phải là một ObjectId thì trả về message
+    const { id } = req.params;
+    
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(401).json({
         message: "Không tìm thấy ID danh mục"
@@ -155,9 +153,9 @@ export const getProductsByCategory = async (req, res) => {
 
     // Lấy sản phẩm dựa trên danh mục
     const products = await Product.find({ categoryId: categoryId });
-    
+
     return res.status(200).json(products);
-    
+
   } catch (error) {
     return res.status(500).json({
       message: error.message,

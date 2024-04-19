@@ -18,11 +18,11 @@ export const getProduct = async (req, res) => {
           path: "variants.color_id",
           model: "Color",
         }).exec();
-    if (products.length === 0) {
-      return res.status(400).json({
-        message: "Không có sản phẩm nào",
-      })
-    }
+    // if (products.length === 0) {
+    //   return res.status(400).json({
+    //     message: "Không có sản phẩm nào",
+    //   })
+    // }
     for (const product of products) {
       let quantityTotal = 0;
       let sell_quantity = 0;

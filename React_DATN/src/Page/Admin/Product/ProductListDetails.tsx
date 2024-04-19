@@ -1,9 +1,9 @@
 import React from 'react';
-import { Table, Tag ,Button , Popconfirm , message} from 'antd';
-import { useGetOneProductQuery , useDeleteVariantMutation } from '../../../Services/Api_Product';
+import { Table, Tag, Button, Popconfirm, message } from 'antd';
+import { useGetOneProductQuery, useDeleteVariantMutation } from '../../../Services/Api_Product';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { QuestionCircleOutlined, DeleteFilled} from '@ant-design/icons';
+import { QuestionCircleOutlined, DeleteFilled } from '@ant-design/icons';
 import Loading from '../../../Component/Loading';
 
 const ProductListDetails = () => {
@@ -11,7 +11,7 @@ const ProductListDetails = () => {
   const { id } = useParams();
   const [messageApi, contextHolder] = message.useMessage()
   const { data: productDataOne, isLoading: isLoadingProduct }: any = useGetOneProductQuery(id || "");
-  const flattenedData = productDataOne?.variants?.map((variant:any) => {
+  const flattenedData = productDataOne?.variants?.map((variant: any) => {
     return {
       key: variant._id,
       name: productDataOne.name,
@@ -58,7 +58,7 @@ const ProductListDetails = () => {
       dataIndex: 'color',
       key: 'color',
       align: 'center',
-      
+
       render: (color: { name: string, unicode: string }) => (
         <span>
           {color ? (
@@ -87,26 +87,6 @@ const ProductListDetails = () => {
       key: 'inventory',
       align: 'center',
     },
-    // {
-    //   title: 'Hành động',
-    //   key: 'action',
-    //   render: ({key: id}: any) => (
-    //     <div className="flex space-x-4" style={{ justifyContent: 'center', alignItems: "center" }}>
-    //       <Popconfirm
-    //         title="Bạn có chắc chắn muốn xóa không?"
-    //         icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-    //         onConfirm={() => confirm(id)}
-    //         okText={
-    //           <span style={{ color: 'black' }}>Yes</span>
-    //         }
-    //         cancelText="No"
-    //       >
-    //         <DeleteFilled style={{ color: '#FF0000', fontSize: "20px" }} />
-    //       </Popconfirm>
-    //     </div>
-    //   ),
-    //   align: 'center',
-    // },
   ];
 
   return (
@@ -115,13 +95,16 @@ const ProductListDetails = () => {
         <Loading />
       ) : (
         <div>
-          <Button className='setSize-1' type="primary" style={{ background: "blue" }}>
-             <Link to={"/admin/product/" + id + "/variants"}>Thêm mới</Link>
-          </Button>
+          <div className="flex justify-between">
+            <Button className='setSize-1' type="primary" style={{ background: "blue" }}>
+              <Link to={"/admin/product/" + id + "/variants"}>Thêm mới biến thể </Link>
+            </Button>
+            <p className=' '>Sản phẩm: <span className='font-bold'>{productDataOne.name}</span></p>
+          </div>
           <Table
-            style={{ marginTop: 30}}
+            style={{ marginTop: 30 }}
             columns={columns}
-            dataSource={flattenedData} 
+            dataSource={flattenedData}
             pagination={false}
           />
         </div>

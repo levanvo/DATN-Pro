@@ -447,7 +447,7 @@ const ProductDetail = () => {
     }
   };
   return (
-    <div>
+    <div className="select-none">
       {isLoadingProduct ? <Loading /> :
 
         <div className="w-[90vw] mx-auto mt-36 relative">
