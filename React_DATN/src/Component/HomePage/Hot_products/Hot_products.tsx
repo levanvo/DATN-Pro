@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {  useGetHotProductsQuery } from '../../../Services/Api_Product'
+import { useGetHotProductsQuery } from '../../../Services/Api_Product'
 import { IProduct } from '../../../Models/interfaces';
 import { Link } from 'react-router-dom';
 import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons';
@@ -15,7 +15,7 @@ const Hot_products = () => {
         return <div>Error.....Sản Phẩm HOT</div>;
     }
     // Sắp xếp sản phẩm theo lượt xem giảm dần (giả sử views là thuộc tính trong đối tượng sản phẩm)
-    const hotProducts = productData.slice().sort((a:any, b:any) => b.views - a.views).slice(0, 8); 
+    const hotProducts = productData.slice().sort((a: any, b: any) => b.views - a.views).slice(0, 8);
     // Số lượng sản phẩm hiển thị mỗi lần
     const itemsPerPage = 4;
 
@@ -41,7 +41,7 @@ const Hot_products = () => {
             setCurrentIndex(currentIndex + 1);
         }
     };
-    
+
     return (
         <div className="w-[90vw] mx-auto">
             <div className="new-products-area">
@@ -79,7 +79,7 @@ const Hot_products = () => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                      
+
                                                         <div className="product-price -mt-3">
                                                             <div className="product-name">
                                                                 <h1>{product.name}</h1>
@@ -106,18 +106,10 @@ const Hot_products = () => {
                                 </div>
                             </div>
                             <div className=' text-2xl'>
-                                <div
-                                    className="absolute scale-150 top-1/2 transform -translate-y-1/2 left-[-20px] rounded-full shadow cursor-pointer"
-                                    onClick={handlePrevClick}
-                                >
-                                    <LeftCircleOutlined/>
-                                </div>
-                                <div
-                                    className="absolute scale-150 top-1/2 transform -translate-y-1/2  right-[-20px] rounded-full shadow cursor-pointer"
-                                    onClick={handleNextClick}
-                                >
-                                    <RightCircleOutlined />
-                                </div>
+                                <LeftCircleOutlined className="absolute scale-150 top-1/2 transform -translate-y-1/2 left-[-20px] rounded-full shadow cursor-pointer"
+                                    onClick={handlePrevClick} />
+                                <RightCircleOutlined className="absolute scale-150 top-1/2 transform -translate-y-1/2  right-[-20px] rounded-full shadow cursor-pointer"
+                                    onClick={handleNextClick} />
                             </div>
                         </div>
                     </div>

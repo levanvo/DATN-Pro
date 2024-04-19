@@ -134,7 +134,8 @@ const Header = () => {
                   </div>
 
                 }
-                <div className="cart-img">
+                {/* <div className="cart-img"> */}
+                <div className="">
                   <Link to={"/cart"}>
                       <img
                           className="active:scale-90"

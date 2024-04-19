@@ -19,7 +19,7 @@ const Featured_products = () => {
     return (
         <div className='w-[90vw] mx-auto'>
             {isLoading ? <Loading /> :
-                <div className="features-product-area">
+                <div className="features-product-area mt-20">
                     <div className="container">
                         <div className="row">
                             <div className="col-md-12">
