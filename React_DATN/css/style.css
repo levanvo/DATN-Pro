@@ -1587,6 +1587,7 @@ body {
 
 .single-blog-post {
     background-color: #f5f5f5;
+    border-radius: 10px;
     float: left;
     margin-bottom: 8px;
     padding: 50px 25px 35px;
@@ -1596,7 +1597,7 @@ body {
 }
 
 .single-blog-post:hover {
-    background-color: #585757;
+    background-color: #9f9f9f;
 }
 
 .single-blog-post:hover .blog-content a.blog-title {

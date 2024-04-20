@@ -86,8 +86,8 @@ const Hot_products = () => {
                                                                 <p>Lượt xem: {product.views}</p>
                                                             </div>
                                                             <div className="price-rating">
-                                                                <span>
-                                                                    {product.price}
+                                                                <span className='text-gray-500'>
+                                                                    {product.price?.toLocaleString()} <span className='underline'> đ</span>
                                                                 </span>
                                                                 <div className="ratings">
                                                                     <i className="fa fa-star"></i>

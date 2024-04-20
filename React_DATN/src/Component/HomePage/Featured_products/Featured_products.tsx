@@ -29,7 +29,7 @@ const Featured_products = () => {
                             </div>
                         </div>
                         <div className="row-new">
-                            <div className="product-new">
+                            <div className="product-new flex justify-center">
                                 {getProduct?.slice(0, 4).map((product: IProduct) => {
                                     return (
                                         <div
@@ -62,7 +62,7 @@ const Featured_products = () => {
                                                             <h1>{product.name}</h1>
                                                         </div>
                                                         <div className="price-rating">
-                                                            <span>
+                                                            <span className="text-gray-500">
                                                                 {numberFormat(product.price)}
                                                             </span>
                                                             <div className="ratings">

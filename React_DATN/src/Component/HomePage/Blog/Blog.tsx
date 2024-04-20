@@ -15,7 +15,7 @@ const Blog = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="blog-heading">
-                                <h2 className='front-bold text-sky-500'>Biến động hot các mẫu giày 2023</h2>
+                                <h2 className='front-bold text-sky-500'>Biến động hot các mẫu giày 2024</h2>
                             </div>
                         </div>
                     </div>
@@ -34,7 +34,7 @@ const Blog = () => {
                                                 <a href={`blog/${blog._id}/detail`} className="blog-title">{blog.title}</a>
                                                 <span><a href="#">By {blog?.author}</a>- {blog?.createdAt} ( 0 comments )</span>
                                                 <div className="h-[150px] objectfit-cover"><p className="h-[150px]" >{parse(blog?.description)}</p></div>
-                                                <a href={`blog/${blog._id}/detail`} className="readmore mt-3 absolute text-black rounded ">Read more &gt;</a>
+                                                {/* <a href={`blog/${blog._id}/detail`} className="readmore mt-3 absolute text-black rounded ">Read more &gt;</a> */}
                                             </div>
                                         </div>
 

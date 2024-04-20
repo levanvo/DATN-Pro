@@ -225,7 +225,7 @@ const AddProduct = () => {
                 const originalPrice = form.getFieldValue('original_price');
                 if (!isNaN(values)) {
                   if (!isNaN(originalPrice) && parseFloat(values) > parseFloat(originalPrice)) {
-                    return Promise.reject(new Error('Giá hiện tại không được lớn hơn giá gốc'));
+                    // return Promise.reject(new Error('Giá hiện tại không được lớn hơn giá gốc'));
                   }
                   return Promise.resolve();
                 } else {
